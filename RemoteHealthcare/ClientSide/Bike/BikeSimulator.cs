@@ -1,16 +1,19 @@
-namespace ClientSide.Fiets;
+namespace ClientSide.Bike;
 
 public class BikeSimulator : Bike
 {
     private int lastTicks;
     private int ticker;
     private int startedTime;
-    public BikeSimulator()
+
+    private BikeHandler handler;
+    public BikeSimulator(BikeHandler handler)
     {
         lastTicks = Environment.TickCount;
         ticker = 0;
-        var thread = new Thread(new ThreadStart(Run));
+        var thread = new Thread(Run);
         thread.Start();
+        this.handler = handler;
     }
 
     private void Run()
@@ -37,14 +40,14 @@ public class BikeSimulator : Bike
 
     private void UpdateHeartRate()
     {
-        bikeData[DataType.HeartRate] = 2 * Math.Sin(0.1 * ticker) + 120;
-        Console.WriteLine($"HeartRate: {2 * Math.Sin(0.1 * ticker) + 120}");
+        handler.ChangeData(DataType.HeartRate, 2 * Math.Sin(0.1 * ticker) + 120);
+        //Console.WriteLine($"HeartRate: {2 * Math.Sin(0.1 * ticker) + 120}");
     }
 
     private void UpdateSpeed()
     {
-        bikeData[DataType.Speed] = (0.7 * Math.Sin(0.05 * ticker) + 22) / 3.6;
-        Console.WriteLine($"Speed: {(0.7 * Math.Sin(0.05 * ticker) + 22) / 3.6}");
+        handler.ChangeData(DataType.Speed, (0.7 * Math.Sin(0.05 * ticker) + 22) / 3.6);
+        //Console.WriteLine($"Speed: {(0.7 * Math.Sin(0.05 * ticker) + 22) / 3.6}");
     }
 
     private void UpdateDistance(int deltaTime)
@@ -52,13 +55,13 @@ public class BikeSimulator : Bike
         bikeData.TryGetValue(DataType.Distance, out var distance);
         bikeData.TryGetValue(DataType.Speed, out var speed);
         
-        bikeData[DataType.Distance] = distance + speed * deltaTime / 1000;
-        Console.WriteLine($"Distance: {distance + speed * deltaTime / 1000}");
+        handler.ChangeData(DataType.Distance, distance + speed * deltaTime / 1000);
+        //Console.WriteLine($"Distance: {distance + speed * deltaTime / 1000}");
     }
 
     private void UpdateElapsedTime(int time)
     {
-        bikeData[DataType.ElapsedTime] = (double) (time) / 1000;
-        Console.WriteLine($"ElapsedTime: {(double) (time) / 1000}");
+        handler.ChangeData(DataType.ElapsedTime, (double) (time) / 1000);
+        //Console.WriteLine($"ElapsedTime: {(double) (time) / 1000}");
     }
 }

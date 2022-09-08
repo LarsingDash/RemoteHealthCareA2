@@ -1,4 +1,4 @@
-namespace ClientSide.Fiets;
+namespace ClientSide.Bike;
 
 public abstract class Bike
 {

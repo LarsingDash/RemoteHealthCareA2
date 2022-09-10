@@ -8,16 +8,23 @@ namespace ClientSide
         {
             Console.WriteLine("ClientSide started.");
             BikeHandler handler = new BikeHandler();
-            DistanceObserver obs = new DistanceObserver();
-            handler.Subscribe(DataType.Distance, obs);
+            handler.Subscribe(DataType.Distance, new DefaultObserver("Distance"));
+            handler.Subscribe(DataType.Speed, new DefaultObserver("Speed"));
+            handler.Subscribe(DataType.ElapsedTime, new DefaultObserver("Elapsed Time"));
+            handler.Subscribe(DataType.HeartRate, new DefaultObserver("HeartRate"));
             Thread.Sleep(5000);
-            handler.UnSubscribe(DataType.Distance, obs);
             Console.WriteLine("Ended Main Thread, but the bike is still spinning.");
+            
         }
     }
-
-    class DistanceObserver : IObserver<double>
+    
+    class DefaultObserver : IObserver<double>
     {
+        private string s;
+        public DefaultObserver(string s)
+        {
+            this.s = s;
+        }
         public void OnCompleted()
         {
             throw new NotImplementedException();
@@ -30,7 +37,7 @@ namespace ClientSide
 
         public void OnNext(double value)
         {
-            Console.WriteLine($"Distance: {value}");
+            Console.WriteLine($"{s}: {value}");
         }
     }
 }

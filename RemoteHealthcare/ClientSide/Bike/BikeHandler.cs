@@ -14,7 +14,7 @@ public class BikeHandler
         {
             this.observers.Add(val, new List<IObserver<double>>());
         }
-        this.bike = picker == BikePicker.Virtual ? new BikeSimulator(this) : new BikeSimulator(this); //TODO Add Physical bike
+        this.bike = picker == BikePicker.Virtual ? new BikeSimulator(this) : new BikePhysical(this); //TODO Add Physical bike
     }
     
     

@@ -3,6 +3,7 @@ namespace ClientSide.Bike;
 public abstract class Bike
 {
     public Dictionary<DataType, double> bikeData;
+    /* The constructor for the Bike class. */
     public Bike()
     {
         bikeData = new Dictionary<DataType, double>();
@@ -13,6 +14,7 @@ public abstract class Bike
     }
 }
 
+/* Creating an enumeration of the different types of data that can be sent from the bike. */
 public enum DataType : ushort
 {
     Speed = 1,

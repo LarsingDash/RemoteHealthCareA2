@@ -4,6 +4,11 @@ namespace ClientSide
 {
     class Program
     {
+        /// <summary>
+        /// The main function of the program.
+        /// </summary>
+        /// <param name="args">This is an array of strings that contains the command-line
+        /// arguments.</param>
         public static void Main(string[] args)
         {
             Console.WriteLine("ClientSide started.");
@@ -18,6 +23,9 @@ namespace ClientSide
         }
     }
     
+    /* The DefaultObserver class implements the IObserver<double> interface, and it prints the value of the double it
+    receives to the console.
+    */
     class DefaultObserver : IObserver<double>
     {
         private string s;

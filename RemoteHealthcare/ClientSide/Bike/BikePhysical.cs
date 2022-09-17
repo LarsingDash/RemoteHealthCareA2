@@ -8,19 +8,24 @@ public class BikePhysical : Bike
 {
     private BikeHandler handler;
     private Dictionary<int, DataPage> pages;
-
+    
     public BikePhysical(BikeHandler handler)
     {
         this.handler = handler;
-        var i = 0x10;
         pages = new Dictionary<int, DataPage>()
         {
             {0x10, new DataPage10(handler)},
             
         };
+        //Test message
         NewMessage(DataMessageProtocol.BleBike, "A4 09 4E 05 10 19 6C EE 00 00 FF 24 B6");
     }
 
+    /// <summary>
+    /// The function takes in a message and a protocol, and then parses the message based on the protocol
+    /// </summary>
+    /// <param name="DataMessageProtocol">This is the type of message that is being sent.</param>
+    /// <param name="mes">The message received from the device.</param>
     public void NewMessage(DataMessageProtocol prot, string mes)
     {
         string[] dataPointsStrings = mes.Split(' ');
@@ -65,6 +70,7 @@ public class BikePhysical : Bike
 
 }
 
+/* Creating an enum for the different types of messages that can be sent. */
 public enum DataMessageProtocol
 {
     BleBike = 1,

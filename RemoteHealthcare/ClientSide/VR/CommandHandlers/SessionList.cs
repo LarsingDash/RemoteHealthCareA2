@@ -6,13 +6,18 @@ public class SessionList : CommandHandler
 {
     private JObject currentObject;
     private DateTime parsedDate;
+    /// <summary>
+    /// It loops through all the clients in the JSON object, and if the client is on the same machine and has the same
+    /// username as the current user, it will set the currentObject to that client
+    /// </summary>
+    /// <param name="VRClient">The client that is handling the command.</param>
+    /// <param name="JObject">The JSON object that was sent from the server.</param>
     public void handleCommand(VRClient client, JObject ob)
     {
-        //Console.WriteLine(ob.ToString());
         foreach (JObject o in ob["data"])
         {
-            if (o["clientinfo"]["host"].ToObject<string>() == Environment.MachineName &&
-                o["clientinfo"]["user"].ToObject<string>() == Environment.UserName)
+            if (o["clientinfo"]["host"].ToObject<string>().ToLower() == Environment.MachineName.ToLower() &&
+                o["clientinfo"]["user"].ToObject<string>().ToLower() == Environment.UserName.ToLower())
             {
                 if (currentObject == null)
                 {
@@ -23,12 +28,13 @@ public class SessionList : CommandHandler
                 {
                     if (parsedDate < DateTime.Parse(o["lastPing"].ToObject<string>()))
                     {
+                        Console.WriteLine(parsedDate);
+                        Console.WriteLine(DateTime.Parse(o["lastPing"].ToObject<string>()));
                         currentObject = o;
                         parsedDate = DateTime.Parse(o["lastPing"].ToObject<string>());
                     }
                 }
             }
-            //Console.WriteLine(o["id"]);
         }
 
         if (currentObject != null)

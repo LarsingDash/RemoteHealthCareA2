@@ -1,3 +1,4 @@
+using System.Globalization;
 using Newtonsoft.Json.Linq;
 
 namespace ClientSide.VR.CommandHandlers;
@@ -22,7 +23,7 @@ public class SessionList : CommandHandler
                 if (currentObject == null)
                 {
                     currentObject = o;
-                    parsedDate = DateTime.Parse(o["lastPing"].ToObject<string>());
+                    parsedDate = DateTime.ParseExact(o["lastPing"].ToObject<string>(), "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
                 }
                 else
                 {

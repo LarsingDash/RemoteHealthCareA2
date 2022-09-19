@@ -74,7 +74,13 @@ public class VRClient
         {
             {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\AddNodeScene", new Dictionary<string, string>())},
         });
-        
+
+        tunnel.SendTunnelMessage(new Dictionary<string, string>()
+        {
+            {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\AddHouseObj", new Dictionary<string, string>())},
+        });
+
+
         tunnel.Subscribe(TunnelDataType.Scene, ob =>
         {
             Console.WriteLine(ob);

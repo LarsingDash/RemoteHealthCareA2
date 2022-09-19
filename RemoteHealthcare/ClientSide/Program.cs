@@ -19,7 +19,7 @@ namespace ClientSide
             handler.Subscribe(DataType.HeartRate, new DefaultObserver("HeartRate"));
             Thread.Sleep(5000);
             Console.WriteLine("Ended Main Thread, but the bike is still spinning.");
-            
+            Console.Read();            
         }
     }
     

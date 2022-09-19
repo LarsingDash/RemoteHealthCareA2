@@ -1,24 +1,25 @@
-namespace ClientSide.Bike;
-
-public abstract class Bike
+namespace ClientSide.Bike
 {
-    public Dictionary<DataType, double> bikeData;
-    /* The constructor for the Bike class. */
-    public Bike()
+    public abstract class Bike
     {
-        bikeData = new Dictionary<DataType, double>();
-        foreach (DataType u in Enum.GetValues(typeof(DataType)))
+        public Dictionary<DataType, double> bikeData;
+        /* The constructor for the Bike class. */
+        public Bike()
         {
-            bikeData.Add(u, 0);
+            bikeData = new Dictionary<DataType, double>();
+            foreach (DataType u in Enum.GetValues(typeof(DataType)))
+            {
+                bikeData.Add(u, 0);
+            }
         }
     }
-}
 
-/* Creating an enumeration of the different types of data that can be sent from the bike. */
-public enum DataType : ushort
-{
-    Speed = 1,
-    Distance = 2,
-    HeartRate = 3,
-    ElapsedTime = 4,
+    /* Creating an enumeration of the different types of data that can be sent from the bike. */
+    public enum DataType : ushort
+    {
+        Speed = 1,
+        Distance = 2,
+        HeartRate = 3,
+        ElapsedTime = 4,
+    }
 }

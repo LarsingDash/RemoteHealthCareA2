@@ -1,7 +1,9 @@
 using System.Net;
 using System.Net.Sockets;
+using System.Security.Cryptography;
 using System.Text;
 using ClientSide.VR.CommandHandlers;
+using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -52,14 +54,21 @@ public class VRClient
     {
         tunnelID = id;
         Console.WriteLine($"Received tunnel id: {id}");
-        
+
+        //Set height values for tiles
+        var noiseGen = new DotnetNoise.FastNoise();
         string heights = "";
-        for(int i = 0; i < 256 * 256; i++)
+        for (float X = 0; X < 256; X++)
         {
-            heights += "0,";
+            for (float Y = 0; Y < 256; Y++)
+            {
+                heights += noiseGen.GetPerlin(X, Y) + ",";
+            }
         }
+
         heights = heights.Substring(0, heights.Length - 1);
-        
+
+        //Add terain
         tunnel.SendTunnelMessage(new Dictionary<string, string>()
         {
             {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\AddTerrain", new Dictionary<string, string>()
@@ -69,12 +78,28 @@ public class VRClient
                 {"\"_heights_\"", heights}
             })},
         });
-        
+
+        //Add node
         tunnel.SendTunnelMessage(new Dictionary<string, string>()
         {
             {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\AddNodeScene", new Dictionary<string, string>())},
         });
-        
+        //Add house
+        tunnel.SendTunnelMessage(new Dictionary<string, string>()
+        {
+            {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\House", new Dictionary<string, string>())},
+        });
+        //Add car
+        tunnel.SendTunnelMessage(new Dictionary<string, string>()
+        {
+            {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\WhiteCar", new Dictionary<string, string>())},
+        });
+        //Add Tree
+        tunnel.SendTunnelMessage(new Dictionary<string, string>()
+        {
+            {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Tree", new Dictionary<string, string>())},
+        });
+
         tunnel.Subscribe(TunnelDataType.Scene, ob =>
         {
             Console.WriteLine(ob);
@@ -113,7 +138,7 @@ public class VRClient
                 {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\GetScene", new Dictionary<string, string>())},
             }
         );
-        
+
         tunnel.SendTunnelMessage(new Dictionary<string, string>()
         {
             {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\SetTimeScene", new Dictionary<string, string>())},
@@ -130,7 +155,7 @@ public class VRClient
             await _tcpClient.ConnectAsync("145.48.6.10", 6666);
             _stream = _tcpClient.GetStream();
             _stream.BeginRead(_buffer, 0, 1024, onRead, null);
-            
+
             SendData(JsonFileReader.GetObjectAsString("SessionList", new Dictionary<string, string>()));
         }
         catch
@@ -160,7 +185,7 @@ public class VRClient
     {
         SendData(j.ToString());
     }
-    
+
     /// <summary>
     /// It reads data from the stream, and if it has enough data to read a packet, it reads the packet and calls the
     /// appropriate command handler
@@ -176,7 +201,7 @@ public class VRClient
             int rc = _stream.EndRead(ar);
             _totalBuffer = Concat(_totalBuffer, _buffer, rc);
         }
-        catch(System.IO.IOException)
+        catch (System.IO.IOException)
         {
             Console.WriteLine("Error");
             return;
@@ -189,7 +214,7 @@ public class VRClient
                 string data = Encoding.UTF8.GetString(_totalBuffer, 4, packetSize);
                 JObject jData = JObject.Parse(data);
                 //Console.WriteLine(jData.ToString());
-                if(commands.ContainsKey(jData["id"].ToObject<string>()))
+                if (commands.ContainsKey(jData["id"].ToObject<string>()))
                 {
                     commands[jData["id"].ToObject<string>()].handleCommand(this, jData);
                 }
@@ -206,7 +231,7 @@ public class VRClient
         }
         _stream.BeginRead(_buffer, 0, 1024, onRead, null);
     }
-    
+
     /// <summary>
     /// It takes two byte arrays and a count, and returns a new byte array that is the concatenation of the first two
     /// arrays, with the second array truncated to the specified count
@@ -224,9 +249,9 @@ public class VRClient
         System.Buffer.BlockCopy(b2, 0, r, b1.Length, count);
         return r;
     }
-    
-    
-    
-    
-    
+
+
+
+
+
 }

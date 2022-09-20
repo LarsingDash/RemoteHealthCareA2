@@ -2,10 +2,10 @@ namespace ClientSide.Bike;
 //TheBikeHandler class is used for the purpose of receiving data from the Bike.
 public class BikeHandler
 {
-    private BikePicker picker = BikePicker.Virtual;
+    private BikePicker picker = BikePicker.Physical;
     
     private Dictionary<DataType, List<IObserver<double>>> observers;
-    private Bike bike;
+    public Bike bike { get; }
 
     public BikeHandler()
     {

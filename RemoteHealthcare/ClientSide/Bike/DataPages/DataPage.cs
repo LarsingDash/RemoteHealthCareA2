@@ -10,5 +10,5 @@ public abstract class DataPage
     }
     
 
-    public abstract void processData(int[] data);
+    public abstract void ProcessData(int[] data);
 }

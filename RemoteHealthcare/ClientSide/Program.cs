@@ -15,19 +15,20 @@ namespace ClientSide
             Console.WriteLine("ClientSide started.");
             // Console.WriteLine($"Machine name: {Environment.MachineName}");
             // Console.WriteLine($"User name: {Environment.UserName}");
-            VRClient vrClient = new VRClient();
-            vrClient.StartConnectionAsync();
-            while (true)
-            {
-                Thread.Sleep(1);
-            }
-            // BikeHandler handler = new BikeHandler();
-            // handler.Subscribe(DataType.Distance, new DefaultObserver("Distance"));
-            // handler.Subscribe(DataType.Speed, new DefaultObserver("Speed"));
-            // handler.Subscribe(DataType.ElapsedTime, new DefaultObserver("Elapsed Time"));
-            // handler.Subscribe(DataType.HeartRate, new DefaultObserver("HeartRate"));
-            // Thread.Sleep(5000);
-            // Console.WriteLine("Ended Main Thread, but the bike is still spinning.");
+            // VRClient vrClient = new VRClient();
+            // vrClient.StartConnectionAsync();
+            // while (true)
+            // {
+            //     Thread.Sleep(1);
+            // }
+            BikeHandler handler = new BikeHandler();
+            handler.Subscribe(DataType.Distance, new DefaultObserver("Distance"));
+            handler.Subscribe(DataType.Speed, new DefaultObserver("Speed"));
+            handler.Subscribe(DataType.ElapsedTime, new DefaultObserver("Elapsed Time"));
+            handler.Subscribe(DataType.HeartRate, new DefaultObserver("HeartRate"));
+            Thread.Sleep(5000);
+          //  Console.WriteLine("Ended Main Thread, but the bike is still spinning.");
+            Console.Read();
 
         }
     }

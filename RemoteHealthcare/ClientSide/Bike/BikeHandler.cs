@@ -4,15 +4,15 @@ public class BikeHandler
 {
     private BikePicker picker = BikePicker.Physical;
     
-    private Dictionary<DataType, List<IObserver<double>>> observers;
+    private Dictionary<DataType, List<Action<double>>> observers;
     public Bike bike { get; }
 
     public BikeHandler()
     {
-        this.observers = new Dictionary<DataType, List<IObserver<double>>>();
+        this.observers = new Dictionary<DataType, List<Action<double>>>();
         foreach (DataType val in Enum.GetValues(typeof(DataType)))
         {
-            this.observers.Add(val, new List<IObserver<double>>());
+            this.observers.Add(val, new List<Action<double>>());
         }
         this.bike = picker == BikePicker.Virtual ? new BikeSimulator(this) : new BikePhysical(this);
     }
@@ -20,23 +20,24 @@ public class BikeHandler
     
     /// <summary>
     /// If the observer is not already subscribed to the data type, add it to the list of observers for that data type and
-    /// send it the current value of the data type
+    /// invoke the observer with the current value of the data type
     /// </summary>
     /// <param name="DataType">The type of data you want to subscribe to.</param>
     /// <param name="ob">The observer that is subscribing to the data.</param>
-    public void Subscribe(DataType type, IObserver<double> ob)
+    public void Subscribe(DataType type, Action<double> ob)
     {
         if (!observers[type].Contains(ob)) {
             observers[type].Add(ob);
-            ob.OnNext(bike.bikeData[type]);
+            ob.Invoke(bike.bikeData[type]);
         }
     }
+    
     /// <summary>
-    /// If the observer is in the list of observers for the given data type, remove it from the list
+    /// > Unsubscribe an observer from a specific data type
     /// </summary>
     /// <param name="DataType">The type of data you want to subscribe to.</param>
     /// <param name="ob">The observer that is being unsubscribed.</param>
-    public void UnSubscribe(DataType type, IObserver<double> ob)
+    public void UnSubscribe(DataType type, Action<double> ob)
     {
         if (observers[type].Contains(ob)) {
             observers[type].Remove(ob);
@@ -51,7 +52,7 @@ public class BikeHandler
     public void ChangeData(DataType type, double val)
     {
         bike.bikeData[type] = val;
-        observers[type].ForEach(ob => ob.OnNext(val));
+        observers[type].ForEach(ob => ob.Invoke(val));
     }
 }
 

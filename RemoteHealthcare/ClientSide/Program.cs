@@ -17,45 +17,16 @@ namespace ClientSide
             // Console.WriteLine($"User name: {Environment.UserName}");
             // VRClient vrClient = new VRClient();
             // vrClient.StartConnectionAsync();
-            // while (true)
-            // {
-            //     Thread.Sleep(1);
-            // }
             BikeHandler handler = new BikeHandler();
-            handler.Subscribe(DataType.Distance, new DefaultObserver("Distance"));
-            handler.Subscribe(DataType.Speed, new DefaultObserver("Speed"));
-            handler.Subscribe(DataType.ElapsedTime, new DefaultObserver("Elapsed Time"));
-            handler.Subscribe(DataType.HeartRate, new DefaultObserver("HeartRate"));
-            Thread.Sleep(5000);
-          //  Console.WriteLine("Ended Main Thread, but the bike is still spinning.");
+            handler.Subscribe(DataType.Distance, val => Console.WriteLine($"Distance: {val}"));
+            handler.Subscribe(DataType.Speed, val => Console.WriteLine($"Speed: {val}"));
+            handler.Subscribe(DataType.ElapsedTime, val => Console.WriteLine($"ElapsedTime: {val}"));
+            handler.Subscribe(DataType.HeartRate, val => Console.WriteLine($"HeartRate: {val}"));
+            //  Console.WriteLine("Ended Main Thread, but the bike is still spinning.");
             Console.Read();
 
         }
-    }
-    
-    /* The DefaultObserver class implements the IObserver<double> interface, and it prints the value of the double it
-    receives to the console.
-    */
-    class DefaultObserver : IObserver<double>
-    {
-        private string s;
-        public DefaultObserver(string s)
-        {
-            this.s = s;
-        }
-        public void OnCompleted()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OnError(Exception error)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OnNext(double value)
-        {
-            Console.WriteLine($"{s}: {value}");
-        }
+        
+        
     }
 }

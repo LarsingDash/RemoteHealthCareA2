@@ -24,8 +24,7 @@ public class VRClient
     {
         commands.Add("session/list", new SessionList());
         commands.Add("tunnel/create", new TunnelCreate());
-        tunnel = new Tunnel(this);
-        commands.Add("tunnel/send", tunnel);
+        commands.Add("tunnel/send", tunnel = new Tunnel(this));
     }
 
     /// <summary>

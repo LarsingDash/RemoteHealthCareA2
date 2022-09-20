@@ -15,12 +15,10 @@ public class DataPage10 : DataPage
 
     /// <summary>
     /// If the previous data is null, then set the distance, elapsed time, and speed to the current data. Otherwise, if the
-    /// previous distance is greater than the current distance, then increment the distance multiplier and set the distance
+    /// previous distance is greater than the current distance (meaning the data has beem reset, max value is 256), then increment the distance multiplier and set the distance
     /// to the current distance plus the distance multiplier times 256. Otherwise, set the distance to the current distance
-    /// plus the distance multiplier times 256. If the previous elapsed time is greater than the current elapsed time, then
-    /// increment the elapsed time multiplier and set the elapsed time to the current elapsed time plus the elapsed time
-    /// multiplier times 256. Otherwise, set the elapsed time to the current elapsed time plus the elapsed time multiplier
-    /// times 256. Finally, set the speed to the current speed
+    /// plus the distance multiplier times 256. Do the same for elapsed time.
+    /// Finally, set the speed to the current speed
     /// </summary>
     /// <param name="data">The data received from the device.</param>
     public override void ProcessData(int[] data)

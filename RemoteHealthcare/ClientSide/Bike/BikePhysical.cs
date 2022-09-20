@@ -6,25 +6,28 @@ namespace ClientSide.Bike
 {
     public class BikePhysical : Bike
     {
-        private BikeHandler handler;
-        private Dictionary<int, DataPage> pages;
+        // Change this to the last 5 digits of the serial number of the bike.
         private string ID = "01249";
-        private BluetoothDevice bikeDevice;
-        private BluetoothDevice heartRateDevice;
+        
+        private BikeHandler _handler;
+        private Dictionary<int, DataPage> _pages;
+        private BluetoothDevice _bikeDevice;
+        private BluetoothDevice _heartRateDevice;
 
         public BikePhysical(BikeHandler handler)
         {
-            this.handler = handler;
-            pages = new Dictionary<int, DataPage>()
+            this._handler = handler;
+            _pages = new Dictionary<int, DataPage>()
             {
                 {0x10, new DataPage10(handler)},
             };
-            //bikeDevice = new BluetoothDevice($"Tacx Flux {ID}", "6e40fec1-b5a3-f393-e0a9-e50e24dcca9e", "6e40fec2-b5a3-f393-e0a9-e50e24dcca9e", ValueChangedBike);
-            //bikeDevice.StartConnection();
+            _bikeDevice = new BluetoothDevice($"Tacx Flux {ID}", "6e40fec1-b5a3-f393-e0a9-e50e24dcca9e", "6e40fec2-b5a3-f393-e0a9-e50e24dcca9e", ValueChangedBike);
+            _bikeDevice.StartConnection();
             Thread.Sleep(1000);
-            heartRateDevice = new BluetoothDevice("Decathlon Dual HR","HeartRate", "HeartRateMeasurement", ValueChangedHeartRate);
-            heartRateDevice.StartConnection();
-            //Test message
+            _heartRateDevice = new BluetoothDevice("Decathlon Dual HR","HeartRate", "HeartRateMeasurement", ValueChangedHeartRate);
+            Thread.Sleep(1000);
+            _heartRateDevice.StartConnection();
+            // Test message
             // NewMessage(DataMessageProtocol.BleBike, "A4 09 4E 05 10 19 6C EE 00 00 FF 24 B6");
         }
 
@@ -39,11 +42,10 @@ namespace ClientSide.Bike
             int[] dataPoints = Array.ConvertAll(dataPointsStrings, s => int.Parse(s, System.Globalization.NumberStyles.HexNumber));
 
             switch (prot)
-        
             {
                 case DataMessageProtocol.BleBike:
                 {
-                    int msgID = dataPoints[2];
+                    int msgId = dataPoints[2];
                     int msgLength = dataPoints[1];
                     int current = 0;
                     for (int i = 0; i < dataPoints.Length - 1; i++)
@@ -62,23 +64,24 @@ namespace ClientSide.Bike
                     {
                         data[i-3] = dataPoints[i];
                     }
-                     //Console.WriteLine("Data");
-                     if (pages.ContainsKey(data[1]))
+                    if (_pages.ContainsKey(data[1]))
                      {
-                         pages[data[1]].ProcessData(data);
+                         _pages[data[1]].ProcessData(data);
                      }
                      else
                      {
+                         // page not found...
                      }
-                     // data.ToList().ForEach(i => Console.WriteLine(i.ToString("X")));
-
-                    break;
+                     break;
                 }
                 case DataMessageProtocol.HeartRate:
                 {
-                    handler.ChangeData(DataType.HeartRate, dataPoints[1]);
+                    _handler.ChangeData(DataType.HeartRate, dataPoints[1]);
                     break;
                 }
+                default:
+                    Console.WriteLine("DataProtocolMessage not found, could not parse data.");
+                    break;
             }
         }
         /// <summary>
@@ -88,7 +91,6 @@ namespace ClientSide.Bike
         /// <param name="BLESubscriptionValueChangedEventArgs"></param>
         private void ValueChangedBike(Object sender, BLESubscriptionValueChangedEventArgs e)
         {
-            //Console.WriteLine(BitConverter.ToString(e.Data).Replace("-", " "));
             NewMessage(DataMessageProtocol.BleBike, BitConverter.ToString(e.Data).Replace("-", " "));
         }
         /// <summary>
@@ -98,12 +100,13 @@ namespace ClientSide.Bike
         /// <param name="BLESubscriptionValueChangedEventArgs"></param>
         private void ValueChangedHeartRate(Object sender, BLESubscriptionValueChangedEventArgs e)
         {
-            string mes = BitConverter.ToString(e.Data).Replace("-", " ");
-            string[] dataPointsStrings = mes.Split(' ');
-            int[] dataPoints = Array.ConvertAll(dataPointsStrings, s => int.Parse(s, System.Globalization.NumberStyles.HexNumber));
-
-            handler.ChangeData(DataType.HeartRate, Convert.ToInt32(dataPoints[1]));
-            //Console.WriteLine($"HeartRate: {e.Data}");
+            NewMessage(DataMessageProtocol.HeartRate, BitConverter.ToString(e.Data).Replace("-", " "));
+            
+            // Old way, now using NewMessage. Needs to be tested.
+            // string mes = BitConverter.ToString(e.Data).Replace("-", " ");
+            // string[] dataPointsStrings = mes.Split(' ');
+            // int[] dataPoints = Array.ConvertAll(dataPointsStrings, s => int.Parse(s, System.Globalization.NumberStyles.HexNumber));
+            // handler.ChangeData(DataType.HeartRate, Convert.ToInt32(dataPoints[1]));
         }
     }
 

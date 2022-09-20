@@ -6,7 +6,7 @@ public class BikeSimulator : Bike
     private int _ticker;
     private int _startedTime;
 
-    private BikeHandler _handler;
+    private readonly BikeHandler _handler;
     public BikeSimulator(BikeHandler handler)
     {
         _lastTicks = Environment.TickCount;
@@ -18,10 +18,10 @@ public class BikeSimulator : Bike
 
     /// <summary>
     /// The Run function is a while loop that runs forever. Every time it updates the values:
-    /// HeartRate
-    /// Speed
-    /// Distance
-    /// ElapsedTime
+    /// - HeartRate
+    /// - Speed
+    /// - Distance
+    /// - ElapsedTime
     /// </summary>
     private void Run()
     {

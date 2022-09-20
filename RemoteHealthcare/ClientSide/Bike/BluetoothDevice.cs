@@ -31,20 +31,28 @@ public class BluetoothDevice
         Thread.Sleep(1000);
         int errorCode = 0;
         errorCode = await _ble.OpenDevice(_deviceName);
-        //Console.WriteLine($"ErrorCode openDevice: {errorCode}");
+        CheckErrorCode(errorCode, "OpenDevice");
         if (_service != null)
         {
-            //Console.WriteLine("Subscribed to service...");
             errorCode = await _ble.SetService(_service);
-            //Console.WriteLine($"ErrorCode Service: {errorCode}");
+            CheckErrorCode(errorCode, "Service");
             _ble.SubscriptionValueChanged += _valueChanged;
             if (_characteristic != null)
             {
                 errorCode = await _ble.SubscribeToCharacteristic(_characteristic);
-                //Console.WriteLine($"ErrorCode Subscribe: {errorCode}");
+                CheckErrorCode(errorCode, "Subscribe");
             }
         }
 
         Console.WriteLine(errorCode == 0 ? $"Connected to {_deviceName}!" : $"Could not connect to {_deviceName}");
     }
+
+    private void CheckErrorCode(int errorCode, string value)
+    {
+        if (errorCode != 0)
+        {
+            Console.WriteLine($"ErrorCode {value}: {errorCode}");
+        }
+    }
+    
 }

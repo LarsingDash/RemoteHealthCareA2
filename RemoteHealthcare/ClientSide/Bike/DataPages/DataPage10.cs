@@ -23,39 +23,35 @@ public class DataPage10 : DataPage
     /// <param name="data">The data received from the device.</param>
     public override void ProcessData(int[] data)
     {
-        //Console.WriteLine(String.Join(" ", new List<int>(data).ConvertAll(i => i.ToString("X")).ToArray()));
-        //Console.WriteLine(" ");
-
         if (_prevData == null)
         {
-            handler.ChangeData(DataType.Distance, Convert.ToInt32(data[4]));
-            handler.ChangeData(DataType.ElapsedTime, Convert.ToInt32(data[3] / 4));
-            handler.ChangeData(DataType.Speed, (double) Convert.ToInt32(data[5] + (data[6] << 8)) / 1000 * 3.6);
+            Handler.ChangeData(DataType.Distance, Convert.ToInt32(data[4]));
+            Handler.ChangeData(DataType.ElapsedTime, Convert.ToInt32(data[3] / 4));
+            Handler.ChangeData(DataType.Speed, (double) Convert.ToInt32(data[5] + (data[6] << 8)) / 1000 * 3.6);
         }
         else
         {
             if (_prevData[4] > data[4])
             {
                 _distanceMultiplier++;
-                handler.ChangeData(DataType.Distance, Convert.ToInt32(data[4]) + _distanceMultiplier * 256);
+                Handler.ChangeData(DataType.Distance, Convert.ToInt32(data[4]) + _distanceMultiplier * 256);
             }
             else
             {
-                handler.ChangeData(DataType.Distance, Convert.ToInt32(data[4]) + _distanceMultiplier * 256);
+                Handler.ChangeData(DataType.Distance, Convert.ToInt32(data[4]) + _distanceMultiplier * 256);
             }
 
             if (_prevData[3] > data[3])
             {
                 _timeMultiplier++;
-                handler.ChangeData(DataType.ElapsedTime, (double) Convert.ToInt32(data[3])  / 4 + _timeMultiplier * 256);
+                Handler.ChangeData(DataType.ElapsedTime, (double) Convert.ToInt32(data[3])  / 4 + _timeMultiplier * 256);
             }
             else
             {
-                handler.ChangeData(DataType.ElapsedTime, (double) Convert.ToInt32(data[3])  / 4 + _timeMultiplier * 256);
+                Handler.ChangeData(DataType.ElapsedTime, (double) Convert.ToInt32(data[3])  / 4 + _timeMultiplier * 256);
             }
-            handler.ChangeData(DataType.Speed, (double) Convert.ToInt32(data[5] + (data[6] << 8)) / 1000 * 3.6);
+            Handler.ChangeData(DataType.Speed, (double) Convert.ToInt32(data[5] + (data[6] << 8)) / 1000 * 3.6);
         }
-
         _prevData = data;
     }
 

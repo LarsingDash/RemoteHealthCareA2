@@ -12,16 +12,16 @@ namespace ClientSide
         /// arguments.</param>
         public static void Main(string[] args)
         {
-            Console.WriteLine("Choose application (1=Bike  2=VR)");
-            int option = Int32.Parse(s: Console.ReadLine());
-            
-            switch(option)
+            Console.Write("Choose application (1=Bike  2=VR): ");
+            string option = Console.ReadLine();
+
+            switch (option)
             {
-                case 1:
+                case "1":
                     Console.WriteLine("BikeClient started");
                     StartBikeClient();
                     break;
-                case 2:
+                case "2":
                     Console.WriteLine("VRClient started");
                     VRClient vrClient = new VRClient();
                     vrClient.StartConnectionAsync();
@@ -36,14 +36,6 @@ namespace ClientSide
 
             // Console.WriteLine($"Machine name: {Environment.MachineName}");
             // Console.WriteLine($"User name: {Environment.UserName}");
-            // VRClient vrClient = new VRClient();
-            // vrClient.StartConnectionAsync();
-            BikeHandler handler = new BikeHandler();
-            handler.Subscribe(DataType.Distance, val => Console.WriteLine($"Distance: {val}"));
-            handler.Subscribe(DataType.Speed, val => Console.WriteLine($"Speed: {val}"));
-            handler.Subscribe(DataType.ElapsedTime, val => Console.WriteLine($"ElapsedTime: {val}"));
-            handler.Subscribe(DataType.HeartRate, val => Console.WriteLine($"HeartRate: {val}"));
-            //  Console.WriteLine("Ended Main Thread, but the bike is still spinning.");
             Console.Read();
 
         }
@@ -52,7 +44,10 @@ namespace ClientSide
         public static void StartBikeClient()
         {
             BikeHandler handler = new BikeHandler();
-        
-        
+            handler.Subscribe(DataType.Distance, val => Console.WriteLine($"Distance: {val}"));
+            handler.Subscribe(DataType.Speed, val => Console.WriteLine($"Speed: {val}"));
+            handler.Subscribe(DataType.ElapsedTime, val => Console.WriteLine($"ElapsedTime: {val}"));
+            handler.Subscribe(DataType.HeartRate, val => Console.WriteLine($"HeartRate: {val}"));
+        }
     }
 }

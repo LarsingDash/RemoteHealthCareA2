@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,9 +17,19 @@ namespace ClientSide.VR
             {
                 default:
                 case World.forest:
+                    GenerateRoad();
                     generateForest();
                     break;
             }
+        }
+
+        private void GenerateRoad()
+        {
+            //Generate Route
+            tunnel.SendTunnelMessage(new Dictionary<string, string>()
+            {
+                {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\AddRoute", new Dictionary<string, string>(){})},
+            });
         }
 
         private void generateForest()

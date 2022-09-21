@@ -16,10 +16,12 @@ public class Tunnel : CommandHandler
         _vrClient = vrClient;
         _commands.Add("scene/get", new GetScene());
         _commands.Add("scene/skybox/settime", new SetTimeScene());
+        _commands.Add("route/add", new AddRoute());
         
         foreach (TunnelDataType u in Enum.GetValues(typeof(TunnelDataType)))
         {
             _observers.Add(u, new List<Action<JObject>>());
+
         }
     }
 

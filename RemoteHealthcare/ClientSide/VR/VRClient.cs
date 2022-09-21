@@ -21,7 +21,7 @@ public class VRClient
 
     public string tunnelID { get; private set; }
     public Tunnel tunnel { get; }
-
+    private World selectedWorld = World.forest;
     public VRClient()
     {
         commands.Add("session/list", new SessionList());
@@ -54,49 +54,13 @@ public class VRClient
         tunnelID = id;
         Console.WriteLine($"Received tunnel id: {id}");
 
-        //Set height values for tiles
-        var noiseGen = new DotnetNoise.FastNoise();
-        string heights = "";
-        for (float X = 0; X < 256; X++)
-        {
-            for (float Y = 0; Y < 256; Y++)
-            {
-                heights += noiseGen.GetPerlin(X, Y) + ",";
-            }
-        }
-
-        heights = heights.Substring(0, heights.Length - 1);
-
-        //Add terain
-        tunnel.SendTunnelMessage(new Dictionary<string, string>()
-        {
-            {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\AddTerrain", new Dictionary<string, string>()
-            {
-                {"\"_size1_\"", "256"},
-                {"\"_size2_\"", "256"},
-                {"\"_heights_\"", heights}
-            })},
-        });
+        //GenerateWorld
+        new WorldGen(tunnel, selectedWorld);
 
         //Add node
         tunnel.SendTunnelMessage(new Dictionary<string, string>()
         {
             {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\AddNodeScene", new Dictionary<string, string>())},
-        });
-        //Add house
-        tunnel.SendTunnelMessage(new Dictionary<string, string>()
-        {
-            {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\House", new Dictionary<string, string>())},
-        });
-        //Add car
-        tunnel.SendTunnelMessage(new Dictionary<string, string>()
-        {
-            {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\WhiteCar", new Dictionary<string, string>())},
-        });
-        //Add Tree
-        tunnel.SendTunnelMessage(new Dictionary<string, string>()
-        {
-            {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Tree", new Dictionary<string, string>())},
         });
 
         tunnel.Subscribe(TunnelDataType.Scene, ob =>
@@ -248,9 +212,4 @@ public class VRClient
         System.Buffer.BlockCopy(b2, 0, r, b1.Length, count);
         return r;
     }
-
-
-
-
-
 }

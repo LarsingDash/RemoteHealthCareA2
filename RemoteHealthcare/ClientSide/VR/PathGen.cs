@@ -1,16 +1,11 @@
 ﻿using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ClientSide.VR
 {
-     static class PathGen
+    static class PathGen
     {
         private static Dictionary<int[], int[]> Points { get; } = new Dictionary<int[], int[]>();
-        private static string UUID { get; set; }
+        private static string RouteUUID { get; set; }
 
         //TODO: implement JSON editor
         public static void GenerateForestPath()
@@ -27,18 +22,24 @@ namespace ClientSide.VR
         }
 
 
+        // RenderRoad acts on the AddRoute() callback to render a road on the route
+        //The current code used duplicate code from Tunnel.sendTunnelMessage()
+        //because the current structure doesn't allow easy access from the VRClient and other classes to the response data 
 
-
+        //TODO: fix code structure for easy callbacks
         public static void RenderRoad(VRClient vrClient, JObject response)
         {
-            UUID = response["data"]["data"]["uuid"].ToObject<string>();
-
+            RouteUUID = response["data"]["data"]["uuid"].ToObject<string>();
+           
+            // rewrite AddRoad.json with new values (in this case only route uuid)
             Dictionary<string, string> values = new Dictionary<string, string>()
             {
                 {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\AddRoad", new Dictionary<string, string>(){{"route uuid", UUID.ToString()}
                 })},     };
 
+            // add session id for tunneling between client and server
             values.Add("_tunnelID_", vrClient.tunnelID);
+            // send the data via the client
             vrClient.SendData(JsonFileReader.GetObjectAsString("SendTunnel", values));
 
 

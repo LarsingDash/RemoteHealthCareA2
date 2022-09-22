@@ -12,7 +12,7 @@
         "smoothnormals": true
       },
       "model": {
-        "file": "C:\\Users\\larsv\\Desktop\\School\\Year2\\Period1\\Remote Heathcare\\NetworkEngine\\data\\NetworkEngine\\models\\trees\\fantasy\\tree6.obj",
+        "file": "data\\NetworkEngine\\models\\trees\\fantasy\\tree6.obj",
         "cullbackfaces": true,
         "animated": false,
         "animation": "animationname"

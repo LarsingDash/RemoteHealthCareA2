@@ -57,6 +57,13 @@ namespace ClientSide.VR
                     {"\"_heights_\"", heights}
                 })},
             });
+
+
+            //Add trees
+            tunnel.SendTunnelMessage(new Dictionary<string, string>()
+            {
+                {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Tree", new Dictionary<string, string>(){})},
+            });
         }
     }
 

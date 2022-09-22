@@ -34,7 +34,7 @@ namespace ClientSide.VR
             // rewrite AddRoad.json with new values (in this case only route uuid)
             Dictionary<string, string> values = new Dictionary<string, string>()
             {
-                {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\AddRoad", new Dictionary<string, string>(){{"route uuid", UUID.ToString()}
+                {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\AddRoad", new Dictionary<string, string>(){{"route uuid", RouteUUID.ToString()}
                 })},     };
 
             // add session id for tunneling between client and server

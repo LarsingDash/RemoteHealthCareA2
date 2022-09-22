@@ -1,10 +1,13 @@
+using System;
+using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
+using System.IO;
 
-namespace ClientSide.VR;
+namespace SharedProject {
 
-public class JsonFileReader
-{
-    private static string pathDir = Environment.CurrentDirectory.Substring(0, Environment.CurrentDirectory.LastIndexOf("bin")) + "VR\\Json\\";
+
+    public static class JsonFileReader {
+    private static string pathDir = Environment.CurrentDirectory.Substring(0, Environment.CurrentDirectory.LastIndexOf("bin")) + "\\Json\\";
 
     /// <summary>
     /// It takes a file name and a dictionary of values, and returns a JObject with the values replaced
@@ -15,16 +18,21 @@ public class JsonFileReader
     /// <returns>
     /// A JObject
     /// </returns>
-    public static JObject GetObject(string fileName, Dictionary<string, string> values)
+    public static JObject GetObject(string fileName, Dictionary<string, string> values, string path)
     {
         fileName = CheckFileName(fileName);
-        string ob = JObject.Parse(File.ReadAllText(pathDir + fileName)).ToString();
+        string ob = JObject.Parse(File.ReadAllText(path + fileName)).ToString();
         foreach (string key in values.Keys)
         {
             ob = ob.Replace(key, values[key]);
         }
 
         return JObject.Parse(ob);
+    }
+
+    public static JObject GetObject(string fileName, Dictionary<string, string> values)
+    {
+        return GetObject(fileName, values, pathDir);
     }
 
     /// <summary>
@@ -40,6 +48,11 @@ public class JsonFileReader
     public static string GetObjectAsString(string fileName, Dictionary<string, string> values)
     {
         return GetObject(fileName, values).ToString();
+    }
+    
+    public static string GetObjectAsString(string fileName, Dictionary<string, string> values, string path)
+    {
+        return GetObject(fileName, values, path).ToString();
     }
 
     /// <summary>
@@ -62,5 +75,12 @@ public class JsonFileReader
         }
 
         return fileName;
+    }
+
+    public static void Initialize(string jsonFolder)
+    {
+        pathDir = jsonFolder;
+    }
+
     }
 }

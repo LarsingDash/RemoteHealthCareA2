@@ -1,5 +1,6 @@
 ﻿using ClientSide.Bike;
 using ClientSide.VR;
+using SharedProject;
 
 namespace ClientSide
 {
@@ -12,6 +13,7 @@ namespace ClientSide
         /// arguments.</param>
         public static void Main(string[] args)
         {
+            JsonFileReader.Initialize(Environment.CurrentDirectory.Substring(0, Environment.CurrentDirectory.LastIndexOf("bin")) + "VR\\Json\\");
             Console.Write("Choose application (1=Bike  2=VR): ");
             string option = Console.ReadLine();
 

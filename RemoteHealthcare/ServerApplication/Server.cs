@@ -6,12 +6,14 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using Newtonsoft.Json.Linq;
+using SharedProject;
 
 namespace ServerApplication
 {
     
     public class Server
     {
+        
         private TcpListener _listener;
 
         public delegate void MessageReceived(TcpClient client, JObject json);
@@ -21,6 +23,7 @@ namespace ServerApplication
 
         public Server()
         {
+
             OnMessage = HandleMessage;
             _listener = new TcpListener(IPAddress.Any, 2460);
             _listener.Start();

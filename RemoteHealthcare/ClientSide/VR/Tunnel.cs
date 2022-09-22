@@ -1,6 +1,7 @@
 using ClientSide.VR.CommandHandlers;
 using ClientSide.VR.CommandHandlers.TunnelMessages;
 using Newtonsoft.Json.Linq;
+using SharedProject;
 
 namespace ClientSide.VR;
 

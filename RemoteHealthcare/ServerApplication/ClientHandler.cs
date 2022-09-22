@@ -49,7 +49,6 @@ public class ClientHandler
                 Array.Copy(_totalBuffer, packetSize + 4, newBuffer, 0, newBuffer.Length);
                 _totalBuffer = newBuffer;
             }
-
             else
                 break;
         }

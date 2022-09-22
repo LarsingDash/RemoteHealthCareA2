@@ -21,4 +21,6 @@
       </Reference>
     </ItemGroup>
 
+    <Import Project="..\SharedProject\SharedProject.projitems" Label="Shared" />
+
 </Project>

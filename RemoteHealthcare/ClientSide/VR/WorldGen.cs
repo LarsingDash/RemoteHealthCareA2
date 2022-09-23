@@ -31,11 +31,13 @@ namespace ClientSide.VR
             {
                 for (float y = 0; y < 256; y++)
                 {
-                    heights += "0,";
+                    float value = (int)(noiseGen.GetPerlin(x, y) * 100) / 10;
+                    heights += $"{value},";
                 }
             }
 
             heights = heights.Substring(0, heights.Length - 1);
+            Console.WriteLine(heights);
 
             //Add terain
             tunnel.SendTunnelMessage(new Dictionary<string, string>()
@@ -47,6 +49,26 @@ namespace ClientSide.VR
                     {"\"_heights_\"", heights}
                 })},
             });
+
+            //Finding terian to add texture to
+            tunnel.SendTunnelMessage(new Dictionary<string, string>()
+            {
+                {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\AddLayer", new Dictionary<string, string>()
+                {
+                    {"\"_uuid_\"", "256"}
+                })},
+            });
+
+            /**
+            //Add terain texture
+            tunnel.SendTunnelMessage(new Dictionary<string, string>()
+            {
+                {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\AddLayer", new Dictionary<string, string>()
+                {
+                    {"\"_uuid_\"", "256"}
+                })},
+            });
+            **/
         }
     }
 

@@ -33,7 +33,6 @@ namespace ClientSide
 
             }
 
-
             // Console.WriteLine($"Machine name: {Environment.MachineName}");
             // Console.WriteLine($"User name: {Environment.UserName}");
             Console.Read();

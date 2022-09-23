@@ -1,8 +1,10 @@
+using System;
+using System.Linq;
+using System.Globalization;
 using System.Net;
 using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
-using ClientSide.VR.CommandHandlers;
 using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -11,22 +13,31 @@ namespace ClientSide.VR;
 
 public class VRClient
 {
-    private TcpClient _tcpClient = new();
-    private NetworkStream _stream;
+    //Session List
+    private JObject savedSession = null;
+    private DateTime savedSessionDate;
 
-    private Dictionary<String, CommandHandler> commands = new();
+    //Tunnel
+    private TcpClient tcpClient = new();
+    private NetworkStream stream;
 
-    private byte[] _totalBuffer = new byte[0];
-    private readonly byte[] _buffer = new byte[1024];
+    private byte[] totalBuffer = new byte[0];
+    private readonly byte[] buffer = new byte[1024];
 
     public string tunnelID { get; private set; }
     public Tunnel tunnel { get; }
+
+    //Settings
     private World selectedWorld = World.forest;
+
+    //Other
+    List<string> removalTargets = new List<string>();
+
     public VRClient()
     {
-        commands.Add("session/list", new SessionList());
-        commands.Add("tunnel/create", new TunnelCreate());
-        commands.Add("tunnel/send", tunnel = new Tunnel(this));
+        tunnel = new Tunnel(this);
+        //commands.Add("tunnel/create", new TunnelCreate());
+        //commands.Add("tunnel/send", tunnel = new Tunnel(this));
     }
 
     /// <summary>
@@ -49,75 +60,23 @@ public class VRClient
     /// <returns>
     /// The tunnel id is being returned.
     /// </returns>
-    public void setTunnelID(string id)
+    public void tunnelStartup(string id)
     {
         tunnelID = id;
-        Console.WriteLine($"Received tunnel id: {id}");
 
-        //GenerateWorld
-        new WorldGen(tunnel, selectedWorld);
-
-        //Add node
-        tunnel.SendTunnelMessage(new Dictionary<string, string>()
-        {
-            {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\AddNodeScene", new Dictionary<string, string>())},
-        });
-
-        tunnel.Subscribe(TunnelDataType.Scene, ob =>
-        {
-            Console.WriteLine(ob);
-            try
-            {
-                JObject foundObject = ob["data"]["data"]["children"].First(o =>
-                {
-                    if (o["name"].ToObject<string>().Equals("GroundPlane"))
-                    {
-                        return true;
-                    }
-
-                    return false;
-                }).ToObject<JObject>();
-
-                string uuid = foundObject["uuid"].ToObject<string>();
-                Console.WriteLine($"UUID: {uuid}");
-                tunnel.SendTunnelMessage(new Dictionary<string, string>()
-                {
-                    {
-                        "\"_data_\"",
-                        JsonFileReader.GetObjectAsString("TunnelMessages\\DeleteNodeScene",
-                            new Dictionary<string, string>())
-                    },
-                    {"_id_", uuid}
-                });
-            }
-            catch
-            {
-                Console.WriteLine("No GroundPlane found, already removed?");
-            }
-
-        });
-        tunnel.SendTunnelMessage(new Dictionary<string, string>()
-            {
-                {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\GetScene", new Dictionary<string, string>())},
-            }
-        );
-
-        tunnel.SendTunnelMessage(new Dictionary<string, string>()
-        {
-            {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\SetTimeScene", new Dictionary<string, string>())},
-            {"\"_time_\"", "15.0"}
-        });
+        //Remove groundPlane
+        RemoveObjectRequest("GroundPlane");
     }
-    /// <summary>
-    /// It connects to the server, gets the stream, and starts reading the stream
-    /// </summary>
+
+    //It connects to the server, gets the stream, and starts reading the stream
+    //Then it asks for all sessions to find the correct one in the response
     public async Task StartConnectionAsync()
     {
         try
         {
-            await _tcpClient.ConnectAsync("145.48.6.10", 6666);
-            _stream = _tcpClient.GetStream();
-            _stream.BeginRead(_buffer, 0, 1024, onRead, null);
+            await tcpClient.ConnectAsync("145.48.6.10", 6666);
+            stream = tcpClient.GetStream();
+            stream.BeginRead(buffer, 0, 1024, onRead, null);
 
             SendData(JsonFileReader.GetObjectAsString("SessionList", new Dictionary<string, string>()));
         }
@@ -133,20 +92,16 @@ public class VRClient
     /// <param name="String">The string to send to the server</param>
     public void SendData(String s)
     {
-        Console.WriteLine($"Sending data: {s}");
+        Console.WriteLine("-------------------------------------------Send Start");
+        Console.WriteLine($"Sending data:\n{s}");
+
         Byte[] data = BitConverter.GetBytes(s.Length);
         Byte[] comman = System.Text.Encoding.ASCII.GetBytes(s);
-        _stream.Write(data, 0, data.Length);
-        _stream.Write(comman, 0, comman.Length);
-    }
 
-    /// <summary>
-    /// It takes a JObject, converts it to a string, and then sends it to the SendData function that takes a string.
-    /// </summary>
-    /// <param name="JObject">The data you want to send.</param>
-    public void SendData(JObject j)
-    {
-        SendData(j.ToString());
+        stream.Write(data, 0, data.Length);
+        stream.Write(comman, 0, comman.Length);
+
+        Console.WriteLine("-------------------------------------------Send End");
     }
 
     /// <summary>
@@ -161,38 +116,30 @@ public class VRClient
     {
         try
         {
-            int rc = _stream.EndRead(ar);
-            _totalBuffer = Concat(_totalBuffer, _buffer, rc);
+            int rc = stream.EndRead(ar);
+            totalBuffer = Concat(totalBuffer, buffer, rc);
         }
         catch (System.IO.IOException)
         {
             Console.WriteLine("Error");
             return;
         }
-        while (_totalBuffer.Length >= 4)
+        while (totalBuffer.Length >= 4)
         {
-            int packetSize = BitConverter.ToInt32(_totalBuffer, 0);
-            if (_totalBuffer.Length >= packetSize + 4)
+            int packetSize = BitConverter.ToInt32(totalBuffer, 0);
+            if (totalBuffer.Length >= packetSize + 4)
             {
-                string data = Encoding.UTF8.GetString(_totalBuffer, 4, packetSize);
+                string data = Encoding.UTF8.GetString(totalBuffer, 4, packetSize);
                 JObject jData = JObject.Parse(data);
-                //Console.WriteLine(jData.ToString());
-                if (commands.ContainsKey(jData["id"].ToObject<string>()))
-                {
-                    commands[jData["id"].ToObject<string>()].handleCommand(this, jData);
-                }
-                else
-                {
-                    Console.WriteLine($"Could not find command for {jData["id"]}");
-                }
-                var newBuffer = new byte[_totalBuffer.Length - packetSize - 4];
-                Array.Copy(_totalBuffer, packetSize + 4, newBuffer, 0, newBuffer.Length);
-                _totalBuffer = newBuffer;
+                tunnel.HandleResponse(this, jData);
+                var newBuffer = new byte[totalBuffer.Length - packetSize - 4];
+                Array.Copy(totalBuffer, packetSize + 4, newBuffer, 0, newBuffer.Length);
+                totalBuffer = newBuffer;
             }
             else
                 break;
         }
-        _stream.BeginRead(_buffer, 0, 1024, onRead, null);
+        stream.BeginRead(buffer, 0, 1024, onRead, null);
     }
 
     /// <summary>
@@ -211,5 +158,95 @@ public class VRClient
         System.Buffer.BlockCopy(b1, 0, r, 0, b1.Length);
         System.Buffer.BlockCopy(b2, 0, r, b1.Length, count);
         return r;
+    }
+
+    public void ListSessions(JObject json)
+    {
+        //Go through all sessions in the json and find the one matching this systems host and user
+        foreach (JObject currentObject in json["data"])
+        {
+            string? host = currentObject["clientinfo"]["host"].ToObject<string>();
+            string? user = currentObject["clientinfo"]["user"].ToObject<string>();
+
+            //Make sure neither are null
+            if (host == null || user == null) continue;
+
+            //Check if the host and user corrospond to the systems host and user
+            if (host.ToLower().Contains(Environment.MachineName.ToLower()) &&
+                user.ToLower().Contains(Environment.UserName.ToLower()))
+            {
+                //Save the session object if there wasn't one saved already or if this one is newer
+                if (savedSession == null)
+                {
+                    savedSession = currentObject;
+                    savedSessionDate = CustomParseDate(currentObject);
+                }
+                else
+                {
+                    if (savedSessionDate < CustomParseDate(currentObject))
+                    {
+                        savedSession = currentObject;
+                        savedSessionDate = CustomParseDate(currentObject);
+                    }
+                }
+            }
+        }
+
+        //If a session with the correct host and user was found create a tunnel
+        if (savedSession != null)
+        {
+            createTunnel(savedSession["id"].ToObject<string>());
+        }
+        else
+        {
+            Console.WriteLine("Could not find user...");
+        }
+    }
+
+    //Helper method for ListSessions()
+    private DateTime CustomParseDate(JObject o)
+    {
+        return DateTime.ParseExact(o["lastPing"].ToObject<string>(), "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+    }
+
+    //Add the targatted object to the list of objects-to-remove and send a request to find that object
+    public void RemoveObjectRequest(params string[] targets)
+    {
+        foreach (var target in targets) removalTargets.Add(target);
+
+        tunnel.SendTunnelMessage(new Dictionary<string, string>()
+        {
+            {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\GetScene",
+            new Dictionary<string, string>())},
+        });
+    }
+
+    //Loop through the json to find all objects that have a name that is in the removalTargets list, once a target has been found, request its removal
+    public void RemoveObject(JObject json)
+    {
+        try
+        {
+            foreach (JObject currentObject in json["data"]["data"]["data"]["children"])
+            {
+                string? name = currentObject["name"].ToObject<string>();
+                if (name == null) continue;
+
+                if (removalTargets.Contains(name)) {
+                    //Send a message to remove the node with the found uuid
+                    string? uuid = currentObject["uuid"].ToObject<string>();
+
+                    tunnel.SendTunnelMessage(new Dictionary<string, string>()
+                    {
+                        {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\DeleteNodeScene",
+                        new Dictionary<string, string>())},
+                        {"_id_", uuid}
+                    });
+                }
+            }
+        }
+        catch
+        {
+            Console.WriteLine("No GroundPlane found, already removed?");
+        }
     }
 }

@@ -22,7 +22,7 @@ public class Tunnel
     /// </param>
     public void SendTunnelMessage(Dictionary<string, string> values)
     {
-        values.Add("_tunnelID_", vrClient.tunnelID);
+        values.Add("_tunnelID_", vrClient.TunnelID);
         vrClient.SendData(JsonFileReader.GetObjectAsString("SendTunnel", values));
     }
     
@@ -53,15 +53,18 @@ public class Tunnel
         //Handle a response with status = error
         try
         {
-            if (json.ContainsKey("status")) {
+            if (json.ContainsKey("status"))
+            {
                 string? status = json["status"].ToObject<string>();
-                if (status == null)
+                switch (status)
                 {
-                    Console.WriteLine("status was null, how did you even manage to do this");
-                }
-                else if (status.Equals("error")) {
-                    Console.WriteLine("Message status was \"error\" with description:");
-                    Console.WriteLine(json["error"]);
+                    case null:
+                        Console.WriteLine("status was null, how did you even manage to do this");
+                        break;
+                    case "error":
+                        Console.WriteLine("Message status was \"error\" with description:");
+                        Console.WriteLine(json["error"]);
+                        break;
                 }
             }
         } catch (Exception e)
@@ -96,7 +99,7 @@ public class Tunnel
                     break;
                 }
 
-                vrClient.tunnelStartup(sessionID);
+                vrClient.TunnelStartup(sessionID);
                 break;
 
             case "scene/get":

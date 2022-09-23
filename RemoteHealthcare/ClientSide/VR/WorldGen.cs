@@ -17,12 +17,12 @@ namespace ClientSide.VR
             {
                 default:
                 case World.forest:
-                    generateForest();
+                    GenerateForest();
                     break;
             }
         }
 
-        private void generateForest()
+        private void GenerateForest()
         {
             //Set height values for tiles
             var noiseGen = new DotnetNoise.FastNoise();
@@ -31,7 +31,7 @@ namespace ClientSide.VR
             {
                 for (float y = 0; y < 256; y++)
                 {
-                    float value = (int)(noiseGen.GetPerlin(x, y) * 100) / 10;
+                    float value = (int)(noiseGen.GetPerlin(x, y) * 100) / 10f;
                     heights += $"{value},";
                 }
             }
@@ -50,7 +50,7 @@ namespace ClientSide.VR
                 })},
             });
 
-            //Finding terian to add texture to
+            //Finding terrain to add texture to
             tunnel.SendTunnelMessage(new Dictionary<string, string>()
             {
                 {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\AddLayer", new Dictionary<string, string>()
@@ -60,7 +60,7 @@ namespace ClientSide.VR
             });
 
             /**
-            //Add terain texture
+            //Add terrain texture
             tunnel.SendTunnelMessage(new Dictionary<string, string>()
             {
                 {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\AddLayer", new Dictionary<string, string>()

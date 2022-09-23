@@ -172,7 +172,7 @@ public class VRClient
             //Make sure neither are null
             if (host == null || user == null) continue;
 
-            //Check if the host and user corrospond to the systems host and user
+            //Check if the host and user correspond to the systems host and user
             if (host.ToLower().Contains(Environment.MachineName.ToLower()) &&
                 user.ToLower().Contains(Environment.UserName.ToLower()))
             {

@@ -1,70 +1,102 @@
-#nullable enable
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
+using System.Security.Cryptography;
+using ClientSide.Log;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using ServerApplication;
+using ServerSide.CommandHandlers;
 using SharedProject;
+using SharedProject.Log;
 
-namespace ServerApplication
+
+namespace ServerSide;
+
+public class Server
 {
+    private TcpListener _listener;
+    private RSA rsa = new RSACryptoServiceProvider();
+
+    public delegate void MessageReceived(ClientData client, JObject json);
+    public MessageReceived OnMessage { get; }
+
+    private List<ClientData> _users = new();
     
-    public class Server
+    private Dictionary<string, Action<JObject>> serialCallbacks = new();
+    private Dictionary<string, ICommandHandler> commandHandlers = new();
+
+    public Server()
     {
+        OnMessage = HandleMessage;
         
-        private TcpListener _listener;
-
-        public delegate void MessageReceived(TcpClient client, JObject json);
-
-        private List<ClientData> _users = new();
-        public MessageReceived OnMessage { get; }
-
-        public Server()
+        commandHandlers.Add("public-rsa-key", new RSAKey());
+        commandHandlers.Add("encryptedMessage", new EncryptedMessage(rsa));
+        
+        _listener = new TcpListener(IPAddress.Any, 2460);
+        _listener.Start();
+        while (true)
         {
-
-            OnMessage = HandleMessage;
-            _listener = new TcpListener(IPAddress.Any, 2460);
-            _listener.Start();
-            while (true)
-            {
-                Console.WriteLine("Waiting for connection");
-                TcpClient client = _listener.AcceptTcpClient();
-                Console.WriteLine("Accepted client");
-                _users.Add(new ClientData(this, client));
-            }
+            Logger.LogMessage(LogImportance.Information, "Waiting for connection with client.");
+            TcpClient client = _listener.AcceptTcpClient();
+            Logger.LogMessage(LogImportance.Information, "Accepted connection with client.");
+            _users.Add(new ClientData(this, client));
         }
-        
-        private void HandleMessage(TcpClient client, JObject json)
+    }
+
+    private void HandleMessage(ClientData clientData, JObject json)
+    {
+        if (!json.ContainsKey("id"))
         {
-            ClientData? data = GetClientDataByTcpClient(client);
-            if (data == null)
+            Logger.LogMessage(LogImportance.Error, $"Got message with no id from {clientData.UserName}: {LogColor.Gray}\n{json.ToString(Formatting.None)}");
+            return;
+        }
+        if (!json["id"]!.ToObject<string>()!.Equals("encryptedMessage"))
+        {
+            Logger.LogMessage(LogImportance.Information, $"Got message from {clientData.UserName}: {LogColor.Gray}\n{json.ToString(Formatting.None)}");
+        }
+
+        if (json.ContainsKey("serial"))
+        {
+            var serial = json["serial"]!.ToObject<string>();
+            if (serialCallbacks.ContainsKey(serial!))
             {
-                Console.WriteLine($"Received message from unknown source: \n {json}");
+                serialCallbacks[serial!].Invoke(json);
+                serialCallbacks.Remove(serial!);
                 return;
             }
-            switch (json["id"].ToObject<string>())
-            {
-                
-            }
-        
-            string username = data.UserName != null ? data.UserName : "(GeenUserName)";
-            Console.WriteLine($"Received message from {username}");
-            Console.WriteLine(json);
         }
-        
-        private ClientData? GetClientDataByTcpClient(TcpClient client)
+
+        if (commandHandlers.ContainsKey(json["id"]!.ToObject<string>()!))
         {
-            try
-            {
-                ClientData clientData = _users.First(u => u != null && u.TcpClient == client)!;
-                return clientData;
-            }
-            catch
-            {
-                return null;
-            }
+            commandHandlers[json["id"]!.ToObject<string>()!].HandleMessage(this, clientData, json);
         }
+        else
+        {
+            Logger.LogMessage(LogImportance.Warn, $"Got message from {clientData.UserName} but no commandHandler found: {LogColor.Gray}\n{json.ToString(Formatting.None)}");
+        }
+        
+        
+    }
+
+    public byte[] GetRsaPublicKey()
+    {
+        return rsa.ExportRSAPublicKey();
+    }
+
+    public void Broadcast()
+    {
+        //TODO Send message to all clients.
+    }
+
+    public void AddSerialCallback(string serial, Action<JObject> action)
+    {
+        if (serialCallbacks.ContainsKey(serial))
+        {
+            serialCallbacks.Remove(serial);
+        }
+        
+        serialCallbacks.Add(serial, action);
     }
 }

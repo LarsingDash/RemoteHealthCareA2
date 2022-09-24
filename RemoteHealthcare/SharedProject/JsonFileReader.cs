@@ -7,7 +7,7 @@ namespace SharedProject {
 
 
     public static class JsonFileReader {
-        private static string pathDir = Environment.CurrentDirectory.Substring(0, Environment.CurrentDirectory.LastIndexOf("bin")) + "\\Json\\";
+        private static string pathDir = Environment.CurrentDirectory.Substring(0, Environment.CurrentDirectory.LastIndexOf("bin", StringComparison.Ordinal)) + "\\Json\\";
 
         /// <summary>
         /// It takes a file name and a dictionary of values, and returns a JObject with the values replaced
@@ -16,7 +16,7 @@ namespace SharedProject {
         /// <param name="values">A dictionary of strings. The key is the string to be replaced, and the value is the string to
         /// replace it with.</param>
         /// <returns>
-        /// A JObject
+        /// A JObject 
         /// </returns>
         public static JObject GetObject(string fileName, Dictionary<string, string> values, string path)
         {
@@ -26,7 +26,6 @@ namespace SharedProject {
             {
                 ob = ob.Replace(key, values[key]);
             }
-
             return JObject.Parse(ob);
         }
 

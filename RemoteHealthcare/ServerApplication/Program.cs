@@ -1,14 +1,17 @@
-﻿using SharedProject;
+﻿using System.Security.Cryptography;
+using System.Text;
+using ServerSide;
+using SharedProject;
+using SharedProject.Log;
 
-namespace ServerApplication
+public class Program
 {
-    internal class Program
+
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
-        {
-            JsonFileReader.Initialize(JsonFolder.Json.ToString());
-            
-            Server server = new Server();
-        }
+        Logger.PrintLevel = LogLevel.All;
+        
+        Server server = new Server();
+        
     }
 }

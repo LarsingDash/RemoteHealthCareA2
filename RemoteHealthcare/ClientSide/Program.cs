@@ -3,7 +3,7 @@ using ClientSide.VR;
 
 namespace ClientSide
 {
-    internal static class Program
+    class Program
     {
         /// <summary>
         /// The main function of the program.
@@ -13,7 +13,7 @@ namespace ClientSide
         public static void Main(string[] args)
         {
             Console.Write("Choose application (1=Bike  2=VR): ");
-            string option = Console.ReadLine() ?? string.Empty;
+            string option = Console.ReadLine();
 
             switch (option)
             {
@@ -24,7 +24,7 @@ namespace ClientSide
                 case "2":
                     Console.WriteLine("VRClient started");
                     VRClient vrClient = new VRClient();
-                    vrClient?.StartConnectionAsync();
+                    vrClient.StartConnectionAsync();
                     break;
 
                 default:
@@ -33,6 +33,7 @@ namespace ClientSide
 
             }
 
+
             // Console.WriteLine($"Machine name: {Environment.MachineName}");
             // Console.WriteLine($"User name: {Environment.UserName}");
             Console.Read();
@@ -40,7 +41,7 @@ namespace ClientSide
         }
 
 
-        private static void StartBikeClient()
+        public static void StartBikeClient()
         {
             BikeHandler handler = new BikeHandler();
             handler.Subscribe(DataType.Distance, val => Console.WriteLine($"Distance: {val}"));

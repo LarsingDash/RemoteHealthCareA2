@@ -1,104 +1,106 @@
+using ClientSide.VR.CommandHandlers;
+using ClientSide.VR.CommandHandlers.TunnelMessages;
 using Newtonsoft.Json.Linq;
 
 namespace ClientSide.VR;
 
-public class Tunnel
+public class Tunnel : CommandHandler
 {
-    private VRClient vrClient;
-
+    private VRClient _vrClient;
+    private Dictionary<string, CommandHandler> _commands = new();
+    private Dictionary<TunnelDataType, JObject> _data = new();
+    private Dictionary<TunnelDataType, List<Action<JObject>>> _observers = new ();
+    /* Initializing the tunnel class. */
     public Tunnel(VRClient vrClient)
     {
-        this.vrClient = vrClient;
+        _vrClient = vrClient;
+        _commands.Add("scene/get", new GetScene());
+        _commands.Add("scene/skybox/settime", new SetTimeScene());
+        
+        foreach (TunnelDataType u in Enum.GetValues(typeof(TunnelDataType)))
+        {
+            _observers.Add(u, new List<Action<JObject>>());
+        }
     }
 
-    //Helper method to send tunnelMessages without having to add the tunnelID
+    
+    /// <summary>
+    /// SendTunnelMessage sends a message to the VR client
+    /// </summary>
+    /// <param name="values"><para>A dictionary of key-value pairs that will be sent to the server. Needs to have the following values:</para>
+    /// <para>_tunnelID_ = destination of the tunnel</para>
+    /// <para>"_data_" = data of what to do. Example {"id": "scene/terrain/add", "value1":2}</para>
+    /// </param>
     public void SendTunnelMessage(Dictionary<string, string> values)
     {
-        values.Add("_tunnelID_", vrClient.TunnelID);
-        vrClient.SendData(JsonFileReader.GetObjectAsString("SendTunnel", values));
+        values.Add("_tunnelID_", _vrClient.tunnelID);
+        _vrClient.SendData(JsonFileReader.GetObjectAsString("SendTunnel", values));
     }
 
-    //Receive response from the server and handle it accordingly to the messageID
-    public void HandleResponse(VRClient client, JObject json)
+
+    /// <summary>
+    /// It checks if the command exists in the dictionary, and if it does, it calls the handleCommand function of the
+    /// command
+    /// </summary>
+    /// <param name="VRClient">The client that sent the command</param>
+    /// <param name="JObject">The JSON object that was received from the server.</param>
+    public void handleCommand(VRClient client, JObject ob)
     {
-        Console.WriteLine("------------------------------------------------------------Response Start");
-        string? messageID;
-        
-        //Attempt to find the messageID and handle any exceptions
-        try
+        if (_commands.ContainsKey(ob["data"]["data"]["id"].ToObject<string>()))
         {
-            messageID = json["id"].ToObject<string>();
-            Console.WriteLine($"Message ID: {messageID}");
+            _commands[ob["data"]["data"]["id"].ToObject<string>()].handleCommand(client, ob["data"].ToObject<JObject>());
         }
-        catch
+        else
         {
-            Console.WriteLine("Something went wrong in finding the message ID");
-            return;
+            Console.WriteLine($"SendTunnel, no command for {ob["data"]["data"]}");
         }
-
-        if (messageID == null)
-        {
-            Console.WriteLine("Message ID was not found");
-            return;
-        }
-
-        //Handle a response with status = error
-        try
-        {
-            if (json.ContainsKey("status"))
-            {
-                string? status = json["status"].ToObject<string>();
-                switch (status)
-                {
-                    case null:
-                        Console.WriteLine("status was null, how did you even manage to do this");
-                        break;
-                    case "error":
-                        Console.WriteLine("Message status was \"error\" with description:");
-                        Console.WriteLine(json["error"]);
-                        break;
-                }
-            }
-        } catch (Exception e)
-        {
-            Console.WriteLine("Fatal error in scanning for error status");
-        }
-
-        if (messageID.Equals("tunnel/send"))
-        {
-            messageID = json["data"]["data"]["id"].ToObject<string>();
-            Console.WriteLine($"TunnelSend => {messageID}");
-        }
-
-        //Handle response according to message ID
-        switch (messageID)
-        {
-            default:
-                Console.WriteLine("Message ID not recognized from JSON:");
-                Console.WriteLine(json);
-                break;
-
-            case "session/list":
-                vrClient.ListSessions(json);
-                break;
-
-            case "tunnel/create":
-                string? sessionID = json["data"]["id"].ToObject<string>();
-
-                if (sessionID == null)
-                {
-                    Console.WriteLine("SessionID was null");
-                    break;
-                }
-
-                vrClient.TunnelStartup(sessionID);
-                break;
-
-            case "scene/get":
-                //Console.WriteLine(json);
-                vrClient.RemoveObject(json);
-                break;
-        }
-        Console.WriteLine("------------------------------------------------------------Response End");
     }
+
+    /// <summary>
+    /// It takes a TunnelDataType and a JObject, and then it updates the value of the TunnelDataType in the _data
+    /// dictionary, and then it calls all the observers of that TunnelDataType. When its done it removes all the observers.
+    /// </summary>
+    /// <param name="TunnelDataType">This is an enum that you can define yourself. It's used to identify the type of data
+    /// you're sending.</param>
+    /// <param name="JObject">This is the data type that is used to send data through the tunnel. It is a JSON
+    /// object.</param>
+    public void UpdateValue(TunnelDataType type, JObject value)
+    {
+        _data[type] = value;
+        foreach (Action<JObject> ob in _observers[type])
+        {
+            ob(value);
+        }
+
+        _observers[type] = new List<Action<JObject>>();
+    }
+    
+    /// <summary>
+    /// > Subscribe to a specific type of data from the server
+    /// </summary>
+    /// <param name="TunnelDataType">This is an enum that is used to identify the type of data that is being sent.</param>
+    /// <param name="ob">The method that will be called when the data is received.</param>
+    public void Subscribe(TunnelDataType type, Action<JObject> ob)
+    {
+        if (!_observers[type].Contains(ob)) {
+            _observers[type].Add(ob);
+        }
+    }
+    /// <summary>
+    /// > Unsubscribe from a specific type of data
+    /// </summary>
+    /// <param name="TunnelDataType">This is an enum that defines the type of data that is being sent.</param>
+    /// <param name="ob">The method that will be called when the data is received.</param>
+    public void UnSubscribe(TunnelDataType type, Action<JObject> ob)
+    {
+        if (_observers[type].Contains(ob)) {
+            _observers[type].Remove(ob);
+        }
+    }
+}
+
+/* Defining an enum that is used to identify the type of data that is being sent. */
+public enum TunnelDataType : ushort
+{
+    Scene = 1,
 }

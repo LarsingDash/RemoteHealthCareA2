@@ -1,4 +1,8 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace ClientSide.VR
 {
@@ -13,64 +17,36 @@ namespace ClientSide.VR
             {
                 default:
                 case World.forest:
-                    GenerateForest();
+                    generateForest();
                     break;
             }
         }
 
-        private void GenerateForest()
+        private void generateForest()
         {
             //Set height values for tiles
-            const int mapSize = 256;
             var noiseGen = new DotnetNoise.FastNoise();
-            var heightMap = new StringBuilder();
-            for (var x = 0; x < mapSize; x++)
+            string heights = "";
+            for (float x = 0; x < 256; x++)
             {
-                for (var y = 0; y < mapSize; y++)
+                for (float y = 0; y < 256; y++)
                 {
-                    var value = (int)(noiseGen.GetPerlin(x, y) * 100) / 10f;
-                    heightMap.Append($"{value},");
+                    heights += "0,";
                 }
             }
-            heightMap.Remove(heightMap.Length - 1, 1);
-            
-            //Add terrain
-            tunnel.SendTunnelMessage(new Dictionary<string, string>()
-            {
-                {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\AddTerrain", new Dictionary<string, string>
-                {
-                    {"\"_size1_\"", $"{mapSize}"},
-                    {"\"_size2_\"", $"{mapSize}"},
-                    {"\"_heights_\"", heightMap.ToString()}
-                })},
-            });
-            
-            //Add root node
-            tunnel.SendTunnelMessage(new Dictionary<string, string>()
-            {
-                {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\AddNodeScene", new Dictionary<string, string>
-                {
-                    {"_name_", "terrain"}
-                })},
-            });
 
-            // //Finding terrain to add texture to
-            // tunnel.SendTunnelMessage(new Dictionary<string, string>()
-            // {
-            //     {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\AddLayer", new Dictionary<string, string>
-            //     {
-            //         {"\"_uuid_\"", "256"}
-            //     })},
-            // });
-            //
-            // //Add terrain texture
-            // tunnel.SendTunnelMessage(new Dictionary<string, string>()
-            // {
-            //     {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\AddLayer", new Dictionary<string, string>()
-            //     {
-            //         {"\"_uuid_\"", "256"}
-            //     })},
-            // });
+            heights = heights.Substring(0, heights.Length - 1);
+
+            //Add terain
+            tunnel.SendTunnelMessage(new Dictionary<string, string>()
+            {
+                {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\AddTerrain", new Dictionary<string, string>()
+                {
+                    {"\"_size1_\"", "256"},
+                    {"\"_size2_\"", "256"},
+                    {"\"_heights_\"", heights}
+                })},
+            });
         }
     }
 

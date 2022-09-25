@@ -2,9 +2,9 @@ using Newtonsoft.Json.Linq;
 
 namespace ClientSide.VR;
 
-public static class JsonFileReader
+public class JsonFileReader
 {
-    private static string pathDir = Environment.CurrentDirectory.Substring(0, Environment.CurrentDirectory.LastIndexOf("bin", StringComparison.Ordinal)) + "VR\\Json\\";
+    private static string pathDir = Environment.CurrentDirectory.Substring(0, Environment.CurrentDirectory.LastIndexOf("bin")) + "VR\\Json\\";
 
     /// <summary>
     /// It takes a file name and a dictionary of values, and returns a JObject with the values replaced
@@ -15,7 +15,7 @@ public static class JsonFileReader
     /// <returns>
     /// A JObject
     /// </returns>
-    private static JObject GetObject(string fileName, Dictionary<string, string> values)
+    public static JObject GetObject(string fileName, Dictionary<string, string> values)
     {
         fileName = CheckFileName(fileName);
         string ob = JObject.Parse(File.ReadAllText(pathDir + fileName)).ToString();
@@ -49,7 +49,7 @@ public static class JsonFileReader
     /// <returns>
     /// The file name with the extension .json
     /// </returns>
-    private static string CheckFileName(string fileName)
+    public static string CheckFileName(string fileName)
     {
         if (!fileName.EndsWith(".json"))
         {

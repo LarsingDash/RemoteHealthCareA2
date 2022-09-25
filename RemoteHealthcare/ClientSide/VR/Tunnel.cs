@@ -5,28 +5,20 @@ namespace ClientSide.VR;
 public class Tunnel
 {
     private VRClient vrClient;
-    
 
     public Tunnel(VRClient vrClient)
     {
         this.vrClient = vrClient;
     }
 
-    
-    /// <summary>
-    /// SendTunnelMessage sends a message to the VR client
-    /// </summary>
-    /// <param name="values"><para>A dictionary of key-value pairs that will be sent to the server. Needs to have the following values:</para>
-    /// <para>_tunnelID_ = destination of the tunnel</para>
-    /// <para>"_data_" = data of what to do. Example {"id": "scene/terrain/add", "value1":2}</para>
-    /// </param>
+    //Helper method to send tunnelMessages without having to add the tunnelID
     public void SendTunnelMessage(Dictionary<string, string> values)
     {
         values.Add("_tunnelID_", vrClient.TunnelID);
         vrClient.SendData(JsonFileReader.GetObjectAsString("SendTunnel", values));
     }
-    
 
+    //Receive response from the server and handle it accordingly to the messageID
     public void HandleResponse(VRClient client, JObject json)
     {
         Console.WriteLine("------------------------------------------------------------Response Start");

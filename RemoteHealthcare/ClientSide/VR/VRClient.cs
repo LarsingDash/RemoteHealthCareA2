@@ -1,12 +1,6 @@
-using System;
-using System.Linq;
 using System.Globalization;
-using System.Net;
 using System.Net.Sockets;
-using System.Security.Cryptography;
 using System.Text;
-using Microsoft.VisualBasic;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace ClientSide.VR;
@@ -14,14 +8,14 @@ namespace ClientSide.VR;
 public class VRClient
 {
     //Session List
-    private JObject savedSession = null;
+    private JObject savedSession;
     private DateTime savedSessionDate;
 
     //Tunnel
-    private TcpClient tcpClient = new();
+    private readonly TcpClient tcpClient = new TcpClient();
     private NetworkStream stream;
     public string TunnelID { get; private set; }
-    private Tunnel Tunnel { get; }
+    private Tunnel tunnel { get; }
 
     //Data buffers for stream
     private byte[] totalBuffer = Array.Empty<byte>();
@@ -31,45 +25,36 @@ public class VRClient
     private World selectedWorld = World.forest;
 
     //Other
-    List<string> removalTargets = new List<string>();
+    private readonly List<string> removalTargets = new List<string>();
 
     public VRClient()
     {
-        Tunnel = new Tunnel(this);
-        //commands.Add("tunnel/create", new TunnelCreate());
-        //commands.Add("tunnel/send", tunnel = new Tunnel(this));
+        tunnel = new Tunnel(this);
     }
 
-    /// <summary>
-    /// It creates a tunnel with the given id
-    /// </summary>
-    /// <param name="id">The ID of the tunnel you want to create.</param>
+    //After the correct session has been located the tunnel will be created using the sessionID
     private void CreateTunnel(string id)
     {
         Console.WriteLine($"ID: {id}");
         SendData(JsonFileReader.GetObjectAsString("CreateTunnel", new Dictionary<string, string>()
         {
-            {"_id_", id}
+            { "_id_", id }
         }));
     }
 
-    /// <summary>
-    /// Its sets the tunnelID
-    /// </summary>
-    /// <param name="id">The id of the tunnel.</param>
-    /// <returns>
-    /// The tunnel id is being returned.
-    /// </returns>
+    //Run startup actions after the tunnel has been created
     public void TunnelStartup(string id)
     {
         TunnelID = id;
 
         //Remove groundPlane
         RemoveObjectRequest("GroundPlane");
+        
+        //Start WorldGen
+        _ = new WorldGen(tunnel, selectedWorld);
     }
 
-    //It connects to the server, gets the stream, and starts reading the stream
-    //Then it asks for all sessions to find the correct one in the response
+    //It connects to the server, gets the stream, and starts reading the stream. Then it asks for all sessions to find the correct one in the response
     public async Task StartConnectionAsync()
     {
         try
@@ -86,17 +71,14 @@ public class VRClient
         }
     }
 
-    /// <summary>
-    /// It takes a string, converts it to a byte array, and sends it to the server
-    /// </summary>
-    /// <param name="String">The string to send to the server</param>
-    public void SendData(String s)
+    //Sends the message to the server by writing it to the streams (also prints it in the console). Use SendTunnelMessage() to include ID
+    public void SendData(string text)
     {
         Console.WriteLine("-------------------------------------------Send Start");
-        Console.WriteLine($"Sending data:\n{s}");
+        Console.WriteLine($"Sending data:\n{text}");
 
-        byte[] data = BitConverter.GetBytes(s.Length);
-        byte[] command = System.Text.Encoding.ASCII.GetBytes(s);
+        byte[] data = BitConverter.GetBytes(text.Length);
+        byte[] command = Encoding.ASCII.GetBytes(text);
 
         stream.Write(data, 0, data.Length);
         stream.Write(command, 0, command.Length);
@@ -104,35 +86,28 @@ public class VRClient
         Console.WriteLine("-------------------------------------------Send End");
     }
 
-    /// <summary>
-    /// It reads data from the stream, and if it has enough data to read a packet, it reads the packet and calls the
-    /// appropriate command handler
-    /// </summary>
-    /// <param name="IAsyncResult">This is the result of the async operation.</param>
-    /// <param name="ar"></param>
-    /// <returns>
-    /// The data that was sent from the server.
-    /// </returns>
-    private void OnRead(IAsyncResult ar)
+    //Reads the data from the stream and passes the json to the response handler
+    private void OnRead(IAsyncResult asyncResult)
     {
         try
         {
-            int rc = stream.EndRead(ar);
-            totalBuffer = Concat(totalBuffer, buffer, rc);
+            var readCount = stream.EndRead(asyncResult);
+            totalBuffer = Concat(totalBuffer, buffer, readCount);
         }
-        catch (System.IO.IOException)
+        catch (IOException)
         {
-            Console.WriteLine("Error");
+            Console.WriteLine("OnRead Error");
             return;
         }
+
         while (totalBuffer.Length >= 4)
         {
-            int packetSize = BitConverter.ToInt32(totalBuffer, 0);
+            var packetSize = BitConverter.ToInt32(totalBuffer, 0);
             if (totalBuffer.Length >= packetSize + 4)
             {
-                string data = Encoding.UTF8.GetString(totalBuffer, 4, packetSize);
-                JObject jData = JObject.Parse(data);
-                Tunnel.HandleResponse(this, jData);
+                var data = Encoding.UTF8.GetString(totalBuffer, 4, packetSize);
+                var jData = JObject.Parse(data);
+                tunnel.HandleResponse(this, jData);
                 var newBuffer = new byte[totalBuffer.Length - packetSize - 4];
                 Array.Copy(totalBuffer, packetSize + 4, newBuffer, 0, newBuffer.Length);
                 totalBuffer = newBuffer;
@@ -140,19 +115,11 @@ public class VRClient
             else
                 break;
         }
+
         stream.BeginRead(buffer, 0, 1024, OnRead, null);
     }
 
-    /// <summary>
-    /// It takes two byte arrays and a count, and returns a new byte array that is the concatenation of the first two
-    /// arrays, with the second array truncated to the specified count
-    /// </summary>
-    /// <param name="b1">The first byte array to concatenate.</param>
-    /// <param name="b2">The byte array to be appended to b1</param>
-    /// <param name="count">The number of bytes to copy from the second array.</param>
-    /// <returns>
-    /// The concatenated byte array.
-    /// </returns>
+    //Helper method for OnRead for occasions where the data is not properly formatted
     private static byte[] Concat(byte[] b1, byte[] b2, int count)
     {
         byte[] r = new byte[b1.Length + count];
@@ -205,9 +172,10 @@ public class VRClient
     }
 
     //Helper method for ListSessions()
-    private DateTime CustomParseDate(JObject o)
+    private DateTime CustomParseDate(JObject jsonTime)
     {
-        return DateTime.ParseExact(o["lastPing"].ToObject<string>(), "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+        return DateTime.ParseExact(jsonTime["lastPing"].ToObject<string>(), "MM/dd/yyyy HH:mm:ss",
+            CultureInfo.InvariantCulture);
     }
 
     //Add the targeted object to the list of objects-to-remove and send a request to find that object
@@ -215,10 +183,12 @@ public class VRClient
     {
         foreach (var target in targets) removalTargets.Add(target);
 
-        Tunnel.SendTunnelMessage(new Dictionary<string, string>()
+        tunnel.SendTunnelMessage(new Dictionary<string, string>()
         {
-            {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\GetScene",
-            new Dictionary<string, string>())},
+            {
+                "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\GetScene",
+                    new Dictionary<string, string>())
+            },
         });
     }
 
@@ -236,11 +206,13 @@ public class VRClient
                 //Send a message to remove the node with the found uuid
                 string? uuid = currentObject["uuid"].ToObject<string>();
 
-                Tunnel.SendTunnelMessage(new Dictionary<string, string>()
+                tunnel.SendTunnelMessage(new Dictionary<string, string>()
                 {
-                    {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\DeleteNodeScene",
-                        new Dictionary<string, string>())},
-                    {"_id_", uuid}
+                    {
+                        "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\DeleteNodeScene",
+                            new Dictionary<string, string>())
+                    },
+                    { "_id_", uuid }
                 });
             }
         }

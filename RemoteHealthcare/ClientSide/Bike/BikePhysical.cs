@@ -1,4 +1,3 @@
-using System.Text;
 using Avans.TI.BLE;
 using ClientSide.Bike.DataPages;
 

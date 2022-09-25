@@ -48,7 +48,6 @@ namespace ServerApplication.Client
                     Logger.LogMessage(LogImportance.Information, 
                         $"Received PublicKey from {UserName}: {LogColor.Gray}\n{Util.ByteArrayToString(PublicKey)}");
                 });
-                Thread.Sleep(1000);
                 SendData(JsonFileReader.GetObjectAsString("PublicRSAKey", new Dictionary<string,string>()
                 {
                     {"_serial_", serialCallback}
@@ -114,12 +113,21 @@ namespace ServerApplication.Client
             {
                 try
                 {
-                    JObject ob = JObject.Parse(message);
+                    var ob = JObject.Parse(message);
                     if (ob.ContainsKey("serial"))
                     {
                         if (ob["serial"]!.ToObject<string>()!.Equals("_serial_"))
                         {
                             ob.Remove("serial");
+                            message = ob.ToString();
+                        }
+                    }
+
+                    if (ob["data"]?["error"]?.ToObject<string>() != null)
+                    {
+                        if (ob["data"]!["error"]!.ToObject<string>()!.Equals("_error_"))
+                        {
+                            ob["data"]!["error"]!.Remove();
                             message = ob.ToString();
                         }
                     }

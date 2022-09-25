@@ -1,15 +1,16 @@
 ﻿using ServerApplication.Log;
 
-namespace ServerApplication;
-
-public class Program
+namespace ServerApplication
 {
-
-    public static void Main(string[] args)
+    public class Program
     {
-        Logger.PrintLevel = LogLevel.All;
+
+        public static void Main(string[] args)
+        {
+            Logger.PrintLevel = LogLevel.All;
         
-        Server server = new Server();
+            Server server = new Server();
         
+        }
     }
 }

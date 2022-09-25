@@ -1,6 +1,7 @@
-namespace ServerApplication.Client.DataHandlers;
-
-public class DoctorHandler
+namespace ServerApplication.Client.DataHandlers
 {
+    public class DoctorHandler
+    {
     
+    }
 }

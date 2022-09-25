@@ -39,10 +39,10 @@ public class EncryptedMessage : ICommandHandler
                     {
                         JObject json = JObject.Parse(message);
                         Logger.LogMessage(LogImportance.Information, $"Got encrypted message: {LogColor.Gray}\n{json.ToString(Formatting.None)}");
-                        server.OnMessage(data, json);
+                        data.DataHandler.HandleMessage(data, json);
                     } catch(JsonReaderException e)
                     {
-                        Logger.LogMessage(LogImportance.Error, $"Got encrypted message, but message could not be parsed to JSON: {LogColor.Gray}\n{message}", e);
+                        Logger.LogMessage(LogImportance.Warn, $"Got encrypted message, but message could not be parsed to JSON: {LogColor.Gray}\n{message}", e);
                     }
                 }
                 else
@@ -57,7 +57,7 @@ public class EncryptedMessage : ICommandHandler
         }
         catch(Exception ex)
         {
-            Logger.LogMessage(LogImportance.Error, "Error (Unknown Reason)", ex);
+            Logger.LogMessage(LogImportance.Warn, "Error (Unknown Reason)", ex);
         }
     }
 }

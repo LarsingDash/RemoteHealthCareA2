@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using ClientSide.Log;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using ServerApplication.DataHandlers;
 using ServerSide;
 using SharedProject;
 using SharedProject.Log;
@@ -17,32 +18,34 @@ namespace ServerApplication
 {
     public class ClientData
     {
-        private Server server { get; }
+        public Server Server { get; }
         public TcpClient Client { get; }
         public NetworkStream Stream { get; }
         public string UserName { get; }
         public byte[]? PublicKey { set; private get; }
 
         private Random random;
-        private UnicodeEncoding byteConverter;
+        public Dictionary<string, Action<JObject>> SerialCallbacks = new();
+        public DataHandler DataHandler;
 
 
         public ClientData(Server server, TcpClient client)
         {
             Client = client;
-            this.server = server;
+            this.Server = server;
             Stream = Client.GetStream();
             UserName = "Unknown";
+            DataHandler = new ClientHandler(this);
 
             this.random = new Random();
-            this.byteConverter = new UnicodeEncoding();
             
+
             Stream.BeginRead(_buffer, 0, 1024, OnRead, null);
             
             new Task((() =>
             {
                 var serialCallback = Util.RandomString();
-                server.AddSerialCallback(serialCallback, json =>
+                AddSerialCallback(serialCallback, json =>
                 {
                     PublicKey = json["data"]?.Value<JArray>("key")?.Values<byte>().ToArray() ?? Array.Empty<byte>();
                     Logger.LogMessage(LogImportance.Information, 
@@ -80,7 +83,7 @@ namespace ServerApplication
                     if (_totalBuffer.Length >= packetSize + 4)
                     {
                         var json = Encoding.UTF8.GetString(_totalBuffer, 4, packetSize);
-                        server.OnMessage(this, JObject.Parse(json));
+                        DataHandler.HandleMessage(this, JObject.Parse(json));
         
                         var newBuffer = new byte[_totalBuffer.Length - packetSize - 4];
                         Array.Copy(_totalBuffer, packetSize + 4, newBuffer, 0, newBuffer.Length);
@@ -141,7 +144,7 @@ namespace ServerApplication
                     Logger.LogMessage(LogImportance.Information, 
                         $"Sending encrypted message: {LogColor.Gray}\n{JObject.Parse(message).ToString(Formatting.None)}");
                 }
-                catch (JsonReaderException e)
+                catch (JsonReaderException)
                 {
                     Logger.LogMessage(LogImportance.Information,
                         $"Sending encrypted message: {LogColor.Gray}\n(_NonJsonObject_)");
@@ -165,11 +168,23 @@ namespace ServerApplication
                 }
                 else
                 {
-                    Logger.LogMessage(LogImportance.Error, $"Could not send EncryptedData, something went wrong with encrypting the aes-keys");
+                    Logger.LogMessage(LogImportance.Warn, $"Could not send EncryptedData, something went wrong with encrypting the aes-keys");
                 }
                 
 
             }
             #endregion
+            
+            public void AddSerialCallback(string serial, Action<JObject> action)
+            {
+                if (SerialCallbacks.ContainsKey(serial))
+                {
+                    SerialCallbacks.Remove(serial);
+                }
+        
+                SerialCallbacks.Add(serial, action);
+            }
     }
+    
+    
 }

@@ -1,40 +1,40 @@
-using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Security.Cryptography;
-using ClientSide.Log;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using ServerApplication;
-using ServerSide.CommandHandlers;
-using SharedProject;
-using SharedProject.Log;
+using ServerApplication.Client;
+using ServerApplication.Log;
 
-
-namespace ServerSide;
+namespace ServerApplication;
 
 public class Server
 {
-    private TcpListener _listener;
-    public readonly RSA Rsa = new RSACryptoServiceProvider();
-
+    #region Managing clients
+    private TcpListener listener;
     private List<ClientData> users = new();
+    public readonly RSA Rsa = new RSACryptoServiceProvider();
+    #endregion
+
 
     public Server()
     {
 
-        _listener = new TcpListener(IPAddress.Any, 2460);
-        _listener.Start();
+        listener = new TcpListener(IPAddress.Any, 2460);
+        listener.Start();
         while (true)
         {
             Logger.LogMessage(LogImportance.Information, "Waiting for connection with client.");
-            TcpClient client = _listener.AcceptTcpClient();
+            TcpClient client = listener.AcceptTcpClient();
             Logger.LogMessage(LogImportance.Information, "Accepted connection with client.");
             users.Add(new ClientData(this, client));
         }
     }
 
+    /// <summary>
+    /// It returns the public key of the RSA object
+    /// </summary>
+    /// <returns>
+    /// The public key of the RSA object.
+    /// </returns>
     public byte[] GetRsaPublicKey()
     {
         return Rsa.ExportRSAPublicKey();

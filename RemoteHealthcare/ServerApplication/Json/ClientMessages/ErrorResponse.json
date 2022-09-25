@@ -1,0 +1,8 @@
+{
+  "id": "_id_",
+  "serial": "_serial_",
+  "data": {
+    "status": "_status_",
+    "error": "_error_"
+  }
+}

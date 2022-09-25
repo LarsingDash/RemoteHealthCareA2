@@ -1,7 +1,6 @@
-using System.Security.Cryptography;
-using ServerSide.CommandHandlers;
+using ServerApplication.Client.DataHandlers.CommandHandlers;
 
-namespace ServerApplication.DataHandlers;
+namespace ServerApplication.Client.DataHandlers;
 
 public class ClientHandler : DataHandler
 {
@@ -11,7 +10,7 @@ public class ClientHandler : DataHandler
     {
         CommandHandler = new()
         {
-            {"public-rsa-key", new RSAKey()},
+            {"public-rsa-key", new RsaKey()},
             {"encryptedMessage", new EncryptedMessage(clientData.Server.Rsa)}
         };
     }

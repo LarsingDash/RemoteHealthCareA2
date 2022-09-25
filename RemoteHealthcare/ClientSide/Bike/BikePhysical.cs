@@ -12,7 +12,7 @@ namespace ClientSide.Bike
         private BikeHandler _handler;
         private Dictionary<int, DataPage> _pages;
         private BluetoothDevice _bikeDevice;
-        private BluetoothDevice _heartRateDevice;
+        private BluetoothDevice _heartRateDevice;  
 
         public BikePhysical(BikeHandler handler)
         {

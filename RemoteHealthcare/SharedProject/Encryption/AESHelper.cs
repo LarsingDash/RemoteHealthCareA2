@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
-using System.IO;
 using System.Security.Cryptography;
-using System.Text;
 
-namespace SharedProject;
+namespace ServerApplication.Encryption;
 
 public class AesHelper
 {

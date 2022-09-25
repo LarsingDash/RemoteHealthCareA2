@@ -1,22 +1,20 @@
-using System;
-using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
-using System.IO;
 
-namespace SharedProject {
+namespace ServerApplication {
 
 
     public static class JsonFileReader {
         private static string pathDir = Environment.CurrentDirectory.Substring(0, Environment.CurrentDirectory.LastIndexOf("bin", StringComparison.Ordinal)) + "\\Json\\";
-
+        
         /// <summary>
-        /// It takes a file name and a dictionary of values, and returns a JObject with the values replaced
+        /// It takes a file name, a dictionary of values, and a path to a folder, and returns a JObject with the values
+        /// replaced
         /// </summary>
         /// <param name="fileName">The name of the file you want to get the object from.</param>
-        /// <param name="values">A dictionary of strings. The key is the string to be replaced, and the value is the string to
-        /// replace it with.</param>
+        /// <param name="values">A dictionary of values to replace in the JSON file.</param>
+        /// <param name="path">The path to the folder where the files are stored.</param>
         /// <returns>
-        /// A JObject 
+        /// A JObject
         /// </returns>
         public static JObject GetObject(string fileName, Dictionary<string, string> values, string path)
         {

@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
-using System.IO;
 using System.Security.Cryptography;
-using System.Text;
 
-namespace SharedProject
+namespace ServerApplication.Encryption
 {
     public class RsaHelper
     {
@@ -14,7 +9,7 @@ namespace SharedProject
         /// returns the encrypted message
         /// </summary>
         /// <param name="message">The message to be encrypted.</param>
-        /// <param name="RSAParameters">This is a struct that contains the RSA key.</param>
+        /// <param name="rsaKey"> The RsaKeys used to decrypt the message</param>
         /// <param name="doOAEPPadding">true to perform direct System.Security.Cryptography.RSA encryption using OAEP
         /// padding (only available on a computer running Microsoft Windows XP or later); otherwise, false to use PKCS#1
         /// v1.5 padding.</param>
@@ -45,7 +40,7 @@ namespace SharedProject
         /// use OAEP padding. It then returns a byte array of decrypted data
         /// </summary>
         /// <param name="encryptedMessage">The encrypted message to decrypt.</param>
-        /// <param name="RSAParameters">This is a struct that contains the RSA key.</param>
+        /// <param name="rsaKey">This is a struct that contains the RSA key.</param>
         /// <param name="doOAEPPadding">true if Optimal Asymmetric Encryption Padding (OAEP) should be used (only available
         /// on a computer running Microsoft Windows XP or later); otherwise, false to use PKCS#1 v1.5 padding.</param>
         /// <returns>

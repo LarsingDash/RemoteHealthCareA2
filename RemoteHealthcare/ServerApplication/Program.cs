@@ -1,8 +1,6 @@
-﻿using System.Security.Cryptography;
-using System.Text;
-using ServerSide;
-using SharedProject;
-using SharedProject.Log;
+﻿using ServerApplication.Log;
+
+namespace ServerApplication;
 
 public class Program
 {

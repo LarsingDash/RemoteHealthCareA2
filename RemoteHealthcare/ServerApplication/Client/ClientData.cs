@@ -1,47 +1,44 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using ClientSide.Log;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using ServerApplication.DataHandlers;
-using ServerSide;
-using SharedProject;
-using SharedProject.Log;
+using ServerApplication.Client.DataHandlers;
+using ServerApplication.Encryption;
+using ServerApplication.Log;
+using ServerApplication.UtilData;
 
-namespace ServerApplication
+namespace ServerApplication.Client
 {
     public class ClientData
     {
+        #region References
         public Server Server { get; }
-        public TcpClient Client { get; }
-        public NetworkStream Stream { get; }
-        public string UserName { get; }
-        public byte[]? PublicKey { set; private get; }
+        #endregion
+        
+        #region Sending and retrieving data
 
-        private Random random;
+        private TcpClient Client { get; }
+        private NetworkStream Stream { get; }
         public Dictionary<string, Action<JObject>> SerialCallbacks = new();
         public DataHandler DataHandler;
+        #endregion
+        
+        #region Userdata
+        public string UserName { get; set; }
+        private byte[]? PublicKey { set; get; }
+        #endregion
 
 
         public ClientData(Server server, TcpClient client)
         {
-            Client = client;
             this.Server = server;
+            Client = client;
+            DataHandler = new DefaultHandler(this);
             Stream = Client.GetStream();
-            UserName = "Unknown";
-            DataHandler = new ClientHandler(this);
-
-            this.random = new Random();
-            
-
             Stream.BeginRead(_buffer, 0, 1024, OnRead, null);
             
+            UserName = "Unknown";
             new Task((() =>
             {
                 var serialCallback = Util.RandomString();
@@ -55,7 +52,7 @@ namespace ServerApplication
                 SendData(JsonFileReader.GetObjectAsString("PublicRSAKey", new Dictionary<string,string>()
                 {
                     {"_serial_", serialCallback}
-                }, JsonFolder.ClientMessages.path));
+                }, JsonFolder.ClientMessages.Path));
             })).Start();
         }
 
@@ -63,6 +60,11 @@ namespace ServerApplication
         
             private byte[] _totalBuffer = Array.Empty<byte>();
             private readonly byte[] _buffer = new byte[1024];
+            /// <summary>
+            /// We read the stream, and if we have enough data to read a packet, we read it, and then we read the next
+            /// packet
+            /// </summary>
+            /// <param name="readResult">The result of the asynchronous operation.</param>
             private void OnRead(IAsyncResult readResult)
             {
                 try
@@ -107,18 +109,18 @@ namespace ServerApplication
             /// <summary>
             /// It takes a string, converts it to a byte array, and sends it to the server
             /// </summary>
-            /// <param name="String">The string to send to the server, needs to be a json</param>
-            public void SendData(String s)
+            /// <param name="message">The string to send to the server, needs to be a json</param>
+            public void SendData(string message)
             {
                 try
                 {
-                    JObject ob = JObject.Parse(s);
+                    JObject ob = JObject.Parse(message);
                     if (ob.ContainsKey("serial"))
                     {
                         if (ob["serial"]!.ToObject<string>()!.Equals("_serial_"))
                         {
                             ob.Remove("serial");
-                            s = ob.ToString();
+                            message = ob.ToString();
                         }
                     }
                     Logger.LogMessage(LogImportance.Information, 
@@ -129,14 +131,17 @@ namespace ServerApplication
                     Logger.LogMessage(LogImportance.Information, 
                         $"Sending message: {LogColor.Gray}\n(_NonJsonObject_)");
                 }
-
-                //Console.WriteLine($"Sending data to {UserName}: {s}");
-                Byte[] data = BitConverter.GetBytes(s.Length);
-                Byte[] comman = System.Text.Encoding.ASCII.GetBytes(s);
+                
+                Byte[] data = BitConverter.GetBytes(message.Length);
+                Byte[] comman = System.Text.Encoding.ASCII.GetBytes(message);
                 Stream.Write(data, 0, data.Length);
                 Stream.Write(comman, 0, comman.Length);
             }
 
+            /// <summary>
+            /// It encrypts the message with AES, encrypts the AES key and IV with RSA, and sends the encrypted message
+            /// </summary>
+            /// <param name="message">The message to be encrypted</param>
             public void SendEncryptedData(String message)
             {
                 try
@@ -164,7 +169,7 @@ namespace ServerApplication
                         {"\"_IV_\"", Util.ByteArrayToString(iVCrypt)},
                         {"\"_key_\"", Util.ByteArrayToString(keyCrypt)},
                         {"\"_data_\"", Util.ByteArrayToString(aesCrypt)},
-                    }, JsonFolder.Json.path));
+                    }, JsonFolder.Json.Path));
                 }
                 else
                 {
@@ -175,6 +180,11 @@ namespace ServerApplication
             }
             #endregion
             
+            /// <summary>
+            /// > This function adds a callback to the SerialCallbacks dictionary
+            /// </summary>
+            /// <param name="serial">The serial number of the device you want to listen for.</param>
+            /// <param name="action">The action to be called when the response is received.</param>
             public void AddSerialCallback(string serial, Action<JObject> action)
             {
                 if (SerialCallbacks.ContainsKey(serial))

@@ -1,7 +1,6 @@
 using Newtonsoft.Json.Linq;
-using ServerApplication;
 
-namespace ServerSide.CommandHandlers;
+namespace ServerApplication.Client.DataHandlers.CommandHandlers;
 
 public interface ICommandHandler
 {

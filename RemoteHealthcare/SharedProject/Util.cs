@@ -1,12 +1,10 @@
-using System;
-using System.Linq;
 using System.Text;
 
-namespace SharedProject;
+namespace ServerApplication;
 
 public class Util
 {
-    private static readonly Random random = new Random();
+    private static readonly Random Random = new();
     
     /// <summary>
     /// It generates a random string of 20 characters.
@@ -18,7 +16,7 @@ public class Util
     {
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         return new string(Enumerable.Repeat(chars, 20)
-            .Select(s => s[random.Next(s.Length)]).ToArray());
+            .Select(s => s[Random.Next(s.Length)]).ToArray());
     }
     
     /// <summary>

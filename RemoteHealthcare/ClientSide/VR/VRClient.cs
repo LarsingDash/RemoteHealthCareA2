@@ -6,7 +6,7 @@ using ClientSide.VR.CommandHandlers;
 using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SharedProject;
+using ServerApplication;
 
 namespace ClientSide.VR;
 

@@ -73,7 +73,8 @@ namespace ServerApplication.Client
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Exception: {ex}");
+                    Logger.LogMessage(LogImportance.Warn, $"Disconnected user {UserName}", ex);
+                    Server.RemoveUser(this);
                     return;
                 }
         

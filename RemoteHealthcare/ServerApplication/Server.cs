@@ -44,5 +44,10 @@ namespace ServerApplication
         {
             //TODO Send message to all clients.
         }
+
+        public void RemoveUser(ClientData clientData)
+        {
+            users.Remove(clientData);
+        }
     }
 }

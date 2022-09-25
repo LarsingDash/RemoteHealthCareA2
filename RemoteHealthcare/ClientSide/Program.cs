@@ -12,7 +12,7 @@ namespace ClientSide
         /// arguments.</param>
         public static void Main(string[] args)
         {
-            Console.Write("Choose application (1=Bike  2=VR): ");
+            Console.Write("Choose application (1=Bike  2=VR  3=Client): ");
             string option = Console.ReadLine() ?? string.Empty;
 
             switch (option)
@@ -26,7 +26,10 @@ namespace ClientSide
                     VRClient vrClient = new VRClient();
                     vrClient?.StartConnectionAsync();
                     break;
-
+                case "3":
+                    Console.WriteLine("ServerClient started");
+                    StartServerConnection();
+                    break;
                 default:
                     Console.WriteLine("No option was chosen");
                     break;
@@ -47,6 +50,13 @@ namespace ClientSide
             handler.Subscribe(DataType.Speed, val => Console.WriteLine($"Speed: {val}"));
             handler.Subscribe(DataType.ElapsedTime, val => Console.WriteLine($"ElapsedTime: {val}"));
             handler.Subscribe(DataType.HeartRate, val => Console.WriteLine($"HeartRate: {val}"));
+        }
+
+        private static void StartServerConnection()
+        {
+            //TODO: Add login once finished
+            Client client = new Client();
+            
         }
     }
 }

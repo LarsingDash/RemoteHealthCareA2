@@ -4,20 +4,20 @@ namespace ClientSide.Bike;
 
 public class BluetoothDevice
 {
-    private BLE _ble;
-    private string _deviceName;
-    private string? _service;
-    private string? _characteristic;
-    private BLESubscriptionValueChangedEventHandler _valueChanged;
+    private BLE ble;
+    private string deviceName;
+    private string? service;
+    private string? characteristic;
+    private BLESubscriptionValueChangedEventHandler valueChanged;
 
 
-    public BluetoothDevice(string deviceName, string? service, string? characteristic, BLESubscriptionValueChangedEventHandler? valueChanged)
+    public BluetoothDevice(string name, string? service, string? characteristic, BLESubscriptionValueChangedEventHandler? valueChanged)
     {
-        _deviceName = deviceName;
-        _service = service;
-        _characteristic = characteristic;
-        _valueChanged = valueChanged;
-        _ble = new BLE();
+        deviceName = name;
+        this.service = service;
+        this.characteristic = characteristic;
+        this.valueChanged = valueChanged;
+        ble = new BLE();
 
     }
 
@@ -27,27 +27,27 @@ public class BluetoothDevice
     /// </summary>
     public async Task StartConnection()
     {
-        Console.WriteLine($"Starting connection of device {_deviceName}");
+        Console.WriteLine($"Starting connection of device {deviceName}");
         Thread.Sleep(1000);
         int errorCode = 0;
-        errorCode = await _ble.OpenDevice(_deviceName);
+        errorCode = await ble.OpenDevice(deviceName);
         CheckErrorCode(errorCode, "OpenDevice");
-        if (_service != null)
+        if (service != null)
         {
-            errorCode = await _ble.SetService(_service);
+            errorCode = await ble.SetService(service);
             CheckErrorCode(errorCode, "Service");
-            _ble.SubscriptionValueChanged += _valueChanged;
-            if (_characteristic != null)
+            ble.SubscriptionValueChanged += valueChanged;
+            if (characteristic != null)
             {
-                errorCode = await _ble.SubscribeToCharacteristic(_characteristic);
+                errorCode = await ble.SubscribeToCharacteristic(characteristic);
                 CheckErrorCode(errorCode, "Subscribe");
             }
         }
 
-        Console.WriteLine(errorCode == 0 ? $"Connected to {_deviceName}!" : $"Could not connect to {_deviceName}");
+        Console.WriteLine(errorCode == 0 ? $"Connected to {deviceName}!" : $"Could not connect to {deviceName}");
     }
 
-    private void CheckErrorCode(int errorCode, string value)
+    private static void CheckErrorCode(int errorCode, string value)
     {
         if (errorCode != 0)
         {

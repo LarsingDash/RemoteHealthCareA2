@@ -2,7 +2,13 @@
   "session-name":"_sessionname_",
   "start-time":"_starttime_",
   "end-time":"_endtime_",
-  "data":[
+  "distance":[
+
+  ],
+  "speed":[
+
+  ],
+  "heartrate":[
 
   ]
 }

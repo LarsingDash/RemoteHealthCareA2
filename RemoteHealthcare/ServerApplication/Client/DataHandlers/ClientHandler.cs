@@ -12,8 +12,9 @@ namespace ServerApplication.Client.DataHandlers
             {
                 {"public-rsa-key", new RsaKey()},
                 {"encryptedMessage", new EncryptedMessage(clientData.Server.Rsa)},
-                {"changedata", new ChangeData()},
-                {"startbikesession", new StartBikeRecording()}
+                {"change-data", new ChangeData()},
+                {"start-bike-session", new StartBikeRecording()},
+                {"stop-bike-session", new StopBikeRecording()}
             };
             
         }

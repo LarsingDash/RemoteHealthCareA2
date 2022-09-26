@@ -12,10 +12,10 @@ public class Tunnel
     }
 
     //Helper method to send tunnelMessages without having to add the tunnelID
-    public void SendTunnelMessage(Dictionary<string, string> values)
+    public void SendTunnelMessage(Dictionary<string, string> values, bool silent = false)
     {
         values.Add("_tunnelID_", vrClient.TunnelID);
-        vrClient.SendData(JsonFileReader.GetObjectAsString("SendTunnel", values));
+        vrClient.SendData(JsonFileReader.GetObjectAsString("SendTunnel", values), silent);
     }
 
     //Receive response from the server and handle it accordingly to the messageID
@@ -97,6 +97,22 @@ public class Tunnel
             case "scene/get":
                 //Console.WriteLine(json);
                 vrClient.RemoveObject(json);
+                break;
+            
+            case "scene/node/add":
+                var NodeName = json["data"]["data"]["data"]["name"].ToObject<string>();
+                var NodeID = json["data"]["data"]["data"]["uuid"].ToObject<string>();
+                Console.WriteLine($"Added: {NodeName} with uuid {NodeID}");
+
+                if (NodeName != null && NodeID != null)
+                {
+                    vrClient.SavedIDs.Add(NodeName, NodeID);
+                    if (vrClient.IDWaitList.ContainsKey(NodeName))
+                    {
+                        Console.WriteLine("Running Action:");
+                        vrClient.IDWaitList[NodeName].Invoke(NodeID);
+                    }
+                }
                 break;
         }
         Console.WriteLine("------------------------------------------------------------Response End");

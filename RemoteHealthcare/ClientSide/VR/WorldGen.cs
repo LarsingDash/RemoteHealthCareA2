@@ -28,7 +28,9 @@ namespace ClientSide.VR
             {
                 for (var y = 0; y < mapSize; y++)
                 {
-                    var value = (int)(noiseGen.GetPerlin(x, y) * 100) / 10f;
+                    var fullValue = noiseGen.GetPerlin(x, y) * 100;
+                    var roundedValue = (int)(fullValue * 100);
+                    var value = roundedValue / 100;
                     heightMap.Append($"{value},");
                 }
             }
@@ -37,21 +39,18 @@ namespace ClientSide.VR
             //Add terrain
             tunnel.SendTunnelMessage(new Dictionary<string, string>()
             {
-                {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\AddTerrain", new Dictionary<string, string>
+                {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Terrain\\AddTerrain", new Dictionary<string, string>
                 {
                     {"\"_size1_\"", $"{mapSize}"},
                     {"\"_size2_\"", $"{mapSize}"},
                     {"\"_heights_\"", heightMap.ToString()}
                 })},
-            });
+            }, true);
             
             //Add root node
             tunnel.SendTunnelMessage(new Dictionary<string, string>()
             {
-                {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\AddNodeScene", new Dictionary<string, string>
-                {
-                    {"_name_", "terrain"}
-                })},
+                {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Terrain\\AddNodeTerrain", new Dictionary<string, string>())},
             });
 
             // //Finding terrain to add texture to

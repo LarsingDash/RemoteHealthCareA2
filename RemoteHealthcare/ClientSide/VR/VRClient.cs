@@ -26,6 +26,8 @@ public class VRClient
 
     //Other
     private readonly List<string> removalTargets = new List<string>();
+    public readonly Dictionary<string, string> SavedIDs = new Dictionary<string, string>();
+    public readonly Dictionary<string, Action<string>> IDWaitList = new Dictionary<string, Action<string>>();
 
     public VRClient()
     {
@@ -52,6 +54,25 @@ public class VRClient
         
         //Start WorldGen
         _ = new WorldGen(tunnel, selectedWorld);
+        
+        //Create SpeedPanel
+        IDWaitList.Add("speedpanel", NodeID =>
+        {
+            tunnel.SendTunnelMessage(new Dictionary<string, string>()
+            {
+                {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Panel\\PanelDrawText", new Dictionary<string, string>
+                {
+                    { "_panelid_", NodeID }
+                })},
+            });
+        });
+        tunnel.SendTunnelMessage(new Dictionary<string, string>()
+        {
+            {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Panel\\AddPanel", new Dictionary<string, string>
+            {
+                {"_name_", "speedpanel"}
+            })}
+        });
     }
 
     //It connects to the server, gets the stream, and starts reading the stream. Then it asks for all sessions to find the correct one in the response
@@ -72,10 +93,17 @@ public class VRClient
     }
 
     //Sends the message to the server by writing it to the streams (also prints it in the console). Use SendTunnelMessage() to include ID
-    public void SendData(string text)
+    public void SendData(string text, bool silent = false)
     {
         Console.WriteLine("-------------------------------------------Send Start");
-        Console.WriteLine($"Sending data:\n{text}");
+        if (!silent)
+        {
+            Console.WriteLine($"Sending data:\n{text}");
+        }
+        else
+        {
+            Console.WriteLine($"Sending data: (Silent)");
+        }
 
         byte[] data = BitConverter.GetBytes(text.Length);
         byte[] command = Encoding.ASCII.GetBytes(text);

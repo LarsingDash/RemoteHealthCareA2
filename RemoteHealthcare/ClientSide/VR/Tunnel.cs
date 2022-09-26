@@ -100,19 +100,38 @@ public class Tunnel
                 break;
             
             case "scene/node/add":
-                var NodeName = json["data"]["data"]["data"]["name"].ToObject<string>();
-                var NodeID = json["data"]["data"]["data"]["uuid"].ToObject<string>();
-                Console.WriteLine($"Added: {NodeName} with uuid {NodeID}");
+                var nodeName = json["data"]["data"]["data"]["name"].ToObject<string>();
+                var nodeId = json["data"]["data"]["data"]["uuid"].ToObject<string>();
+                Console.WriteLine($"Added: {nodeName} with uuid {nodeId}");
 
-                if (NodeName != null && NodeID != null)
+                if (nodeName != null && nodeId != null)
                 {
-                    vrClient.SavedIDs.Add(NodeName, NodeID);
-                    if (vrClient.IDWaitList.ContainsKey(NodeName))
+                    vrClient.SavedIDs.Add(nodeName, nodeId);
+                    if (vrClient.IDWaitList.ContainsKey(nodeName))
                     {
                         Console.WriteLine("Running Action:");
-                        vrClient.IDWaitList[NodeName].Invoke(NodeID);
+                        vrClient.IDWaitList[nodeName].Invoke(nodeId);
                     }
                 }
+                break;
+            case "scene/terrain/add":
+                vrClient.PathGen();
+                break;
+            case "route/add":
+                var routeId = json["data"]["data"]["data"]["uuid"].ToObject<string>();
+                Console.WriteLine($"Added: route with uuid {routeId}");
+                string routeName = "route";
+                if (routeId != null)
+                {
+                    vrClient.SavedIDs.Add(routeName, routeId);
+                    if (vrClient.IDWaitList.ContainsKey(routeName))
+                    {
+                        Console.WriteLine("Running Action:");
+                        vrClient.IDWaitList[routeName].Invoke(routeId);
+                    }
+                }
+
+                vrClient.AnimateBike();
                 break;
         }
         Console.WriteLine("------------------------------------------------------------Response End");

@@ -4,7 +4,7 @@ public abstract class Bike
 {
     public Dictionary<DataType, double> bikeData;
     /* The constructor for the Bike class. */
-    public Bike()
+    protected Bike()
     {
         bikeData = new Dictionary<DataType, double>();
         foreach (DataType u in Enum.GetValues(typeof(DataType)))

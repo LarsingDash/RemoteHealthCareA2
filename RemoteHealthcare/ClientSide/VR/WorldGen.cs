@@ -18,6 +18,14 @@ namespace ClientSide.VR
             }
         }
 
+        public void RouteGen()
+        {
+            tunnel.SendTunnelMessage(new Dictionary<string, string>()
+            {
+                {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\AddRoute", new Dictionary<string, string> {})}
+            });
+        
+        }
         private void GenerateForest()
         {
             //Set height values for tiles
@@ -71,7 +79,10 @@ namespace ClientSide.VR
             //     })},
             // });
         }
+        
     }
+    
+    
 
     public enum World
     {

@@ -15,18 +15,20 @@ namespace ServerApplication
         #endregion
 
 
-        public Server()
+        public Server(int port = 2460)
         {
-
-            listener = new TcpListener(IPAddress.Any, 2460);
+            listener = new TcpListener(IPAddress.Any, port);
             listener.Start();
-            while (true)
+            new Thread(() =>
             {
-                Logger.LogMessage(LogImportance.Information, "Waiting for connection with client.");
-                TcpClient client = listener.AcceptTcpClient();
-                Logger.LogMessage(LogImportance.Information, "Accepted connection with client.");
-                users.Add(new ClientData(this, client));
-            }
+                while (true)
+                {
+                    Logger.LogMessage(LogImportance.Information, "Waiting for connection with client.");
+                    TcpClient client = listener.AcceptTcpClient();
+                    Logger.LogMessage(LogImportance.Information, "Accepted connection with client.");
+                    users.Add(new ClientData(this, client));
+                }
+            }).Start();
         }
 
         /// <summary>

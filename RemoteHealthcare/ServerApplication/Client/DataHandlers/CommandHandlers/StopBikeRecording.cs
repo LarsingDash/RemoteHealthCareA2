@@ -24,7 +24,7 @@ public class StopBikeRecording : ICommandHandler
             {
                 {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
                 {"_status_", "ok"},
-            }));
+            }, JsonFolder.ClientMessages.Path));
         }
         else
         {
@@ -33,7 +33,7 @@ public class StopBikeRecording : ICommandHandler
                 {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
                 {"_status_", "error"},
                 {"_error_", "There is no session name"}
-            }));
+            }, JsonFolder.ClientMessages.Path));
         }
     }
 }

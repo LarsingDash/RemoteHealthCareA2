@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerApplication", "Server
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SharedProject", "SharedProject\SharedProject.shproj", "{B7898CFB-285C-4F28-8305-7800FE9A18B1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerClientTests", "ServerClientTests\ServerClientTests.csproj", "{C6D0ADF2-DB80-47B8-878E-92F514E2695D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,5 +22,9 @@ Global
 		{C350CE80-5523-48F6-B701-0C474263F5D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C350CE80-5523-48F6-B701-0C474263F5D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C350CE80-5523-48F6-B701-0C474263F5D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6D0ADF2-DB80-47B8-878E-92F514E2695D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6D0ADF2-DB80-47B8-878E-92F514E2695D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6D0ADF2-DB80-47B8-878E-92F514E2695D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6D0ADF2-DB80-47B8-878E-92F514E2695D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

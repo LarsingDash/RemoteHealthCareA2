@@ -4,7 +4,7 @@ namespace ServerApplication.UtilData
     {
         JsonFolder(string path)
         {
-            this.Path = Environment.CurrentDirectory.Substring(0, Environment.CurrentDirectory.LastIndexOf("bin", StringComparison.Ordinal)) + path;
+            this.Path = Environment.CurrentDirectory.Substring(0, Environment.CurrentDirectory.LastIndexOf("RemoteHealthcare", StringComparison.Ordinal)) + "RemoteHealthcare\\ServerApplication\\" + path;
         }
 
         public string Path { get; }

@@ -7,7 +7,7 @@ public class ChangeData : ICommandHandler
 {
     public void HandleMessage(Server server, ClientData data, JObject ob)
     {
-        if (ob["data"]?["session-name"]?.ToObject<string>() != null)
+        if (ob["data"]?["uuid"]?.ToObject<string>() != null)
         {
 
             JObject file = JsonFileReader.GetObject(ob["data"]!["uuid"]!.ToObject<string>()!,
@@ -23,7 +23,7 @@ public class ChangeData : ICommandHandler
                 {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
                 {"_status_", "ok"},
                 {"_id_", ob["id"]!.ToObject<string>()!}
-            }));
+            }, JsonFolder.ClientMessages.Path));
         }
         else
         {
@@ -31,20 +31,22 @@ public class ChangeData : ICommandHandler
             {
                 {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
                 {"_status_", "error"},
-                {"_error_", "There is no uuid(session name"},
+                {"_error_", "There is no uuid (session name)"},
                 {"_id_", ob["id"]!.ToObject<string>()!}
-            }));
+            }, JsonFolder.ClientMessages.Path));
         }
         
     }
 
     private void CheckValue(JObject ob, JObject file, string value)
     {
-        if (ob["data"]?[value]?.ToObject<string>() != null)
+        if (ob["data"]?[value]?.ToObject<JArray>() != null)
         {
-            JArray distance = file["data"]![value]!.ToObject<JArray>()!;
-            distance.Merge(ob["data"]![value]!.ToObject<JArray>());
-            ob["data"]![value] = distance;
+            Console.WriteLine(file.ToString());
+            Console.WriteLine(value);
+            JArray distance = (JArray) file[value]!;
+            distance.Merge((JArray) ob["data"]![value]!);
+            file[value] = distance;
 
         }
     }

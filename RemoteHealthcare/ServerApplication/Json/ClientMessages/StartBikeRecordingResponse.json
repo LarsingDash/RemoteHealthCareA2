@@ -1,0 +1,9 @@
+{
+  "id":"start-bike-recording",
+  "serial":"_serial_",
+  "data":{
+    "status":"_status_",
+    "uuid":"_uuid_",
+    "error": "_error_"
+  }
+}

@@ -11,7 +11,8 @@ namespace ServerApplication.Client.DataHandlers
             CommandHandler = new()
             {
                 {"public-rsa-key", new RsaKey()},
-                {"encryptedMessage", new EncryptedMessage(clientData.Server.Rsa)}
+                {"encryptedMessage", new EncryptedMessage(clientData.Server.Rsa)},
+                {"changedata", new ChangeData()}
             };
         }
     }

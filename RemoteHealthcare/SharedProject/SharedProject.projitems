@@ -12,9 +12,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Encryption\AESHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Encryption\RSAHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JsonFileReader.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Log\LogColor.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Log\Logger.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Log\LogImportance.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logger\LogColor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logger\Logger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logger\LogImportance.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Util.cs" />
   </ItemGroup>
 </Project>

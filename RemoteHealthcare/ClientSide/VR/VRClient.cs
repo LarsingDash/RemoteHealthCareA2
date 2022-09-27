@@ -252,4 +252,65 @@ public class VRClient
             Console.WriteLine("No GroundPlane found, already removed?");
         }
     }
+
+    //Prepare road and send route
+    public void PathGen()
+    {
+        string nodeName = "route";
+        IDWaitList.Add(nodeName, routeId =>
+        {   
+            tunnel.SendTunnelMessage(new Dictionary<string, string>()
+            {
+                {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Route\\AddRoad", new Dictionary<string, string>(){{"route uuid", routeId.ToString()}
+                })},     
+            });
+        });
+        
+        tunnel.SendTunnelMessage(new Dictionary<string, string>()
+        {
+            {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Route\\AddRoute", new Dictionary<string, string> {})}
+        });
+        
+    }
+
+    //Prepare bike and add bike to scene
+    public void AnimateBike()
+    {
+        string nodeName = "bike";
+        string routeId = "";
+
+        // After adding the route, prepare the to-be-added bike for following route
+        IDWaitList.Add(nodeName, nodeId =>
+        {
+            // Retrieve routeId that was added
+            if (SavedIDs.ContainsKey("route"))
+            {
+                routeId = SavedIDs["route"];
+            }
+            
+            // check if routeid is saved and let bike follow route
+            if (!String.IsNullOrEmpty(routeId))
+            {
+                tunnel.SendTunnelMessage(new Dictionary<string, string>()
+                {
+                    {
+                        "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Route\\FollowRoute",
+                            new Dictionary<string, string>()
+                            {
+                                { "routeid", routeId }, { "nodeid", nodeId.ToString() }
+                            })
+                    },
+                });
+            }
+        });
+        
+    
+
+        
+    tunnel.SendTunnelMessage(new Dictionary<string, string>()
+        {
+            {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Route\\AddBike", new Dictionary<string, string>())},     
+        });
+      
+    }
 }

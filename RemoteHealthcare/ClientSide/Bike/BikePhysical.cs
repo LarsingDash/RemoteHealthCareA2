@@ -1,3 +1,4 @@
+using System.Text;
 using Avans.TI.BLE;
 using ClientSide.Bike.DataPages;
 
@@ -6,26 +7,26 @@ namespace ClientSide.Bike
     public class BikePhysical : Bike
     {
         // Change this to the last 5 digits of the serial number of the bike.
-        private string id = "01249";
+        private string ID = "01249";
         
-        private BikeHandler bikeHandler;
-        private Dictionary<int, DataPage> pages;
-        private BluetoothDevice bikeDevice;
-        private BluetoothDevice heartRateDevice;
+        private BikeHandler _handler;
+        private Dictionary<int, DataPage> _pages;
+        private BluetoothDevice _bikeDevice;
+        private BluetoothDevice _heartRateDevice;
 
         public BikePhysical(BikeHandler handler)
         {
-            this.bikeHandler = handler;
-            pages = new Dictionary<int, DataPage>()
+            this._handler = handler;
+            _pages = new Dictionary<int, DataPage>()
             {
                 {0x10, new DataPage10(handler)},
             };
-            bikeDevice = new BluetoothDevice($"Tacx Flux {id}", "6e40fec1-b5a3-f393-e0a9-e50e24dcca9e", "6e40fec2-b5a3-f393-e0a9-e50e24dcca9e", ValueChangedBike);
-            bikeDevice.StartConnection();
+            _bikeDevice = new BluetoothDevice($"Tacx Flux {ID}", "6e40fec1-b5a3-f393-e0a9-e50e24dcca9e", "6e40fec2-b5a3-f393-e0a9-e50e24dcca9e", ValueChangedBike);
+            _bikeDevice.StartConnection();
             Thread.Sleep(1000);
-            heartRateDevice = new BluetoothDevice("Decathlon Dual HR","HeartRate", "HeartRateMeasurement", ValueChangedHeartRate);
+            _heartRateDevice = new BluetoothDevice("Decathlon Dual HR","HeartRate", "HeartRateMeasurement", ValueChangedHeartRate);
             Thread.Sleep(1000);
-            heartRateDevice.StartConnection();
+            _heartRateDevice.StartConnection();
             // Test message
             // NewMessage(DataMessageProtocol.BleBike, "A4 09 4E 05 10 19 6C EE 00 00 FF 24 B6");
         }
@@ -35,7 +36,7 @@ namespace ClientSide.Bike
         /// </summary>
         /// <param name="DataMessageProtocol">This is the type of message that is being sent.</param>
         /// <param name="mes">The message received from the device.</param>
-        private void NewMessage(DataMessageProtocol prot, string mes)
+        public void NewMessage(DataMessageProtocol prot, string mes)
         {
             string[] dataPointsStrings = mes.Split(' ');
             int[] dataPoints = Array.ConvertAll(dataPointsStrings, s => int.Parse(s, System.Globalization.NumberStyles.HexNumber));
@@ -63,9 +64,9 @@ namespace ClientSide.Bike
                     {
                         data[i-3] = dataPoints[i];
                     }
-                    if (pages.ContainsKey(data[1]))
+                    if (_pages.ContainsKey(data[1]))
                      {
-                         pages[data[1]].ProcessData(data);
+                         _pages[data[1]].ProcessData(data);
                      }
                      else
                      {
@@ -75,7 +76,7 @@ namespace ClientSide.Bike
                 }
                 case DataMessageProtocol.HeartRate:
                 {
-                    bikeHandler.ChangeData(DataType.HeartRate, dataPoints[1]);
+                    _handler.ChangeData(DataType.HeartRate, dataPoints[1]);
                     break;
                 }
                 default:
@@ -88,7 +89,7 @@ namespace ClientSide.Bike
         /// </summary>
         /// <param name="Object">The object that raised the event.</param>
         /// <param name="BLESubscriptionValueChangedEventArgs"></param>
-        private void ValueChangedBike(object sender, BLESubscriptionValueChangedEventArgs e)
+        private void ValueChangedBike(Object sender, BLESubscriptionValueChangedEventArgs e)
         {
             NewMessage(DataMessageProtocol.BleBike, BitConverter.ToString(e.Data).Replace("-", " "));
         }
@@ -97,7 +98,7 @@ namespace ClientSide.Bike
         /// </summary>
         /// <param name="Object">The object that raised the event.</param>
         /// <param name="BLESubscriptionValueChangedEventArgs"></param>
-        private void ValueChangedHeartRate(object sender, BLESubscriptionValueChangedEventArgs e)
+        private void ValueChangedHeartRate(Object sender, BLESubscriptionValueChangedEventArgs e)
         {
             NewMessage(DataMessageProtocol.HeartRate, BitConverter.ToString(e.Data).Replace("-", " "));
             

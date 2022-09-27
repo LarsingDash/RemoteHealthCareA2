@@ -95,7 +95,7 @@ public class Tunnel
                 break;
 
             case "scene/get":
-                // Console.WriteLine(json);
+                Console.WriteLine(json);
                 vrClient.RemoveObject(json);
                 break;
             
@@ -134,6 +134,29 @@ public class Tunnel
                 }
 
                 vrClient.worldGen.AnimateBike();
+                break;
+            
+            case "scene/node/find":
+                try
+                {
+                    Console.WriteLine(json);
+                    var foundName = json["data"]["data"]["data"][0]["name"].ToObject<string>();
+                    var foundID = json["data"]["data"]["data"][0]["uuid"].ToObject<string>();
+                    Console.WriteLine($"Found: {foundName} with uuid {foundID}");
+
+                    if (foundName != null && foundID != null)
+                    {
+                        if (vrClient.IDSearchList.ContainsKey(foundName))
+                        {
+                            vrClient.IDSearchList[foundName].Invoke(foundID);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+
                 break;
         }
         Console.WriteLine("------------------------------------------------------------Response End");

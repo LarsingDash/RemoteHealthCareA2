@@ -23,12 +23,14 @@ public class VRClient
 
     //VRClient
     public WorldGen worldGen;
+    public PanelController panelController;
     private World selectedWorld = World.forest;
 
     //Other
     private readonly List<string> removalTargets = new List<string>();
     public readonly Dictionary<string, string> SavedIDs = new Dictionary<string, string>();
-    public readonly Dictionary<string, Action<string>> IDWaitList = new Dictionary<string, Action<string>>();
+    public readonly Dictionary<string, Action<string>> IDWaitList = new Dictionary<string, Action<string>>();       //Waiting for it to be added
+    public readonly Dictionary<string, Action<string>> IDSearchList = new Dictionary<string, Action<string>>();     //Waiting for it to be found
 
     public VRClient()
     {
@@ -56,26 +58,8 @@ public class VRClient
         //Start WorldGen
         worldGen = new WorldGen(this, tunnel, selectedWorld);
         
-        //Create SpeedPanel
-        IDWaitList.Add("speedpanel", NodeID =>
-        {
-            tunnel.SendTunnelMessage(new Dictionary<string, string>()
-            {
-                {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Panel\\PanelDrawText", new Dictionary<string, string>
-                {
-                    { "_panelid_", NodeID }
-                })},
-            });
-        });
-
-      
-        tunnel.SendTunnelMessage(new Dictionary<string, string>()
-        {
-            {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Panel\\AddPanel", new Dictionary<string, string>
-            {
-                {"_name_", "speedpanel"}
-            })}
-        });
+        //Start HUDController
+        panelController = new PanelController(this, tunnel);
     }
 
     //It connects to the server, gets the stream, and starts reading the stream. Then it asks for all sessions to find the correct one in the response
@@ -251,66 +235,5 @@ public class VRClient
         {
             Console.WriteLine("No GroundPlane found, already removed?");
         }
-    }
-
-    //Prepare road and send route
-    public void PathGen()
-    {
-        string nodeName = "route";
-        IDWaitList.Add(nodeName, routeId =>
-        {   
-            tunnel.SendTunnelMessage(new Dictionary<string, string>()
-            {
-                {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Route\\AddRoad", new Dictionary<string, string>(){{"route uuid", routeId.ToString()}
-                })},     
-            });
-        });
-        
-        tunnel.SendTunnelMessage(new Dictionary<string, string>()
-        {
-            {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Route\\AddRoute", new Dictionary<string, string> {})}
-        });
-        
-    }
-
-    //Prepare bike and add bike to scene
-    public void AnimateBike()
-    {
-        string nodeName = "bike";
-        string routeId = "";
-
-        // After adding the route, prepare the to-be-added bike for following route
-        IDWaitList.Add(nodeName, nodeId =>
-        {
-            // Retrieve routeId that was added
-            if (SavedIDs.ContainsKey("route"))
-            {
-                routeId = SavedIDs["route"];
-            }
-            
-            // check if routeid is saved and let bike follow route
-            if (!String.IsNullOrEmpty(routeId))
-            {
-                tunnel.SendTunnelMessage(new Dictionary<string, string>()
-                {
-                    {
-                        "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Route\\FollowRoute",
-                            new Dictionary<string, string>()
-                            {
-                                { "routeid", routeId }, { "nodeid", nodeId.ToString() }
-                            })
-                    },
-                });
-            }
-        });
-        
-    
-
-        
-    tunnel.SendTunnelMessage(new Dictionary<string, string>()
-        {
-            {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Route\\AddBike", new Dictionary<string, string>())},     
-        });
-      
     }
 }

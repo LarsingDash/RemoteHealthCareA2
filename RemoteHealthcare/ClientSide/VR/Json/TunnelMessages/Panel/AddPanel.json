@@ -1,10 +1,11 @@
 {
   "id" : "scene/node/add",
   "data" : {
-    "name" : "_name_", 
+    "name" : "_name_",
+    "parent" : "_parent_",
     "components" : {
       "panel" : {
-        "size" : [ 1, 1 ],
+        "size" : [ 2, 2 ],
         "resolution" : [ 512, 512 ],
         "background" : [ 1, 1, 1, 1],
         "castShadow" : true

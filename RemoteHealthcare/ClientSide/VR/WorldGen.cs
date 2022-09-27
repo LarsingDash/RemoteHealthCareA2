@@ -198,8 +198,7 @@ namespace ClientSide.VR
             return builder.ToString();
         }
     }
-
-
+    
     public enum World
     {
         forest

@@ -2,13 +2,13 @@ namespace ClientSide.Bike.DataPages;
 
 public abstract class DataPage
 {
-    public BikeHandler handler;
+    protected readonly BikeHandler Handler;
     
     protected DataPage(BikeHandler handler)
     {
-        this.handler = handler;
+        Handler = handler;
     }
     
 
-    public abstract void processData(int[] data);
+    public abstract void ProcessData(int[] data);
 }

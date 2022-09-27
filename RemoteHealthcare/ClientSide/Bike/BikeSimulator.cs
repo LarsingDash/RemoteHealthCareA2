@@ -6,7 +6,7 @@ public class BikeSimulator : Bike
     private int ticker;
     private int startedTime;
 
-    private BikeHandler handler;
+    private readonly BikeHandler handler;
     public BikeSimulator(BikeHandler handler)
     {
         lastTicks = Environment.TickCount;
@@ -17,11 +17,11 @@ public class BikeSimulator : Bike
     }
 
     /// <summary>
-    /// > The Run function is a while loop that runs forever. Every time it updates the values:
-    /// HeartRate
-    /// Speed
-    /// Distance
-    /// ElapsedTime
+    /// The Run function is a while loop that runs forever. Every time it updates the values:
+    /// - HeartRate
+    /// - Speed
+    /// - Distance
+    /// - ElapsedTime
     /// </summary>
     private void Run()
     {
@@ -52,7 +52,6 @@ public class BikeSimulator : Bike
     private void UpdateHeartRate()
     {
         handler.ChangeData(DataType.HeartRate, 2 * Math.Sin(0.1 * ticker) + 120);
-        //Console.WriteLine($"HeartRate: {2 * Math.Sin(0.1 * ticker) + 120}");
     }
 
     /// <summary>
@@ -62,7 +61,6 @@ public class BikeSimulator : Bike
     private void UpdateSpeed()
     {
         handler.ChangeData(DataType.Speed, (0.7 * Math.Sin(0.05 * ticker) + 22) / 3.6);
-        //Console.WriteLine($"Speed: {(0.7 * Math.Sin(0.05 * ticker) + 22) / 3.6}");
     }
 
     /// <summary>
@@ -76,7 +74,6 @@ public class BikeSimulator : Bike
         bikeData.TryGetValue(DataType.Speed, out var speed);
         
         handler.ChangeData(DataType.Distance, distance + speed * deltaTime / 1000);
-        //Console.WriteLine($"Distance: {distance + speed * deltaTime / 1000}");
     }
 
     /// <summary>
@@ -86,6 +83,5 @@ public class BikeSimulator : Bike
     private void UpdateElapsedTime(int time)
     {
         handler.ChangeData(DataType.ElapsedTime, (double) (time) / 1000);
-        //Console.WriteLine($"ElapsedTime: {(double) (time) / 1000}");
     }
 }

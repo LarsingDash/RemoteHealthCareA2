@@ -1,79 +1,119 @@
-using System.Threading.Channels;
-using System.Xml;
+using Avans.TI.BLE;
 using ClientSide.Bike.DataPages;
 
-namespace ClientSide.Bike;
-
-public class BikePhysical : Bike
+namespace ClientSide.Bike
 {
-    private BikeHandler handler;
-    private Dictionary<int, DataPage> pages;
-    
-    public BikePhysical(BikeHandler handler)
+    public class BikePhysical : Bike
     {
-        this.handler = handler;
-        var i = 0x10;
-        pages = new Dictionary<int, DataPage>()
-        {
-            {0x10, new DataPage10(handler)},
-            
-        };
-        //Test message
-        NewMessage(DataMessageProtocol.BleBike, "A4 09 4E 05 10 19 6C EE 00 00 FF 24 B6");
-    }
-
-    /// <summary>
-    /// The function takes in a message and a protocol, and then parses the message based on the protocol
-    /// </summary>
-    /// <param name="DataMessageProtocol">This is the type of message that is being sent.</param>
-    /// <param name="mes">The message received from the device.</param>
-    public void NewMessage(DataMessageProtocol prot, string mes)
-    {
-        string[] dataPointsStrings = mes.Split(' ');
-        int[] dataPoints = Array.ConvertAll(dataPointsStrings, s => int.Parse(s, System.Globalization.NumberStyles.HexNumber));
-
-        switch (prot)
+        // Change this to the last 5 digits of the serial number of the bike.
+        private string id = "01249";
         
+        private BikeHandler bikeHandler;
+        private Dictionary<int, DataPage> pages;
+        private BluetoothDevice bikeDevice;
+        private BluetoothDevice heartRateDevice;
+
+        public BikePhysical(BikeHandler handler)
         {
-            case DataMessageProtocol.BleBike:
+            this.bikeHandler = handler;
+            pages = new Dictionary<int, DataPage>()
             {
-                int msgID = dataPoints[2];
-                int msgLength = dataPoints[1];
-                int current = 0;
-                for (int i = 0; i < dataPoints.Length - 1; i++)
-                {
-                    current ^= dataPoints[i];
-                }
+                {0x10, new DataPage10(handler)},
+            };
+            bikeDevice = new BluetoothDevice($"Tacx Flux {id}", "6e40fec1-b5a3-f393-e0a9-e50e24dcca9e", "6e40fec2-b5a3-f393-e0a9-e50e24dcca9e", ValueChangedBike);
+            bikeDevice.StartConnection();
+            Thread.Sleep(1000);
+            heartRateDevice = new BluetoothDevice("Decathlon Dual HR","HeartRate", "HeartRateMeasurement", ValueChangedHeartRate);
+            Thread.Sleep(1000);
+            heartRateDevice.StartConnection();
+            // Test message
+            // NewMessage(DataMessageProtocol.BleBike, "A4 09 4E 05 10 19 6C EE 00 00 FF 24 B6");
+        }
 
-                if (current != dataPoints[dataPoints.Length-1])
-                {
-                    Console.WriteLine("Received Message is Invalid.");
-                    return;
-                }
+        /// <summary>
+        /// The function takes in a message and a protocol, and then parses the message based on the protocol
+        /// </summary>
+        /// <param name="DataMessageProtocol">This is the type of message that is being sent.</param>
+        /// <param name="mes">The message received from the device.</param>
+        private void NewMessage(DataMessageProtocol prot, string mes)
+        {
+            string[] dataPointsStrings = mes.Split(' ');
+            int[] dataPoints = Array.ConvertAll(dataPointsStrings, s => int.Parse(s, System.Globalization.NumberStyles.HexNumber));
 
-                int[] data = new int[msgLength];
-                for (int i = 3; i < 3 + msgLength; i++)
-                {
-                    data[i-3] = dataPoints[i];
-                }
-                Console.WriteLine("Data");
-                data.ToList().ForEach(i => Console.WriteLine(i.ToString("X")));
-
-                break;
-            }
-            case DataMessageProtocol.HeartRate:
+            switch (prot)
             {
-                handler.ChangeData(DataType.HeartRate, dataPoints[1]);
-                break;
+                case DataMessageProtocol.BleBike:
+                {
+                    int msgId = dataPoints[2];
+                    int msgLength = dataPoints[1];
+                    int current = 0;
+                    for (int i = 0; i < dataPoints.Length - 1; i++)
+                    {
+                        current ^= dataPoints[i];
+                    }
+
+                    if (current != dataPoints[dataPoints.Length-1])
+                    {
+                        Console.WriteLine("Received Message is Invalid.");
+                        return;
+                    }
+
+                    int[] data = new int[msgLength];
+                    for (int i = 3; i < 3 + msgLength; i++)
+                    {
+                        data[i-3] = dataPoints[i];
+                    }
+                    if (pages.ContainsKey(data[1]))
+                     {
+                         pages[data[1]].ProcessData(data);
+                     }
+                     else
+                     {
+                         // page not found...
+                     }
+                     break;
+                }
+                case DataMessageProtocol.HeartRate:
+                {
+                    bikeHandler.ChangeData(DataType.HeartRate, dataPoints[1]);
+                    break;
+                }
+                default:
+                    Console.WriteLine("DataProtocolMessage not found, could not parse data.");
+                    break;
             }
+        }
+        /// <summary>
+        /// A callback function that is called when the BLE device sends a message.
+        /// </summary>
+        /// <param name="Object">The object that raised the event.</param>
+        /// <param name="BLESubscriptionValueChangedEventArgs"></param>
+        private void ValueChangedBike(object sender, BLESubscriptionValueChangedEventArgs e)
+        {
+            NewMessage(DataMessageProtocol.BleBike, BitConverter.ToString(e.Data).Replace("-", " "));
+        }
+        /// <summary>
+        /// It prints the heart rate to the console.
+        /// </summary>
+        /// <param name="Object">The object that raised the event.</param>
+        /// <param name="BLESubscriptionValueChangedEventArgs"></param>
+        private void ValueChangedHeartRate(object sender, BLESubscriptionValueChangedEventArgs e)
+        {
+            NewMessage(DataMessageProtocol.HeartRate, BitConverter.ToString(e.Data).Replace("-", " "));
+            
+            // Old way, now using NewMessage. Needs to be tested.
+            // string mes = BitConverter.ToString(e.Data).Replace("-", " ");
+            // string[] dataPointsStrings = mes.Split(' ');
+            // int[] dataPoints = Array.ConvertAll(dataPointsStrings, s => int.Parse(s, System.Globalization.NumberStyles.HexNumber));
+            // handler.ChangeData(DataType.HeartRate, Convert.ToInt32(dataPoints[1]));
         }
     }
 
-}
-
 /* Creating an enum for the different types of messages that can be sent. */
-public enum DataMessageProtocol
-{
-    BleBike = 1,
-    HeartRate = 2,
+    public enum DataMessageProtocol
+    {
+        BleBike = 1,
+        HeartRate = 2,
+    }
+    
 }

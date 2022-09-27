@@ -1,0 +1,7 @@
+{
+  "id": "tunnel/send",
+  "data": {
+    "dest": "_tunnelID_",
+    "data": "_data_"
+  }
+}

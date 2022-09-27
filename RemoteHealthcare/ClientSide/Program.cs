@@ -1,8 +1,9 @@
 ﻿using ClientSide.Bike;
+using ClientSide.VR;
 
 namespace ClientSide
 {
-    class Program
+    internal static class Program
     {
         /// <summary>
         /// The main function of the program.
@@ -11,41 +12,51 @@ namespace ClientSide
         /// arguments.</param>
         public static void Main(string[] args)
         {
-            Console.WriteLine("ClientSide started.");
+            Console.Write("Choose application (1=Bike  2=VR  3=Client): ");
+            string option = Console.ReadLine() ?? string.Empty;
+
+            switch (option)
+            {
+                case "1":
+                    Console.WriteLine("BikeClient started");
+                    StartBikeClient();
+                    break;
+                case "2":
+                    Console.WriteLine("VRClient started");
+                    VRClient vrClient = new VRClient();
+                    vrClient?.StartConnectionAsync();
+                    break;
+                case "3":
+                    Console.WriteLine("ServerClient started");
+                    StartServerConnection();
+                    break;
+                default:
+                    Console.WriteLine("No option was chosen");
+                    break;
+
+            }
+
+            // Console.WriteLine($"Machine name: {Environment.MachineName}");
+            // Console.WriteLine($"User name: {Environment.UserName}");
+            Console.Read();
+
+        }
+
+
+        private static void StartBikeClient()
+        {
             BikeHandler handler = new BikeHandler();
-            handler.Subscribe(DataType.Distance, new DefaultObserver("Distance"));
-            handler.Subscribe(DataType.Speed, new DefaultObserver("Speed"));
-            handler.Subscribe(DataType.ElapsedTime, new DefaultObserver("Elapsed Time"));
-            handler.Subscribe(DataType.HeartRate, new DefaultObserver("HeartRate"));
-            Thread.Sleep(5000);
-            Console.WriteLine("Ended Main Thread, but the bike is still spinning.");
+            handler.Subscribe(DataType.Distance, val => Console.WriteLine($"Distance: {val}"));
+            handler.Subscribe(DataType.Speed, val => Console.WriteLine($"Speed: {val}"));
+            handler.Subscribe(DataType.ElapsedTime, val => Console.WriteLine($"ElapsedTime: {val}"));
+            handler.Subscribe(DataType.HeartRate, val => Console.WriteLine($"HeartRate: {val}"));
+        }
+
+        private static void StartServerConnection()
+        {
+            //TODO: Add login once finished
+            Client client = new Client();
             
-        }
-    }
-    
-    /* The DefaultObserver class implements the IObserver<double> interface, and it prints the value of the double it
-    receives to the console.
-    */
-    class DefaultObserver : IObserver<double>
-    {
-        private string s;
-        public DefaultObserver(string s)
-        {
-            this.s = s;
-        }
-        public void OnCompleted()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OnError(Exception error)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OnNext(double value)
-        {
-            Console.WriteLine($"{s}: {value}");
         }
     }
 }

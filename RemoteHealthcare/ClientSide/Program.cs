@@ -3,7 +3,7 @@ using ClientSide.VR;
 
 namespace ClientSide
 {
-    class Program
+    internal static class Program
     {
         /// <summary>
         /// The main function of the program.
@@ -24,7 +24,7 @@ namespace ClientSide
                 case "2":
                     Console.WriteLine("VRClient started");
                     VRClient vrClient = new VRClient();
-                    vrClient.StartConnectionAsync();
+                    vrClient?.StartConnectionAsync();
                     break;
                 case "3":
                     Console.WriteLine("ServerClient started");
@@ -36,7 +36,6 @@ namespace ClientSide
 
             }
 
-
             // Console.WriteLine($"Machine name: {Environment.MachineName}");
             // Console.WriteLine($"User name: {Environment.UserName}");
             Console.Read();
@@ -44,7 +43,7 @@ namespace ClientSide
         }
 
 
-        public static void StartBikeClient()
+        private static void StartBikeClient()
         {
             BikeHandler handler = new BikeHandler();
             handler.Subscribe(DataType.Distance, val => Console.WriteLine($"Distance: {val}"));

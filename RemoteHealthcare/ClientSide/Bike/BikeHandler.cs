@@ -5,7 +5,7 @@ public class BikeHandler
     private BikePicker picker = BikePicker.Physical;
     
     private Dictionary<DataType, List<Action<double>>> observers;
-    public Bike bike { get; }
+    private Bike Bike { get; }
 
     public BikeHandler()
     {
@@ -14,7 +14,7 @@ public class BikeHandler
         {
             this.observers.Add(val, new List<Action<double>>());
         }
-        this.bike = picker == BikePicker.Virtual ? new BikeSimulator(this) : new BikePhysical(this);
+        this.Bike = picker == BikePicker.Virtual ? new BikeSimulator(this) : new BikePhysical(this);
     }
     
     
@@ -28,7 +28,7 @@ public class BikeHandler
     {
         if (!observers[type].Contains(ob)) {
             observers[type].Add(ob);
-            ob.Invoke(bike.bikeData[type]);
+            ob.Invoke(Bike.bikeData[type]);
         }
     }
     
@@ -51,7 +51,7 @@ public class BikeHandler
     /// <param name="val">The value to change the data to.</param>
     public void ChangeData(DataType type, double val)
     {
-        bike.bikeData[type] = val;
+        Bike.bikeData[type] = val;
         observers[type].ForEach(ob => ob.Invoke(val));
     }
 }

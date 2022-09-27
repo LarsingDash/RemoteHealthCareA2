@@ -1,7 +1,7 @@
 {
   "id": "scene/node/add",
   "data": {
-    "name": "terrain",
+    "name": "_name_",
     "components": {
       "transform" :
       {

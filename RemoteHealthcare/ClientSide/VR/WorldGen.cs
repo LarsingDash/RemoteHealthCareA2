@@ -18,19 +18,20 @@ namespace ClientSide.VR
             {
                 default:
                 case World.forest:
-                    generateForest();
+                    GenerateForest();
                     break;
             }
         }
 
-        private void generateForest()
+        private void GenerateForest()
         {
             //Set height values for tiles
+            const int mapSize = 256;
             var noiseGen = new DotnetNoise.FastNoise();
-            string heights = "";
-            for (float x = 0; x < 256; x++)
+            var heightMap = new StringBuilder();
+            for (var x = 0; x < mapSize; x++)
             {
-                for (float y = 0; y < 256; y++)
+                for (var y = 0; y < mapSize; y++)
                 {
                     var fullValue = noiseGen.GetPerlin(x, y) * 100;
                     var roundedValue = (int)(fullValue * 100);

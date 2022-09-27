@@ -13,5 +13,10 @@ namespace Gui_Login_Window
     /// </summary>
     public partial class App : Application
     {
+        public static void Main()
+        {
+            App app - new App();
+            app.Run();
+        }
     }
 }

@@ -9,6 +9,7 @@
     <Import_RootNamespace>SharedProject</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)EncryptionKeys\EncryptionKeys.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Encryption\AESHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Encryption\RSAHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JsonFileReader.cs" />
@@ -17,5 +18,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Logger\Logger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logger\LogImportance.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Util.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)EncryptionKeys\AesIV.txt" />
+    <Content Include="$(MSBuildThisFileDirectory)EncryptionKeys\AesKey.txt" />
   </ItemGroup>
 </Project>

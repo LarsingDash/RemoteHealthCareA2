@@ -10,16 +10,21 @@ public class StopBikeRecording : ICommandHandler
     {
         if (ob["data"]?["uuid"]?.ToObject<string>() != null)
         {
+            string fileName = ob["data"]!["uuid"]!.ToObject<string>()! + ".txt";
             
-            JObject file = JsonFileReader.GetObject(ob["data"]!["uuid"]!.ToObject<string>()!,
+            //Getting current values
+            JObject file = JsonFileReader.GetEncryptedObject(fileName,
                 new Dictionary<string, string>(),
                 JsonFolder.Data.Path + data.UserName + "\\");
 
+            //Adding end time
             file["end-time"] = DateTime.Now.ToString(CultureInfo.InvariantCulture);
             
             
-            string filename = Util.RandomString();
-            JsonFileWriter.WriteObjectToFile(ob["data"]!["uuid"]!.ToObject<string>()!, file, JsonFolder.Data.Path+data.UserName+"\\");
+            //Writing updated values
+            JsonFileWriter.WriteTextToFileEncrypted(fileName, file.ToString(), JsonFolder.Data.Path+data.UserName+"\\");
+            
+            //Sending ok response
             data.SendEncryptedData(JsonFileReader.GetObjectAsString("StopBikeRecordingResponse",new Dictionary<string, string>()
             {
                 {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
@@ -28,6 +33,7 @@ public class StopBikeRecording : ICommandHandler
         }
         else
         {
+            //Sending error response
             data.SendEncryptedData(JsonFileReader.GetObjectAsString("StopBikeRecordingResponse",new Dictionary<string, string>()
             {
                 {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},

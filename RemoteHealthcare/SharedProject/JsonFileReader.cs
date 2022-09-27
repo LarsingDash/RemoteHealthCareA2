@@ -1,4 +1,7 @@
+
+
 using Newtonsoft.Json.Linq;
+using ServerApplication.Encryption;
 
 namespace ServerApplication {
 
@@ -56,6 +59,27 @@ namespace ServerApplication {
             return GetObject(fileName, values).ToString();
         }
         
+        public static string GetEncryptedText(string fileName, Dictionary<string, string> values, string path)
+        {
+            CheckFileName(fileName);
+            var key = EncryptionKeys.GetEncryptKey();
+            var iv = EncryptionKeys.GetEncryptIv();
+
+            byte[] encrypted = Array.ConvertAll(File.ReadAllText(path + fileName).Replace(" ", "").Split(Convert.ToChar(",")), s => byte.Parse(s));
+            string decrypted = AesHelper.DecryptMessage(encrypted, key, iv)!;
+            foreach (string stringKey in values.Keys)
+            {
+                decrypted = decrypted.Replace(stringKey, values[stringKey]);
+            }
+
+            return decrypted;
+        }
+
+        public static JObject GetEncryptedObject(string fileName, Dictionary<string, string> values, string path)
+        {
+            return JObject.Parse(GetEncryptedText(fileName, values, path));
+        }
+        
         /// <summary>
         /// Same method as GetObjectAsString(string, Dictionary) only adds a path.
         /// </summary>
@@ -80,7 +104,7 @@ namespace ServerApplication {
         /// </returns>
         public static string CheckFileName(string fileName)
         {
-            if (!fileName.EndsWith(".json"))
+            if (!fileName.EndsWith(".json") && !fileName.EndsWith(".txt"))
             {
                 fileName += ".json";
             }
@@ -92,6 +116,8 @@ namespace ServerApplication {
 
             return fileName;
         }
+        
+        
 
         /// <summary>
         /// This function is used to initialize the path of the folder where the json files are stored

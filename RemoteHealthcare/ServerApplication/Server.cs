@@ -42,11 +42,6 @@ namespace ServerApplication
             return Rsa.ExportRSAPublicKey();
         }
 
-        public void Broadcast()
-        {
-            //TODO Send message to all clients.
-        }
-
         public void RemoveUser(ClientData clientData)
         {
             users.Remove(clientData);

@@ -18,23 +18,28 @@ public class Util
         return new string(Enumerable.Repeat(chars, 20)
             .Select(s => s[Random.Next(s.Length)]).ToArray());
     }
-    
+
     /// <summary>
     /// It takes a byte array and returns a string representation of the byte array
     /// </summary>
     /// <param name="bytes">The byte array to convert to a string.</param>
+    /// <param name="brackets">If array should start with [ and end with ]</param>
     /// <returns>
     /// A string representation of the byte array.
     /// </returns>
-    public static string ByteArrayToString(byte[] bytes)
+    public static string ByteArrayToString(byte[] bytes, bool brackets = true)
     {
-        var sb = new StringBuilder("[");
+        var sb = new StringBuilder();
+        if (brackets)
+            sb.Append("[");
         foreach (var b in bytes)
         {
             sb.Append(b + ", ");
         }
         sb.Length-=2;
-        sb.Append(']');
+        if(brackets)
+            sb.Append(']');
         return sb.ToString();
     }
+    
 }

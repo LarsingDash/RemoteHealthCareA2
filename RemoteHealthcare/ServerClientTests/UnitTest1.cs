@@ -2,7 +2,6 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
-using System.Xml;
 using Newtonsoft.Json.Linq;
 using ServerApplication;
 using ServerApplication.Client;
@@ -35,7 +34,7 @@ public class Tests
         Thread.Sleep(10);
         
         serverType = typeof(Server);
-        usersFieldServer = serverType.GetField("users", BindingFlags.NonPublic | BindingFlags.Instance);
+        usersFieldServer = serverType.GetField("users", BindingFlags.NonPublic | BindingFlags.Instance)!;
 
         client = new("127.0.0.1", 2460);
         stream = client.GetStream();
@@ -206,9 +205,9 @@ public class Tests
 
     public void CheckBikeRecordingFile(string uuid)
     {
-        Assert.AreEqual(35,CountLinesLinq(new FileInfo(JsonFolder.Data + this.data.UserName + "\\" + uuid + ".json")), "Length of json file was not correct. ChangeData wrong?");
-        string file = JsonFileReader.GetObjectAsString(uuid, new Dictionary<string, string>(),
+        string file = JsonFileReader.GetEncryptedText(uuid + ".txt", new Dictionary<string, string>(),
             JsonFolder.Data + this.data.UserName + "\\");
+        Assert.IsTrue(file.Contains("time2"), "Change data has not been written to file.");
         Assert.IsFalse(file.Contains("_starttime_"), "Starttime has not changed in file. Check start-bike-recording");
         Assert.IsFalse(file.Contains("_endtime_"), "Endtime has not changed in file. Check end-bike-recording");
     }

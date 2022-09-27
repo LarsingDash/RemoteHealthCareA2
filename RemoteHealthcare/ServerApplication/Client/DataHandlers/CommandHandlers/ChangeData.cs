@@ -9,15 +9,22 @@ public class ChangeData : ICommandHandler
     {
         if (ob["data"]?["uuid"]?.ToObject<string>() != null)
         {
-
-            JObject file = JsonFileReader.GetObject(ob["data"]!["uuid"]!.ToObject<string>()!,
+            string fileName = ob["data"]!["uuid"]!.ToObject<string>()! + ".txt";
+            
+            //Getting current Values
+            JObject file = JsonFileReader.GetEncryptedObject(fileName,
                 new Dictionary<string, string>(),
                 JsonFolder.Data.Path + data.UserName + "\\");
+            
+            //Adding new Values
             CheckValue(ob, file, "distance");
             CheckValue(ob, file, "speed");
             CheckValue(ob, file, "heartrate");
-            JsonFileWriter.WriteObjectToFile(ob["data"]!["uuid"]!.ToObject<string>()!, file,
+            
+            //Writing combined Values
+            JsonFileWriter.WriteTextToFileEncrypted(fileName, file.ToString(),
                 JsonFolder.Data.Path + data.UserName + "\\");
+            
             data.SendEncryptedData(JsonFileReader.GetObjectAsString("ErrorResponse",new Dictionary<string, string>()
             {
                 {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},

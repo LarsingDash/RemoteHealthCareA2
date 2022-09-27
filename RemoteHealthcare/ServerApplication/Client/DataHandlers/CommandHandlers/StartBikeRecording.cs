@@ -16,17 +16,16 @@ public class StartBikeRecording : ICommandHandler
                 {"_sessionname_", ob["data"]!["session-name"]!.ToObject<string>()!},
                 {"_starttime_", DateTime.Now.ToString(CultureInfo.InvariantCulture)}
             }, JsonFolder.Json.Path);
-            string filename = Util.RandomString();
+            string fileName = Util.RandomString();
+            string exactFileName = fileName + ".txt";
 
-            string totalPath = JsonFolder.Data.Path + data.UserName + "\\" + filename + ".json";
-            (new FileInfo(totalPath)).Directory!.Create();
-            File.Create(totalPath).Close();
-            JsonFileWriter.WriteTextToFile(filename, json, JsonFolder.Data.Path+data.UserName+"\\");
+            string totalPath = JsonFolder.Data.Path + data.UserName + "\\" + exactFileName;
+            JsonFileWriter.WriteTextToFileEncrypted(exactFileName, json, JsonFolder.Data.Path+data.UserName+"\\");
             data.SendEncryptedData(JsonFileReader.GetObjectAsString("StartBikeRecordingResponse",new Dictionary<string, string>()
             {
                 {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
                 {"_status_", "ok"},
-                {"_uuid_", filename}
+                {"_uuid_", fileName}
             }, JsonFolder.ClientMessages.Path));
         }
         else

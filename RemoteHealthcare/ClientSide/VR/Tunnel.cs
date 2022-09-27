@@ -95,7 +95,7 @@ public class Tunnel
                 break;
 
             case "scene/get":
-                //Console.WriteLine(json);
+                // Console.WriteLine(json);
                 vrClient.RemoveObject(json);
                 break;
             
@@ -114,9 +114,11 @@ public class Tunnel
                     }
                 }
                 break;
+            
             case "scene/terrain/add":
-                vrClient.PathGen();
+                vrClient.worldGen.PathGen();
                 break;
+            
             case "route/add":
                 var routeId = json["data"]["data"]["data"]["uuid"].ToObject<string>();
                 Console.WriteLine($"Added: route with uuid {routeId}");
@@ -131,7 +133,7 @@ public class Tunnel
                     }
                 }
 
-                vrClient.AnimateBike();
+                vrClient.worldGen.AnimateBike();
                 break;
         }
         Console.WriteLine("------------------------------------------------------------Response End");

@@ -21,7 +21,8 @@ public class VRClient
     private byte[] totalBuffer = Array.Empty<byte>();
     private readonly byte[] buffer = new byte[1024];
 
-    //Settings
+    //VRClient
+    public WorldGen worldGen;
     private World selectedWorld = World.forest;
 
     //Other
@@ -49,11 +50,11 @@ public class VRClient
     {
         TunnelID = id;
 
-        //Remove groundPlane
-        RemoveObjectRequest("GroundPlane");
-        
+        //Remove Default Objects
+        RemoveObjectRequest("GroundPlane", "Head", "RightHand", "LeftHand");
+            
         //Start WorldGen
-        _ = new WorldGen(tunnel, selectedWorld);
+        worldGen = new WorldGen(this, tunnel, selectedWorld);
         
         //Create SpeedPanel
         IDWaitList.Add("speedpanel", NodeID =>
@@ -305,7 +306,7 @@ public class VRClient
         
     
 
-        //todo: add animated model to AddBike.json 
+        
     tunnel.SendTunnelMessage(new Dictionary<string, string>()
         {
             {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Route\\AddBike", new Dictionary<string, string>())},     

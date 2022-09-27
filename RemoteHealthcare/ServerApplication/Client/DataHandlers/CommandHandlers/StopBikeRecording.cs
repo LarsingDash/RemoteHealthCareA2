@@ -6,6 +6,12 @@ namespace ServerApplication.Client.DataHandlers.CommandHandlers;
 
 public class StopBikeRecording : ICommandHandler
 {
+    /// <summary>
+    /// It gets the current values of the file, adds the end time, and writes the updated values to the file
+    /// </summary>
+    /// <param name="server">The server object</param>
+    /// <param name="data">The client that sent the message</param>
+    /// <param name="ob">The JObject that was sent from the client.</param>
     public void HandleMessage(Server server, ClientData data, JObject ob)
     {
         if (ob["data"]?["uuid"]?.ToObject<string>() != null)

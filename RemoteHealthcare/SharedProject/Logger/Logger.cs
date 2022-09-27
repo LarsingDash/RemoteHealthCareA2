@@ -25,6 +25,15 @@ namespace ServerApplication.Log
         public static extern uint GetLastError();
         #endregion
 
+        /// <summary>
+        /// It takes a message and an optional exception, and prints it to the console
+        /// </summary>
+        /// <param name="LogImportance">This is an enum that contains the importance of the log message.</param>
+        /// <param name="message">The message to be printed</param>
+        /// <param name="exception">The exception to log.</param>
+        /// <returns>
+        /// The return value is a string.
+        /// </returns>
         public static void LogMessage(LogImportance logImportance, string message, Exception? exception = null)
         {
             if (logImportance.Level > (int) PrintLevel)
@@ -70,6 +79,11 @@ namespace ServerApplication.Log
 
         }
 
+        /// <summary>
+        /// It takes a LogImportance and a StringBuilder, and appends a prefix to the StringBuilder
+        /// </summary>
+        /// <param name="LogImportance">The importance of the log.</param>
+        /// <param name="StringBuilder">This is the string that will be logged.</param>
         private static void CreatePrefix(LogImportance logImportance, StringBuilder builder)
         {
             builder.Append(LogColor.Gray.Color + "[" + logImportance.ColorCode + logImportance.Name +  LogColor.Gray.Color + "] ");

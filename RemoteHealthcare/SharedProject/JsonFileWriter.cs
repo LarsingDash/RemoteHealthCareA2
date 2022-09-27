@@ -7,6 +7,13 @@ namespace ServerApplication;
 public class JsonFileWriter
 {
     private static string pathDir = Environment.CurrentDirectory.Substring(0, Environment.CurrentDirectory.LastIndexOf("bin", StringComparison.Ordinal)) + "\\Json\\";
+    
+    /// <summary>
+    /// It takes a filename, text, and path, and writes the text to the file at the path
+    /// </summary>
+    /// <param name="filename">The name of the file you want to create.</param>
+    /// <param name="text">The text you want to write to the file.</param>
+    /// <param name="path">The path to the folder where the file will be saved.</param>
     public static void WriteTextToFile(string filename, string text, string path)
     {
         filename =CheckFileName(filename);
@@ -21,11 +28,23 @@ public class JsonFileWriter
         
     }
 
+    /// <summary>
+    /// WriteObjectToFile(filename, jObject, path)
+    /// </summary>
+    /// <param name="filename">The name of the file you want to write to.</param>
+    /// <param name="JObject">The JObject you want to write to a file.</param>
+    /// <param name="path">The path to the folder where you want to save the file.</param>
     public static void WriteObjectToFile(string filename, JObject jObject, string path)
     {
         WriteTextToFile(filename,jObject.ToString(), path);
     }
 
+    /// <summary>
+    /// It takes a string, encrypts it, and writes it to a file
+    /// </summary>
+    /// <param name="filename">The name of the file to be written to.</param>
+    /// <param name="text">The text to be encrypted and written to the file.</param>
+    /// <param name="path">The path to the file.</param>
     public static void WriteTextToFileEncrypted(string filename, string text, string path)
     {
         var key = EncryptionKeys.GetEncryptKey();
@@ -35,6 +54,14 @@ public class JsonFileWriter
     }
 
 
+    /// <summary>
+    /// It checks to see if the file name ends with ".json" or ".txt" and if it doesn't, it adds ".json" to the end of the
+    /// file name
+    /// </summary>
+    /// <param name="fileName">The name of the file you want to save.</param>
+    /// <returns>
+    /// The file name with the extension .json or .txt
+    /// </returns>
     public static string CheckFileName(string fileName)
     {
         if (!fileName.EndsWith(".json") && !fileName.EndsWith(".txt"))
@@ -49,21 +76,5 @@ public class JsonFileWriter
 
         return fileName;
     }
-    #region Regex functions
-    private static string RegexReplace(string source, string pattern, string replacement)
-    {
-        return Regex.Replace(source,pattern, replacement);
-    }
-
-    private static string ReplaceEnd(string source, string value, string replacement)
-    {
-        return RegexReplace(source, $"{value}$", replacement);
-    }
-
-    private static string RemoveEnd(string source, string value)
-    {
-        return ReplaceEnd(source, value, string.Empty);
-    }
-    #endregion
 
 }

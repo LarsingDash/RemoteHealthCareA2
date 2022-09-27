@@ -6,9 +6,15 @@ namespace ServerApplication.UtilData
         {
             this.Path = Environment.CurrentDirectory.Substring(0, Environment.CurrentDirectory.LastIndexOf("RemoteHealthcare", StringComparison.Ordinal)) + "RemoteHealthcare\\ServerApplication\\" + path;
         }
-
+        
         public string Path { get; }
 
+        /// <summary>
+        /// It returns the path of the file.
+        /// </summary>
+        /// <returns>
+        /// The path of the file.
+        /// </returns>
         public override string ToString(){ return Path; }
 
         public static readonly JsonFolder Data = new JsonFolder("Data\\");

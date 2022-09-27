@@ -4,8 +4,6 @@ namespace ServerApplication.Client.DataHandlers
 {
     public class ClientHandler : DataHandler
     {
-
-    
         public ClientHandler(ClientData clientData) : base(clientData)
         {
             CommandHandler = new()

@@ -9,6 +9,12 @@ namespace ServerApplication.Log
 
         public string Color { get; }
 
+        /// <summary>
+        /// The ToString() function is a built-in function that returns a string representation of an object
+        /// </summary>
+        /// <returns>
+        /// The color of the car.
+        /// </returns>
         public override string ToString()
         {
             return Color;

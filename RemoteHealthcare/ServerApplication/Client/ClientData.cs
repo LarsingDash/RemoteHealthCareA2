@@ -98,6 +98,16 @@ namespace ServerApplication.Client
                 Stream.BeginRead(_buffer, 0, 1024, OnRead, null);
             }
             
+            /// <summary>
+            /// It takes two byte arrays and a count, and returns a new byte array that is the concatenation of the first
+            /// two arrays, with the second array truncated to the count
+            /// </summary>
+            /// <param name="b1">The first byte array to concatenate.</param>
+            /// <param name="b2">The buffer to copy from</param>
+            /// <param name="count">The number of bytes to copy from the second array.</param>
+            /// <returns>
+            /// The byte array r is being returned.
+            /// </returns>
             private static byte[] Concat(byte[] b1, byte[] b2, int count)
             {
                 var r = new byte[b1.Length + count];

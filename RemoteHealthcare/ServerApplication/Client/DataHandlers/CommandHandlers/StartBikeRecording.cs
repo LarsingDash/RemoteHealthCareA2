@@ -6,12 +6,18 @@ namespace ServerApplication.Client.DataHandlers.CommandHandlers;
 
 public class StartBikeRecording : ICommandHandler
 {
+    /// <summary>
+    /// It creates a new file in the user's data folder, and writes a json object to it
+    /// </summary>
+    /// <param name="server">The server object</param>
+    /// <param name="data">The client that sent the message</param>
+    /// <param name="ob">The JObject that was sent from the client.</param>
     public void HandleMessage(Server server, ClientData data, JObject ob)
     {
         Console.WriteLine("Handle bike recording");
         if (ob["data"]?["session-name"]?.ToObject<string>() != null)
         {
-            string json = JsonFileReader.GetObjectAsString("BikeSesionFormat.json", new Dictionary<string, string>()
+            string json = JsonFileReader.GetObjectAsString("BikeSessionFormat.json", new Dictionary<string, string>()
             {
                 {"_sessionname_", ob["data"]!["session-name"]!.ToObject<string>()!},
                 {"_starttime_", DateTime.Now.ToString(CultureInfo.InvariantCulture)}

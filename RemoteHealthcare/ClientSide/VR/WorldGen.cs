@@ -29,11 +29,15 @@ namespace ClientSide.VR
             const int mapSize = 256;
             var noiseGen = new DotnetNoise.FastNoise();
             var heightMap = new StringBuilder();
+            
+            //Determines sensitivity of the terrain height. Higher values equal to higher height difference
+            var terrainSensitivity = 10;
+
             for (var x = 0; x < mapSize; x++)
             {
                 for (var y = 0; y < mapSize; y++)
                 {
-                    heightMap.Append($"{(noiseGen.GetPerlin(x, y) * 10)},");
+                    heightMap.Append($"{(noiseGen.GetPerlin(x, y) * terrainSensitivity)},");
                 }
             }
 

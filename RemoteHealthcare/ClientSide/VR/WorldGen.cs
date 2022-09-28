@@ -34,7 +34,7 @@ namespace ClientSide.VR
                 for (var y = 0; y < mapSize; y++)
                 {
                     var fullValue = noiseGen.GetPerlin(x, y) * 100;
-                    var roundedValue = (int)(fullValue * 100);
+                    var roundedValue = fullValue*100;
                     var value = roundedValue / 1000;
                     heightMap.Append($"{value},");
                 }

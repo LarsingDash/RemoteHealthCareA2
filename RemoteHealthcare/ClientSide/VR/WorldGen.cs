@@ -169,22 +169,24 @@ namespace ClientSide.VR
         
         private Point[] GenPoly(double RadiusMin,double RadiusMax,int minPoints,int maxPoints,Random random)
         {
-            //select a number of points in the given range.
-            int PointCount = random.Next(minPoints, maxPoints);
-            var PolyPoints = new Point[PointCount];
+            //Choose the amount of points
+            var amountOfPoints = random.Next(minPoints, maxPoints);
+            var points = new Point[amountOfPoints];
             
-            //calculate the angle between each generated point.
-            float Angle = (float)(Math.PI * 2) / PointCount;
-            for (int i = 0; i < PointCount; i++)
+            //Determine the angle between the points
+            var angle = (float)(Math.PI * 2) / amountOfPoints;
+            for (var i = 0; i < amountOfPoints; i++)
             {
-                //generate this point, generating a radius between the given minimum and maximum range.
-                float RadiusUse = (float)((random.NextDouble() * (RadiusMax - RadiusMin)) + RadiusMin);
-                float useangle =Angle*i;
-                Point newPoint = new Point((int)(Math.Sin(useangle) * RadiusUse),(int)(Math.Cos(useangle) * RadiusUse));
+                //Generate each point using some variety between each points
+                var RadiusUse = (float)(random.NextDouble() * (RadiusMax - RadiusMin) + RadiusMin);
+                var currentAngle = angle * i;
+                var currentPoint = new Point(
+                    (int)(Math.Sin(currentAngle) * RadiusUse),
+                    (int)(Math.Cos(currentAngle) * RadiusUse));
 
-                PolyPoints[i] = newPoint;
+                points[i] = currentPoint;
             }
-            return PolyPoints;
+            return points;
         }
 
         private string pointConverter(Point point, Point nextPoint)

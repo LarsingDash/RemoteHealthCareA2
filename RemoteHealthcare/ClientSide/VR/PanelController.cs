@@ -13,12 +13,28 @@ public class PanelController
         //Preparing for speedpanel to be created
         vrClient.IDWaitList.Add("speedpanel", NodeID =>
         {
+            tunnel.SendTunnelMessage(new Dictionary<string, string>
+            {
+                {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Panel\\ClearPanel", new Dictionary<string, string>
+                {
+                    {"_uuid_", NodeID}
+                })}
+            });
+
             tunnel.SendTunnelMessage(new Dictionary<string, string>()
             {
                 {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Panel\\PanelDrawText", new Dictionary<string, string>
                 {
                     { "_panelid_", NodeID }
                 })},
+            });
+            
+            tunnel.SendTunnelMessage(new Dictionary<string, string>
+            {
+                {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Panel\\SwapPanel", new Dictionary<string, string>
+                {
+                    {"_uuid_", NodeID}
+                })}
             });
             
             tunnel.SendTunnelMessage(new Dictionary<string, string>()
@@ -32,12 +48,12 @@ public class PanelController
         {
             {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Find", new Dictionary<string, string>
             {
-                {"_name_", "Camera"}
+                {"_name_", "Head"}
             })}
         });
 
         //Sending the message to create speedpanel once the camera has been found
-        vrClient.IDSearchList.Add("Camera", NodeID =>
+        vrClient.IDSearchList.Add("Head", NodeID =>
         {
             tunnel.SendTunnelMessage(new Dictionary<string, string>()
             {

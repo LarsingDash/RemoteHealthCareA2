@@ -53,7 +53,7 @@ public class VRClient
         TunnelID = id;
 
         //Remove Default Objects
-        RemoveObjectRequest("GroundPlane", "Head", "RightHand", "LeftHand");
+        RemoveObjectRequest("GroundPlane", "RightHand", "LeftHand");
             
         //Start WorldGen
         worldGen = new WorldGen(this, tunnel, selectedWorld);

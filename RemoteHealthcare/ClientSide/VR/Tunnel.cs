@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using Newtonsoft.Json.Linq;
 
 namespace ClientSide.VR;
@@ -100,19 +101,28 @@ public class Tunnel
                 break;
             
             case "scene/node/add":
-                var nodeName = json["data"]["data"]["data"]["name"].ToObject<string>();
-                var nodeId = json["data"]["data"]["data"]["uuid"].ToObject<string>();
-                Console.WriteLine($"Added: {nodeName} with uuid {nodeId}");
-
-                if (nodeName != null && nodeId != null)
+                try
                 {
-                    vrClient.SavedIDs.Add(nodeName, nodeId);
-                    if (vrClient.IDWaitList.ContainsKey(nodeName))
+                    var nodeName = json["data"]["data"]["data"]["name"].ToObject<string>();
+                    var nodeId = json["data"]["data"]["data"]["uuid"].ToObject<string>();
+                    Console.WriteLine($"Added: {nodeName} with uuid {nodeId}");
+
+                    if (nodeName != null && nodeId != null)
                     {
-                        Console.WriteLine("Running Action:");
-                        vrClient.IDWaitList[nodeName].Invoke(nodeId);
+                        vrClient.SavedIDs.Add(nodeName, nodeId);
+                        if (vrClient.IDWaitList.ContainsKey(nodeName))
+                        {
+                            Console.WriteLine("Running Action:");
+                            vrClient.IDWaitList[nodeName].Invoke(nodeId);
+                        }
                     }
                 }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Error:\nMessage: {e.Message}\nSource: {e.Source}\nStacktrace: {e.StackTrace}");
+                    Console.WriteLine(json);
+                }
+
                 break;
             
             case "scene/terrain/add":

@@ -1,0 +1,8 @@
+{
+  "id": "historic-client-data",
+  "serial": "_serial_",
+  "data": {
+    "username": "_name_",
+    "bike-sessions": "_session_"
+  }
+}

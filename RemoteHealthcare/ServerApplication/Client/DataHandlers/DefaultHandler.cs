@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ServerApplication.Client.DataHandlers.CommandHandlers;
+using ServerApplication.Client.DataHandlers.CommandHandlers.Doctor;
 using ServerApplication.Log;
 using ServerApplication.UtilData;
 
@@ -14,7 +15,7 @@ namespace ServerApplication.Client.DataHandlers
             {
                 {"public-rsa-key", new RsaKey()},
                 {"encryptedMessage", new EncryptedMessage(clientData.Server.Rsa)},
-                {"login", new Login()}
+                {"login", new Login()},
             };
         }
         /// <summary>

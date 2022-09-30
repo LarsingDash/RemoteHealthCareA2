@@ -47,4 +47,23 @@ public class Util
         return sb.ToString();
     }
     
+    public static string ArrayToString<T>(T[] values, bool brackets = true)
+    {
+        var sb = new StringBuilder();
+        if (brackets)
+            sb.Append("[");
+        foreach (var b in values)
+        {
+            sb.Append(b.ToString() + ", ");
+        }
+
+        if (values.Length > 0)
+        {
+            sb.Length-=2;
+        }
+        if(brackets)
+            sb.Append(']');
+        return sb.ToString();
+    }
+    
 }

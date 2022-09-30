@@ -30,13 +30,13 @@ public class Tests
     {
         OnMessage += async (_, json) => await ProcessMessageAsync(json);
         
-        server = new Server();
+        server = new Server(2450);
         Thread.Sleep(10);
         
         serverType = typeof(Server);
         usersFieldServer = serverType.GetField("users", BindingFlags.NonPublic | BindingFlags.Instance)!;
 
-        client = new("127.0.0.1", 2460);
+        client = new("127.0.0.1", 2450);
         stream = client.GetStream();
         stream.BeginRead(_buffer, 0, 1024, OnRead, null);
         
@@ -58,7 +58,7 @@ public class Tests
     #region Connection with Server
     public void TestConnectionServerAndClient()
     {
-        List<ClientData>? dataL = (List<ClientData>) usersFieldServer.GetValue(server)!;
+        List<ClientData> dataL = server.users;
         if (dataL.Count > 0)
         {
             this.data = dataL[0];
@@ -174,6 +174,24 @@ public class Tests
             {"_serial_", serial},
             {"_uuid_", uuid}
         }, JsonFolderTest.Json.Path));
+        Thread.Sleep(250);
+        SendData(JsonFileReader.GetObjectAsString("ChangeData", new Dictionary<string, string>()
+        {
+            {"_serial_", serial},
+            {"_uuid_", uuid}
+        }, JsonFolderTest.Json.Path));
+        Thread.Sleep(250);
+        SendData(JsonFileReader.GetObjectAsString("ChangeData", new Dictionary<string, string>()
+        {
+            {"_serial_", serial},
+            {"_uuid_", uuid}
+        }, JsonFolderTest.Json.Path));
+        Thread.Sleep(250);
+        SendData(JsonFileReader.GetObjectAsString("ChangeData", new Dictionary<string, string>()
+        {
+            {"_serial_", serial},
+            {"_uuid_", uuid}
+        }, JsonFolderTest.Json.Path));
         
         Thread.Sleep(500);
         Assert.IsTrue(passed, "No Response change-data.");
@@ -207,6 +225,7 @@ public class Tests
     {
         string file = JsonFileReader.GetEncryptedText(uuid + ".txt", new Dictionary<string, string>(),
             JsonFolder.Data + this.data.UserName + "\\");
+        Console.WriteLine(JObject.Parse(file).ToString());
         Assert.IsTrue(file.Contains("time2"), "Change data has not been written to file.");
         Assert.IsFalse(file.Contains("_starttime_"), "Starttime has not changed in file. Check start-bike-recording");
         Assert.IsFalse(file.Contains("_endtime_"), "Endtime has not changed in file. Check end-bike-recording");

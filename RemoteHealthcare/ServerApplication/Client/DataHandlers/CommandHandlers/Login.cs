@@ -25,7 +25,6 @@ namespace ServerApplication.Client.DataHandlers.CommandHandlers
                 }, JsonFolder.ClientMessages.Path));
                 return;
             }
-           // Logger.LogMessage(LogImportance.Debug, ob["data"]!["type"]!.ToObject<string>());
             switch (ob["data"]!["type"]!.ToObject<string>())
             {
                 case "Client":

@@ -60,6 +60,17 @@ public class Client
            // Logger.LogMessage();
         });
         
+        SendEncryptedData(JsonFileReader.GetObjectAsString("ActiveClients", new Dictionary<string, string>()
+        {
+            //{"_serial_", serial}
+        }, JsonFolder.Json.Path));
+        
+        Thread.Sleep(500);
+        SendEncryptedData(JsonFileReader.GetObjectAsString("HistoricClientData", new Dictionary<string, string>()
+        {
+            {"_name_", "Tes123t1"}
+        }, JsonFolder.Json.Path));
+        
         
     }
 

@@ -12,6 +12,11 @@
         <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta2" />
         <PackageReference Include="System.Security.Cryptography.Algorithms" Version="4.3.1" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Client\DataHandlers\CommandHandlers\Client" />
+      <Folder Include="Data\Tes123t1" />
+    </ItemGroup>
     
 
     <Import Project="..\SharedProject\SharedProject.projitems" Label="Shared" />

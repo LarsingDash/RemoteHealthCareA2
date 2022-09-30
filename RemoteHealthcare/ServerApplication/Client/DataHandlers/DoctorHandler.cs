@@ -1,4 +1,5 @@
 using ServerApplication.Client.DataHandlers.CommandHandlers;
+using ServerApplication.Client.DataHandlers.CommandHandlers.Doctor;
 
 namespace ServerApplication.Client.DataHandlers
 {
@@ -10,6 +11,8 @@ namespace ServerApplication.Client.DataHandlers
             {
                 {"public-rsa-key", new RsaKey()},
                 {"encryptedMessage", new EncryptedMessage(clientData.Server.Rsa)},
+                {"active-clients", new ActiveClients()},
+                {"historic-client-data", new HistoricClientData()}
             };
         }
     }

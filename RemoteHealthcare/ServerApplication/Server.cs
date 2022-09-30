@@ -10,7 +10,7 @@ namespace ServerApplication
     {
         #region Managing clients
         private TcpListener listener;
-        private List<ClientData> users = new();
+        public readonly List<ClientData> users = new();
         public readonly RSA Rsa = new RSACryptoServiceProvider();
         #endregion
 
@@ -45,6 +45,11 @@ namespace ServerApplication
         public void RemoveUser(ClientData clientData)
         {
             users.Remove(clientData);
+        }
+
+        public ClientData? GetUser(string userName)
+        {
+            return users.FirstOrDefault(u => u.UserName.Equals(userName));
         }
     }
 }

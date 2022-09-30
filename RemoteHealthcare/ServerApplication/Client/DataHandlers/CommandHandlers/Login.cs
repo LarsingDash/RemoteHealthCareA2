@@ -1,4 +1,5 @@
 using Newtonsoft.Json.Linq;
+using ServerApplication.Log;
 using ServerApplication.UtilData;
 
 namespace ServerApplication.Client.DataHandlers.CommandHandlers
@@ -24,6 +25,7 @@ namespace ServerApplication.Client.DataHandlers.CommandHandlers
                 }, JsonFolder.ClientMessages.Path));
                 return;
             }
+           // Logger.LogMessage(LogImportance.Debug, ob["data"]!["type"]!.ToObject<string>());
             switch (ob["data"]!["type"]!.ToObject<string>())
             {
                 case "Client":
@@ -66,6 +68,7 @@ namespace ServerApplication.Client.DataHandlers.CommandHandlers
                                 {"_error_", "Username and/or password not correct."}
                             }, JsonFolder.ClientMessages.Path));
                         }
+                        return;
                     }
                     else
                     {
@@ -84,7 +87,7 @@ namespace ServerApplication.Client.DataHandlers.CommandHandlers
             {
                 {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
                 {"_status_", "error"},
-                {"_error_", "Type not recognized."}
+                {"_error_", "Type not recognized. 1"}
             }, JsonFolder.ClientMessages.Path));
             return;
         }

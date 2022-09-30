@@ -2,7 +2,8 @@
   "id": "login",
   "serial": "_serial_",
   "data": {
-    "type": "_type_",
-    "username": "_username_"
+    "type": "Doctor",
+    "username": "_username_",
+    "password": "_password_"
   }
 }

@@ -1,4 +1,4 @@
-namespace ServerApplication.UtilData
+namespace ServerClientTests
 {
     public class JsonFolderTest
     {

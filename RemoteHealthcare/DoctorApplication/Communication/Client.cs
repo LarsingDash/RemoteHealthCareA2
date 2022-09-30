@@ -4,13 +4,16 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Xml;
 using DoctorApplication.Communication.CommandHandlers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ServerApplication;
 using ServerApplication.Encryption;
 using ServerApplication.Log;
+using Formatting = Newtonsoft.Json.Formatting;
 
 namespace DoctorApplication.Communication;
 
@@ -29,7 +32,8 @@ public class Client
     { 
         commandHandler = new Dictionary<string, ICommandHandler>()
         {
-            {"public-rsa-key", new RsaKey()}
+            {"public-rsa-key", new RsaKey()},
+            {"encryptedMessage", new EncryptedMessage(rsa)}
         };
         OnMessage += async (_, json) => await HandleMessage(json);
         
@@ -38,6 +42,25 @@ public class Client
         stream.BeginRead(_buffer, 0, 1024, OnRead, null);
 
         SetupClient();
+        
+        Thread.Sleep(500);
+        
+        //Testing...
+        var serial = Util.RandomString();
+        SendEncryptedData(JsonFileReader.GetObjectAsString("Login", new Dictionary<string, string>()
+        {
+            {"_serial_", serial},
+            {"_type_", "Doctor"},
+            {"_username_", "Jasper"},
+            {"_password_", "Merijn"}
+        }, JsonFolder.Json.Path));
+        
+        AddSerialCallback(serial, ob =>
+        {
+           // Logger.LogMessage();
+        });
+        
+        
     }
 
     private void SetupClient()
@@ -71,18 +94,13 @@ public class Client
     /// <returns>
     /// The return value is a string.
     /// </returns>
-        private async Task HandleMessage(JObject json)
+        public async Task HandleMessage(JObject json)
         {
             if (!json.ContainsKey("id"))
             {
                 Logger.LogMessage(LogImportance.Warn, $"Got message with no id from server: {LogColor.Gray}\n{json.ToString(Formatting.None)}");
                 return;
             }
-            if (!json["id"]!.ToObject<string>()!.Equals("encryptedMessage"))
-            {
-                Logger.LogMessage(LogImportance.Information, $"Got message from server: {LogColor.Gray}\n{json.ToString(Formatting.None)}");
-            }
-
             if (json.ContainsKey("serial"))
             {
                 var serial = json["serial"]!.ToObject<string>();
@@ -96,6 +114,10 @@ public class Client
 
             if (commandHandler.ContainsKey(json["id"]!.ToObject<string>()!))
             {
+                if (!json["id"]!.ToObject<string>()!.Equals("encryptedMessage"))
+                {
+                    Logger.LogMessage(LogImportance.Information, $"Got message from server: {LogColor.Gray}\n{json.ToString(Formatting.None)}");
+                }
                 commandHandler[json["id"]!.ToObject<string>()!].HandleCommand(this, json);
             }
             else

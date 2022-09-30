@@ -39,6 +39,43 @@ namespace ServerApplication.Client.DataHandlers.CommandHandlers
                 }
                 case "Doctor":
                 {
+                    data.UserName = ob["data"]?["username"]?.ToObject<string>() ?? "Unknown";
+                    JArray creds = (JArray) JsonFileReader.GetObject("AccountDoctor.json", new Dictionary<string, string>(), JsonFolder.Data.Path)["doctors"]!;
+                    JToken? foundToken = creds.FirstOrDefault(value => value["username"]!.ToObject<string>()!.Equals(data.UserName));
+
+                    if (foundToken != null)
+                    {
+                        JObject foundCred = (JObject)foundToken;
+                        if (foundCred["password"]!.ToObject<string>()!
+                            .Equals(ob["data"]?["password"]?.ToObject<string>() ?? "Unknown"))
+                        {
+                            data.SendEncryptedData(JsonFileReader.GetObjectAsString("LoginResponse", new Dictionary<string, string>()
+                            {
+                                {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
+                                {"_status_", "ok"},
+                                {"_error_", "_error_"}
+                            }, JsonFolder.ClientMessages.Path));
+                            data.DataHandler = new DoctorHandler(data);
+                        }
+                        else
+                        {
+                            data.SendEncryptedData(JsonFileReader.GetObjectAsString("LoginResponse", new Dictionary<string, string>()
+                            {
+                                {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
+                                {"_status_", "error"},
+                                {"_error_", "Username and/or password not correct."}
+                            }, JsonFolder.ClientMessages.Path));
+                        }
+                    }
+                    else
+                    {
+                        data.SendEncryptedData(JsonFileReader.GetObjectAsString("LoginResponse", new Dictionary<string, string>()
+                        {
+                            {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
+                            {"_status_", "error"},
+                            {"_error_", "Username and/or password not correct."}
+                        }, JsonFolder.ClientMessages.Path));
+                    }
                     //TODO Check login credentials
                     break;
                 }

@@ -2,7 +2,7 @@ using Newtonsoft.Json.Linq;
 
 namespace DoctorApplication.Communication.CommandHandlers;
 
-public interface CommandHandler
+public interface ICommandHandler
 {
 
     public void HandleCommand(Client client, JObject ob);

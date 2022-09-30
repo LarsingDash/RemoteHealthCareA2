@@ -1,4 +1,5 @@
 using System;
+using ServerApplication.Log;
 
 namespace DoctorApplication.Communication;
 
@@ -7,6 +8,7 @@ public class JsonFolder
     JsonFolder(string path)
     {
         this.Path = Environment.CurrentDirectory.Substring(0, Environment.CurrentDirectory.LastIndexOf("RemoteHealthcare", StringComparison.Ordinal)) + "RemoteHealthcare\\DoctorApplication\\Communication\\" + path;
+        // Logger.LogMessage(LogImportance.Debug, this.Path);
     }
         
     public string Path { get; }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
@@ -19,23 +20,38 @@ public class Client
     private TcpClient client;
     private NetworkStream stream;
     private Dictionary<string, Action<JObject>> serialCallbacks = new();
-    private Dictionary<string, CommandHandler> commandHandler = new()
-    {
-        //TODO ADD Command handlers
-    };
+    private Dictionary<string, ICommandHandler> commandHandler;
     #endregion
     
     
 
     public Client()
     { 
+        commandHandler = new Dictionary<string, ICommandHandler>()
+        {
+            {"public-rsa-key", new RsaKey()}
+        };
         OnMessage += async (_, json) => await HandleMessage(json);
         
         client = new("127.0.0.1", 2460);
         stream = client.GetStream();
         stream.BeginRead(_buffer, 0, 1024, OnRead, null);
+
+        SetupClient();
+    }
+
+    private void SetupClient()
+    {
+        var serial = Util.RandomString();
+        AddSerialCallback(serial, ob =>
+        {
+            PublicKey = ob["data"].Value<JArray>("key").Values<byte>().ToArray();
+        });
         
-        
+        SendData(JsonFileReader.GetObjectAsString("PublicRSAKey", new Dictionary<string, string>()
+        {
+            {"_serial_", serial}
+        }, JsonFolder.Json.Path));
     }
 
     #region Sending and retrieving data

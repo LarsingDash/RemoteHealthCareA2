@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using DoctorApplication.Communication;
 
 namespace DoctorApplication
 {
@@ -13,5 +14,9 @@ namespace DoctorApplication
     /// </summary>
     public partial class App : Application
     {
+        public App()
+        {
+            Client client = new Client();
+        }
     }
 }

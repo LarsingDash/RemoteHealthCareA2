@@ -1,3 +1,8 @@
+using System;
+using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
+using ServerApplication.Encryption;
+
 namespace ServerApplication.Log
 {
     public class LogColor

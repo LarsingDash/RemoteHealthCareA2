@@ -156,11 +156,10 @@ namespace ClientSide.VR
                 // snap camera on bike (via parent id)
                 vrClient.IDSearchList.Add("Camera", cameraId =>
                 {
-
                     tunnel.SendTunnelMessage(new Dictionary<string, string>()
                     {
                         {
-                            "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\UpdateNodeParent",
+                            "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Panel\\UpdateCamera",
                                 new Dictionary<string, string>()
                                 {
                                     {"_guid_", cameraId}, { "_parent_", bikeId }

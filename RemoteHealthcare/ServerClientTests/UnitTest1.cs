@@ -168,7 +168,11 @@ public class Tests
             Assert.AreEqual("ok", ob["data"]!["status"]!.ToObject<string>()!, "Could not add data: " + ob["data"]!["error"]!.ToObject<string>()!);
             passed = true;
         });
-
+        SendData(JsonFileReader.GetObjectAsString("ChangeData", new Dictionary<string, string>()
+        {
+            {"_serial_", serial},
+            {"_uuid_", uuid}
+        }, JsonFolderTest.Json.Path));
         Thread.Sleep(500);
         Assert.IsTrue(passed, "No Response change-data.");
     }

@@ -16,6 +16,7 @@
     <ItemGroup>
       <Folder Include="Client\DataHandlers\CommandHandlers\Client" />
       <Folder Include="Data\Tes123t1" />
+      <Folder Include="Data\TestClient53242" />
     </ItemGroup>
     
 

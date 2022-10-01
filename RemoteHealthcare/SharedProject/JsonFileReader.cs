@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using ServerApplication.Encryption;
 using System.IO;
+using ServerApplication.Log;
 
 namespace ServerApplication {
 

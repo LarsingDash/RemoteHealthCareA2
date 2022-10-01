@@ -71,6 +71,8 @@ public class Client
             {"_name_", "Tes123t1"}
         }, JsonFolder.Json.Path));
         
+        SendEncryptedData(JsonFileReader.GetObjectAsString("AllClients", new Dictionary<string, string>(), JsonFolder.Json.Path));
+        
         
     }
 
@@ -86,6 +88,7 @@ public class Client
         {
             {"_serial_", serial}
         }, JsonFolder.Json.Path));
+        
     }
 
     #region Sending and retrieving data

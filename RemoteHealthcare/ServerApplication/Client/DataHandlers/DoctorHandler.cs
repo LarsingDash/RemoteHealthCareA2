@@ -12,7 +12,8 @@ namespace ServerApplication.Client.DataHandlers
                 {"public-rsa-key", new RsaKey()},
                 {"encryptedMessage", new EncryptedMessage(clientData.Server.Rsa)},
                 {"active-clients", new ActiveClients()},
-                {"historic-client-data", new HistoricClientData()}
+                {"historic-client-data", new HistoricClientData()},
+                {"all-clients", new AllClients()}
             };
         }
     }

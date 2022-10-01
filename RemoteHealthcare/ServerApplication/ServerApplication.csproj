@@ -18,6 +18,18 @@
       <Folder Include="Data\Tes123t1" />
       <Folder Include="Data\TestClient53242" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Json\ClientMessages\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="Json\ClientMessages\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Json\ClientMessages\**" />
+    </ItemGroup>
     
 
     <Import Project="..\SharedProject\SharedProject.projitems" Label="Shared" />

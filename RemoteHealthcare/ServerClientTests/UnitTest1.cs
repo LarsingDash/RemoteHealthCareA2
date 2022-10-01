@@ -31,7 +31,7 @@ public class Tests
         OnMessage += async (_, json) => await ProcessMessageAsync(json);
         
         server = new Server(2450);
-        Thread.Sleep(10);
+        Thread.Sleep(200);
         
         serverType = typeof(Server);
         usersFieldServer = serverType.GetField("users", BindingFlags.NonPublic | BindingFlags.Instance)!;
@@ -121,7 +121,7 @@ public class Tests
         SendEncryptedData(JsonFileReader.GetObjectAsString("Login", new Dictionary<string, string>()
         {
             {"_type_", "Client"},
-            {"_username_", "TestClient53242"},
+            {"_username_", "OnlyFolder"},
             {"_serial_", serial}
         }, JsonFolderTest.Json.Path));
         

@@ -36,6 +36,17 @@ namespace ServerApplication.Client.DataHandlers.CommandHandlers
                         {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
                         {"_status_", "ok"}
                     }, JsonFolder.ClientMessages.Path));
+                    
+                    var totalPath = JsonFolder.Data.Path + data.UserName + "\\";
+                    if (!Directory.Exists(totalPath))
+                    {
+                        (new FileInfo(totalPath)).Directory!.Create();
+                        Logger.LogMessage(LogImportance.Fatal, "Creating directory? " + totalPath);
+                    }
+                    else
+                    {
+                        Logger.LogMessage(LogImportance.Fatal, "Directory exists?");
+                    }
                     return;
                 }
                 case "Doctor":

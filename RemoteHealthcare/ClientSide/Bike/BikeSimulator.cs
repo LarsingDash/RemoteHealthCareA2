@@ -2,18 +2,18 @@ namespace ClientSide.Bike;
 //The BikeSimulator class has the purpose to simulate the bike.
 public class BikeSimulator : Bike
 {
-    private int _lastTicks;
-    private int _ticker;
-    private int _startedTime;
+    private int lastTicks;
+    private int ticker;
+    private int startedTime;
 
-    private readonly BikeHandler _handler;
+    private readonly BikeHandler handler;
     public BikeSimulator(BikeHandler handler)
     {
-        _lastTicks = Environment.TickCount;
-        _ticker = 0;
+        lastTicks = Environment.TickCount;
+        ticker = 0;
         var thread = new Thread(Run);
         thread.Start();
-        this._handler = handler;
+        this.handler = handler;
     }
 
     /// <summary>
@@ -25,20 +25,20 @@ public class BikeSimulator : Bike
     /// </summary>
     private void Run()
     {
-        _startedTime = Environment.TickCount;
+        startedTime = Environment.TickCount;
         while (true)
         {
             var currentTicks = Environment.TickCount;
-            _ticker++;
+            ticker++;
 
-            bikeData[DataType.ElapsedTime] = currentTicks - _startedTime;
+            bikeData[DataType.ElapsedTime] = currentTicks - startedTime;
             
             UpdateHeartRate();
             UpdateSpeed();
-            UpdateDistance(currentTicks - _lastTicks);
-            UpdateElapsedTime(currentTicks - _startedTime);
+            UpdateDistance(currentTicks - lastTicks);
+            UpdateElapsedTime(currentTicks - startedTime);
 
-            _lastTicks = currentTicks;
+            lastTicks = currentTicks;
             
             Thread.Sleep(500);
         }
@@ -51,7 +51,7 @@ public class BikeSimulator : Bike
     /// </summary>
     private void UpdateHeartRate()
     {
-        _handler.ChangeData(DataType.HeartRate, 2 * Math.Sin(0.1 * _ticker) + 120);
+        handler.ChangeData(DataType.HeartRate, 2 * Math.Sin(0.1 * ticker) + 120);
     }
 
     /// <summary>
@@ -60,7 +60,7 @@ public class BikeSimulator : Bike
     /// </summary>
     private void UpdateSpeed()
     {
-        _handler.ChangeData(DataType.Speed, (0.7 * Math.Sin(0.05 * _ticker) + 22) / 3.6);
+        handler.ChangeData(DataType.Speed, (0.7 * Math.Sin(0.05 * ticker) + 22) / 3.6);
     }
 
     /// <summary>
@@ -73,7 +73,7 @@ public class BikeSimulator : Bike
         bikeData.TryGetValue(DataType.Distance, out var distance);
         bikeData.TryGetValue(DataType.Speed, out var speed);
         
-        _handler.ChangeData(DataType.Distance, distance + speed * deltaTime / 1000);
+        handler.ChangeData(DataType.Distance, distance + speed * deltaTime / 1000);
     }
 
     /// <summary>
@@ -82,6 +82,6 @@ public class BikeSimulator : Bike
     /// <param name="time">The time in milliseconds since the start of the game.</param>
     private void UpdateElapsedTime(int time)
     {
-        _handler.ChangeData(DataType.ElapsedTime, (double) (time) / 1000);
+        handler.ChangeData(DataType.ElapsedTime, (double) (time) / 1000);
     }
 }

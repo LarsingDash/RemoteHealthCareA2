@@ -1,10 +1,6 @@
-using System.Net;
+using System.Globalization;
 using System.Net.Sockets;
-using System.Security.Cryptography;
 using System.Text;
-using ClientSide.VR.CommandHandlers;
-using Microsoft.VisualBasic;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Shared;
 
@@ -12,149 +8,69 @@ namespace ClientSide.VR;
 
 public class VRClient
 {
-    private TcpClient _tcpClient = new();
-    private NetworkStream _stream;
+    //Session List
+    private JObject savedSession;
+    private DateTime savedSessionDate;
 
-    private Dictionary<String, ICommandHandler> commands = new();
+    //Tunnel
+    private readonly TcpClient tcpClient = new TcpClient();
+    private NetworkStream stream;
+    public string TunnelID { get; private set; }
+    private Tunnel tunnel { get; }
 
-    private byte[] _totalBuffer = new byte[0];
-    private readonly byte[] _buffer = new byte[1024];
+    //Data buffers for stream
+    private byte[] totalBuffer = Array.Empty<byte>();
+    private readonly byte[] buffer = new byte[1024];
 
-    public string tunnelID { get; private set; }
-    public Tunnel tunnel { get; }
+    //VRClient
+    public WorldGen worldGen;
+    public PanelController panelController;
+    private World selectedWorld = World.forest;
+
+    //Other
+    private readonly List<string> removalTargets = new List<string>();
+    public readonly Dictionary<string, string> SavedIDs = new Dictionary<string, string>();
+    public readonly Dictionary<string, Action<string>> IDWaitList = new Dictionary<string, Action<string>>();       //Waiting for it to be added
+    public readonly Dictionary<string, Action<string>> IDSearchList = new Dictionary<string, Action<string>>();     //Waiting for it to be found
 
     public VRClient()
     {
-        commands.Add("session/list", new SessionList());
-        commands.Add("tunnel/create", new TunnelCreate());
-        commands.Add("tunnel/send", tunnel = new Tunnel(this));
+        tunnel = new Tunnel(this);
     }
 
-    /// <summary>
-    /// It creates a tunnel with the given id
-    /// </summary>
-    /// <param name="id">The ID of the tunnel you want to create.</param>
-    public void createTunnel(string id)
+    //After the correct session has been located the tunnel will be created using the sessionID
+    private void CreateTunnel(string id)
     {
         Console.WriteLine($"ID: {id}");
         SendData(JsonFileReader.GetObjectAsString("CreateTunnel", new Dictionary<string, string>()
         {
-            {"_id_", id}
+            { "_id_", id }
         }));
     }
 
-    /// <summary>
-    /// Its sets the tunnelID
-    /// </summary>
-    /// <param name="id">The id of the tunnel.</param>
-    /// <returns>
-    /// The tunnel id is being returned.
-    /// </returns>
-    public void setTunnelID(string id)
+    //Run startup actions after the tunnel has been created
+    public void TunnelStartup(string id)
     {
-        tunnelID = id;
-        Console.WriteLine($"Received tunnel id: {id}");
+        TunnelID = id;
 
-        //Set height values for tiles
-        var noiseGen = new DotnetNoise.FastNoise();
-        string heights = "";
-        for (float X = 0; X < 256; X++)
-        {
-            for (float Y = 0; Y < 256; Y++)
-            {
-                heights += noiseGen.GetPerlin(X, Y) + ",";
-            }
-        }
-
-        heights = heights.Substring(0, heights.Length - 1);
-
-        //Add terain
-        tunnel.SendTunnelMessage(new Dictionary<string, string>()
-        {
-            {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\AddTerrain", new Dictionary<string, string>()
-            {
-                {"\"_size1_\"", "256"},
-                {"\"_size2_\"", "256"},
-                {"\"_heights_\"", heights}
-            })},
-        });
-
-        //Add node
-        tunnel.SendTunnelMessage(new Dictionary<string, string>()
-        {
-            {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\AddNodeScene", new Dictionary<string, string>())},
-        });
-        //Add house
-        tunnel.SendTunnelMessage(new Dictionary<string, string>()
-        {
-            {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\House", new Dictionary<string, string>())},
-        });
-        //Add car
-        tunnel.SendTunnelMessage(new Dictionary<string, string>()
-        {
-            {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\WhiteCar", new Dictionary<string, string>())},
-        });
-        //Add Tree
-        tunnel.SendTunnelMessage(new Dictionary<string, string>()
-        {
-            {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Tree", new Dictionary<string, string>())},
-        });
-
-        tunnel.Subscribe(TunnelDataType.Scene, ob =>
-        {
-            Console.WriteLine(ob);
-            try
-            {
-                JObject foundObject = ob["data"]["data"]["children"].First(o =>
-                {
-                    if (o["name"].ToObject<string>().Equals("GroundPlane"))
-                    {
-                        return true;
-                    }
-
-                    return false;
-                }).ToObject<JObject>();
-
-                string uuid = foundObject["uuid"].ToObject<string>();
-                Console.WriteLine($"UUID: {uuid}");
-                tunnel.SendTunnelMessage(new Dictionary<string, string>()
-                {
-                    {
-                        "\"_data_\"",
-                        JsonFileReader.GetObjectAsString("TunnelMessages\\DeleteNodeScene",
-                            new Dictionary<string, string>())
-                    },
-                    {"_id_", uuid}
-                });
-            }
-            catch
-            {
-                Console.WriteLine("No GroundPlane found, already removed?");
-            }
-
-        });
-        tunnel.SendTunnelMessage(new Dictionary<string, string>()
-            {
-                {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\GetScene", new Dictionary<string, string>())},
-            }
-        );
-
-        tunnel.SendTunnelMessage(new Dictionary<string, string>()
-        {
-            {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\SetTimeScene", new Dictionary<string, string>())},
-            {"\"_time_\"", "15.0"}
-        });
+        //Remove Default Objects
+        RemoveObjectRequest("GroundPlane", "RightHand", "LeftHand");
+            
+        //Start WorldGen
+        worldGen = new WorldGen(this, tunnel, selectedWorld);
+        
+        //Start HUDController
+        panelController = new PanelController(this, tunnel);
     }
-    /// <summary>
-    /// It connects to the server, gets the stream, and starts reading the stream
-    /// </summary>
+
+    //It connects to the server, gets the stream, and starts reading the stream. Then it asks for all sessions to find the correct one in the response
     public async Task StartConnectionAsync()
     {
         try
         {
-            await _tcpClient.ConnectAsync("145.48.6.10", 6666);
-            _stream = _tcpClient.GetStream();
-            _stream.BeginRead(_buffer, 0, 1024, onRead, null);
+            await tcpClient.ConnectAsync("145.48.6.10", 6666);
+            stream = tcpClient.GetStream();
+            stream.BeginRead(buffer, 0, 1024, OnRead, null);
 
             SendData(JsonFileReader.GetObjectAsString("SessionList", new Dictionary<string, string>()));
         }
@@ -164,84 +80,62 @@ public class VRClient
         }
     }
 
-    /// <summary>
-    /// It takes a string, converts it to a byte array, and sends it to the server
-    /// </summary>
-    /// <param name="String">The string to send to the server</param>
-    public void SendData(String s)
+    //Sends the message to the server by writing it to the streams (also prints it in the console). Use SendTunnelMessage() to include ID
+    public void SendData(string text, bool silent = false)
     {
-        Console.WriteLine($"Sending data: {s}");
-        Byte[] data = BitConverter.GetBytes(s.Length);
-        Byte[] comman = System.Text.Encoding.ASCII.GetBytes(s);
-        _stream.Write(data, 0, data.Length);
-        _stream.Write(comman, 0, comman.Length);
+        Console.WriteLine("-------------------------------------------Send Start");
+        if (!silent)
+        {
+            Console.WriteLine($"Sending data:\n{text}");
+        }
+        else
+        {
+            Console.WriteLine($"Sending data: (Silent)");
+        }
+
+        byte[] data = BitConverter.GetBytes(text.Length);
+        byte[] command = Encoding.ASCII.GetBytes(text);
+
+        stream.Write(data, 0, data.Length);
+        stream.Write(command, 0, command.Length);
+
+        Console.WriteLine("-------------------------------------------Send End");
     }
 
-    /// <summary>
-    /// It takes a JObject, converts it to a string, and then sends it to the SendData function that takes a string.
-    /// </summary>
-    /// <param name="JObject">The data you want to send.</param>
-    public void SendData(JObject j)
-    {
-        SendData(j.ToString());
-    }
-
-    /// <summary>
-    /// It reads data from the stream, and if it has enough data to read a packet, it reads the packet and calls the
-    /// appropriate command handler
-    /// </summary>
-    /// <param name="IAsyncResult">This is the result of the async operation.</param>
-    /// <returns>
-    /// The data that was sent from the server.
-    /// </returns>
-    private void onRead(IAsyncResult ar)
+    //Reads the data from the stream and passes the json to the response handler
+    private void OnRead(IAsyncResult asyncResult)
     {
         try
         {
-            int rc = _stream.EndRead(ar);
-            _totalBuffer = Concat(_totalBuffer, _buffer, rc);
+            var readCount = stream.EndRead(asyncResult);
+            totalBuffer = Concat(totalBuffer, buffer, readCount);
         }
-        catch (System.IO.IOException)
+        catch (IOException)
         {
-            Console.WriteLine("Error");
+            Console.WriteLine("OnRead Error");
             return;
         }
-        while (_totalBuffer.Length >= 4)
+
+        while (totalBuffer.Length >= 4)
         {
-            int packetSize = BitConverter.ToInt32(_totalBuffer, 0);
-            if (_totalBuffer.Length >= packetSize + 4)
+            var packetSize = BitConverter.ToInt32(totalBuffer, 0);
+            if (totalBuffer.Length >= packetSize + 4)
             {
-                string data = Encoding.UTF8.GetString(_totalBuffer, 4, packetSize);
-                JObject jData = JObject.Parse(data);
-                //Console.WriteLine(jData.ToString());
-                if (commands.ContainsKey(jData["id"].ToObject<string>()))
-                {
-                    commands[jData["id"].ToObject<string>()].handleCommand(this, jData);
-                }
-                else
-                {
-                    Console.WriteLine($"Could not find command for {jData["id"]}");
-                }
-                var newBuffer = new byte[_totalBuffer.Length - packetSize - 4];
-                Array.Copy(_totalBuffer, packetSize + 4, newBuffer, 0, newBuffer.Length);
-                _totalBuffer = newBuffer;
+                var data = Encoding.UTF8.GetString(totalBuffer, 4, packetSize);
+                var jData = JObject.Parse(data);
+                tunnel.HandleResponse(this, jData);
+                var newBuffer = new byte[totalBuffer.Length - packetSize - 4];
+                Array.Copy(totalBuffer, packetSize + 4, newBuffer, 0, newBuffer.Length);
+                totalBuffer = newBuffer;
             }
             else
                 break;
         }
-        _stream.BeginRead(_buffer, 0, 1024, onRead, null);
+
+        stream.BeginRead(buffer, 0, 1024, OnRead, null);
     }
 
-    /// <summary>
-    /// It takes two byte arrays and a count, and returns a new byte array that is the concatenation of the first two
-    /// arrays, with the second array truncated to the specified count
-    /// </summary>
-    /// <param name="b1">The first byte array to concatenate.</param>
-    /// <param name="b2">The byte array to be appended to b1</param>
-    /// <param name="count">The number of bytes to copy from the second array.</param>
-    /// <returns>
-    /// The concatenated byte array.
-    /// </returns>
+    //Helper method for OnRead for occasions where the data is not properly formatted
     private static byte[] Concat(byte[] b1, byte[] b2, int count)
     {
         byte[] r = new byte[b1.Length + count];
@@ -250,8 +144,97 @@ public class VRClient
         return r;
     }
 
+    public void ListSessions(JObject json)
+    {
+        //Go through all sessions in the json and find the one matching this systems host and user
+        foreach (JObject currentObject in json["data"])
+        {
+            string? host = currentObject["clientinfo"]["host"].ToObject<string>();
+            string? user = currentObject["clientinfo"]["user"].ToObject<string>();
 
+            //Make sure neither are null
+            if (host == null || user == null) continue;
 
+            //Check if the host and user correspond to the systems host and user
+            if (host.ToLower().Contains(Environment.MachineName.ToLower()) &&
+                user.ToLower().Contains(Environment.UserName.ToLower()))
+            {
+                //Save the session object if there wasn't one saved already or if this one is newer
+                if (savedSession == null)
+                {
+                    savedSession = currentObject;
+                    savedSessionDate = CustomParseDate(currentObject);
+                }
+                else
+                {
+                    if (savedSessionDate < CustomParseDate(currentObject))
+                    {
+                        savedSession = currentObject;
+                        savedSessionDate = CustomParseDate(currentObject);
+                    }
+                }
+            }
+        }
 
+        //If a session with the correct host and user was found create a tunnel
+        if (savedSession != null)
+        {
+            CreateTunnel(savedSession["id"].ToObject<string>());
+        }
+        else
+        {
+            Console.WriteLine("Could not find user...");
+        }
+    }
 
+    //Helper method for ListSessions()
+    private DateTime CustomParseDate(JObject jsonTime)
+    {
+        return DateTime.ParseExact(jsonTime["lastPing"].ToObject<string>(), "MM/dd/yyyy HH:mm:ss",
+            CultureInfo.InvariantCulture);
+    }
+
+    //Add the targeted object to the list of objects-to-remove and send a request to find that object
+    private void RemoveObjectRequest(params string[] targets)
+    {
+        foreach (var target in targets) removalTargets.Add(target);
+
+        tunnel.SendTunnelMessage(new Dictionary<string, string>()
+        {
+            {
+                "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\GetScene",
+                    new Dictionary<string, string>())
+            },
+        });
+    }
+
+    //Loop through the json to find all objects that have a name that is in the removalTargets list, once a target has been found, request its removal
+    public void RemoveObject(JObject json)
+    {
+        try
+        {
+            foreach (JObject currentObject in json["data"]["data"]["data"]["children"])
+            {
+                string? name = currentObject["name"].ToObject<string>();
+                if (name == null) continue;
+
+                if (!removalTargets.Contains(name)) continue;
+                //Send a message to remove the node with the found uuid
+                string? uuid = currentObject["uuid"].ToObject<string>();
+
+                tunnel.SendTunnelMessage(new Dictionary<string, string>()
+                {
+                    {
+                        "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\DeleteNodeScene",
+                            new Dictionary<string, string>())
+                    },
+                    { "_id_", uuid }
+                });
+            }
+        }
+        catch
+        {
+            Console.WriteLine("No GroundPlane found, already removed?");
+        }
+    }
 }

@@ -1,8 +1,0 @@
-{
-  "id" : "scene/terrain/add",
-  "data" :
-  {
-    "size" : ["_size1_", "_size2_"],
-    "heights" : ["_heights_"]
-  }
-}

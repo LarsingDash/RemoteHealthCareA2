@@ -1,0 +1,21 @@
+{
+  "id" : "scene/node/add",
+  "data" : {
+    "name" : "_name_",
+    "parent" : "_parent_",
+    "components" : {
+      "transform" :
+      {
+        "position" : [ 0, 0,0 ],
+        "scale" : 1,
+        "rotation" : [ 0, 0, 0 ]
+      },
+      "panel" : {
+        "size" : [ 2, 2 ],
+        "resolution" : [ 512, 512 ],
+        "background" : [ 1, 1, 1, 1],
+        "castShadow" : false
+      }
+    }
+  }
+}

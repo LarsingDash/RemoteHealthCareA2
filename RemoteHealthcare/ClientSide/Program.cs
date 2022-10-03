@@ -4,7 +4,7 @@ using Shared;
 
 namespace ClientSide
 {
-    class Program
+    internal static class Program
     {
         /// <summary>
         /// The main function of the program.
@@ -14,8 +14,8 @@ namespace ClientSide
         public static void Main(string[] args)
         {
             JsonFileReader.Initialize(Environment.CurrentDirectory.Substring(0, Environment.CurrentDirectory.LastIndexOf("bin")) + "VR\\Json\\");
-            Console.Write("Choose application (1=Bike  2=VR): ");
-            string option = Console.ReadLine();
+            Console.Write("Choose application (1=Bike  2=VR  3=Client): ");
+            string option = Console.ReadLine() ?? string.Empty;
 
             switch (option)
             {
@@ -26,15 +26,17 @@ namespace ClientSide
                 case "2":
                     Console.WriteLine("VRClient started");
                     VRClient vrClient = new VRClient();
-                    vrClient.StartConnectionAsync();
+                    vrClient?.StartConnectionAsync();
                     break;
-
+                case "3":
+                    Console.WriteLine("ServerClient started");
+                    StartServerConnection();
+                    break;
                 default:
                     Console.WriteLine("No option was chosen");
                     break;
 
             }
-
 
             // Console.WriteLine($"Machine name: {Environment.MachineName}");
             // Console.WriteLine($"User name: {Environment.UserName}");
@@ -43,13 +45,20 @@ namespace ClientSide
         }
 
 
-        public static void StartBikeClient()
+        private static void StartBikeClient()
         {
             BikeHandler handler = new BikeHandler();
             handler.Subscribe(DataType.Distance, val => Console.WriteLine($"Distance: {val}"));
             handler.Subscribe(DataType.Speed, val => Console.WriteLine($"Speed: {val}"));
             handler.Subscribe(DataType.ElapsedTime, val => Console.WriteLine($"ElapsedTime: {val}"));
             handler.Subscribe(DataType.HeartRate, val => Console.WriteLine($"HeartRate: {val}"));
+        }
+
+        private static void StartServerConnection()
+        {
+            //TODO: Add login once finished
+            Client client = new Client();
+            
         }
     }
 }

@@ -60,6 +60,8 @@ public class VRClient
         
         //Start HUDController
         panelController = new PanelController(this, tunnel);
+        var HUDThread = new Thread(panelController.RunController);
+        HUDThread.Start();
     }
 
     //It connects to the server, gets the stream, and starts reading the stream. Then it asks for all sessions to find the correct one in the response
@@ -82,15 +84,15 @@ public class VRClient
     //Sends the message to the server by writing it to the streams (also prints it in the console). Use SendTunnelMessage() to include ID
     public void SendData(string text, bool silent = false)
     {
-        Console.WriteLine("-------------------------------------------Send Start");
-        if (!silent)
-        {
-            Console.WriteLine($"Sending data:\n{text}");
-        }
-        else
-        {
-            Console.WriteLine($"Sending data: (Silent)");
-        }
+        // Console.WriteLine("-------------------------------------------Send Start");
+        // if (!silent)
+        // {
+        //     Console.WriteLine($"Sending data:\n{text}");
+        // }
+        // else
+        // {
+        //     Console.WriteLine($"Sending data: (Silent)");
+        // }
 
         byte[] data = BitConverter.GetBytes(text.Length);
         byte[] command = Encoding.ASCII.GetBytes(text);
@@ -98,7 +100,7 @@ public class VRClient
         stream.Write(data, 0, data.Length);
         stream.Write(command, 0, command.Length);
 
-        Console.WriteLine("-------------------------------------------Send End");
+        // Console.WriteLine("-------------------------------------------Send End");
     }
 
     //Reads the data from the stream and passes the json to the response handler

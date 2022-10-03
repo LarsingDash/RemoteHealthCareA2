@@ -13,7 +13,7 @@
       "panel" : {
         "size" : [ 2, 2 ],
         "resolution" : [ 512, 512 ],
-        "background" : [ 1, 1, 1, 1],
+        "background" : [ 0, 0, 0, 0],
         "castShadow" : false
       }
     }

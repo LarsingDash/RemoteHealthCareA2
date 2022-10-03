@@ -10,9 +10,12 @@ namespace ClientSide
         /// </summary>
         /// <param name="args">This is an array of strings that contains the command-line
         /// arguments.</param>
+
+        private static BikeHandler handler;
+        
         public static void Main(string[] args)
         {
-            Console.Write("Choose application (1=Bike  2=VR  3=Client): ");
+            Console.Write("Choose application (1=Bike / VR  2=Client): ");
             string option = Console.ReadLine() ?? string.Empty;
 
             switch (option)
@@ -20,13 +23,12 @@ namespace ClientSide
                 case "1":
                     Console.WriteLine("BikeClient started");
                     StartBikeClient();
+                    
+                    Console.WriteLine("VRClient started");
+                    var vrClient = new VRClient();
+                    vrClient.StartConnectionAsync();
                     break;
                 case "2":
-                    Console.WriteLine("VRClient started");
-                    VRClient vrClient = new VRClient();
-                    vrClient?.StartConnectionAsync();
-                    break;
-                case "3":
                     Console.WriteLine("ServerClient started");
                     StartServerConnection();
                     break;
@@ -36,8 +38,6 @@ namespace ClientSide
 
             }
 
-            // Console.WriteLine($"Machine name: {Environment.MachineName}");
-            // Console.WriteLine($"User name: {Environment.UserName}");
             Console.Read();
 
         }
@@ -45,11 +45,11 @@ namespace ClientSide
 
         private static void StartBikeClient()
         {
-            BikeHandler handler = new BikeHandler();
-            handler.Subscribe(DataType.Distance, val => Console.WriteLine($"Distance: {val}"));
-            handler.Subscribe(DataType.Speed, val => Console.WriteLine($"Speed: {val}"));
-            handler.Subscribe(DataType.ElapsedTime, val => Console.WriteLine($"ElapsedTime: {val}"));
-            handler.Subscribe(DataType.HeartRate, val => Console.WriteLine($"HeartRate: {val}"));
+            handler = new BikeHandler();
+            // handler.Subscribe(DataType.Distance, val => Console.WriteLine($"Distance: {val}"));
+            // handler.Subscribe(DataType.Speed, val => Console.WriteLine($"Speed: {val}"));
+            // handler.Subscribe(DataType.ElapsedTime, val => Console.WriteLine($"ElapsedTime: {val}"));
+            // handler.Subscribe(DataType.HeartRate, val => Console.WriteLine($"HeartRate: {val}"));
         }
 
         private static void StartServerConnection()
@@ -57,6 +57,11 @@ namespace ClientSide
             //TODO: Add login once finished
             Client client = new Client();
             
+        }
+
+        public static Dictionary<DataType, double> GetBikeData()
+        {
+            return handler.Bike.bikeData;
         }
     }
 }

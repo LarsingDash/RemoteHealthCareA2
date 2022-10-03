@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Globalization;
 using System.Text;
 using Newtonsoft.Json.Linq;
 
@@ -37,7 +38,7 @@ namespace ClientSide.VR
             {
                 for (var y = 0; y < mapSize; y++)
                 {
-                    heightMap.Append($"{(noiseGen.GetPerlin(x, y) * terrainSensitivity)},");
+                    heightMap.Append($"{(noiseGen.GetPerlin(x, y) * terrainSensitivity).ToString(CultureInfo.InvariantCulture)},");
                 }
             }
 
@@ -108,7 +109,7 @@ namespace ClientSide.VR
             var polyBuilder = new StringBuilder();
             for (int i = 0; i < poly.Length; i++)
             {
-                polyBuilder.Append(pointConverter(poly[i], poly[(i + 1) % poly.Length]));
+                polyBuilder.Append(PointConverter(poly[i], poly[(i + 1) % poly.Length]));
                 polyBuilder.Append(",");
             }
 
@@ -218,7 +219,7 @@ namespace ClientSide.VR
             return points;
         }
 
-        private string pointConverter(Point point, Point nextPoint)
+        private string PointConverter(Point point, Point nextPoint)
         {
             var builder = new StringBuilder();
 

@@ -1,3 +1,5 @@
+using Shared;
+
 namespace ClientSide.VR;
 
 public class PanelController

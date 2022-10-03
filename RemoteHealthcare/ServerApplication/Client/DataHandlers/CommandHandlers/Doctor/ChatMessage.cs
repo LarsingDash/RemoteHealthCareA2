@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Windows.Input;
 using Newtonsoft.Json.Linq;
 using ServerApplication.UtilData;
+using Shared;
 
 namespace ServerApplication.Client.DataHandlers.CommandHandlers.Doctor;
 

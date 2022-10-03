@@ -1,0 +1,8 @@
+{
+  "id":"chat-message",
+  "serial":"_serial_",
+  "data":{
+    "message":"_message_",
+    "receiver":"_receiver_"
+  }
+}

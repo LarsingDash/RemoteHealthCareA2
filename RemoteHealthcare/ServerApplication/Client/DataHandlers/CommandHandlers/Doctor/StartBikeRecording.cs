@@ -64,7 +64,7 @@ public class StartBikeRecording : ICommandHandler
                 {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
                 {"_status_", "ok"},
                 {"_uuid_", fileName},
-                {"_name_", patient.UserName}
+                {"_name_", patient.UserName}    
             }, JsonFolder.ClientMessages.Path));
             patient.SendEncryptedData(JsonFileReader.GetObjectAsString("StartBikeRecordingResponse",new Dictionary<string, string>()
             {

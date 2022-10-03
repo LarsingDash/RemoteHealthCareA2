@@ -8,6 +8,15 @@ namespace ServerApplication.Client.DataHandlers.CommandHandlers.Doctor;
 
 public class ChatMessage : ICommandHandler
 {
+    /// <summary>
+    /// It sends a message to the receiver
+    /// </summary>
+    /// <param name="Server">The server instance</param>
+    /// <param name="ClientData">The client that sent the message</param>
+    /// <param name="JObject">The JObject that was sent from the client.</param>
+    /// <returns>
+    /// A string
+    /// </returns>
     public void HandleMessage(Server server, ClientData data, JObject ob)
     {
         if (ob["data"]?["message"]?.ToObject<string>() == null)

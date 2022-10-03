@@ -14,6 +14,9 @@ namespace ServerClientTests
         
         private Server server;
         
+        /// <summary>
+        /// The function sets up the server by creating a new server object and then waiting for half a second
+        /// </summary>
         [OneTimeSetUp]
         public void Setup()
         {
@@ -22,6 +25,9 @@ namespace ServerClientTests
             Thread.Sleep(500);
         }
 
+        /// <summary>
+        /// This function tests if the server is connected to the correct port
+        /// </summary>
         [Test]
         public void ConnectedToCorrectPort()
         {
@@ -30,6 +36,9 @@ namespace ServerClientTests
             Assert.Pass("The port of the server is connected to the right port!");
         }
         
+        /// <summary>
+        /// This function tests to see if the server has a public RSA key
+        /// </summary>
         [Test]
         public void RsaKeyCorrect()
         {
@@ -38,6 +47,13 @@ namespace ServerClientTests
             Assert.Pass("Server does have a public RSA key.");
         }
 
+        /// <summary>
+        /// "This function tests whether the server can receive incoming requests from a client."
+        /// 
+        /// The first thing we do is create a new client connection. This is the connection that will be used to send
+        /// requests to the server. We pass in a callback function that will be called whenever the client receives a
+        /// message from the server
+        /// </summary>
         [Test]
         public void ReceivingIncomingRequests()
         {

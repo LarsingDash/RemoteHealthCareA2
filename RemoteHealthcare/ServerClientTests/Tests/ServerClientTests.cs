@@ -15,6 +15,9 @@ public class ServerClientTests
 
     private DefaultClientConnection client;
 
+    /// <summary>
+    /// It creates a server and a client, and then waits for 500ms
+    /// </summary>
     [OneTimeSetUp]
     public void Setup()
     {
@@ -44,6 +47,12 @@ public class ServerClientTests
         Thread.Sleep(500);
     }
 
+    /// <summary>
+    /// "TestConnection() tests the connection between the server and client."
+    /// 
+    /// The first line of the function is a comment. Comments are ignored by the compiler, but they are useful for
+    /// explaining what the code does
+    /// </summary>
     [Test]
     public void TestConnection()
     {
@@ -51,6 +60,10 @@ public class ServerClientTests
         Assert.Pass("Server was able to make a connection");
     }
 
+    /// <summary>
+    /// The client waits for half a second, then requests the server's public RSA key. If the server's public RSA key is not
+    /// empty, the test passes
+    /// </summary>
     [Test]
     public void TestServerSendingRsaKey()
     {
@@ -60,6 +73,9 @@ public class ServerClientTests
         Assert.Pass("Client received public RSA key of server.");
     }
     
+    /// <summary>
+    /// The server waits for half a second, then checks if the client has sent its public RSA key
+    /// </summary>
     [Test]
     public void TestClientSendingRsaKey()
     {

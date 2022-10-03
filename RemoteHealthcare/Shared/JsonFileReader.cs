@@ -63,6 +63,15 @@ namespace Shared {
             return GetObject(fileName, values).ToString();
         }
         
+        /// <summary>
+        /// It takes a file name, a dictionary of values, and a path, and returns the decrypted text of the file
+        /// </summary>
+        /// <param name="fileName">The name of the file to be encrypted.</param>
+        /// <param name="values">A dictionary of strings that will be replaced in the file.</param>
+        /// <param name="path">The path to the folder where the encrypted files are stored.</param>
+        /// <returns>
+        /// The decrypted text of the file.
+        /// </returns>
         public static string GetEncryptedText(string fileName, Dictionary<string, string> values, string path)
         {
             CheckFileName(fileName);
@@ -79,6 +88,16 @@ namespace Shared {
             return decrypted;
         }
 
+        /// <summary>
+        /// It takes a file name, a dictionary of values, and a path, and returns a JObject of the encrypted text.
+        /// </summary>
+        /// <param name="fileName">The name of the file you want to encrypt.</param>
+        /// <param name="values">A dictionary of key/value pairs that will be used to replace the placeholders in the
+        /// template.</param>
+        /// <param name="path">The path to the file.</param>
+        /// <returns>
+        /// A JObject
+        /// </returns>
         public static JObject GetEncryptedObject(string fileName, Dictionary<string, string> values, string path)
         {
             return JObject.Parse(GetEncryptedText(fileName, values, path));

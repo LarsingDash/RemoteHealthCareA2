@@ -17,6 +17,10 @@ public class ServerClientDoctorTests
 
     private int port;
     private string patientUserName;
+    
+    /// <summary>
+    /// It creates a server, two clients, and a dictionary of command handlers for each client
+    /// </summary>
     [OneTimeSetUp]
     public void Setup()
     {
@@ -70,6 +74,9 @@ public class ServerClientDoctorTests
         Thread.Sleep(500);
     }
 
+    /// <summary>
+    /// This function tests to see if the server can make a connection to the doctor and patient
+    /// </summary>
     [Test]
     public void Test1TwoUsersConnected()
     {
@@ -77,6 +84,9 @@ public class ServerClientDoctorTests
         Assert.Pass("Server was able to make a connection to doctor and patient");
     }
 
+    /// <summary>
+    /// We send a login request to the server, and wait for a response
+    /// </summary>
     [Test]
     public void Test2LoginClient()
     {
@@ -100,6 +110,11 @@ public class ServerClientDoctorTests
         Assert.Pass("Patient logged in.");
     }
     
+    /// <summary>
+    /// We create a random string, which we use as a serial. We then add a callback to the doctor object, which will be
+    /// called when the server responds with the same serial. We then send the login command to the server, and wait for the
+    /// callback to be called
+    /// </summary>
     [Test]
     public void Test3LoginDoctor()
     {
@@ -124,6 +139,10 @@ public class ServerClientDoctorTests
         Assert.Pass("Doctor logged in.");
     }
 
+    /// <summary>
+    /// The doctor sends a request to the server to get a list of all active users. The server responds with a list of all
+    /// active users. The doctor checks if the patient is in the list
+    /// </summary>
     [Test]
     public void Test4CheckActiveClientsCommand()
     {

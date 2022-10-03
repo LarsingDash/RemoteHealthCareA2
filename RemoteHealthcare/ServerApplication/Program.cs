@@ -10,7 +10,6 @@ namespace ServerApplication
             Logger.PrintLevel = LogLevel.All;
 
             Server server = new Server();
-            // JsonFileWriter.WriteTextToFileEncrypted("Tes123t1\\Te3122st.txt","TestBericht",JsonFolder.Data.Path);
 
             Console.ReadKey();
 

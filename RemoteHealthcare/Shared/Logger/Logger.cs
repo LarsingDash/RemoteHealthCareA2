@@ -95,6 +95,7 @@ namespace Shared.Log
     
     }
 
+    /* An enum that is used to determine the importance of the log message. */
     public enum LogLevel : ushort
     {
         All = 6,

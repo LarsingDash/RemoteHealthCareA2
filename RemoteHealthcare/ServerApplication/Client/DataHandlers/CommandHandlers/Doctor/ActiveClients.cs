@@ -7,6 +7,12 @@ namespace ServerApplication.Client.DataHandlers.CommandHandlers.Doctor;
 
 public class ActiveClients : ICommandHandler
 {
+    /// <summary>
+    /// It sends a list of all the users that are currently connected to the server
+    /// </summary>
+    /// <param name="Server">The server instance</param>
+    /// <param name="ClientData">The ClientData object of the client that sent the message.</param>
+    /// <param name="JObject">The JObject that was sent to the server.</param>
     public void HandleMessage(Server server, ClientData data, JObject ob)
     {
         data.SendEncryptedData(JsonFileReader.GetObjectAsString("ActiveClientsResponse", new Dictionary<string,string>()

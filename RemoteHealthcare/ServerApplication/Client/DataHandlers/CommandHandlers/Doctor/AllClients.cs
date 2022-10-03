@@ -8,6 +8,12 @@ namespace ServerApplication.Client.DataHandlers.CommandHandlers.Doctor;
 
 public class AllClients : ICommandHandler
 {
+    /// <summary>
+    /// It gets all the directories in the data folder, converts them to strings, and sends them to the client
+    /// </summary>
+    /// <param name="Server">The server instance.</param>
+    /// <param name="ClientData">The client that sent the message</param>
+    /// <param name="JObject">The JObject that was sent from the client.</param>
     public void HandleMessage(Server server, ClientData data, JObject ob)
     {
         string[] dirs = Directory.GetDirectories(JsonFolder.Data.Path, "*", SearchOption.TopDirectoryOnly);

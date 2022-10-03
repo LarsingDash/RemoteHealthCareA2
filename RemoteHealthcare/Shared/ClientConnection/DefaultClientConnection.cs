@@ -23,16 +23,25 @@ public class DefaultClientConnection
 
     public DefaultClientConnection(string hostname, int port, Action<JObject, bool> commandHandlerMethod)
     {
-        init(hostname, port, commandHandlerMethod);
+        Init(hostname, port, commandHandlerMethod);
         
     }
-
+    [Obsolete("Only use this when you call init manually")]
     public DefaultClientConnection()
     {
         
     }
 
-    public void init(string hostname, int port, Action<JObject, bool> commandHandlerMethod)
+    /// <summary>
+    /// `Init` is a function that takes a hostname, port, and a command handler method, and sets up a client to connect to
+    /// the hostname and port, and sets up a stream to read from the client, and sets up a buffer to read into, and sets up
+    /// a function to handle messages from the server
+    /// </summary>
+    /// <param name="hostname">The hostname of the server you want to connect to.</param>
+    /// <param name="port">The port to connect to.</param>
+    /// <param name="commandHandlerMethod">This is the method that will be called when a command is received from the
+    /// server.</param>
+    public void Init(string hostname, int port, Action<JObject, bool> commandHandlerMethod)
     {
         OnMessage += (_, json) => HandleMessage(json);
 
@@ -45,6 +54,10 @@ public class DefaultClientConnection
         SetupClient();
     }
 
+    /// <summary>
+    /// It sends a request to the server for the public key, and when the server responds, it sets the public key to the
+    /// value it received
+    /// </summary>
     private void SetupClient()
     {
         var serial = Util.RandomString();
@@ -98,6 +111,14 @@ public class DefaultClientConnection
         return;
     }
     
+    /// <summary>
+    /// We read the data from the stream, and then we check if we have enough data to read a packet. If we do, we read the
+    /// packet, and then we remove it from the buffer. If we don't, we wait for more data
+    /// </summary>
+    /// <param name="IAsyncResult">The result of the asynchronous operation.</param>
+    /// <returns>
+    /// The number of bytes read from the stream.
+    /// </returns>
     private void OnRead(IAsyncResult readResult)
     {
         try
@@ -132,6 +153,10 @@ public class DefaultClientConnection
         stream.BeginRead(_buffer, 0, 1024, OnRead, null);
     }
     
+    /// <summary>
+    /// It sends a message to the server
+    /// </summary>
+    /// <param name="message">The message to send to the server.</param>
     public void SendData(string message)
     {
         try
@@ -173,6 +198,16 @@ public class DefaultClientConnection
         stream.Write(comman, 0, comman.Length);
     }
     
+    /// <summary>
+    /// It takes two byte arrays and a count, and returns a new byte array that is the concatenation of the first two
+    /// arrays, with the second array truncated to the specified count
+    /// </summary>
+    /// <param name="b1">The first byte array to concatenate.</param>
+    /// <param name="b2">The byte array to be appended to b1</param>
+    /// <param name="count">The number of bytes to copy from the second array.</param>
+    /// <returns>
+    /// The concatenation of the two byte arrays.
+    /// </returns>
     private static byte[] Concat(byte[] b1, byte[] b2, int count)
     {
         var r = new byte[b1.Length + count];
@@ -181,11 +216,22 @@ public class DefaultClientConnection
         return r;
     }
     
+    /// <summary>
+    /// It returns the public key of the RSA object
+    /// </summary>
+    /// <returns>
+    /// The public key of the RSA object.
+    /// </returns>
     public byte[] GetRsaPublicKey()
     {
         return Rsa.ExportRSAPublicKey();
     }
     
+    /// <summary>
+    /// > This function adds a callback to the serialCallbacks dictionary
+    /// </summary>
+    /// <param name="serial">The serial number of the device you want to listen for.</param>
+    /// <param name="action">The function to be called when the serial is received.</param>
     public void AddSerialCallback(string serial, Action<JObject> action)
     {
         if (serialCallbacks.ContainsKey(serial))
@@ -196,6 +242,10 @@ public class DefaultClientConnection
         serialCallbacks.Add(serial, action);
     }
     
+    /// <summary>
+    /// It encrypts the message with AES, encrypts the AES key and IV with RSA, and sends the encrypted message
+    /// </summary>
+    /// <param name="String">The message to send</param>
     public void SendEncryptedData(String message)
     {
         
@@ -233,6 +283,9 @@ public class DefaultClientConnection
     }
     #endregion
 
+    /// <summary>
+    /// It closes the stream and the client
+    /// </summary>
     public void Disconnect()
     {
         stream.Close();

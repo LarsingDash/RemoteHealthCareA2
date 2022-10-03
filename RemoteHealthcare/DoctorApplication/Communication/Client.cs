@@ -23,7 +23,7 @@ public class Client : DefaultClientConnection
     public Client()
     {
         commandHandler.Add("public-rsa-key", new RsaKey());
-        init("127.0.0.1", 2460, (json, encrypted) =>
+        Init("127.0.0.1", 2460, (json, encrypted) =>
             {
                 string extraText = encrypted ? "Encrypted " : "";
                if (commandHandler.ContainsKey(json["id"]!.ToObject<string>()!))

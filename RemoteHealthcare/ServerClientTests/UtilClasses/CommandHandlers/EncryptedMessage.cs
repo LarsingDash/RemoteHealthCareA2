@@ -8,6 +8,11 @@ namespace ServerClientTests.UtilClasses.CommandHandlers;
 
 public class EncryptedMessage : ICommandHandler
 {
+    /// <summary>
+    /// It decrypts the message, and then handles it
+    /// </summary>
+    /// <param name="DefaultClientConnection">The connection to the client</param>
+    /// <param name="JObject">The JObject that was received from the client.</param>
     public void HandleCommand(DefaultClientConnection client, JObject ob)
     {
         try

@@ -7,6 +7,12 @@ namespace ServerApplication.Client.DataHandlers.CommandHandlers.Doctor;
 
 public class HistoricClientData : ICommandHandler
 {
+    /// <summary>
+    /// It gets the username from the message, checks if the user exists, and if so, it sends the user's historic data
+    /// </summary>
+    /// <param name="Server">The server that the message was sent to.</param>
+    /// <param name="ClientData">The client that sent the message.</param>
+    /// <param name="JObject">The JObject that was sent from the client.</param>
     public void HandleMessage(Server server, ClientData data, JObject ob)
     {
         if (ob["data"]?["username"]?.ToObject<string>() != null)

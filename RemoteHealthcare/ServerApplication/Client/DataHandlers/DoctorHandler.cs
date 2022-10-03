@@ -13,7 +13,8 @@ namespace ServerApplication.Client.DataHandlers
                 {"encryptedMessage", new EncryptedMessage(clientData.Server.Rsa)},
                 {"active-clients", new ActiveClients()},
                 {"historic-client-data", new HistoricClientData()},
-                {"all-clients", new AllClients()}
+                {"all-clients", new AllClients()},
+                {"start-bike-recording", new StartBikeRecording()}
             };
         }
     }

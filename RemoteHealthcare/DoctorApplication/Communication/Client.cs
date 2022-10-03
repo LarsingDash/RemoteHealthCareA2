@@ -73,7 +73,7 @@ public class Client
         
         SendEncryptedData(JsonFileReader.GetObjectAsString("AllClients", new Dictionary<string, string>(), JsonFolder.Json.Path));
         
-        
+
     }
 
     private void SetupClient()

@@ -35,7 +35,7 @@ public class ServerClientDoctorTests
         patientUserName = "OnlyFolder";
         port = 2446;
         server = new Server(port);
-        patient = new DefaultClientConnection("127.0.0.1", port, json =>
+        patient = new DefaultClientConnection("127.0.0.1", port, (json, encrypted) =>
         {
             if (patientCommandHandler.ContainsKey(json["id"]!.ToObject<string>()!))
             {
@@ -51,7 +51,7 @@ public class ServerClientDoctorTests
             }
         });
 
-        doctor = new DefaultClientConnection("127.0.0.1", port, json =>
+        doctor = new DefaultClientConnection("127.0.0.1", port, (json, encrypted) =>
         {
             if (doctorCommandHandler.ContainsKey(json["id"]!.ToObject<string>()!))
             {

@@ -144,8 +144,11 @@ namespace ServerApplication.Client
                             message = ob.ToString();
                         }
                     }
-                    Logger.LogMessage(LogImportance.Information, 
-                        $"Sending message: {LogColor.Gray}\n{ob.ToString(Formatting.None)}");
+                    if (!ob["id"]!.ToObject<string>()!.Equals("encryptedMessage"))
+                    {
+                        Logger.LogMessage(LogImportance.Information, 
+                            $"Sending message: {LogColor.Gray}\n{ob.ToString(Formatting.None)}");
+                    }
                 }
                 catch(JsonReaderException)
                 {

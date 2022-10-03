@@ -26,7 +26,7 @@ public class ServerClientTests
             {"public-rsa-key", new RsaKey()},
             {"encryptedMessage", new EncryptedMessage()}
         };
-        client = new DefaultClientConnection("127.0.0.1", port, json => {
+        client = new DefaultClientConnection("127.0.0.1", port, (json, encrypted) => {
             if (clientCommandHandler.ContainsKey(json["id"]!.ToObject<string>()!))
             {
                 if (!json["id"]!.ToObject<string>()!.Equals("encryptedMessage"))

@@ -45,7 +45,7 @@ public class Tests
         serverType = typeof(Server);
         usersFieldServer = serverType.GetField("users", BindingFlags.NonPublic | BindingFlags.Instance)!;
 
-        client = new DefaultClientConnection("127.0.0.1", 2450, json =>
+        client = new DefaultClientConnection("127.0.0.1", 2450, (json, encrypted) =>
         {
             if (commandHandler.ContainsKey(json["id"]!.ToObject<string>()!))
             {

@@ -41,7 +41,7 @@ namespace ServerClientTests
         [Test]
         public void ReceivingIncomingRequests()
         {
-            DefaultClientConnection connection = new DefaultClientConnection("127.0.0.1", port, ob => {
+            DefaultClientConnection connection = new DefaultClientConnection("127.0.0.1", port, (ob, encrypted) => {
                 Logger.LogMessage(LogImportance.Debug, "Receiving message: " + LogColor.Gray + "\n" + ob.ToString(Formatting.None));
             });
             Task.Delay(1000).ContinueWith((o) =>

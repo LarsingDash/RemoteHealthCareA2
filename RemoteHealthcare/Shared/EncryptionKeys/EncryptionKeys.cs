@@ -8,7 +8,7 @@ namespace Shared;
 
 public class EncryptionKeys
 {
-    private static string sharedDir = Environment.CurrentDirectory.Substring(0, Environment.CurrentDirectory.LastIndexOf("RemoteHealthcare", StringComparison.Ordinal)) + "RemoteHealthcare\\SharedProject" + "\\";
+    private static string sharedDir = Environment.CurrentDirectory.Substring(0, Environment.CurrentDirectory.LastIndexOf("RemoteHealthcare", StringComparison.Ordinal)) + "RemoteHealthcare\\Shared" + "\\";
 
     
     /// <summary>

@@ -14,16 +14,27 @@ public class DefaultClientConnection
     private TcpClient client;
     private NetworkStream stream;
     private Dictionary<string, Action<JObject>> serialCallbacks = new();
-    private Action<JObject> commandHandlerMethod;
+    private Action<JObject, bool> commandHandlerMethod;
     
     public RSA Rsa = new RSACryptoServiceProvider();
     #endregion
     
     
 
-    public DefaultClientConnection(string hostname, int port, Action<JObject> commandHandlerMethod)
+    public DefaultClientConnection(string hostname, int port, Action<JObject, bool> commandHandlerMethod)
     {
-        OnMessage += async (_, json) => await HandleMessage(json);
+        init(hostname, port, commandHandlerMethod);
+        
+    }
+
+    public DefaultClientConnection()
+    {
+        
+    }
+
+    public void init(string hostname, int port, Action<JObject, bool> commandHandlerMethod)
+    {
+        OnMessage += (_, json) => HandleMessage(json);
 
         this.commandHandlerMethod = commandHandlerMethod;
         
@@ -32,7 +43,6 @@ public class DefaultClientConnection
         stream.BeginRead(_buffer, 0, 1024, OnRead, null);
 
         SetupClient();
-        
     }
 
     private void SetupClient()
@@ -54,6 +64,7 @@ public class DefaultClientConnection
     private readonly byte[] _buffer = new byte[1024];
     public event EventHandler<JObject> OnMessage;
     private byte[] PublicKey;
+
     /// <summary>
     /// It checks if the message has a serial, if it does it checks if the client has a callback for that serial, if it does
     /// it calls the callback and removes it from the list, if it doesn't it checks if the message has an id, if it does it
@@ -61,28 +72,31 @@ public class DefaultClientConnection
     /// logs a warning
     /// </summary>
     /// <param name="json">The message that was sent from the client.</param>
+    /// <param name="encrypted">If the messages was encrypted</param>
     /// <returns>
     /// The return value is a string.
     /// </returns>
-        public async Task HandleMessage(JObject json)
+    public void HandleMessage(JObject json, bool encrypted = false)
+    {
+        string extraText = encrypted ? "Encrypted " : "";
+        if (!json.ContainsKey("id"))
         {
-            if (!json.ContainsKey("id"))
+            Logger.LogMessage(LogImportance.Warn, $"Got {extraText}message with no id from server: {LogColor.Gray}\n{json.ToString(Formatting.None)}");
+            return;
+        }
+        if (json.ContainsKey("serial"))
+        {
+            var serial = json["serial"]!.ToObject<string>();
+            if (serialCallbacks.ContainsKey(serial!))
             {
-                Logger.LogMessage(LogImportance.Warn, $"Got message with no id from server: {LogColor.Gray}\n{json.ToString(Formatting.None)}");
+                serialCallbacks[serial!].Invoke(json);
+                serialCallbacks.Remove(serial!);
                 return;
             }
-            if (json.ContainsKey("serial"))
-            {
-                var serial = json["serial"]!.ToObject<string>();
-                if (serialCallbacks.ContainsKey(serial!))
-                {
-                    serialCallbacks[serial!].Invoke(json);
-                    serialCallbacks.Remove(serial!);
-                    return;
-                }
-            }
-            commandHandlerMethod.Invoke(json);
         }
+        commandHandlerMethod.Invoke(json, encrypted);
+        return;
+    }
     
     private void OnRead(IAsyncResult readResult)
     {
@@ -140,8 +154,12 @@ public class DefaultClientConnection
                     message = ob.ToString();
                 }
             }
-            Logger.LogMessage(LogImportance.Information, 
-                $"Sending message: {LogColor.Gray}\n{ob.ToString(Formatting.None)}");
+
+            if (!ob["id"]!.ToObject<string>()!.Equals("encryptedMessage"))
+            {
+                Logger.LogMessage(LogImportance.Information, 
+                    $"Sending message: {LogColor.Gray}\n{ob.ToString(Formatting.None)}");
+            }
         }
         catch(JsonReaderException)
         {
@@ -180,6 +198,7 @@ public class DefaultClientConnection
     
     public void SendEncryptedData(String message)
     {
+        
         try
         {
             Logger.LogMessage(LogImportance.Information, 

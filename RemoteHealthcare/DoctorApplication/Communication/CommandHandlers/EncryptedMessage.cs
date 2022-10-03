@@ -43,13 +43,13 @@ public class EncryptedMessage : ICommandHandler
                     try
                     {
                         json = JObject.Parse(message);
-                        Logger.LogMessage(LogImportance.Information, $"Got encrypted message: {LogColor.Gray}\n{ob.ToString(Formatting.None)}");
+                       // Logger.LogMessage(LogImportance.Information, $"Got encrypted message: {LogColor.Gray}\n{ob.ToString(Formatting.None)}");
                     } catch(JsonReaderException e)
                     {
                         Logger.LogMessage(LogImportance.Warn, $"Got encrypted message, but message could not be parsed to JSON: {LogColor.Gray}\n{message}", e);
                         return;
                     }
-                    client.HandleMessage(json);
+                    client.HandleMessage(json, true);
                 }
                 else
                 {

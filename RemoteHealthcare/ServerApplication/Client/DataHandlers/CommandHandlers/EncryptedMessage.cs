@@ -39,7 +39,7 @@ public class EncryptedMessage : ICommandHandler
                     try
                     {
                         JObject json = JObject.Parse(message);
-                        Logger.LogMessage(LogImportance.Information, $"Got encrypted message: {LogColor.Gray}\n{ob.ToString(Formatting.None)}");
+                        //Logger.LogMessage(LogImportance.Information, $"Got encrypted message: {LogColor.Gray}\n{ob.ToString(Formatting.None)}");
                         data.DataHandler.HandleMessage(data, json);
                     } catch(JsonReaderException e)
                     {

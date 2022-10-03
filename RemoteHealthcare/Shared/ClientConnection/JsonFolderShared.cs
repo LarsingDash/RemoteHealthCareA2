@@ -11,7 +11,7 @@ namespace Shared
     {
         JsonFolderShared(string path)
         {
-            this.Path = Environment.CurrentDirectory.Substring(0, Environment.CurrentDirectory.LastIndexOf("bin", StringComparison.Ordinal)) + path;
+            this.Path = Environment.CurrentDirectory.Substring(0, Environment.CurrentDirectory.LastIndexOf("RemoteHealthcare", StringComparison.Ordinal)) + "RemoteHealthcare\\Shared\\" + path;
         }
 
         public string Path { get; }

@@ -6,14 +6,15 @@
         xmlns:local="clr-namespace:DoctorApplication"
         mc:Ignorable="d"
         Title="Doctor Application" Height="450" Width="800">
-    <Grid>
-        <Grid.ColumnDefinitions>
+    <Border BorderBrush="Black" BorderThickness="2">
+        <Grid>
+            <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"></ColumnDefinition>
             <ColumnDefinition Width="1*"></ColumnDefinition>
             <ColumnDefinition Width="1*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="0">
-            
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="1*"></RowDefinition>
                 <RowDefinition Height="2*"></RowDefinition>
@@ -29,8 +30,9 @@
 
             </StackPanel>
             <StackPanel 
+                Name="UserInformationPagePanel"
                 Grid.Row="1"
-                Orientation="Vertical">
+                Orientation="Vertical" >
                 <Label Name="AboutLabel" HorizontalAlignment="Center" Padding="5,5,5,0" FontWeight="Bold">About:</Label>
                 <Label Name="UsernameHeader" HorizontalAlignment="Left" Padding="5,5,5,0">Username:</Label>
                 <Label Name="UsernameText" HorizontalAlignment="Left" Padding="5,0,5,5">User 1</Label>
@@ -41,16 +43,65 @@
 
             </StackPanel>
             <DockPanel Name="ChatDockPanel" LastChildFill="False" Grid.Row="2">
+                <DockPanel.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FFF5FFF4"/>
+                        <GradientStop Color="White" Offset="1"/>
+                    </LinearGradientBrush>
+                </DockPanel.Background>
                 <Label Name="ChatHeader" Content="Chat:" HorizontalAlignment="Center" DockPanel.Dock="Top" FontWeight="Bold"></Label>
                 <Grid Name="ChatTextBoxPanel" DockPanel.Dock="Bottom">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="8*"></ColumnDefinition>
                         <ColumnDefinition Width="2*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <TextBox Name="ChatTextBox" DockPanel.Dock="Left" Grid.Column="0" />
-                    <Button Name="ChatSendTextButton" DockPanel.Dock="Right" Grid.Column="1" />
+                    <Button Name="ChatSendTextButton" DockPanel.Dock="Right" Grid.Column="1" Background="#FF42D003" Content="➤" BorderBrush="#FF1B1B1B" Foreground="#FFFFF7F7" />
                 </Grid>
             </DockPanel>
         </Grid>
-    </Grid>
+        <Grid Name="BikeInformationGrid" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"></RowDefinition>
+                <RowDefinition Height="2*"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <StackPanel 
+                Name="BikeInformationPanel"
+                Grid.Row="0"
+                Orientation="Vertical" >
+                <Label Name="BikeInformationLabel" HorizontalAlignment="Center" Padding="5,5,5,0" FontWeight="Bold">Bike information:</Label>
+                <Label Name="BikeGraphHeaderLabel" HorizontalAlignment="Left" Padding="5,5,5,0">Graph(Kilometer / Hour):</Label>
+            </StackPanel>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="1" Grid.Column="0" Name="CurrentSpeedHeader" HorizontalAlignment="Right">Current Speed:</Label>
+                <Label Grid.Row="2" Grid.Column="0" Name="TopSpeedHeader" HorizontalAlignment="Right">Top Speed:</Label>
+                <Label Grid.Row="3" Grid.Column="0" Name="AverageSpeedheader" HorizontalAlignment="Right">Average speed:</Label>
+                <Label Grid.Row="4" Grid.Column="0" Name="TimeElapsedHeader" HorizontalAlignment="Right">Time Elapsed:</Label>
+
+                <Label Grid.Row="1" Grid.Column="1" Name="CurrentSpeedText" HorizontalAlignment="Center"> 00 KM/H</Label>
+                <Label Grid.Row="2" Grid.Column="2" Name="TopSpeedText" HorizontalAlignment="Center">00 KM/H</Label>
+                <Label Grid.Row="3" Grid.Column="3" Name="AverageSpeedText" HorizontalAlignment="Center">00 KM/H</Label>
+                <Label Grid.Row="4" Grid.Column="4" Name="TimeElapsedText" HorizontalAlignment="Center">00 KM/H</Label>
+            </Grid>
+        </Grid>
+            
+            <Grid Name="HeartRateInformationGrid" Grid.Column="1"></Grid>
+
+        </Grid>
+    </Border>
 </Window>

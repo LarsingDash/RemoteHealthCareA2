@@ -2,10 +2,10 @@ using System.Text;
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
-using ServerApplication.Encryption;
+using Shared.Encryption;
 using System.Linq;
 
-namespace ServerApplication;
+namespace Shared;
 
 public class Util
 {
@@ -47,14 +47,21 @@ public class Util
         return sb.ToString();
     }
     
-    public static string ArrayToString<T>(T[] values, bool brackets = true)
+    public static string ArrayToString<T>(T[] values, bool brackets = true, bool addStringBrackets = false)
     {
         var sb = new StringBuilder();
         if (brackets)
             sb.Append("[");
         foreach (var b in values)
         {
-            sb.Append(b.ToString() + ", ");
+            if (addStringBrackets)
+            {
+                sb.Append("\"" + b.ToString() + "\", ");
+            }
+            else
+            {
+                sb.Append(b.ToString() + ", ");
+            }
         }
 
         if (values.Length > 0)

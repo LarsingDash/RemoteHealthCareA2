@@ -2,7 +2,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ClientSide.VR.CommandHandlers;
 
-public class TunnelCreate : CommandHandler
+public class TunnelCreate : ICommandHandler
 {
     /// <summary>
     /// This function is called when the client receives a response from the server

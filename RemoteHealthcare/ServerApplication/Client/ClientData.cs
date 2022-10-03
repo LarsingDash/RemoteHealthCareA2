@@ -4,9 +4,11 @@ using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ServerApplication.Client.DataHandlers;
-using ServerApplication.Encryption;
-using ServerApplication.Log;
+using Shared.Encryption;
+using Shared.Log;
+using Shared;
 using ServerApplication.UtilData;
+using JsonFolder = ServerApplication.UtilData.JsonFolder;
 
 namespace ServerApplication.Client
 {
@@ -142,8 +144,11 @@ namespace ServerApplication.Client
                             message = ob.ToString();
                         }
                     }
-                    Logger.LogMessage(LogImportance.Information, 
-                        $"Sending message: {LogColor.Gray}\n{ob.ToString(Formatting.None)}");
+                    if (!ob["id"]!.ToObject<string>()!.Equals("encryptedMessage"))
+                    {
+                        Logger.LogMessage(LogImportance.Information, 
+                            $"Sending message: {LogColor.Gray}\n{ob.ToString(Formatting.None)}");
+                    }
                 }
                 catch(JsonReaderException)
                 {

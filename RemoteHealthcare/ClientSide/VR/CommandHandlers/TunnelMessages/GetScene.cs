@@ -2,7 +2,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ClientSide.VR.CommandHandlers.TunnelMessages;
 
-public class GetScene : CommandHandler
+public class GetScene : ICommandHandler
 {
     /// <summary>
     /// > This function is called when the client receives a command from the server

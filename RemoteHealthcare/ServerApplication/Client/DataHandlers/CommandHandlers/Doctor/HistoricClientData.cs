@@ -1,5 +1,6 @@
 using Newtonsoft.Json.Linq;
-using ServerApplication.Log;
+using Shared.Log;
+using Shared;
 using ServerApplication.UtilData;
 
 namespace ServerApplication.Client.DataHandlers.CommandHandlers.Doctor;
@@ -11,8 +12,6 @@ public class HistoricClientData : ICommandHandler
         if (ob["data"]?["username"]?.ToObject<string>() != null)
         {
             string userName = ob["data"]!["username"]!.ToObject<string>()!;
-            //ClientData? client = server.GetUser(ob["data"]!["username"]!.ToObject<string>()!);
-            Logger.LogMessage(LogImportance.Debug, JsonFolder.Data.Path + userName);
             if (Directory.Exists(JsonFolder.Data.Path + userName))
             {
                 JArray sendFile = new JArray();

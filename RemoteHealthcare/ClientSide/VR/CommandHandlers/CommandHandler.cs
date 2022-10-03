@@ -2,7 +2,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ClientSide.VR.CommandHandlers;
 
-public interface CommandHandler
+public interface ICommandHandler
 {
     /// <summary>
     /// This function is called when a command is received from the server

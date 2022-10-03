@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
-using ServerApplication.Encryption;
 
-namespace ServerApplication.Log
+namespace Shared.Log
 {
     public class LogColor
     {

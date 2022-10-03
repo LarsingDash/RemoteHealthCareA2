@@ -1,5 +1,5 @@
 using System;
-using ServerApplication.Log;
+using Shared.Log;
 
 namespace DoctorApplication.Communication;
 

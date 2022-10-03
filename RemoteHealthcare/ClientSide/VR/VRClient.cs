@@ -6,7 +6,7 @@ using ClientSide.VR.CommandHandlers;
 using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using ServerApplication;
+using Shared;
 
 namespace ClientSide.VR;
 
@@ -15,7 +15,7 @@ public class VRClient
     private TcpClient _tcpClient = new();
     private NetworkStream _stream;
 
-    private Dictionary<String, CommandHandler> commands = new();
+    private Dictionary<String, ICommandHandler> commands = new();
 
     private byte[] _totalBuffer = new byte[0];
     private readonly byte[] _buffer = new byte[1024];

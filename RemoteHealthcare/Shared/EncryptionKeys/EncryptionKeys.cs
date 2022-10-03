@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
-using ServerApplication.Encryption;
+using Shared.Encryption;
 using System.IO;
 
-namespace ServerApplication;
+namespace Shared;
 
 public class EncryptionKeys
 {
-    private static string sharedDir = Environment.CurrentDirectory.Substring(0, Environment.CurrentDirectory.LastIndexOf("RemoteHealthcare", StringComparison.Ordinal)) + "RemoteHealthcare\\SharedProject" + "\\";
+    private static string sharedDir = Environment.CurrentDirectory.Substring(0, Environment.CurrentDirectory.LastIndexOf("RemoteHealthcare", StringComparison.Ordinal)) + "RemoteHealthcare\\Shared" + "\\";
 
     
     /// <summary>

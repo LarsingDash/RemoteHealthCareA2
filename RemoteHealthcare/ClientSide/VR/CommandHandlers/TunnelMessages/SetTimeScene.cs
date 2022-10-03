@@ -2,7 +2,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ClientSide.VR.CommandHandlers.TunnelMessages;
 
-public class SetTimeScene : CommandHandler
+public class SetTimeScene : ICommandHandler
 {
     /// <summary>
     /// > This function is called when the server sends a message to the client with the command "GetTime"

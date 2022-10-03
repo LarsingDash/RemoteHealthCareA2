@@ -2,9 +2,9 @@ using System.Security.Cryptography;
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
-using ServerApplication.Encryption;
+using Shared.Encryption;
 
-namespace ServerApplication.Encryption
+namespace Shared.Encryption
 {
     public class RsaHelper
     {

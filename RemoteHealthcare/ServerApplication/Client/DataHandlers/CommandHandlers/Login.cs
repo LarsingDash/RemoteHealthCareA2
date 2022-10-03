@@ -1,5 +1,6 @@
 using Newtonsoft.Json.Linq;
-using ServerApplication.Log;
+using Shared.Log;
+using Shared;
 using ServerApplication.UtilData;
 
 namespace ServerApplication.Client.DataHandlers.CommandHandlers
@@ -41,11 +42,11 @@ namespace ServerApplication.Client.DataHandlers.CommandHandlers
                     if (!Directory.Exists(totalPath))
                     {
                         (new FileInfo(totalPath)).Directory!.Create();
-                        Logger.LogMessage(LogImportance.Fatal, "Creating directory? " + totalPath);
+                        Logger.LogMessage(LogImportance.Information, "New user, adding: " + totalPath);
                     }
                     else
                     {
-                        Logger.LogMessage(LogImportance.Fatal, "Directory exists?");
+                        Logger.LogMessage(LogImportance.Information, "User logged in: " + totalPath);
                     }
                     return;
                 }

@@ -11,6 +11,8 @@
       <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta2" />
     </ItemGroup>
 
-    <Import Project="..\SharedProject\SharedProject.projitems" Label="Shared" />
+    <ItemGroup>
+      <ProjectReference Include="..\Shared\Shared.csproj" />
+    </ItemGroup>
 
 </Project>

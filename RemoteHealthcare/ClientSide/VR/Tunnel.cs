@@ -5,10 +5,10 @@ using Shared;
 
 namespace ClientSide.VR
 {
-    public class Tunnel : CommandHandler
+    public class Tunnel : ICommandHandler
     {
         private VRClient _vrClient;
-        private Dictionary<string, CommandHandler> _commands = new();
+        private Dictionary<string, ICommandHandler> _commands = new();
         private Dictionary<TunnelDataType, JObject> _data = new();
         private Dictionary<TunnelDataType, List<Action<JObject>>> _observers = new ();
         /* Initializing the tunnel class. */

@@ -12,6 +12,7 @@ namespace ServerApplication
         private TcpListener listener;
         public readonly List<ClientData> users = new();
         public readonly RSA Rsa = new RSACryptoServiceProvider();
+        private Thread requestThread;
         #endregion
 
 
@@ -19,8 +20,9 @@ namespace ServerApplication
         {
             listener = new TcpListener(IPAddress.Any, port);
             listener.Start();
-            new Thread(() =>
+            requestThread = new Thread(start: () =>
             {
+                Thread.CurrentThread.IsBackground = true;
                 while (true)
                 {
                     Logger.LogMessage(LogImportance.Information, "Waiting for connection with client.");
@@ -28,7 +30,8 @@ namespace ServerApplication
                     Logger.LogMessage(LogImportance.Information, "Accepted connection with client.");
                     users.Add(new ClientData(this, client));
                 }
-            }).Start();
+            });
+            requestThread.Start();
         }
 
         /// <summary>

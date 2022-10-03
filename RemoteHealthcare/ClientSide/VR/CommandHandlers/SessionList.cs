@@ -3,7 +3,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ClientSide.VR.CommandHandlers;
 
-public class SessionList : CommandHandler
+public class SessionList : ICommandHandler
 {
     private JObject currentObject = null;
     private DateTime parsedDate;

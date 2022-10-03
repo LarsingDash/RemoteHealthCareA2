@@ -5,7 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
-        <TargetFrameworks>net472;net6.0</TargetFrameworks>
+        <TargetFrameworks>net6.0</TargetFrameworks>
     </PropertyGroup>
 
     <ItemGroup>
@@ -21,6 +21,8 @@
       </Reference>
     </ItemGroup>
 
-    <Import Project="..\SharedProject\SharedProject.projitems" Label="Shared" />
+    <ItemGroup>
+      <ProjectReference Include="..\Shared\Shared.csproj" />
+    </ItemGroup>
 
 </Project>

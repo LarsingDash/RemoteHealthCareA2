@@ -64,7 +64,7 @@ namespace ServerApplication.Client.DataHandlers
                     {"_serial_", json["serial"]?.ToObject<string>() ?? "_serial_"},
                     {"_status_", "error"},
                     {"_error_", "ID not recognized, has client logged in?"}
-                }, JsonFolderShared.ClientMessages.Path));
+                }, JsonFolder.ClientMessages.Path));
             }
         }
     }

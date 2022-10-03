@@ -1,25 +1,10 @@
 using System.Net.Sockets;
-using System.Reflection;
 using System.Security.Cryptography;
-using System.Collections.Generic;
-using System.Collections;
 using System.Text;
 using Newtonsoft.Json;
-using Newtonsoft;
 using Newtonsoft.Json.Linq;
-using Shared;
-using System.Threading.Tasks;
-using System.Threading;
-using System.Runtime;
-using System;
-using System.Linq;
 using Shared.Encryption;
 using Shared.Log;
-using Formatting = Newtonsoft.Json.Formatting;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Runtime.InteropServices;
-using System.Runtime.Versioning;
 
 namespace Shared;
 
@@ -30,6 +15,8 @@ public class DefaultClientConnection
     private NetworkStream stream;
     private Dictionary<string, Action<JObject>> serialCallbacks = new();
     private Action<JObject> commandHandlerMethod;
+    
+    public RSA Rsa = new RSACryptoServiceProvider();
     #endregion
     
     
@@ -60,13 +47,9 @@ public class DefaultClientConnection
         {
             {"_serial_", serial}
         }, JsonFolderShared.Json.Path));
-        
-        Thread.Sleep(500);
-        
     }
 
     #region Sending and retrieving data
-    private RSA rsa = new RSACryptoServiceProvider();
     private byte[] _totalBuffer = Array.Empty<byte>();
     private readonly byte[] _buffer = new byte[1024];
     public event EventHandler<JObject> OnMessage;
@@ -99,18 +82,6 @@ public class DefaultClientConnection
                 }
             }
             commandHandlerMethod.Invoke(json);
-            // if (commandHandler.ContainsKey(json["id"]!.ToObject<string>()!))
-            // {
-            //     if (!json["id"]!.ToObject<string>()!.Equals("encryptedMessage"))
-            //     {
-            //         Logger.LogMessage(LogImportance.Information, $"Got message from server: {LogColor.Gray}\n{json.ToString(Formatting.None)}");
-            //     }
-            //     commandHandler[json["id"]!.ToObject<string>()!].HandleCommand(this, json);
-            // }
-            // else
-            // {
-            //     Logger.LogMessage(LogImportance.Warn, $"Got message from server but no commandHandler found: {LogColor.Gray}\n{json.ToString(Formatting.None)}");
-            // }
         }
     
     private void OnRead(IAsyncResult readResult)
@@ -194,7 +165,7 @@ public class DefaultClientConnection
     
     public byte[] GetRsaPublicKey()
     {
-        return new byte[5];
+        return Rsa.ExportRSAPublicKey();
     }
     
     public void AddSerialCallback(string serial, Action<JObject> action)
@@ -220,14 +191,11 @@ public class DefaultClientConnection
                 $"Sending encrypted message: {LogColor.Gray}\n(_NonJsonObject_)");
         }
         Aes aes = Aes.Create("AesManaged")!;
-        RSA rsa = new RSACryptoServiceProvider();
-        rsa.ImportParameters(new RSAParameters()
-        {
-            Exponent =  PublicKey
-        });
+        RSA newRsa = new RSACryptoServiceProvider();
+        newRsa.ImportRSAPublicKey(PublicKey, out int a);
 
-        var keyCrypt = RsaHelper.EncryptMessage(aes.Key, rsa.ExportParameters(false), false);
-        var iVCrypt = RsaHelper.EncryptMessage(aes.IV, rsa.ExportParameters(false), false);
+        var keyCrypt = RsaHelper.EncryptMessage(aes.Key, newRsa.ExportParameters(false), false);
+        var iVCrypt = RsaHelper.EncryptMessage(aes.IV, newRsa.ExportParameters(false), false);
         var aesCrypt = AesHelper.EncryptMessage(message, aes.Key, aes.IV);
 
         if (keyCrypt != null && iVCrypt != null)
@@ -245,4 +213,10 @@ public class DefaultClientConnection
         }
     }
     #endregion
+
+    public void Disconnect()
+    {
+        stream.Close();
+        client.Close();
+    }
 }

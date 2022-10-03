@@ -14,7 +14,7 @@ namespace ClientSide
         public static void Main(string[] args)
         {
             JsonFileReader.Initialize(Environment.CurrentDirectory.Substring(0, Environment.CurrentDirectory.LastIndexOf("bin")) + "VR\\Json\\");
-            Console.Write("Choose application (1=Bike  2=VR): ");
+            Console.Write("Choose application (1=Bike  2=VR  3=DoctorGUI): ");
             string option = Console.ReadLine();
 
             switch (option)
@@ -28,7 +28,11 @@ namespace ClientSide
                     VRClient vrClient = new VRClient();
                     vrClient.StartConnectionAsync();
                     break;
-
+                case "3":
+                    Console.WriteLine("DoctorGUI started");
+                    
+                    //todo startup application for Doctor GUI
+                    break;
                 default:
                     Console.WriteLine("No option was chosen");
                     break;

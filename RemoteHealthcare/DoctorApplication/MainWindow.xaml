@@ -5,8 +5,52 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DoctorApplication"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Doctor Application" Height="450" Width="800">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"></ColumnDefinition>
+            <ColumnDefinition Width="1*"></ColumnDefinition>
+            <ColumnDefinition Width="1*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"></RowDefinition>
+                <RowDefinition Height="2*"></RowDefinition>
+                <RowDefinition Height="3*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <StackPanel 
+                Grid.Row="0"
+                Orientation="Vertical">
+                <Label Name="SelectedUserLabel" HorizontalAlignment="Center" FontWeight="Bold">Selected User:</Label>
+                <ComboBox x:Name="SelectedUserComboBox"  Width="240" SelectionChanged="ComboBox_SelectionChanged">
+                    <TabItem Name="" Content="User1"/>
+                </ComboBox>
 
+            </StackPanel>
+            <StackPanel 
+                Grid.Row="1"
+                Orientation="Vertical">
+                <Label Name="AboutLabel" HorizontalAlignment="Center" Padding="5,5,5,0" FontWeight="Bold">About:</Label>
+                <Label Name="UsernameHeader" HorizontalAlignment="Left" Padding="5,5,5,0">Username:</Label>
+                <Label Name="UsernameText" HorizontalAlignment="Left" Padding="5,0,5,5">User 1</Label>
+                <Label Name="BikeIdHeader" HorizontalAlignment="Left" Padding="5,5,5,0">Bike ID:</Label>
+                <Label Name="BikeIdText" HorizontalAlignment="Left" Padding="5,0,5,5">12345</Label>
+                <Label Name="PhoneNumberHeader" HorizontalAlignment="Left" Padding="5,5,5,0">Phone Number:</Label>
+                <Label Name="PhoneNumberText" HorizontalAlignment="Left" Padding="5,0,5,5">06 12345678</Label>
+
+            </StackPanel>
+            <DockPanel Name="ChatDockPanel" LastChildFill="False" Grid.Row="2">
+                <Label Name="ChatHeader" Content="Chat:" HorizontalAlignment="Center" DockPanel.Dock="Top" FontWeight="Bold"></Label>
+                <Grid Name="ChatTextBoxPanel" DockPanel.Dock="Bottom">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Name="ChatTextBox" DockPanel.Dock="Left" Grid.Column="0" />
+                    <Button Name="ChatSendTextButton" DockPanel.Dock="Right" Grid.Column="1" />
+                </Grid>
+            </DockPanel>
+        </Grid>
     </Grid>
 </Window>

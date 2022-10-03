@@ -1,8 +1,8 @@
 using System.Security.Cryptography;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using ServerApplication.Encryption;
-using ServerApplication.Log;
+using Shared.Encryption;
+using Shared.Log;
 
 namespace ServerApplication.Client.DataHandlers.CommandHandlers;
 

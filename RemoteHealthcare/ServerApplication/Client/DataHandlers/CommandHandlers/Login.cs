@@ -1,5 +1,6 @@
 using Newtonsoft.Json.Linq;
-using ServerApplication.Log;
+using Shared.Log;
+using Shared;
 using ServerApplication.UtilData;
 
 namespace ServerApplication.Client.DataHandlers.CommandHandlers

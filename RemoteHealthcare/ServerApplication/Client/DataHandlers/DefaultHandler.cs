@@ -2,7 +2,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ServerApplication.Client.DataHandlers.CommandHandlers;
 using ServerApplication.Client.DataHandlers.CommandHandlers.Doctor;
-using ServerApplication.Log;
+using Shared.Log;
+using Shared;
 using ServerApplication.UtilData;
 
 namespace ServerApplication.Client.DataHandlers
@@ -63,7 +64,7 @@ namespace ServerApplication.Client.DataHandlers
                     {"_serial_", json["serial"]?.ToObject<string>() ?? "_serial_"},
                     {"_status_", "error"},
                     {"_error_", "ID not recognized, has client logged in?"}
-                }, JsonFolder.ClientMessages.Path));
+                }, JsonFolderShared.ClientMessages.Path));
             }
         }
     }

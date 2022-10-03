@@ -1,4 +1,4 @@
-namespace ServerApplication.Log
+namespace Shared.Log
 {
     public class LogImportance
     {

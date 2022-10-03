@@ -1,12 +1,12 @@
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
-using ServerApplication.Encryption;
+using Shared.Encryption;
 using System;
 using System.Collections.Generic;
 using System.IO;
 
 
-namespace ServerApplication;
+namespace Shared;
 
 public class JsonFileWriter
 {

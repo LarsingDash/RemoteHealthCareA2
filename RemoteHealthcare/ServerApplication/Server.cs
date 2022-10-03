@@ -2,7 +2,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Security.Cryptography;
 using ServerApplication.Client;
-using ServerApplication.Log;
+using Shared.Log;
 
 namespace ServerApplication
 {

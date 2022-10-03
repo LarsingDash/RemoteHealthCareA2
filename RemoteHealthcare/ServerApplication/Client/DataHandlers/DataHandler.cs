@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ServerApplication.Client.DataHandlers.CommandHandlers;
-using ServerApplication.Log;
+using Shared.Log;
 
 namespace ServerApplication.Client.DataHandlers
 {

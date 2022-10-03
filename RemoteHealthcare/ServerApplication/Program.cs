@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography;
-using ServerApplication.Log;
-using ServerApplication.UtilData;
+﻿using Shared.Log;
 
 namespace ServerApplication
 {

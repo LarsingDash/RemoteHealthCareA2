@@ -2,10 +2,10 @@ using System.Text;
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
-using ServerApplication.Encryption;
+using Shared.Encryption;
 using System.Linq;
 
-namespace ServerApplication;
+namespace Shared;
 
 public class Util
 {

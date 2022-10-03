@@ -10,9 +10,9 @@ using System.Xml;
 using DoctorApplication.Communication.CommandHandlers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using ServerApplication;
-using ServerApplication.Encryption;
-using ServerApplication.Log;
+using Shared;
+using Shared.Encryption;
+using Shared.Log;
 using Formatting = Newtonsoft.Json.Formatting;
 
 namespace DoctorApplication.Communication;

@@ -5,8 +5,8 @@ using System.Text;
 using Newtonsoft.Json.Linq;
 using ServerApplication;
 using ServerApplication.Client;
-using ServerApplication.Encryption;
-using ServerApplication.UtilData;
+using Shared;
+using Shared.Encryption;
 using Formatting = Newtonsoft.Json.Formatting;
 
 namespace ServerClientTests;
@@ -102,7 +102,7 @@ public class Tests
             {"_type_", "noType"},
             {"_username_", "TestClient53242"},
             {"_serial_", serial}
-        }, JsonFolderTest.Json.Path));
+        }, JsonFolder.Json.Path));
         
         Thread.Sleep(500);
         Assert.IsTrue(passed, "No Response from Command login received.");
@@ -123,7 +123,7 @@ public class Tests
             {"_type_", "Client"},
             {"_username_", "OnlyFolder"},
             {"_serial_", serial}
-        }, JsonFolderTest.Json.Path));
+        }, JsonFolder.Json.Path));
         
         Thread.Sleep(500);
         Assert.IsTrue(passed, "No Response from Command login received.");
@@ -149,7 +149,7 @@ public class Tests
         {
             {"_session_", "TestSession"},
             {"_serial_", serial}
-        }, JsonFolderTest.Json.Path));
+        }, JsonFolder.Json.Path));
         
         Thread.Sleep(500);
         Assert.IsTrue(passed, "No Response from start-bike-recording.");
@@ -172,7 +172,7 @@ public class Tests
         {
             {"_serial_", serial},
             {"_uuid_", uuid}
-        }, JsonFolderTest.Json.Path));
+        }, JsonFolder.Json.Path));
         Thread.Sleep(500);
         Assert.IsTrue(passed, "No Response change-data.");
     }
@@ -192,7 +192,7 @@ public class Tests
         {
             {"_serial_", serial},
             {"_uuid_", uuid}
-        }, JsonFolderTest.Json.Path));
+        }, JsonFolder.Json.Path));
         
         Thread.Sleep(500);
         Assert.IsTrue(passed, "No Response stop-bike-recording.");
@@ -244,7 +244,7 @@ public class Tests
                 {
                     {"\"_key_\"", Util.ByteArrayToString(GetRsaPublicKey())},
                     {"_serial_", json["serial"].ToObject<string>()}
-                }, JsonFolderTest.Json.Path));
+                }, JsonFolder.Json.Path));
                 break;
             }
             case "encryptedMessage":
@@ -350,7 +350,7 @@ public class Tests
             {"\"_key_\"", Util.ByteArrayToString(keyCrypt)},
             {"\"_data_\"", Util.ByteArrayToString(aesCrypt)},
             {"_serial_", serial}
-        }, JsonFolderTest.Json.Path));
+        }, JsonFolder.Json.Path));
     }
     #endregion
     

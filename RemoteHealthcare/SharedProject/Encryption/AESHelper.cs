@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json.Linq;
-using ServerApplication.Encryption;
+using Shared.Encryption;
 
-namespace ServerApplication.Encryption
+namespace Shared.Encryption
 {
     public class AesHelper
     {

@@ -9,6 +9,8 @@
     <Import_RootNamespace>SharedProject</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)ClientConnection\DefaultClientConnection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ClientConnection\JsonFolderShared.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EncryptionKeys\EncryptionKeys.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Encryption\AESHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Encryption\RSAHelper.cs" />
@@ -22,5 +24,8 @@
   <ItemGroup>
     <Content Include="$(MSBuildThisFileDirectory)EncryptionKeys\AesIV.txt" />
     <Content Include="$(MSBuildThisFileDirectory)EncryptionKeys\AesKey.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)ClientConnection\Json" />
   </ItemGroup>
 </Project>

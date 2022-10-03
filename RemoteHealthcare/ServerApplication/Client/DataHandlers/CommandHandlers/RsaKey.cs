@@ -1,5 +1,7 @@
 using Newtonsoft.Json.Linq;
 using ServerApplication.UtilData;
+using Shared;
+using JsonFolder = ServerApplication.UtilData.JsonFolder;
 
 namespace ServerApplication.Client.DataHandlers.CommandHandlers
 {
@@ -21,5 +23,6 @@ namespace ServerApplication.Client.DataHandlers.CommandHandlers
                 dict.Add("_serial_", ob["serial"]?.ToObject<string>() ??"_serial_");
             data.SendData(JsonFileReader.GetObjectAsString("PublicRSAKey", dict, JsonFolder.ClientMessages.Path));
         }
+        
     }
 }

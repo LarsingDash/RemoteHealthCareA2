@@ -57,9 +57,7 @@ public class StartBikeRecording : ICommandHandler
             }, JsonFolder.Json.Path);
             string fileName = Util.RandomString();
             string exactFileName = fileName + ".txt";
-            
-            string totalPath = JsonFolder.Data.Path + patient.UserName + "\\" + exactFileName;
-            JsonFileWriter.WriteTextToFileEncrypted(exactFileName, json, JsonFolder.Data.Path+data.UserName+"\\");
+            JsonFileWriter.WriteTextToFileEncrypted(exactFileName, json, JsonFolder.Data.Path+patient.UserName+"\\");
             data.SendEncryptedData(JsonFileReader.GetObjectAsString("StartBikeRecordingResponse",new Dictionary<string, string>()
             {
                 {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
@@ -69,7 +67,7 @@ public class StartBikeRecording : ICommandHandler
             }, JsonFolder.ClientMessages.Path));
             patient.SendEncryptedData(JsonFileReader.GetObjectAsString("StartBikeRecordingResponse",new Dictionary<string, string>()
             {
-                {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
+                {"_serial_", "_serial_"},
                 {"_status_", "ok"},
                 {"_uuid_", fileName}
             }, JsonFolder.ClientMessages.Path));

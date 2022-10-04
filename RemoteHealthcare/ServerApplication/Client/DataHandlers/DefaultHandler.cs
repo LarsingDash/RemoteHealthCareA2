@@ -23,8 +23,9 @@ namespace ServerApplication.Client.DataHandlers
         /// If the message has a serial, invoke the callback, otherwise, if the message has an id, invoke the command handler,
         /// otherwise, send an error message.
         /// </summary>
-        /// <param name="ClientData">The ClientData object that is associated with the client that sent the message.</param>
-        /// <param name="JObject">The json object that was sent from the client.</param>
+        /// <param name="clientData">The ClientData object that is associated with the client that sent the message.</param>
+        /// <param name="json">The json object that was sent from the client.</param>
+        /// <param name="encrypted">If the message was encrypted</param>
         /// <returns>
         /// A string
         /// </returns>

@@ -11,9 +11,9 @@ public class ChatMessage : CommandHandler
     /// <summary>
     /// It sends a message to the receiver
     /// </summary>
-    /// <param name="Server">The server instance</param>
-    /// <param name="ClientData">The client that sent the message</param>
-    /// <param name="JObject">The JObject that was sent from the client.</param>
+    /// <param name="server">The server instance</param>
+    /// <param name="data">The client that sent the message</param>
+    /// <param name="ob">The JObject that was sent from the client.</param>
     /// <returns>
     /// A string
     /// </returns>

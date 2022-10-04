@@ -22,8 +22,9 @@ namespace ServerApplication.Client.DataHandlers
         /// checks if the server has a command handler for that id, if it does it calls the command handler, if it doesn't it
         /// logs a warning
         /// </summary>
-        /// <param name="ClientData">The clientData object of the client that sent the message.</param>
-        /// <param name="JObject">The message that was sent from the client.</param>
+        /// <param name="clientData">The clientData object of the client that sent the message.</param>
+        /// <param name="json">The message that was sent from the client.</param>
+        /// <param name="encrypted">If the message was encrypted</param>
         /// <returns>
         /// The return value is a string.
         /// </returns>

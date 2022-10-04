@@ -9,9 +9,9 @@ public class ChangeData : CommandHandler
     /// <summary>
     /// It checks if the data is valid, if it is, it adds the data to the file
     /// </summary>
-    /// <param name="Server">The server that the message was sent to.</param>
-    /// <param name="ClientData">The ClientData object of the client that sent the message</param>
-    /// <param name="JObject">The JObject that was sent by the client.</param>
+    /// <param name="server">The server that the message was sent to.</param>
+    /// <param name="data">The ClientData object of the client that sent the message</param>
+    /// <param name="ob">The JObject that was sent by the client.</param>
     public override void HandleMessage(Server server, ClientData data, JObject ob)
     {
         if (ob["data"]?["uuid"]?.ToObject<string>() != null)

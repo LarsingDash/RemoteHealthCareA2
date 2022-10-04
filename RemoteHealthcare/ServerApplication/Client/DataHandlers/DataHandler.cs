@@ -8,12 +8,12 @@ namespace ServerApplication.Client.DataHandlers
     public abstract class DataHandler
     {
         public ClientData ClientData;
-        public Dictionary<string, ICommandHandler> CommandHandler;
+        public Dictionary<string, CommandHandler> CommandHandler;
     
         public DataHandler(ClientData clientData)
         {
             this.ClientData = clientData;
-            this.CommandHandler = new Dictionary<string, ICommandHandler>();
+            this.CommandHandler = new Dictionary<string, CommandHandler>();
         }
     
         /// <summary>

@@ -6,7 +6,7 @@ using Shared;
 
 namespace ServerApplication.Client.DataHandlers.CommandHandlers.Doctor;
 
-public class ChatMessage : ICommandHandler
+public class ChatMessage : CommandHandler
 {
     /// <summary>
     /// It sends a message to the receiver
@@ -17,29 +17,19 @@ public class ChatMessage : ICommandHandler
     /// <returns>
     /// A string
     /// </returns>
-    public void HandleMessage(Server server, ClientData data, JObject ob)
+    public override void HandleMessage(Server server, ClientData data, JObject ob)
     {
         if (ob["data"]?["message"]?.ToObject<string>() == null)
         {
-            data.SendEncryptedData(JsonFileReader.GetObjectAsString("ChatMessageResponse",
-                new Dictionary<string, string>()
-                {
-                    { "_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_" },
-                    { "_status_", "error" },
-                    { "_error_", "There is no message" }
-                }, JsonFolder.ClientMessages.Path));
+            //Sending error message(no Message)
+            SendEncryptedError(data,ob, "There is no message");
             return;
         }
 
         if (ob["data"]?["receiver"]?.ToObject<string>() == null)
         {
-            data.SendEncryptedData(JsonFileReader.GetObjectAsString("ChatMessageResponse",
-                new Dictionary<string, string>()
-                {
-                    { "_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_" },
-                    { "_status_", "error" },
-                    { "_error_", "There is no receiver" }
-                }, JsonFolder.ClientMessages.Path));
+            //Sending error message(no Receiver)
+            SendEncryptedError(data, ob, "There is no receiver");
             return;
         }
 
@@ -67,13 +57,7 @@ public class ChatMessage : ICommandHandler
         else
         {
             //Sending error message
-            data.SendEncryptedData(JsonFileReader.GetObjectAsString("ChatMessageResponse",
-                new Dictionary<string, string>()
-                {
-                    { "_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_" },
-                    { "_status_", "error"},
-                    { "_error_", "There is a receiver name given, but it could not be found" }
-                }, JsonFolder.ClientMessages.Path));
+            SendEncryptedError(data, ob, "There is a receiver name given, but it could not be found");
             return;
         }
 

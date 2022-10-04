@@ -6,7 +6,7 @@ using JsonFolder = ServerApplication.UtilData.JsonFolder;
 
 namespace ServerApplication.Client.DataHandlers.CommandHandlers;
 
-public class StopBikeRecording : ICommandHandler
+public class StopBikeRecording : CommandHandler
 {
     /// <summary>
     /// It gets the current values of the file, adds the end time, and writes the updated values to the file
@@ -14,7 +14,7 @@ public class StopBikeRecording : ICommandHandler
     /// <param name="server">The server object</param>
     /// <param name="data">The client that sent the message</param>
     /// <param name="ob">The JObject that was sent from the client.</param>
-    public void HandleMessage(Server server, ClientData data, JObject ob)
+    public override void HandleMessage(Server server, ClientData data, JObject ob)
     {
         if (ob["data"]?["uuid"]?.ToObject<string>() != null)
         {
@@ -43,12 +43,8 @@ public class StopBikeRecording : ICommandHandler
         else
         {
             //Sending error response
-            data.SendEncryptedData(JsonFileReader.GetObjectAsString("StopBikeRecordingResponse",new Dictionary<string, string>()
-            {
-                {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
-                {"_status_", "error"},
-                {"_error_", "There is no session name"}
-            }, JsonFolder.ClientMessages.Path));
+            SendEncryptedError(data,ob,"There is no session name");
+           
         }
     }
 }

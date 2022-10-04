@@ -5,7 +5,7 @@ using JsonFolder = ServerApplication.UtilData.JsonFolder;
 
 namespace ServerApplication.Client.DataHandlers.CommandHandlers
 {
-    public class RsaKey : ICommandHandler
+    public class RsaKey : CommandHandler
     {
         /// <summary>
         /// It sends the public RSA key to the client
@@ -13,7 +13,7 @@ namespace ServerApplication.Client.DataHandlers.CommandHandlers
         /// <param name="server">The server instance</param>
         /// <param name="data">The client that sent the message</param>
         /// <param name="ob">The Json object that was sent from the client.</param>
-        public void HandleMessage(Server server, ClientData data, JObject ob)
+        public override void HandleMessage(Server server, ClientData data, JObject ob)
         {
             var dict = new Dictionary<string, string>
             {

@@ -5,7 +5,7 @@ using Shared;
 
 namespace ServerApplication.Client.DataHandlers.CommandHandlers;
 
-public class StartBikeRecording : ICommandHandler
+public class StartBikeRecording : CommandHandler
 {
     /// <summary>
     /// It creates a new file in the user's data folder, and writes a json object to it
@@ -13,16 +13,12 @@ public class StartBikeRecording : ICommandHandler
     /// <param name="server">The server object</param>
     /// <param name="data">The client that sent the message</param>
     /// <param name="ob">The JObject that was sent from the client.</param>
-    public void HandleMessage(Server server, ClientData data, JObject ob)
+    public override void HandleMessage(Server server, ClientData data, JObject ob)
     {
         if (ob["data"]?["username"]?.ToObject<string>() == null)
         {
-            data.SendEncryptedData(JsonFileReader.GetObjectAsString("StartBikeRecordingResponse",new Dictionary<string, string>()
-                        {
-                            {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
-                            {"_status_", "error"},
-                            {"_error_", "There is no username"}
-                        }, JsonFolder.ClientMessages.Path));
+            //Sending error message(no Username)
+            SendEncryptedError(data,ob,"There is no username");
             return;
         }
         if (ob["data"]?["session-name"]?.ToObject<string>() != null)
@@ -30,23 +26,15 @@ public class StartBikeRecording : ICommandHandler
             var patient = server.GetUser(ob["data"]!["username"]!.ToObject<string>()!);
             if (patient == null)
             {
-                data.SendEncryptedData(JsonFileReader.GetObjectAsString("StartBikeRecordingResponse",new Dictionary<string, string>()
-                {
-                    {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
-                    {"_status_", "error"},
-                    {"_error_", "This username is not active"}
-                }, JsonFolder.ClientMessages.Path));
+                //Sending error message(Username not active)
+                SendEncryptedError(data, ob, "This username is not active");
                 return;
             }
 
             if (patient.DataHandler.GetType() != typeof(ClientHandler))
             {
-                data.SendEncryptedData(JsonFileReader.GetObjectAsString("StartBikeRecordingResponse",new Dictionary<string, string>()
-                {
-                    {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
-                    {"_status_", "error"},
-                    {"_error_", "This user is not a patient"}
-                }, JsonFolder.ClientMessages.Path));
+                //Sending error message(Not a patient)
+                SendEncryptedError(data,ob,"This user is not a patient");
                 return;
             }
             
@@ -76,12 +64,8 @@ public class StartBikeRecording : ICommandHandler
         }
         else
         {
-            data.SendEncryptedData(JsonFileReader.GetObjectAsString("StartBikeRecordingResponse",new Dictionary<string, string>()
-            {
-                {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
-                {"_status_", "error"},
-                {"_error_", "There is no session name"}
-            }, JsonFolder.ClientMessages.Path));
+            //Sending error message(no Session name)
+            SendEncryptedError(data,ob,"There is no session name");
         }
     }
 }

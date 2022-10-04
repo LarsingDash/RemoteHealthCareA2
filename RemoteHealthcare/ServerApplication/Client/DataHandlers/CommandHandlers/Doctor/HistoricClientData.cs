@@ -5,7 +5,7 @@ using ServerApplication.UtilData;
 
 namespace ServerApplication.Client.DataHandlers.CommandHandlers.Doctor;
 
-public class HistoricClientData : ICommandHandler
+public class HistoricClientData : CommandHandler
 {
     /// <summary>
     /// It gets the username from the message, checks if the user exists, and if so, it sends the user's historic data
@@ -13,7 +13,7 @@ public class HistoricClientData : ICommandHandler
     /// <param name="Server">The server that the message was sent to.</param>
     /// <param name="ClientData">The client that sent the message.</param>
     /// <param name="JObject">The JObject that was sent from the client.</param>
-    public void HandleMessage(Server server, ClientData data, JObject ob)
+    public override void HandleMessage(Server server, ClientData data, JObject ob)
     {
         if (ob["data"]?["username"]?.ToObject<string>() != null)
         {
@@ -37,24 +37,14 @@ public class HistoricClientData : ICommandHandler
             }
             else
             {
-                data.SendEncryptedData(JsonFileReader.GetObjectAsString("ErrorResponse",new Dictionary<string, string>()
-                {
-                    {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
-                    {"_status_", "error"},
-                    {"_error_", "User not found."},
-                    {"_id_", ob["id"]!.ToObject<string>()!}
-                }, JsonFolder.ClientMessages.Path));
+                //Sending error message(User not found)
+                SendEncryptedError(data,ob,"User not found");
             }
         }
         else
         {
-            data.SendEncryptedData(JsonFileReader.GetObjectAsString("ErrorResponse",new Dictionary<string, string>()
-            {
-                {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
-                {"_status_", "error"},
-                {"_error_", "No username given."},
-                {"_id_", ob["id"]!.ToObject<string>()!}
-            }, JsonFolder.ClientMessages.Path));
+            //Sending error message(no username given)
+            SendEncryptedError(data,ob,"No username given");
         }
     }
 }

@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
 using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using ClientSide.Encryption;
 using ClientSide.Helpers;
-using ClientSide.VR;
 using Newtonsoft.Json.Linq;
-using ServerApplication;
+using Shared;
 using Util = ClientSide.Helpers.Util;
 
 namespace ClientSide
@@ -52,7 +44,7 @@ namespace ClientSide
                     switch (command)
                     {
                         case "login":
-                            SendData(JsonFileReader.GetObjectAsString("Login", new Dictionary<string, string>()
+                            SendEncryptedData(JsonFileReader.GetObjectAsString("Login", new Dictionary<string, string>()
                             {
                                 {"_type_", "Client"},
                                 {"_username_", "TestUsername"},

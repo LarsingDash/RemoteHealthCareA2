@@ -1,8 +1,7 @@
 ﻿using System.Drawing;
 using System.Globalization;
 using System.Text;
-using Newtonsoft.Json.Linq;
-using ServerApplication;
+using Shared;
 
 namespace ClientSide.VR
 {

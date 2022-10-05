@@ -24,8 +24,6 @@
     <ItemGroup>
       <ProjectReference Include="..\ServerApplication\ServerApplication.csproj" />
     </ItemGroup>
-
-    <Import Project="..\SharedProject\SharedProject.projitems" Label="Shared" />
     <ItemGroup>
       <ProjectReference Include="..\Shared\Shared.csproj" />
     </ItemGroup>

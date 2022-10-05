@@ -24,6 +24,7 @@ public class VRClient
     //VRClient
     public WorldGen worldGen;
     public PanelController panelController;
+    public BikeController bikeController;
     private World selectedWorld = World.forest;
 
     //Other
@@ -61,6 +62,10 @@ public class VRClient
         //Start HUDController
         panelController = new PanelController(this, tunnel);
         var HUDThread = new Thread(panelController.RunController);
+
+        bikeController = new BikeController(this, tunnel);
+        var bikeAnimationThread = new Thread(bikeController.RunController);
+        bikeAnimationThread.Start();
         HUDThread.Start();
     }
 

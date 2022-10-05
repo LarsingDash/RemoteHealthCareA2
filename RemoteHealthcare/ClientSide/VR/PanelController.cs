@@ -75,7 +75,7 @@ public class PanelController
                         {
                             { "_panelid_", hudPanel },
                             { "_image_", "data/NetworkEngine/images/TimeIcon.png" },
-                            { "_position_", "0, 500" }
+                            { "\"_position_\"", "0, 0" }, 
                         })
                 },
             });

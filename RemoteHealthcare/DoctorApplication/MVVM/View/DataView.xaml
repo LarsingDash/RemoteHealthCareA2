@@ -4,9 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DoctorApplication.MVVM.View"
+             xmlns:m="clr-namespace:DoctorApplication.MVVM.Model"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
+    <UserControl.Resources>
+        <m:UserDataModel x:Key="userDataModel"/>
+    </UserControl.Resources>
+        <Grid DataContext="{Binding Source={StaticResource userDataModel}}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"></ColumnDefinition>
             <ColumnDefinition Width="1*"></ColumnDefinition>
@@ -34,7 +38,7 @@
                 Orientation="Vertical" >
                 <Label Name="AboutLabel" HorizontalAlignment="Center" Padding="5,5,5,0" FontWeight="Bold">About:</Label>
                 <Label Name="UsernameHeader" HorizontalAlignment="Left" Padding="5,5,5,0">Username:</Label>
-                <Label Name="UsernameText" HorizontalAlignment="Left" Padding="5,0,5,5">User 1</Label>
+                <Label Name="UsernameText" Text="{Binding UserName}" HorizontalAlignment="Left" Padding="5,0,5,5" />
                 <Label Name="BikeIdHeader" HorizontalAlignment="Left" Padding="5,5,5,0">Bike ID:</Label>
                 <Label Name="BikeIdText" HorizontalAlignment="Left" Padding="5,0,5,5">12345</Label>
                 <Label Name="PhoneNumberHeader" HorizontalAlignment="Left" Padding="5,5,5,0">Phone Number:</Label>

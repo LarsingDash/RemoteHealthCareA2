@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DoctorApplication.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DoctorApplication.MVVM.ViewModel
 {
-    internal class DataViewModel
+    internal class DataViewModel : ObservableObject
     {
     }
 }

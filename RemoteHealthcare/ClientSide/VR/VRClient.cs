@@ -65,9 +65,12 @@ public class VRClient
         var HUDThread = new Thread(panelController.RunController);
 
         bikeController = new BikeController(this, tunnel);
-        // var bikeAnimationThread = new Thread(bikeController.RunController);
-        // bikeAnimationThread.Start();
+        var bikeAnimationThread = new Thread(bikeController.RunController);
+        
         HUDThread.Start();
+        
+        //TODO: make hud thread and bike thread linked (otherwise comment the next line for panel testing)
+        bikeAnimationThread.Start();
     }
 
     //It connects to the server, gets the stream, and starts reading the stream. Then it asks for all sessions to find the correct one in the response

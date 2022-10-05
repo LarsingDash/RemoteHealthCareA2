@@ -20,7 +20,6 @@ public class BikeController
 
         bikeId = null;
         _routeId = null;
-        //TODO: move bike startup code to here
     }
       //Prepare bike and add bike to scene
         public void AnimateBike()
@@ -64,7 +63,16 @@ public class BikeController
                 });
                 
                 // let bike follow route
-                UpdateFollowRoute(_routeId, bikeId, 0);
+                tunnel.SendTunnelMessage(new Dictionary<string, string>()
+                {
+                    {
+                        "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Route\\FollowRoute",
+                            new Dictionary<string, string>()
+                            {
+                                { "routeid", _routeId }, { "nodeid", bikeId }, {"\"_speed_\"", $"{0}"}
+                            })
+                    }
+                });
             });
 
          
@@ -81,49 +89,52 @@ public class BikeController
         }
     public void RunController()
     {
-        var animationSpeed = 0.0;
+        while (true)
+        {
+            var animationSpeed = 0.0;
         
-        //Retrieve bike data (speed)
-        var bikeData = Program.GetBikeData();
-        var speedRaw = bikeData[DataType.Speed].ToString(CultureInfo.InvariantCulture);
-        var bikeSpeed = 0.0;
-        try
-        {
-            bikeSpeed = Double.Parse(speedRaw.Substring(0, speedRaw.IndexOf('.') + 2));
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("");
-        }
+            //Retrieve bike data (speed)
+            var bikeData = Program.GetBikeData();
+            var speedRaw = bikeData[DataType.Speed].ToString(CultureInfo.InvariantCulture);
+            var bikeSpeed = 0.0;
+            try
+            {
+                bikeSpeed = Double.Parse(speedRaw.Substring(0, speedRaw.IndexOf('.') + 2));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("");
+            }
 
 
-        Console.WriteLine($"Current speed: {bikeSpeed} ");
-        //Modify the animation speed based on bike speed
+            //TODO: Modify the animation speed based on bike speed
         
-        //Modify the route follow speed based on bike speed
-        var followSpeed = 0.0 + bikeSpeed;
+            //Modify the route follow speed based on bike speed
+            var followSpeed = 0.0 + bikeSpeed * 1.2;
 
-        if (!String.IsNullOrEmpty(_routeId) && !String.IsNullOrEmpty(bikeId))
-        {
-            UpdateFollowRoute(_routeId, bikeId, 0);
+            if (!String.IsNullOrEmpty(_routeId) && !String.IsNullOrEmpty(bikeId))
+            {
+                UpdateFollowRoute(bikeId, followSpeed);
+            }
+            else
+            {
+                Console.WriteLine($"The routeId ({_routeId}) and/or {bikeId} was not found");
+            }
+            Thread.Sleep(100);
+            
         }
-        else
-        {
-            Console.WriteLine($"The routeId ({_routeId}) and/or {bikeId} was not found");
-        }
-
         //Update VR engine with new speeds
     }
 
-    public void UpdateFollowRoute(string routeId, string nodeId, double followSpeed)
+    public void UpdateFollowRoute(string nodeId, double followSpeed)
     {
         tunnel.SendTunnelMessage(new Dictionary<string, string>()
         {
             {
-                "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Route\\FollowRoute",
+                "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Route\\FollowSpeed",
                     new Dictionary<string, string>()
                     {
-                        { "routeid", routeId }, { "nodeid", nodeId }, {"\"_speed_\"", $"{followSpeed}"}
+                        { "nodeid", nodeId }, {"\"_speed_\"", $"{followSpeed}"}
                     })
             }
         });

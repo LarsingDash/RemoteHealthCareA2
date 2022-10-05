@@ -103,7 +103,7 @@ public class PanelController
         {
             if (hudPanel != null) UpdatePanel(hudPanel, HUDInfoAction);
             
-            Thread.Sleep(100);
+            Thread.Sleep(1000);
         }
     }
 

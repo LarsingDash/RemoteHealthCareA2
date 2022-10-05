@@ -33,11 +33,12 @@ public static class JsonFileReader
     /// </summary>
     /// <param name="fileName">The name of the file to load.</param>
     /// <param name="values">A dictionary of key/value pairs. The key is the name of the variable in the template, and the
-    /// value is the value to replace it with.</param>
+    ///     value is the value to replace it with.</param>
+    /// <param name="jsonPath"></param>
     /// <returns>
     /// A string
     /// </returns>
-    public static string GetObjectAsString(string fileName, Dictionary<string, string> values)
+    public static string GetObjectAsString(string fileName, Dictionary<string, string> values, string jsonPath)
     {
         return GetObject(fileName, values).ToString();
     }
@@ -62,5 +63,10 @@ public static class JsonFileReader
         }
 
         return fileName;
+    }
+
+    public static string GetObjectAsString(string fileName, Dictionary<string, string> values)
+    {
+        throw new NotImplementedException();
     }
 }

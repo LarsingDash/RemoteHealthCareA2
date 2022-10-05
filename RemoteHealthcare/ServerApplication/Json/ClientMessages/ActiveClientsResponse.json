@@ -1,0 +1,9 @@
+{
+   "id":"active-clients",
+   "serial":"_serial_",
+   "data":{
+      "users":"_users_",
+      "status":"_status_",
+      "error":"_error_"
+   }
+}

@@ -1,5 +1,6 @@
 using System.Globalization;
 using ClientSide.Bike;
+using Shared;
 
 namespace ClientSide.VR;
 

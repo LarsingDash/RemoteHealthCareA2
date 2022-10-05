@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using Newtonsoft.Json.Linq;
+using Shared;
 
 namespace ClientSide.VR;
 

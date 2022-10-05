@@ -1,0 +1,8 @@
+{
+  "id":"forward-chat-message",
+  "data":{
+    "message":"_message_",
+    "sender":"_sender_",
+    "time":"_time_"
+  }
+}

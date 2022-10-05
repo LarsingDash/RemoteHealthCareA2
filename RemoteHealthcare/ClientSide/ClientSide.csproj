@@ -10,8 +10,8 @@
 
     <ItemGroup>
       <PackageReference Include="DotnetNoise" Version="1.0.0" />
-      <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.9" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta2" />
+      <PackageReference Include="System.Security.Cryptography.Algorithms" Version="4.3.1" />
     </ItemGroup>
 
     <ItemGroup>
@@ -19,6 +19,13 @@
         <HintPath>..\..\..\..\FietsDemo\FietsDemo\BLELibrary.dll</HintPath>
         <RequiredTargetFramework>net472</RequiredTargetFramework>
       </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ServerApplication\ServerApplication.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Shared\Shared.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>ServerApplication</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta2" />
+        <PackageReference Include="System.Security.Cryptography.Algorithms" Version="4.3.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Client\DataHandlers\CommandHandlers\Client" />
+      <Folder Include="Data\Tes123t1" />
+      <Folder Include="Data\TestClient53242" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Json\ClientMessages\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="Json\ClientMessages\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Json\ClientMessages\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Shared\Shared.csproj" />
+    </ItemGroup>
+    
+
+</Project>

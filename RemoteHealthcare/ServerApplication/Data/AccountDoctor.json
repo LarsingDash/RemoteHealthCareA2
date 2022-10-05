@@ -1,0 +1,24 @@
+{
+  "doctors": [
+    {
+      "username": "Doctertje",
+      "password": "Patientje"
+    },
+    {
+      "username": "Jasper",
+      "password": "Merijn"
+    },
+    {
+      "username": "Merijn",
+      "password": "Jasper"
+    },
+    {
+      "username": "Owen",
+      "password": "Lars"
+    },
+    {
+      "username": "Oliver",
+      "password": "Moustapha"
+    }
+  ]
+}

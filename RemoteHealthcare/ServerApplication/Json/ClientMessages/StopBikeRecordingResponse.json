@@ -1,0 +1,8 @@
+{
+  "id":"stop-bike-recording",
+  "serial":"_serial_",
+  "data":{
+    "status":"_status_",
+    "error": "_error_"
+  }
+}

@@ -3,8 +3,8 @@
   "data" :
   {
     "id" : "_panelid_",
-    "text" : "Hello World",
-    "position" : [ 100.0, 100.0 ],
+    "text" : "_text_",
+    "position" : [ "_position_" ],
     "size" : 32.0,
     "color" : [ 0,0,0,1 ],
     "font" : "segoeui"

@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Globalization;
 using System.Text;
 using Newtonsoft.Json.Linq;
 
@@ -29,7 +30,7 @@ namespace ClientSide.VR
             const int mapSize = 256;
             var noiseGen = new DotnetNoise.FastNoise();
             var heightMap = new StringBuilder();
-            
+
             //Determines sensitivity of the terrain height. Higher values equal to higher height difference
             var terrainSensitivity = 10;
 
@@ -37,7 +38,7 @@ namespace ClientSide.VR
             {
                 for (var y = 0; y < mapSize; y++)
                 {
-                    heightMap.Append($"{(noiseGen.GetPerlin(x, y) * terrainSensitivity)},");
+                    heightMap.Append($"{(noiseGen.GetPerlin(x, y) * terrainSensitivity).ToString(CultureInfo.InvariantCulture)},");
                 }
             }
 
@@ -89,7 +90,7 @@ namespace ClientSide.VR
         public void PathGen()
         {
             var poly = GenPoly(50, 80, 10, 15, new Random());
-            
+
             string nodeName = "route";
             vrClient.IDWaitList.Add(nodeName, routeId =>
             {
@@ -108,7 +109,7 @@ namespace ClientSide.VR
             var polyBuilder = new StringBuilder();
             for (int i = 0; i < poly.Length; i++)
             {
-                polyBuilder.Append(pointConverter(poly[i], poly[(i + 1) % poly.Length]));
+                polyBuilder.Append(PointConverter(poly[i], poly[(i + 1) % poly.Length]));
                 polyBuilder.Append(",");
             }
 
@@ -121,7 +122,7 @@ namespace ClientSide.VR
                     JsonFileReader.GetObjectAsString("TunnelMessages\\Route\\AddRoute",
                         new Dictionary<string, string>
                         {
-                            {"\"_nodes_\"", polyBuilder.ToString()}
+                            { "\"_nodes_\"", polyBuilder.ToString() }
                         })
                 }
             });
@@ -130,11 +131,10 @@ namespace ClientSide.VR
         //Prepare bike and add bike to scene
         public void AnimateBike()
         {
-            string nodeName = "bike";
             string routeId = "";
-
+            
             // After adding the route, prepare the to-be-added bike for following route
-            vrClient.IDWaitList.Add(nodeName, nodeId =>
+            vrClient.IDWaitList.Add("bike", bikeId =>
             {
                 // Retrieve routeId that was added
                 if (vrClient.SavedIDs.ContainsKey("route"))
@@ -142,21 +142,49 @@ namespace ClientSide.VR
                     routeId = vrClient.SavedIDs["route"];
                 }
 
-                // check if routeid is saved and let bike follow route
-                if (!String.IsNullOrEmpty(routeId))
+                // look for camera id
+                tunnel.SendTunnelMessage(new Dictionary<string, string>()
+                {
+                    {
+                        "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Find",
+                            new Dictionary<string, string>()
+                            {
+                                { "_name_", "Camera" }
+                            })
+                    }
+                });
+
+                // snap camera on bike (via parent id)
+                vrClient.IDSearchList.Add("Camera", cameraId =>
                 {
                     tunnel.SendTunnelMessage(new Dictionary<string, string>()
                     {
                         {
-                            "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Route\\FollowRoute",
+                            "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Panel\\UpdateCamera",
                                 new Dictionary<string, string>()
                                 {
-                                    { "routeid", routeId }, { "nodeid", nodeId.ToString() }
+                                    {"_guid_", cameraId}, { "_parent_", bikeId }
                                 })
-                        },
+                        }
                     });
-                }
+                });
+                
+                // let bike follow route
+                tunnel.SendTunnelMessage(new Dictionary<string, string>()
+                {
+                    {
+                        "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Route\\FollowRoute",
+                            new Dictionary<string, string>()
+                            {
+                                { "routeid", routeId }, { "nodeid", bikeId.ToString() }
+                            })
+                    }
+                });
             });
+
+         
+
+            
 
             tunnel.SendTunnelMessage(new Dictionary<string, string>()
             {
@@ -166,13 +194,14 @@ namespace ClientSide.VR
                 },
             });
         }
-        
-        private Point[] GenPoly(double RadiusMin,double RadiusMax,int minPoints,int maxPoints,Random random)
+
+
+        private Point[] GenPoly(double RadiusMin, double RadiusMax, int minPoints, int maxPoints, Random random)
         {
             //Choose the amount of points
             var amountOfPoints = random.Next(minPoints, maxPoints);
             var points = new Point[amountOfPoints];
-            
+
             //Determine the angle between the points
             var angle = (float)(Math.PI * 2) / amountOfPoints;
             for (var i = 0; i < amountOfPoints; i++)
@@ -186,10 +215,11 @@ namespace ClientSide.VR
 
                 points[i] = currentPoint;
             }
+
             return points;
         }
 
-        private string pointConverter(Point point, Point nextPoint)
+        private string PointConverter(Point point, Point nextPoint)
         {
             var builder = new StringBuilder();
 
@@ -201,7 +231,7 @@ namespace ClientSide.VR
             return builder.ToString();
         }
     }
-    
+
     public enum World
     {
         forest

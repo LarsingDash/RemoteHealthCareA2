@@ -38,11 +38,11 @@
                 Orientation="Vertical" >
                 <Label Name="AboutLabel" HorizontalAlignment="Center" Padding="5,5,5,0" FontWeight="Bold">About:</Label>
                 <Label Name="UsernameHeader" HorizontalAlignment="Left" Padding="5,5,5,0">Username:</Label>
-                <Label Name="UsernameText" Text="{Binding UserName}" HorizontalAlignment="Left" Padding="5,0,5,5" />
+                <Label Name="UsernameText" Content="{Binding UserName}" HorizontalAlignment="Left" Padding="5,0,5,5" />
                 <Label Name="BikeIdHeader" HorizontalAlignment="Left" Padding="5,5,5,0">Bike ID:</Label>
-                <Label Name="BikeIdText" HorizontalAlignment="Left" Padding="5,0,5,5">12345</Label>
+                <Label Name="BikeIdText"  Content="{Binding BikeId}" HorizontalAlignment="Left" Padding="5,0,5,5"></Label>
                 <Label Name="PhoneNumberHeader" HorizontalAlignment="Left" Padding="5,5,5,0">Phone Number:</Label>
-                <Label Name="PhoneNumberText" HorizontalAlignment="Left" Padding="5,0,5,5">06 12345678</Label>
+                <Label Name="PhoneNumberText" Content="{Binding PhoneNumber}" HorizontalAlignment="Left" Padding="5,0,5,5"></Label>
 
             </StackPanel>
             <DockPanel Name="ChatDockPanel" LastChildFill="False" Grid.Row="2">
@@ -99,10 +99,10 @@
                 <Label Grid.Row="3" Grid.Column="0" Name="AverageSpeedheader" HorizontalAlignment="Left">Average speed:</Label>
                 <Label Grid.Row="4" Grid.Column="0" Name="TimeElapsedHeader" HorizontalAlignment="Left">Time Elapsed:</Label>
 
-                <Label Grid.Row="1" Grid.Column="1" Name="CurrentSpeedText" HorizontalAlignment="Left">00 KM/H</Label>
-                <Label Grid.Row="2" Grid.Column="2" Name="TopSpeedText" HorizontalAlignment="Left">00 KM/H</Label>
-                <Label Grid.Row="3" Grid.Column="3" Name="AverageSpeedText" HorizontalAlignment="Left">00 KM/H</Label>
-                <Label Grid.Row="4" Grid.Column="4" Name="TimeElapsedText" HorizontalAlignment="Left">00 KM/H</Label>
+                <Label Grid.Row="1" Grid.Column="1" Name="CurrentSpeedText" Content="{Binding CurrentSpeed}" HorizontalAlignment="Left"></Label>
+                <Label Grid.Row="2" Grid.Column="2" Name="TopSpeedText" Content="{Binding TopSpeed}" HorizontalAlignment="Left"></Label>
+                <Label Grid.Row="3" Grid.Column="3" Name="AverageSpeedText" Content="{Binding AverageSpeed}" HorizontalAlignment="Left"></Label>
+                <Label Grid.Row="4" Grid.Column="4" Name="TimeElapsedText"  Content="{Binding TimeElapsed}" HorizontalAlignment="Left"></Label>
             </Grid>
         </Grid>
 
@@ -115,7 +115,7 @@
             <Grid Grid.Row="0">
                 <Label Name="HeartInformationHeader" Content="Heart Information:" DockPanel.Dock="Top" HorizontalAlignment="Center" FontWeight="Bold"/>
                 <Image Name="HeartShapeImage" Source="/Sources/HeartPNG2.png" Width="140" Height="140" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                <Label Name="HeartInformationValue" Content="87" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="48" />
+                <Label Name="HeartInformationValue" Content="{Binding CurrentRate}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="48" />
                 <Label Name="HeartInformationBPM" Content="BPM" HorizontalAlignment="Center" VerticalAlignment="Bottom" FontSize="36" />
 
 
@@ -135,9 +135,9 @@
                 <Label Name="HeartLowestHeader" Grid.Row="0" Grid.Column="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Bottom" FontSize="16">Lowest</Label>
                 <Label Name="HeartAverageHeader" Grid.Row="0" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Bottom" FontSize="16">Average</Label>
                 <Label Name="HeartPeakHeader" Grid.Row="0" Grid.Column="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Bottom" FontSize="16">Peak</Label>
-                <Label Name="HeartLowestText" Grid.Row="1" Grid.Column="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" FontSize="16">74</Label>
-                <Label Name="HeartAverageText" Grid.Row="1" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" FontSize="16">80</Label>
-                <Label Name="HeartPeakText" Grid.Row="1" Grid.Column="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" FontSize="16">94</Label>
+                <Label Name="HeartLowestText" Content="{Binding LowestRate}" Grid.Row="1" Grid.Column="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" FontSize="16"></Label>
+                <Label Name="HeartAverageText" Content="{Binding AverageRate}"  Grid.Row="1" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" FontSize="16"></Label>
+                <Label Name="HeartPeakText" Content="{Binding HighestRate}" Grid.Row="1" Grid.Column="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" FontSize="16"></Label>
             </Grid>
             <Grid Grid.Row="2">
                 <StackPanel Name="BikeValuePanel" Orientation="Vertical">

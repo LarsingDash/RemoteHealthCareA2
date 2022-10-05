@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography;
-using ServerApplication.Log;
-using ServerApplication.UtilData;
+﻿using Shared.Log;
 
 namespace ServerApplication
 {
@@ -12,7 +10,6 @@ namespace ServerApplication
             Logger.PrintLevel = LogLevel.All;
 
             Server server = new Server();
-            // JsonFileWriter.WriteTextToFileEncrypted("Tes123t1\\Te3122st.txt","TestBericht",JsonFolder.Data.Path);
 
             Console.ReadKey();
 

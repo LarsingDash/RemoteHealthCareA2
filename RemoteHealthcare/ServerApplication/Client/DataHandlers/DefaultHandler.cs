@@ -2,7 +2,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ServerApplication.Client.DataHandlers.CommandHandlers;
 using ServerApplication.Client.DataHandlers.CommandHandlers.Doctor;
-using ServerApplication.Log;
+using Shared.Log;
+using Shared;
 using ServerApplication.UtilData;
 
 namespace ServerApplication.Client.DataHandlers
@@ -22,21 +23,23 @@ namespace ServerApplication.Client.DataHandlers
         /// If the message has a serial, invoke the callback, otherwise, if the message has an id, invoke the command handler,
         /// otherwise, send an error message.
         /// </summary>
-        /// <param name="ClientData">The ClientData object that is associated with the client that sent the message.</param>
-        /// <param name="JObject">The json object that was sent from the client.</param>
+        /// <param name="clientData">The ClientData object that is associated with the client that sent the message.</param>
+        /// <param name="json">The json object that was sent from the client.</param>
+        /// <param name="encrypted">If the message was encrypted</param>
         /// <returns>
         /// A string
         /// </returns>
-        public override void HandleMessage(ClientData clientData, JObject json)
+        public override void HandleMessage(ClientData clientData, JObject json, bool encrypted = false)
         {
+            string extraText = encrypted ? "Encrypted " : "";
             if (!json.ContainsKey("id"))
             {
-                Logger.LogMessage(LogImportance.Warn, $"Got message with no id from {clientData.UserName}: {LogColor.Gray}\n{json.ToString(Formatting.None)}");
+                Logger.LogMessage(LogImportance.Warn, $"Got {extraText}message with no id from {clientData.UserName}: {LogColor.Gray}\n{json.ToString(Formatting.None)}");
                 return;
             }
             if (!json["id"]!.ToObject<string>()!.Equals("encryptedMessage"))
             {
-                Logger.LogMessage(LogImportance.Information, $"Got message from {clientData.UserName}: {LogColor.Gray}\n{json.ToString(Formatting.None)}");
+                Logger.LogMessage(LogImportance.Information, $"Got {extraText}message from {clientData.UserName}: {LogColor.Gray}\n{json.ToString(Formatting.None)}");
             }
 
             if (json.ContainsKey("serial"))
@@ -56,7 +59,7 @@ namespace ServerApplication.Client.DataHandlers
             }
             else
             {
-                Logger.LogMessage(LogImportance.Warn, $"Got message from {clientData.UserName} but no commandHandler found: {LogColor.Gray}\n{json.ToString(Formatting.None)}");
+                Logger.LogMessage(LogImportance.Warn, $"Got {extraText}message from {clientData.UserName} but no commandHandler found: {LogColor.Gray}\n{json.ToString(Formatting.None)}");
                 clientData.SendEncryptedData(JsonFileReader.GetObjectAsString("ErrorResponse", new Dictionary<string, string>()
                 {
                     {"_id_", json["id"]?.ToObject<string>() ?? "NoIdFound"},

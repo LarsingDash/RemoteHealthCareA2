@@ -1,13 +1,20 @@
 
 using Newtonsoft.Json.Linq;
-using ServerApplication.Log;
+using Shared.Log;
+using Shared;
 using ServerApplication.UtilData;
 
 namespace ServerApplication.Client.DataHandlers.CommandHandlers.Doctor;
 
-public class AllClients : ICommandHandler
+public class AllClients : CommandHandler
 {
-    public void HandleMessage(Server server, ClientData data, JObject ob)
+    /// <summary>
+    /// It gets all the directories in the data folder, converts them to strings, and sends them to the client
+    /// </summary>
+    /// <param name="server">The server instance.</param>
+    /// <param name="data">The client that sent the message</param>
+    /// <param name="ob">The JObject that was sent from the client.</param>
+    public override void HandleMessage(Server server, ClientData data, JObject ob)
     {
         string[] dirs = Directory.GetDirectories(JsonFolder.Data.Path, "*", SearchOption.TopDirectoryOnly);
         string[] dirsName = Array.ConvertAll(dirs, s => "\"" + Path.GetFileName(s) + "\"")!;

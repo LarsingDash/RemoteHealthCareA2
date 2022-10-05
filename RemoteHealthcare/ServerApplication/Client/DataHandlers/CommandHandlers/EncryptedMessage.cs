@@ -1,12 +1,12 @@
 using System.Security.Cryptography;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using ServerApplication.Encryption;
-using ServerApplication.Log;
+using Shared.Encryption;
+using Shared.Log;
 
 namespace ServerApplication.Client.DataHandlers.CommandHandlers;
 
-public class EncryptedMessage : ICommandHandler
+public class EncryptedMessage : CommandHandler
 {
     private RSA rsa;
 
@@ -20,7 +20,7 @@ public class EncryptedMessage : ICommandHandler
     /// <param name="server">The server instance</param>
     /// <param name="data">The ClientData object of the client that sent the message</param>
     /// <param name="ob">The message that was received</param>
-    public void HandleMessage(Server server, ClientData data, JObject ob)
+    public override void HandleMessage(Server server, ClientData data, JObject ob)
     {
         try
         {
@@ -39,7 +39,7 @@ public class EncryptedMessage : ICommandHandler
                     try
                     {
                         JObject json = JObject.Parse(message);
-                        Logger.LogMessage(LogImportance.Information, $"Got encrypted message: {LogColor.Gray}\n{ob.ToString(Formatting.None)}");
+                        //Logger.LogMessage(LogImportance.Information, $"Got encrypted message: {LogColor.Gray}\n{ob.ToString(Formatting.None)}");
                         data.DataHandler.HandleMessage(data, json);
                     } catch(JsonReaderException e)
                     {

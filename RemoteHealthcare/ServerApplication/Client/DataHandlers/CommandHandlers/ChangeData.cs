@@ -1,17 +1,18 @@
 using Newtonsoft.Json.Linq;
 using ServerApplication.UtilData;
+using Shared;
 
 namespace ServerApplication.Client.DataHandlers.CommandHandlers;
 
-public class ChangeData : ICommandHandler
+public class ChangeData : CommandHandler
 {
     /// <summary>
     /// It checks if the data is valid, if it is, it adds the data to the file
     /// </summary>
-    /// <param name="Server">The server that the message was sent to.</param>
-    /// <param name="ClientData">The ClientData object of the client that sent the message</param>
-    /// <param name="JObject">The JObject that was sent by the client.</param>
-    public void HandleMessage(Server server, ClientData data, JObject ob)
+    /// <param name="server">The server that the message was sent to.</param>
+    /// <param name="data">The ClientData object of the client that sent the message</param>
+    /// <param name="ob">The JObject that was sent by the client.</param>
+    public override void HandleMessage(Server server, ClientData data, JObject ob)
     {
         if (ob["data"]?["uuid"]?.ToObject<string>() != null)
         {
@@ -40,13 +41,8 @@ public class ChangeData : ICommandHandler
         }
         else
         {
-            data.SendEncryptedData(JsonFileReader.GetObjectAsString("ErrorResponse",new Dictionary<string, string>()
-            {
-                {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
-                {"_status_", "error"},
-                {"_error_", "There is no uuid (session name)"},
-                {"_id_", ob["id"]!.ToObject<string>()!}
-            }, JsonFolder.ClientMessages.Path));
+            //Sending error message(no uuid)
+            SendEncryptedError(data,ob,"There is no uuid(Session name");
         }
     }
 

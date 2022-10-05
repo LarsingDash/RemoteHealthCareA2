@@ -5,8 +5,8 @@ using DoctorApplication.Communication;
 using DoctorApplication.Communication.CommandHandlers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using ServerApplication.Encryption;
-using ServerApplication.Log;
+using Shared.Encryption;
+using Shared.Log;
 
 namespace DoctorApplication.Communication.CommandHandlers;
 
@@ -39,15 +39,17 @@ public class EncryptedMessage : ICommandHandler
                 var message = AesHelper.DecryptMessage(messageCrypted, key, iV);
                 if (message != null)
                 {
+                    JObject json;
                     try
                     {
-                        JObject json = JObject.Parse(message);
-                        Logger.LogMessage(LogImportance.Information, $"Got encrypted message: {LogColor.Gray}\n{ob.ToString(Formatting.None)}");
-                        client.HandleMessage(json);
+                        json = JObject.Parse(message);
+                       // Logger.LogMessage(LogImportance.Information, $"Got encrypted message: {LogColor.Gray}\n{ob.ToString(Formatting.None)}");
                     } catch(JsonReaderException e)
                     {
                         Logger.LogMessage(LogImportance.Warn, $"Got encrypted message, but message could not be parsed to JSON: {LogColor.Gray}\n{message}", e);
+                        return;
                     }
+                    client.HandleMessage(json, true);
                 }
                 else
                 {

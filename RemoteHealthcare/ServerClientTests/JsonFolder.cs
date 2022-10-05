@@ -1,8 +1,8 @@
 namespace ServerClientTests
 {
-    public class JsonFolderTest
+    internal class JsonFolder
     {
-        JsonFolderTest(string path)
+        JsonFolder(string path)
         {
             this.Path = Environment.CurrentDirectory.Substring(0, Environment.CurrentDirectory.LastIndexOf("bin", StringComparison.Ordinal)) + path;
         }
@@ -11,8 +11,8 @@ namespace ServerClientTests
 
         public override string ToString(){ return Path; }
 
-        public static readonly JsonFolderTest Data = new JsonFolderTest("Data\\");
-        public static readonly JsonFolderTest Json = new JsonFolderTest("Json\\");
-        public static readonly JsonFolderTest ClientMessages = new JsonFolderTest("Json\\ClientMessages\\");
+        public static readonly JsonFolder Data = new JsonFolder("Data\\");
+        public static readonly JsonFolder Json = new JsonFolder("Json\\");
+        public static readonly JsonFolder ClientMessages = new JsonFolder("Json\\ClientMessages\\");
     }
 }

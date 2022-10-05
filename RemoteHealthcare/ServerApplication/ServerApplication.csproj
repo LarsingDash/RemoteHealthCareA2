@@ -30,8 +30,10 @@
     <ItemGroup>
       <None Remove="Json\ClientMessages\**" />
     </ItemGroup>
-    
 
-    <Import Project="..\SharedProject\SharedProject.projitems" Label="Shared" />
+    <ItemGroup>
+      <ProjectReference Include="..\Shared\Shared.csproj" />
+    </ItemGroup>
+    
 
 </Project>

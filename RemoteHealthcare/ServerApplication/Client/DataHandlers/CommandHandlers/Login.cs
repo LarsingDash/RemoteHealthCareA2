@@ -1,10 +1,11 @@
 using Newtonsoft.Json.Linq;
-using ServerApplication.Log;
+using Shared.Log;
+using Shared;
 using ServerApplication.UtilData;
 
 namespace ServerApplication.Client.DataHandlers.CommandHandlers
 {
-    public class Login : ICommandHandler
+    public class Login : CommandHandler
     {
         /// <summary>
         /// It checks if the client is a doctor or a client, and if it's a client, it sets the data handler to a new
@@ -13,16 +14,12 @@ namespace ServerApplication.Client.DataHandlers.CommandHandlers
         /// <param name="server">The server that the message was sent to.</param>
         /// <param name="data">The ClientData object that is associated with the client that sent the message.</param>
         /// <param name="ob">The JObject that was received from the client.</param>
-        public void HandleMessage(Server server, ClientData data, JObject ob)
+        public override void HandleMessage(Server server, ClientData data, JObject ob)
         {
             if (ob["data"]?["type"]?.ToObject<string>() == null)
             {
-                data.SendEncryptedData(JsonFileReader.GetObjectAsString("LoginResponse", new Dictionary<string, string>()
-                {
-                    {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
-                    {"_status_", "error"},
-                    {"_error_", "No type entered"}
-                }, JsonFolder.ClientMessages.Path));
+                //Sending error message(No type)
+                SendEncryptedError(data,ob,"No type entered");
                 return;
             }
             switch (ob["data"]!["type"]!.ToObject<string>())
@@ -41,11 +38,11 @@ namespace ServerApplication.Client.DataHandlers.CommandHandlers
                     if (!Directory.Exists(totalPath))
                     {
                         (new FileInfo(totalPath)).Directory!.Create();
-                        Logger.LogMessage(LogImportance.Fatal, "Creating directory? " + totalPath);
+                        Logger.LogMessage(LogImportance.Information, "New user, adding: " + totalPath);
                     }
                     else
                     {
-                        Logger.LogMessage(LogImportance.Fatal, "Directory exists?");
+                        Logger.LogMessage(LogImportance.Information, "User logged in: " + totalPath);
                     }
                     return;
                 }
@@ -71,34 +68,23 @@ namespace ServerApplication.Client.DataHandlers.CommandHandlers
                         }
                         else
                         {
-                            data.SendEncryptedData(JsonFileReader.GetObjectAsString("LoginResponse", new Dictionary<string, string>()
-                            {
-                                {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
-                                {"_status_", "error"},
-                                {"_error_", "Username and/or password not correct."}
-                            }, JsonFolder.ClientMessages.Path));
+                            //Sending error message(Username/password not correct)
+                            SendEncryptedError(data,ob, "Username and/or password not correct");
                         }
                         return;
                     }
                     else
                     {
-                        data.SendEncryptedData(JsonFileReader.GetObjectAsString("LoginResponse", new Dictionary<string, string>()
-                        {
-                            {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
-                            {"_status_", "error"},
-                            {"_error_", "Username and/or password not correct."}
-                        }, JsonFolder.ClientMessages.Path));
+                        //Sending error message(Username/password not correct)
+                        SendEncryptedError(data, ob, "Username and/or password not correct");
                     }
+
                     //TODO Check login credentials
                     break;
                 }
             }
-            data.SendEncryptedData(JsonFileReader.GetObjectAsString("LoginResponse", new Dictionary<string, string>()
-            {
-                {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
-                {"_status_", "error"},
-                {"_error_", "Type not recognized. 1"}
-            }, JsonFolder.ClientMessages.Path));
+            //Sending error message(Type not recognized 1)
+            SendEncryptedError(data,ob,"Type not recognized. 1");
             return;
         }
     }

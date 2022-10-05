@@ -2,7 +2,7 @@ using System.Globalization;
 using System.Net.Sockets;
 using System.Text;
 using Newtonsoft.Json.Linq;
-using ServerApplication;
+using Shared;
 
 namespace ClientSide.VR;
 

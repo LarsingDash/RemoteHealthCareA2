@@ -1,6 +1,6 @@
 ﻿using ClientSide.Bike;
 using ClientSide.VR;
-using ServerApplication;
+using Shared;
 
 namespace ClientSide
 {

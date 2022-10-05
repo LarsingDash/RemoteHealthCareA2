@@ -1,0 +1,37 @@
+{
+  "id":"change-data",
+  "serial":"_serial_",
+  "data":{
+    "uuid":"_uuid_",
+    "distance":[
+      {
+        "time":"time1",
+        "value":"1"
+      },
+      {
+        "time":"time2",
+        "value":"2"
+      }
+    ],
+    "speed":[
+      {
+        "time":"3",
+        "value":"4"
+      },
+      {
+        "time":"5",
+        "value":"6"
+      }
+    ],
+    "heartrate":[
+      {
+        "time":"7",
+        "value":"8"
+      },
+      {
+        "time":"9",
+        "value":"10"
+      }
+    ]
+  }
+}

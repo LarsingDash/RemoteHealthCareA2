@@ -1,0 +1,35 @@
+{
+  "session-name": "TestSession",
+  "start-time": "10/01/2022 20:07:04",
+  "end-time": "10/01/2022 20:07:05",
+  "distance": [
+    {
+      "time": "time1",
+      "value": "1"
+    },
+    {
+      "time": "time2",
+      "value": "2"
+    }
+  ],
+  "speed": [
+    {
+      "time": "3",
+      "value": "4"
+    },
+    {
+      "time": "5",
+      "value": "6"
+    }
+  ],
+  "heartrate": [
+    {
+      "time": "7",
+      "value": "8"
+    },
+    {
+      "time": "9",
+      "value": "10"
+    }
+  ]
+}

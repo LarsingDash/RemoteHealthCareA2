@@ -5,7 +5,7 @@ public class BikeHandler
     private BikePicker picker = BikePicker.Virtual;
     
     private Dictionary<DataType, List<Action<double>>> observers;
-    public Bike Bike { get; }
+    public Bike bike { get; }
 
     public BikeHandler()
     {

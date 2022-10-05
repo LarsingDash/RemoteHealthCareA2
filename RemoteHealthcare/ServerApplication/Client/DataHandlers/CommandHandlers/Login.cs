@@ -58,8 +58,12 @@ namespace ServerApplication.Client.DataHandlers.CommandHandlers
                         if (foundCred["password"]!.ToObject<string>()!
                             .Equals(ob["data"]?["password"]?.ToObject<string>() ?? "Unknown"))
                         {
-                            //Sending error message
-                            SendEncryptedError(data,ob,"_error_");
+                            data.SendEncryptedData(JsonFileReader.GetObjectAsString("LoginResponse", new Dictionary<string, string>()
+                            {
+                                {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
+                                {"_status_", "ok"},
+                                {"_error_", "_error_"}
+                            }, JsonFolder.ClientMessages.Path));
                             data.DataHandler = new DoctorHandler(data);
                         }
                         else

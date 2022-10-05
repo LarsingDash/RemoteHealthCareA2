@@ -23,6 +23,7 @@ public class Client : DefaultClientConnection
     public Client()
     {
         commandHandler.Add("public-rsa-key", new RsaKey());
+        
         Init("127.0.0.1", 2460, (json, encrypted) =>
             {
                 string extraText = encrypted ? "Encrypted " : "";
@@ -56,6 +57,7 @@ public class Client : DefaultClientConnection
         
         AddSerialCallback(serial, ob =>
         {
+            
            // Logger.LogMessage();
         });
         

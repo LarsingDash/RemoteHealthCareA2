@@ -16,7 +16,6 @@ namespace ClientSide
         
         public static void Main(string[] args)
         {
-            JsonFileReader.Initialize(Environment.CurrentDirectory.Substring(0, Environment.CurrentDirectory.LastIndexOf("bin")) + "VR\\Json\\");
             Console.Write("Choose application (1=Bike / VR  2=Client / 3=DoctorGUI): ");
             string option = Console.ReadLine() ?? string.Empty;
 
@@ -68,7 +67,7 @@ namespace ClientSide
 
         public static Dictionary<DataType, double> GetBikeData()
         {
-            return handler.Bike.bikeData;
+            return handler.bike.bikeData;
         }
     }
 }

@@ -12,6 +12,8 @@ using ClientSide.Encryption;
 using ClientSide.Helpers;
 using ClientSide.VR;
 using Newtonsoft.Json.Linq;
+using ServerApplication;
+using Util = ClientSide.Helpers.Util;
 
 namespace ClientSide
 {
@@ -50,7 +52,7 @@ namespace ClientSide
                     switch (command)
                     {
                         case "login":
-                            SendEncryptedData(JsonFileReader.GetObjectAsString("Login", new Dictionary<string, string>()
+                            SendData(JsonFileReader.GetObjectAsString("Login", new Dictionary<string, string>()
                             {
                                 {"_type_", "Client"},
                                 {"_username_", "TestUsername"},

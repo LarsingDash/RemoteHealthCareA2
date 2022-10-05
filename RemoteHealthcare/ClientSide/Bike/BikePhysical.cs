@@ -15,7 +15,7 @@ namespace ClientSide.Bike
 
         public BikePhysical(BikeHandler handler)
         {
-            this.bikeHandler = handler;
+            this.handler = handler;
             pages = new Dictionary<int, DataPage>()
             {
                 {0x10, new DataPage10(handler)},
@@ -75,7 +75,7 @@ namespace ClientSide.Bike
                 }
                 case DataMessageProtocol.HeartRate:
                 {
-                    bikeHandler.ChangeData(DataType.HeartRate, dataPoints[1]);
+                    handler.ChangeData(DataType.HeartRate, dataPoints[1]);
                     break;
                 }
                 default:

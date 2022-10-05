@@ -76,8 +76,9 @@ public class VRClient
 
             SendData(JsonFileReader.GetObjectAsString("SessionList", new Dictionary<string, string>()));
         }
-        catch
+        catch (Exception e)
         {
+            Console.WriteLine(e.StackTrace);
             Console.WriteLine("Could not connect with VRServer...");
         }
     }

@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerClientTests", "Server
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DoctorApplication", "DoctorApplication\DoctorApplication.csproj", "{4D6C920A-AFEC-4132-B515-67D0FE7C4C57}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{819A466C-0FFD-40A6-84F5-E2773948C2EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csproj", "{819A466C-0FFD-40A6-84F5-E2773948C2EA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,12 +45,5 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B5AF3B19-4B66-4608-8C4B-9EB7FD1B789E}
-	EndGlobalSection
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		SharedProject\SharedProject.projitems*{4d6c920a-afec-4132-b515-67d0fe7c4c57}*SharedItemsImports = 5
-		SharedProject\SharedProject.projitems*{8e347ddd-e9af-4806-bb09-e593745ebe60}*SharedItemsImports = 5
-		SharedProject\SharedProject.projitems*{b7898cfb-285c-4f28-8305-7800fe9a18b1}*SharedItemsImports = 13
-		SharedProject\SharedProject.projitems*{c350ce80-5523-48f6-b701-0c474263f5d8}*SharedItemsImports = 5
-		SharedProject\SharedProject.projitems*{c6d0adf2-db80-47b8-878e-92f514e2695d}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal

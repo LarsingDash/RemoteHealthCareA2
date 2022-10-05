@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace DoctorApplication.Views
+namespace DoctorApplication.MVVM.View
 {
     /// <summary>
-    /// Interaction logic for DoctorView.xaml
+    /// Interaction logic for DataView.xaml
     /// </summary>
-    public partial class DoctorView : UserControl
+    public partial class DataView : UserControl
     {
-        public DoctorView()
+        public DataView()
         {
             InitializeComponent();
         }

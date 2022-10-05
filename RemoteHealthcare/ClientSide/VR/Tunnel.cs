@@ -144,7 +144,7 @@ public class Tunnel
                     }
                 }
 
-                vrClient.worldGen.AnimateBike();
+                vrClient.bikeController.AnimateBike();
                 break;
             
             case "scene/node/find":

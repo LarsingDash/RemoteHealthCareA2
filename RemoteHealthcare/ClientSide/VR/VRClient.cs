@@ -65,8 +65,8 @@ public class VRClient
         var HUDThread = new Thread(panelController.RunController);
 
         bikeController = new BikeController(this, tunnel);
-        var bikeAnimationThread = new Thread(bikeController.RunController);
-        bikeAnimationThread.Start();
+        // var bikeAnimationThread = new Thread(bikeController.RunController);
+        // bikeAnimationThread.Start();
         HUDThread.Start();
     }
 

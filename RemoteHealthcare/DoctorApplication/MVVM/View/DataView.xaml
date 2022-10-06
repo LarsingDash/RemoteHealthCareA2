@@ -115,13 +115,13 @@
                     </Grid.ColumnDefinitions>
                     <TextBox
                         Grid.Column="0"
+                        x:Name="ChatTextBox"
                         Text="{Binding Message, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
                         >
-                        <TextBox.DataContext>
-                            <m:DataViewModel/>
-                        </TextBox.DataContext>
+                        
                     </TextBox>
                     <Button
+                        CommandParameter="{Binding Text, ElementName=ChatTextBox}"
                         Command="{Binding SendCommand}"
                         Background="#FF1B47F5"
                         BorderBrush="#FF1B1B1B"
@@ -129,9 +129,6 @@
                         Foreground="#FFFFF7F7"
                         Grid.Column="1"
                         >
-                        <Button.DataContext>
-                            <m:DataViewModel/>
-                        </Button.DataContext>
                     </Button>
                 </Grid>
             </Grid>

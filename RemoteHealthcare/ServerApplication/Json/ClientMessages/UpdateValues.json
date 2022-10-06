@@ -1,0 +1,9 @@
+{
+  "id": "UpdateValues",
+  "data": {
+    "uuid":"_uuid_",
+    "distance": [],
+    "speed": [],
+    "heartrate": []
+  }
+}

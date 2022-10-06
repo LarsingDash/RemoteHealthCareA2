@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 
 namespace DoctorApplication.Core
 {
+    /* > The ObservableObject class implements the INotifyPropertyChanged interface, which means that it can be used to
+    notify the UI when a property changes */
     internal class ObservableObject : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;

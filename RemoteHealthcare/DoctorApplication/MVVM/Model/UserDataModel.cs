@@ -1,4 +1,5 @@
-﻿using DoctorApplication.Core;
+﻿/* This is the model for the userdata. It contains all the data that is currently needed to be displayed. */
+using DoctorApplication.Core;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -149,6 +150,7 @@ namespace DoctorApplication.MVVM.Model
 
        
 
+        /* This is a method that is used to update the view when the model changes. */
         public event PropertyChangedEventHandler? PropertyChanged;
         private void OnPropertyChanged(string propertyName)
         {

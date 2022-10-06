@@ -7,10 +7,12 @@ using System.Windows.Input;
 
 namespace DoctorApplication.Core
 {
+    /* > The RelayCommand class implements the ICommand interface and is used to relay a command from the View to the
+    ViewModel */
     internal class RelayCommand : ICommand
     {
-        private Action<object> _execute;
-        private Func<object, bool> _canExecute;
+        private Action<object> execute;
+        private Func<object, bool> canExecute;
 
         public event EventHandler CanExecuteChanged
         {
@@ -20,19 +22,19 @@ namespace DoctorApplication.Core
         
         public RelayCommand(Action<object> execute, Func<object, bool> canExecute = null)
         {
-            _execute = execute;
-            _canExecute = canExecute;
+            this.execute = execute;
+            this.canExecute = canExecute;
 
         }
 
         public bool CanExecute(object parameter)
         {
-            return _canExecute == null || _canExecute(parameter);
+            return canExecute == null || canExecute(parameter);
         }
 
         public void Execute(object parameter)
         {
-            _execute(parameter);
+            execute(parameter);
         }
     }
 }

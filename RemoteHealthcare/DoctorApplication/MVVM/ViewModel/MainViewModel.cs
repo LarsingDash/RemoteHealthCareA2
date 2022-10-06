@@ -12,6 +12,7 @@ namespace DoctorApplication.MVVM.ViewModel
         private object _currentView;
         public DataViewModel DataVM { get; set; }
 
+        /* A property that is used to set the current view. */
         public object CurrentView
         {
             get { return _currentView; }
@@ -21,6 +22,7 @@ namespace DoctorApplication.MVVM.ViewModel
             }
         }
 
+        /* Creating a new instance of the DataViewModel and setting the CurrentView to that instance. */
         public MainViewModel()
         {
             DataVM = new DataViewModel();

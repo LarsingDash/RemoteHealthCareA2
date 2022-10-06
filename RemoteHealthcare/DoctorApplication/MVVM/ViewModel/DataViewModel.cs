@@ -26,6 +26,7 @@ namespace DoctorApplication.MVVM.ViewModel
         }
 
         public RelayCommand SendCommand { get; set; }
+        public RelayCommand GetUserCommand { get; set; }
         public BindableCollection<UserDataModel> users { get; set; }
         public ObservableCollection<MessageModel> messages { get; set; }
 
@@ -58,9 +59,18 @@ namespace DoctorApplication.MVVM.ViewModel
             users.Add(test2);
 
 
-            SendCommand = new RelayCommand(DisplayInMessageBox);
+            SendCommand = new RelayCommand(SendMessage);
+            GetUserCommand = new RelayCommand(GetUser);
         }
-      
+
+        public void SendMessage(object Message)
+        {
+            selectedUser.AddMessage(Message.ToString());
+        }
+        public void GetUser(object user)
+        {
+            Console.WriteLine(user.ToString());
+        }
         public void DisplayInMessageBox(object message)
         {
             Console.WriteLine(message.ToString());

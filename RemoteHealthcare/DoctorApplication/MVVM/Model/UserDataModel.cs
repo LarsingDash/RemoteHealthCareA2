@@ -51,6 +51,17 @@ namespace DoctorApplication.MVVM.Model
             this.highestRate = 72;
 
         }
+
+        public UserDataModel(string userName, string phoneNumber, int bikeId, double currentSpeed, int currentRate)
+        {
+            UserName = userName;
+            PhoneNumber = phoneNumber;
+            BikeId = bikeId;
+            CurrentSpeed = currentSpeed;
+            CurrentRate = currentRate;
+            this.messages = new ObservableCollection<MessageModel>();
+        }
+
         public string UserName
         {
             get { return userName; }

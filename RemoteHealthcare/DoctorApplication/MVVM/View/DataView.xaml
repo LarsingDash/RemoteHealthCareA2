@@ -31,10 +31,13 @@
                     Name="SelectedUserLabel">
                     Selected User:
                 </Label>
-                <ComboBox Width="240" ItemsSource="{Binding users}" x:Name="SelectedUserComboBox">
+                <ComboBox Width="240" ItemsSource="{Binding users}" x:Name="users" SelectedItem="{Binding SelectedUser}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding UserName}" />
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding UserName}" />
+                                <TextBlock Padding="10, 0" Text="{Binding BikeId}" />
+                            </StackPanel>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
@@ -57,10 +60,9 @@
                     Padding="5,5,5,0">
                     Username:
                 </Label>
-                <Label
-                    Content="{Binding UserName}"
+                <TextBlock
+                    Text="{Binding SelectedUser.UserName}"
                     HorizontalAlignment="Left"
-                    Name="UsernameText"
                     Padding="5,0,5,5" />
                 <Label
                     HorizontalAlignment="Left"
@@ -69,7 +71,7 @@
                     Bike ID:
                 </Label>
                 <Label
-                    Content="{Binding BikeId}"
+                    Content="{Binding SelectedUser.BikeId}"
                     HorizontalAlignment="Left"
                     Name="BikeIdText"
                     Padding="5,0,5,5" />
@@ -80,7 +82,7 @@
                     Phone Number:
                 </Label>
                 <Label
-                    Content="{Binding PhoneNumber}"
+                    Content="{Binding SelectedUser.PhoneNumber}"
                     HorizontalAlignment="Left"
                     Name="PhoneNumberText"
                     Padding="5,0,5,5" />
@@ -202,25 +204,25 @@
                 </Label>
 
                 <Label
-                    Content="{Binding CurrentSpeed}"
+                    Content="{Binding SelectedUser.CurrentSpeed}"
                     Grid.Column="1"
                     Grid.Row="1"
                     HorizontalAlignment="Left"
                     Name="CurrentSpeedText" />
                 <Label
-                    Content="{Binding TopSpeed}"
+                    Content="{Binding SelectedUser.TopSpeed}"
                     Grid.Column="2"
                     Grid.Row="2"
                     HorizontalAlignment="Left"
                     Name="TopSpeedText" />
                 <Label
-                    Content="{Binding AverageSpeed}"
+                    Content="{Binding SelectedUser.AverageSpeed}"
                     Grid.Column="3"
                     Grid.Row="3"
                     HorizontalAlignment="Left"
                     Name="AverageSpeedText" />
                 <Label
-                    Content="{Binding TimeElapsed}"
+                    Content="{Binding SelectedUser.TimeElapsed}"
                     Grid.Column="4"
                     Grid.Row="4"
                     HorizontalAlignment="Left"
@@ -249,7 +251,7 @@
                     VerticalAlignment="Center"
                     Width="140" />
                 <Label
-                    Content="{Binding CurrentRate}"
+                    Content="{Binding SelectedUser.CurrentRate}"
                     FontSize="48"
                     HorizontalAlignment="Center"
                     Name="HeartInformationValue"
@@ -306,7 +308,7 @@
                     Peak
                 </Label>
                 <Label
-                    Content="{Binding LowestRate}"
+                    Content="{Binding SelectedUser.LowestRate}"
                     FontSize="16"
                     Grid.Column="0"
                     Grid.Row="1"
@@ -314,7 +316,7 @@
                     Name="HeartLowestText"
                     VerticalContentAlignment="Top" />
                 <Label
-                    Content="{Binding AverageRate}"
+                    Content="{Binding SelectedUser.AverageRate}"
                     FontSize="16"
                     Grid.Column="1"
                     Grid.Row="1"
@@ -322,7 +324,7 @@
                     Name="HeartAverageText"
                     VerticalContentAlignment="Top" />
                 <Label
-                    Content="{Binding HighestRate}"
+                    Content="{Binding SelectedUser.HighestRate}"
                     FontSize="16"
                     Grid.Column="2"
                     Grid.Row="1"

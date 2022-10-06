@@ -1,4 +1,5 @@
 using ServerApplication.Client.DataHandlers.CommandHandlers;
+using ServerApplication.Client.DataHandlers.CommandHandlers.Doctor;
 
 namespace ServerApplication.Client.DataHandlers
 {

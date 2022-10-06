@@ -13,7 +13,9 @@ namespace ClientSide
         /// arguments.</param>
 
         private static BikeHandler handler;
-        
+
+        private static List<string> chatHistory;
+
         public static void Main(string[] args)
         {
             Console.Write("Choose application (1=Bike / VR  2=Client / 3=DoctorGUI): ");
@@ -28,6 +30,9 @@ namespace ClientSide
                     Console.WriteLine("VRClient started");
                     var vrClient = new VRClient();
                     vrClient.StartConnectionAsync();
+                    
+                    Thread chatThread = new Thread(SimulateChat);
+                    chatThread.Start();
                     break;
                 case "2":
                     Console.WriteLine("ServerClient started");
@@ -48,6 +53,21 @@ namespace ClientSide
 
         }
 
+        public static List<string> getChatHistory()
+        {
+            return chatHistory;
+        }
+        private static void SimulateChat()
+        {
+            chatHistory = new List<string>();
+            int i = 0;
+            while (true)
+            {
+                chatHistory.Add($"This is a chat message test {i}");
+                i++;
+                Thread.Sleep(1000);
+            }
+        }
 
         private static void StartBikeClient()
         {

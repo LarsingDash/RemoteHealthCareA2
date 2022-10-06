@@ -27,6 +27,7 @@ namespace DoctorApplication.MVVM.ViewModel
         {
             DataVM = new DataViewModel();
             CurrentView = DataVM;
+            
         }
     }
 }

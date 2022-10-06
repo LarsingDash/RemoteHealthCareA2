@@ -95,9 +95,9 @@
                     <RowDefinition></RowDefinition>
                     <RowDefinition MaxHeight="20"></RowDefinition>
                 </Grid.RowDefinitions>
-                    <ListView ItemsSource="{Binding SelectedUser.messages}">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
+                <ListView ItemsSource="{Binding SelectedUser.messages}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
                             <Border Background="LightBlue" CornerRadius="5" BorderThickness="5">
 
                                 <StackPanel Orientation="Vertical">
@@ -106,29 +106,33 @@
                                 </StackPanel>
                             </Border>
                         </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                    <Grid Grid.Row="2" DockPanel.Dock="Bottom" Name="ChatTextBoxPanel">
+                    </ListView.ItemTemplate>
+                </ListView>
+                <Grid Grid.Row="2" DockPanel.Dock="Bottom" Name="ChatTextBoxPanel">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="8*" />
                         <ColumnDefinition Width="2*" />
                     </Grid.ColumnDefinitions>
                     <TextBox
                         Grid.Column="0"
-                        x:Name="MessageBox"
+                        Text="{Binding Message, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
                         >
                         <TextBox.DataContext>
                             <m:DataViewModel/>
                         </TextBox.DataContext>
                     </TextBox>
                     <Button
+                        Command="{Binding SendCommand}"
                         Background="#FF1B47F5"
                         BorderBrush="#FF1B1B1B"
                         Content="➤"
                         Foreground="#FFFFF7F7"
                         Grid.Column="1"
-                       
-                        />
+                        >
+                        <Button.DataContext>
+                            <m:DataViewModel/>
+                        </Button.DataContext>
+                    </Button>
                 </Grid>
             </Grid>
         </Grid>

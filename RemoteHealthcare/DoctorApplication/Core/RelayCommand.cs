@@ -11,30 +11,40 @@ namespace DoctorApplication.Core
     ViewModel */
     internal class RelayCommand : ICommand
     {
-        private Action<object> execute;
-        private Func<object, bool> canExecute;
+        readonly Action<object> execute;
+        readonly Predicate<object> canExecute;
 
-        public event EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
         
-        public RelayCommand(Action<object> execute, Func<object, bool> canExecute = null)
+        
+        public RelayCommand(Action<object> execute, Predicate<object> canExecute)
         {
+            if (execute == null)
+            {
+                throw new NullReferenceException("execute");
+            }
+
             this.execute = execute;
             this.canExecute = canExecute;
 
         }
 
+        public RelayCommand(Action<object> execute) : this(execute, null)
+        {
+
+        }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
         public bool CanExecute(object parameter)
         {
-            return canExecute == null || canExecute(parameter);
+            return canExecute == null ? true : canExecute(parameter);
         }
 
         public void Execute(object parameter)
         {
-            execute(parameter);
+            execute.Invoke(parameter);
         }
     }
 }

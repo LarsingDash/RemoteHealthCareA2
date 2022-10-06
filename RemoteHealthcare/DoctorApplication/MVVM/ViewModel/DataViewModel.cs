@@ -12,20 +12,30 @@ using System.Windows;
 
 namespace DoctorApplication.MVVM.ViewModel
 {
-    internal class DataViewModel : Screen
+    internal class DataViewModel : ObservableObject
     {
-        private string textBoxValue;
 
-        public string TextBoxValue
+        private string message;
+
+        public string Message
         {
-            get { return textBoxValue; }
-            set { textBoxValue = value; }
+            get { return message; }
+            set { message = value;
+                OnPropertyChanged();
+            }
         }
-        //commands
-        public RelayCommand SendCommand { get; set; }
+
+        public RelayCommand SendCommand { get; set; }  
+
+
+
 
         public BindableCollection<UserDataModel> users { get; set; }
         public ObservableCollection<MessageModel> messages { get; set; }
+
+        public RelayCommand MessageCommand { get; set; }
+        public RelayCommand ConsoleLogcommand { get; set; }
+        
         
         private UserDataModel selectedUser;
         public UserDataModel SelectedUser
@@ -34,25 +44,35 @@ namespace DoctorApplication.MVVM.ViewModel
             set
             {
                 selectedUser = value;
-                NotifyOfPropertyChange(() => selectedUser);
+                OnPropertyChanged();
 
 
             }
         }
         public DataViewModel()
         {
+
             users = new BindableCollection<UserDataModel>();
             UserDataModel test1 = new UserDataModel("user1", "0612345678", 12345, 20, 80);
             UserDataModel test2 = new UserDataModel("user2", "0698765432", 67890, 30, 70);
             test1.AddMessage("Hello");
-            test1.AddMessage("How are you?");
+            test1.AddMessage("Im a console!");
             test1.AddMessage("Goodbye!");
             test2.AddMessage("Hi!");
             test2.AddMessage("Whats up?");
             users.Add(test1);
             users.Add(test2);
 
+            MessageCommand = new RelayCommand(DisplayInMessageBox);
+
+            SendCommand = new RelayCommand(DisplayInMessageBox);
         }
-        
+      
+        public void DisplayInMessageBox(object message)
+        {
+            Console.WriteLine(message);
+        }
+       
+       
     }
 }

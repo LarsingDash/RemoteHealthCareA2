@@ -2,6 +2,7 @@
 using DoctorApplication.Core;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -27,6 +28,10 @@ namespace DoctorApplication.MVVM.Model
         private int lowestRate;
         private int averageRate;
         private int highestRate;
+
+        //chatdata
+        public ObservableCollection<MessageModel> messages { get; set; }
+        public string lastMessage => messages.Last().message;
 
         //constructor currently with test values
         public UserDataModel()

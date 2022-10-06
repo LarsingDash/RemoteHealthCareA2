@@ -9,15 +9,15 @@ namespace DoctorApplication.MVVM.ViewModel
 {
     internal class MainViewModel : ObservableObject
     {
-        private object _currentView;
+        private object currentView;
         public DataViewModel DataVM { get; set; }
 
         /* A property that is used to set the current view. */
         public object CurrentView
         {
-            get { return _currentView; }
+            get { return currentView; }
             set {
-                _currentView = value;
+                currentView = value;
                 OnPropertyChanged();
             }
         }

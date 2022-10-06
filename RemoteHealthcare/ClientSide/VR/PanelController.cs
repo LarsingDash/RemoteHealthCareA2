@@ -8,7 +8,6 @@ namespace ClientSide.VR;
 //Meanwhile a separate thread is waiting for this process to finish, and once it is it will update the panel at 10fps.
 public class PanelController
 {
-    private VRClient vrClient;
     private readonly Tunnel tunnel;
     private string hudPanel = null;
 
@@ -19,7 +18,6 @@ public class PanelController
 
     public PanelController(VRClient vrClient, Tunnel tunnel)
     {
-        this.vrClient = vrClient;
         this.tunnel = tunnel;
 
         vrClient.IDWaitList.Add("hudPanel", NodeID =>
@@ -78,6 +76,7 @@ public class PanelController
             if (currentDist != previousDist) HUDTextAction(dist, "100");
             if (currentHeart != previousHeart) HUDTextAction(heart, "125");
             
+            PrintChat();
             
             //Write all the text to the bike
             tunnel.SendTunnelMessage(new Dictionary<string, string>
@@ -104,6 +103,7 @@ public class PanelController
                             {
                                 { "_panelid_", hudPanel },
                                 { "_text_", $"{param}" },
+                                {"\"_size_\"", "32.0"},
                                 { "\"_position_\"", $"0, {offset}" }
                             })
                     },
@@ -117,6 +117,30 @@ public class PanelController
             if (hudPanel != null) UpdatePanel(hudPanel, HUDInfoAction);
             
             Thread.Sleep(1000);
+        }
+    }
+    
+    //Print the last 9 messages in chat
+    void PrintChat()
+    {
+        var chatHistory = Program.getChatHistory().TakeLast(9);
+        
+        for (int i = 0; i < chatHistory.Count(); i++)
+        {
+            int y = 150 + i * 15;
+            tunnel.SendTunnelMessage(new Dictionary<string, string>
+            {
+                {
+                    "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Panel\\PanelDrawText",
+                        new Dictionary<string, string>
+                        {
+                            { "_panelid_", hudPanel },
+                            { "_text_", $"{chatHistory.ElementAt(i)}" },
+                            {"\"_size_\"", "18.0"},
+                            { "\"_position_\"", $"300, {y}" }
+                        })
+                },
+            });
         }
     }
 

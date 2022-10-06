@@ -24,7 +24,18 @@ public class SubscribeToSession : CommandHandler
             return;
         }
         string uuid = ob["data"]!["uuid"]!.ToObject<string>()!;
-        server.SubscribedSessions.Add(data, uuid);
+        if (server.SubscribedSessions.ContainsKey(uuid))
+        {
+            List<ClientData> list = server.SubscribedSessions[uuid];
+            list.Add(data);
+            server.SubscribedSessions.Remove(uuid);
+            server.SubscribedSessions.Add(uuid, list);
+        }
+        else
+        {
+            server.SubscribedSessions.Add(uuid, new List<ClientData>() {data});
+        }
+        
         data.SendEncryptedData(JsonFileReader.GetObjectAsString("ErrorResponse", new Dictionary<string, string>()
         {
             { "_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_" },

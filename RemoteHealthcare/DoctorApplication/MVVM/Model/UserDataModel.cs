@@ -164,5 +164,6 @@ namespace DoctorApplication.MVVM.Model
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
+
     }
 }

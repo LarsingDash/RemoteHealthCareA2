@@ -12,6 +12,8 @@ namespace DoctorApplication.MVVM.Model
 {
     public class UserDataModel : INotifyPropertyChanged
     {
+       
+
         //userdata
         private string userName;
         private string phoneNumber;
@@ -62,6 +64,10 @@ namespace DoctorApplication.MVVM.Model
             this.messages = new ObservableCollection<MessageModel>();
         }
 
+        public void chatMessage(string phoneNumber, string message)
+        {
+            
+        }
         public void AddMessage(string message)
         {
             messages.Add(new MessageModel(UserName, message));

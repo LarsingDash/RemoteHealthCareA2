@@ -7,11 +7,23 @@ using System.Text;
 using System.Threading.Tasks;
 using DoctorApplication.MVVM.Model;
 using Caliburn.Micro;
+using Newtonsoft.Json.Linq;
+using System.Windows;
 
 namespace DoctorApplication.MVVM.ViewModel
 {
     internal class DataViewModel : Screen
     {
+        private string textBoxValue;
+
+        public string TextBoxValue
+        {
+            get { return textBoxValue; }
+            set { textBoxValue = value; }
+        }
+        //commands
+        public RelayCommand SendCommand { get; set; }
+
         public BindableCollection<UserDataModel> users { get; set; }
         public ObservableCollection<MessageModel> messages { get; set; }
         
@@ -39,6 +51,8 @@ namespace DoctorApplication.MVVM.ViewModel
             test2.AddMessage("Whats up?");
             users.Add(test1);
             users.Add(test2);
+
         }
+        
     }
 }

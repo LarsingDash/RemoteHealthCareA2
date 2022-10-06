@@ -6,12 +6,17 @@ using DataType = ClientSide.Bike.DataType;
 
 namespace ClientSide.VR;
 
+
+/**
+ * Manages the bike animation in the VR engine
+ */
 public class BikeController
 {
     private VRClient vrClient;
     private Tunnel tunnel;
     private string? bikeId;
     private string? _routeId;
+    private double previousSpeed;
     
     public BikeController(VRClient vrClient, Tunnel tunnel)
     {
@@ -20,8 +25,11 @@ public class BikeController
 
         bikeId = null;
         _routeId = null;
+        previousSpeed = 0;
     }
-      //Prepare bike and add bike to scene
+      /**
+       * Sets up camera and bike for animation, then loads in bike
+       */
         public void AnimateBike()
         {
             
@@ -87,54 +95,78 @@ public class BikeController
                 },
             });
         }
+        
+    /**
+     * Continuously checks for changes in speed data and updates the VR engine respectively to those changes
+     */
     public void RunController()
     {
         while (true)
         {
-            var animationSpeed = 0.0;
-        
-            //Retrieve bike data (speed)
-            var bikeData = Program.GetBikeData();
-            var speedRaw = bikeData[DataType.Speed].ToString(CultureInfo.InvariantCulture);
-            var bikeSpeed = 0.0;
-            try
-            {
-                bikeSpeed = Double.Parse(speedRaw.Substring(0, speedRaw.IndexOf('.') + 2));
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("");
-            }
-
-
-            //TODO: Modify the animation speed based on bike speed
-        
-            //Modify the route follow speed based on bike speed
-            var followSpeed = 0.0 + bikeSpeed * 1.2;
-
             if (!String.IsNullOrEmpty(_routeId) && !String.IsNullOrEmpty(bikeId))
             {
-                UpdateFollowRoute(bikeId, followSpeed);
+                UpdateFollowRoute();
             }
             else
             {
-                Console.WriteLine($"The routeId ({_routeId}) and/or {bikeId} was not found");
+                Console.WriteLine($"Waiting for routeId and/or bikeId");
             }
             Thread.Sleep(100);
             
         }
-        //Update VR engine with new speeds
     }
 
-    public void UpdateFollowRoute(string nodeId, double followSpeed)
+    /**
+     * Updates the bike animation speed and speed at which it follows the route based on the bike data received
+     */
+    private void UpdateFollowRoute()
     {
+        //Retrieve bike data (speed)
+        var bikeData = Program.GetBikeData();
+        var speedRaw = bikeData[DataType.Speed].ToString(CultureInfo.InvariantCulture);
+        var bikeSpeed = 0.0;
+        try
+        {
+            bikeSpeed = Double.Parse(speedRaw.Substring(0, speedRaw.IndexOf('.') + 2));
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("The string speedRaw was not able to be parsed to a double.");
+        }
+
+        //If the new bikeSpeed has changed compared to the previous value, update previousSpeed
+        // otherwise do not update speed in VR engine
+        if (Math.Abs(bikeSpeed - previousSpeed) > 0.05)
+        {
+            previousSpeed = bikeSpeed;
+        }
+        else
+        {
+            return;
+        }
+
+        //Modify the animation speed based on bike speed
+        var animationSpeed = 0.0 + bikeSpeed * 0.1;
+        tunnel.SendTunnelMessage(new Dictionary<string, string>()
+        {
+            {
+                "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Route\\AnimationSpeed",
+                    new Dictionary<string, string>()
+                    {
+                        { "nodeid", bikeId }, {"\"_speed_\"", $"{animationSpeed}"}
+                    })
+            }
+        });
+        
+        //Modify the route follow speed based on bike speed
+        var followSpeed = 0.0 + bikeSpeed * 1.2;
         tunnel.SendTunnelMessage(new Dictionary<string, string>()
         {
             {
                 "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Route\\FollowSpeed",
                     new Dictionary<string, string>()
                     {
-                        { "nodeid", nodeId }, {"\"_speed_\"", $"{followSpeed}"}
+                        { "nodeid", bikeId }, {"\"_speed_\"", $"{followSpeed}"}
                     })
             }
         });

@@ -12,6 +12,11 @@ public class PanelController
     private readonly Tunnel tunnel;
     private string hudPanel = null;
 
+    private double previousSpeed = 0;
+    private double previousTime = 0;
+    private double previousDist = 0;
+    private double previousHeart = 0;
+
     public PanelController(VRClient vrClient, Tunnel tunnel)
     {
         this.vrClient = vrClient;
@@ -61,12 +66,20 @@ public class PanelController
             var heartRaw = currentData[DataType.HeartRate].ToString(CultureInfo.InvariantCulture);
             var heart = heartRaw.Substring(0, heartRaw.IndexOf('.') + 2);
             
+            //Convert to doubles for check
+            var currentSpeed = Double.Parse(speed);
+            var currentTime = Double.Parse(time);
+            var currentDist = Double.Parse(dist);
+            var currentHeart = Double.Parse(heart);
+            
+            //Check if data has changed before updating VR engine
+            if (currentSpeed != previousSpeed) HUDTextAction(speed, "50");
+            if (currentTime != previousTime) HUDTextAction(time, "75");
+            if (currentDist != previousDist) HUDTextAction(dist, "100");
+            if (currentHeart != previousHeart) HUDTextAction(heart, "125");
+            
+            
             //Write all the text to the bike
-            HUDTextAction(speed, "50");
-            HUDTextAction(time, "75");
-            HUDTextAction(dist, "100");
-            HUDTextAction(heart, "125");
-
             tunnel.SendTunnelMessage(new Dictionary<string, string>
             {
                 {
@@ -131,4 +144,7 @@ public class PanelController
             })}
         });
     }
+
+
+
 }

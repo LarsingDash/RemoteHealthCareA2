@@ -15,6 +15,9 @@ namespace ServerApplication
         private Thread requestThread;
         #endregion
 
+        public readonly Dictionary<ClientData, string> SubscribedSessions = new();
+        public readonly List<string> ActiveSessions = new();
+
 
         public Server(int port = 2460)
         {

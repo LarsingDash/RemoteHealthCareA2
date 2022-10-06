@@ -59,6 +59,8 @@ public class StartBikeRecording : CommandHandler
                 {"_status_", "ok"},
                 {"_uuid_", fileName}
             }, JsonFolder.ClientMessages.Path));
+            
+            server.ActiveSessions.Add(fileName);
         }
         else
         {

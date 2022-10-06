@@ -62,6 +62,11 @@ namespace DoctorApplication.MVVM.Model
             this.messages = new ObservableCollection<MessageModel>();
         }
 
+        public void AddMessage(string message)
+        {
+            messages.Add(new MessageModel(UserName, message));
+        }
+
         public string UserName
         {
             get { return userName; }

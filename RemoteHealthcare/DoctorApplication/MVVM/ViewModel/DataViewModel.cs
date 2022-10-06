@@ -30,9 +30,15 @@ namespace DoctorApplication.MVVM.ViewModel
         public DataViewModel()
         {
             users = new BindableCollection<UserDataModel>();
-            users.Add(new UserDataModel("user1", "0612345678", 12345, 20, 80));
-            users.Add(new UserDataModel("user2", "0698765432", 67890, 30, 70));
-
+            UserDataModel test1 = new UserDataModel("user1", "0612345678", 12345, 20, 80);
+            UserDataModel test2 = new UserDataModel("user2", "0698765432", 67890, 30, 70);
+            test1.AddMessage("Hello");
+            test1.AddMessage("How are you?");
+            test1.AddMessage("Goodbye!");
+            test2.AddMessage("Hi!");
+            test2.AddMessage("Whats up?");
+            users.Add(test1);
+            users.Add(test2);
         }
     }
 }

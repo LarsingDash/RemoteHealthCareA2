@@ -31,7 +31,7 @@
                     Name="SelectedUserLabel">
                     Selected User:
                 </Label>
-                <ComboBox Width="240" ItemsSource="{Binding users}" x:Name="users" SelectedItem="{Binding SelectedUser}">
+                <ComboBox Width="240" ItemsSource="{Binding users}" SelectedItem="{Binding SelectedUser}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
@@ -88,23 +88,27 @@
                     Padding="5,0,5,5" />
 
             </StackPanel>
-            <DockPanel
+            <Grid
                 Grid.Row="2"
-                LastChildFill="False"
-                Name="ChatDockPanel">
-                <DockPanel.Background>
-                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                        <GradientStop Color="#FFF5FFF4" />
-                        <GradientStop Color="White" Offset="1" />
-                    </LinearGradientBrush>
-                </DockPanel.Background>
-                <Label
-                    Content="Chat:"
-                    DockPanel.Dock="Top"
-                    FontWeight="Bold"
-                    HorizontalAlignment="Center"
-                    Name="ChatHeader" />
-                <Grid DockPanel.Dock="Bottom" Name="ChatTextBoxPanel">
+                >
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition MaxHeight="20"></RowDefinition>
+                </Grid.RowDefinitions>
+                    <ListView ItemsSource="{Binding SelectedUser.messages}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                            <Border Background="LightBlue" CornerRadius="5" BorderThickness="5">
+
+                                <StackPanel Orientation="Vertical">
+                                    <Label Padding="3, 3, 3, 3" Content="{Binding message}" />
+                                    <Label HorizontalAlignment="Right" Padding="10, 0" Content="{Binding time}" FontSize="11" FontStyle="Italic" />
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <Grid Grid.Row="2" DockPanel.Dock="Bottom" Name="ChatTextBoxPanel">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="8*" />
                         <ColumnDefinition Width="2*" />
@@ -122,7 +126,7 @@
                         Grid.Column="1"
                         Name="ChatSendTextButton" />
                 </Grid>
-            </DockPanel>
+            </Grid>
         </Grid>
         <Grid Grid.Column="1" Name="BikeInformationGrid">
             <Grid.RowDefinitions>

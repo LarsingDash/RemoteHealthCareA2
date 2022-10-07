@@ -15,6 +15,8 @@ public class PanelController
     private double previousTime = 0;
     private double previousDist = 0;
     private double previousHeart = 0;
+    
+    private List<string> chatLines = new List<string>();
 
     public PanelController(VRClient vrClient, Tunnel tunnel)
     {
@@ -71,77 +73,110 @@ public class PanelController
             var currentHeart = Double.Parse(heart);
             
             //Check if data has changed before updating VR engine
-            if (currentSpeed != previousSpeed) HUDTextAction(speed, "50");
-            if (currentTime != previousTime) HUDTextAction(time, "75");
-            if (currentDist != previousDist) HUDTextAction(dist, "100");
-            if (currentHeart != previousHeart) HUDTextAction(heart, "125");
+            if (currentSpeed != previousSpeed) HUDTextAction(speed, 50);
+            if (currentTime != previousTime) HUDTextAction(time, 75);
+            if (currentDist != previousDist) HUDTextAction(dist, 100);
+            if (currentHeart != previousHeart) HUDTextAction(heart, 125);
             
             PrintChat();
-            
-            //Write all the text to the bike
-            tunnel.SendTunnelMessage(new Dictionary<string, string>
-            {
-                {
-                    "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Panel\\PanelDrawImage",
-                        new Dictionary<string, string>
-                        {
-                            { "_panelid_", hudPanel },
-                            { "_image_", "data/NetworkEngine/images/TimeIcon.png" },
-                            { "\"_position_\"", "0, 0" }, 
-                        })
-                },
-            });
+
+            //Send a message to draw icons on the panel
+            string imageAddress = "data/NetworkEngine/images/TimeIcon.png";
+            DrawPanelImage(imageAddress, 0, 0);
 
             //Send a message to write the given text
-            void HUDTextAction(string param, string offset)
+            void HUDTextAction(string text, int yPos)
             {
-                tunnel.SendTunnelMessage(new Dictionary<string, string>
-                {
-                    {
-                        "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Panel\\PanelDrawText",
-                            new Dictionary<string, string>
-                            {
-                                { "_panelid_", hudPanel },
-                                { "_text_", $"{param}" },
-                                {"\"_size_\"", "32.0"},
-                                { "\"_position_\"", $"0, {offset}" }
-                            })
-                    },
-                });
+                DrawPanelText(text, 32,0,yPos );
             }
         }
         
         //Once the hudPanel has been made, run all actions to update the panel
+        int i = 0;
         while (true)
         {
             if (hudPanel != null) UpdatePanel(hudPanel, HUDInfoAction);
-            
+            i++;
+            if (i % 50000 == 0) FormatChat();
             Thread.Sleep(1000);
         }
     }
-    
-    //Print the last 9 messages in chat
-    void PrintChat()
+
+
+    //todo: make a listener for receiving messages 
+    // clear chatLines
+    // grab the last 9 messages and split them if they are too big for one line
+    // then add them to chatLines
+     void FormatChat()
     {
+        chatLines.Clear();
         var chatHistory = Program.getChatHistory().TakeLast(9);
+        var length = 10;
         
-        for (int i = 0; i < chatHistory.Count(); i++)
+        foreach (var chatMessage in chatHistory)
         {
-            int y = 150 + i * 15;
-            tunnel.SendTunnelMessage(new Dictionary<string, string>
+            var chatString = chatMessage;
+            while (chatString.Length > length)
             {
-                {
-                    "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Panel\\PanelDrawText",
-                        new Dictionary<string, string>
-                        {
-                            { "_panelid_", hudPanel },
-                            { "_text_", $"{chatHistory.ElementAt(i)}" },
-                            {"\"_size_\"", "18.0"},
-                            { "\"_position_\"", $"300, {y}" }
-                        })
-                },
-            });
+                var line = chatString.Substring(0, length);
+                chatString = chatMessage.Substring(length);
+                chatLines.Add(line);
+            }
+
+            if (chatString.Length > 0)
+            {
+                chatLines.Add(chatString);
+            }
         }
+    }
+    
+    //Print the last 9 lines in chat
+    private void PrintChat()
+    {
+        var printLines = chatLines.TakeLast(9)
+            .Reverse()
+            .ToList();
+        
+        for (int i = 0; i < printLines.Count(); i++)
+        {
+            string chatMessage = printLines.ElementAt(i);
+            double x = 512 - (32 + chatMessage.Length*3.5); 
+            double y = 300 - i * 15;
+            DrawPanelText(chatMessage, 12, x, y);
+        }
+    }
+
+    private void DrawPanelText(string text, double size, double x, double y)
+    {
+        tunnel.SendTunnelMessage(new Dictionary<string, string>
+        {
+            {
+                "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Panel\\PanelDrawText",
+                    new Dictionary<string, string>
+                    {
+                        { "_panelid_", hudPanel },
+                        { "_text_", text },
+                        {"\"_size_\"", $"{size}"},
+                        { "\"_position_\"", $"{x}, {y}" }
+                    })
+            },
+        });
+    }
+
+    private void DrawPanelImage(string imageAddress, double x, double y)
+    {
+        tunnel.SendTunnelMessage(new Dictionary<string, string>
+        {
+            {
+                "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Panel\\PanelDrawImage",
+                    new Dictionary<string, string>
+                    {
+                        { "_panelid_", hudPanel },
+                        { "_image_", imageAddress},
+                        { "\"_position_\"", $"{x}, {y}" }, 
+                    })
+            },
+        });
     }
 
     //Clear the screen - perform the given actions - update de panel

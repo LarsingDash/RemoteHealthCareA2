@@ -63,9 +63,8 @@ namespace ClientSide
             int i = 0;
             while (true)
             {
-                chatHistory.Add($"This is a chat message test {i}");
-                i++;
-                Thread.Sleep(1000);
+                chatHistory.Add($"This is a test to see if this long chat message is printed correctly on the panel. Not sure if it is working tho.");
+                Thread.Sleep(10000);
             }
         }
 

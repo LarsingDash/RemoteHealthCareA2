@@ -153,7 +153,7 @@ public class BikeController
                 "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Route\\AnimationSpeed",
                     new Dictionary<string, string>()
                     {
-                        { "nodeid", bikeId }, {"\"_speed_\"", $"{animationSpeed}"}
+                        { "nodeid", bikeId }, {"\"_speed_\"", $"{animationSpeed.ToString(CultureInfo.InvariantCulture)}"}
                     })
             }
         });
@@ -166,7 +166,7 @@ public class BikeController
                 "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Route\\FollowSpeed",
                     new Dictionary<string, string>()
                     {
-                        { "nodeid", bikeId }, {"\"_speed_\"", $"{followSpeed}"}
+                        { "nodeid", bikeId }, {"\"_speed_\"", $"{followSpeed.ToString(CultureInfo.InvariantCulture)}"}
                     })
             }
         });

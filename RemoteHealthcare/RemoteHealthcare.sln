@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DoctorApplication", "Doctor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{819A466C-0FFD-40A6-84F5-E2773948C2EA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientApplication", "ClientApplication\ClientApplication.csproj", "{D8E450EB-F95E-433B-A07F-1DC5ABC48DC7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{819A466C-0FFD-40A6-84F5-E2773948C2EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{819A466C-0FFD-40A6-84F5-E2773948C2EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{819A466C-0FFD-40A6-84F5-E2773948C2EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8E450EB-F95E-433B-A07F-1DC5ABC48DC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8E450EB-F95E-433B-A07F-1DC5ABC48DC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8E450EB-F95E-433B-A07F-1DC5ABC48DC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8E450EB-F95E-433B-A07F-1DC5ABC48DC7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

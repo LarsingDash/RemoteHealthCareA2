@@ -9,6 +9,8 @@ using DoctorApplication.MVVM.Model;
 using Caliburn.Micro;
 using Newtonsoft.Json.Linq;
 using System.Windows;
+using LiveCharts.Wpf;
+using LiveCharts;
 
 namespace DoctorApplication.MVVM.ViewModel
 {
@@ -29,9 +31,10 @@ namespace DoctorApplication.MVVM.ViewModel
         public RelayCommand GetUserCommand { get; set; }
         public BindableCollection<UserDataModel> users { get; set; }
         public ObservableCollection<MessageModel> messages { get; set; }
+        public SeriesCollection SeriesCollection { get; set; }
+        public string[] Labels { get; set; }
+        public Func<double, string> YFormatter { get; set; }
 
-        
-        
         private UserDataModel selectedUser;
         public UserDataModel SelectedUser
         {
@@ -61,6 +64,15 @@ namespace DoctorApplication.MVVM.ViewModel
 
             SendCommand = new RelayCommand(SendMessage);
             GetUserCommand = new RelayCommand(GetUser);
+
+            SeriesCollection = new SeriesCollection
+            {
+                new LineSeries
+                {
+                    Title = "Series 1",
+                    Values = new ChartValues<double> { 4, 6, 5, 2 ,4 }
+                }
+            };
         }
 
         public void SendMessage(object Message)

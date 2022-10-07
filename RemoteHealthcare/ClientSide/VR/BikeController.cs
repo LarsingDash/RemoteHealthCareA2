@@ -109,7 +109,7 @@ public class BikeController
             }
             else
             {
-                Console.WriteLine($"Waiting for routeId and/or bikeId");
+                // Console.WriteLine($"Waiting for routeId and/or bikeId");
             }
             Thread.Sleep(100);
             

@@ -31,8 +31,8 @@ namespace ClientSide
                     var vrClient = new VRClient();
                     vrClient.StartConnectionAsync();
                     
-                    Thread chatThread = new Thread(SimulateChat);
-                    chatThread.Start();
+                    // Thread chatThread = new Thread(SimulateChat);
+                    // chatThread.Start();
                     break;
                 case "2":
                     Console.WriteLine("ServerClient started");

@@ -67,28 +67,21 @@ public class PanelController
             var heart = heartRaw.Substring(0, heartRaw.IndexOf('.') + 2);
             
             //Convert to doubles for check
-            var currentSpeed = Double.Parse(speed);
-            var currentTime = Double.Parse(time);
-            var currentDist = Double.Parse(dist);
-            var currentHeart = Double.Parse(heart);
+            var currentSpeed = double.Parse(speed);
+            var currentTime = double.Parse(time);
+            var currentDist = double.Parse(dist);
+            var currentHeart = double.Parse(heart);
             
             //Check if data has changed before updating VR engine
-            if (currentSpeed != previousSpeed) HUDTextAction(speed, 50);
-            if (currentTime != previousTime) HUDTextAction(time, 75);
-            if (currentDist != previousDist) HUDTextAction(dist, 100);
-            if (currentHeart != previousHeart) HUDTextAction(heart, 125);
+            if (Math.Abs(currentSpeed - previousSpeed) > 0.0)   DrawPanelText(speed, 64, 70, 60);
+            if (Math.Abs(currentTime - previousTime) > 0.0)     DrawPanelText(time, 64, 70, 120);
+            if (Math.Abs(currentDist - previousDist) > 0.0)     DrawPanelText(dist, 64, 70, 180);
+            if (Math.Abs(currentHeart - previousHeart) > 0.0)   DrawPanelText(heart, 64, 70, 240);
             
             PrintChat();
 
             //Send a message to draw icons on the panel
-            string imageAddress = "data/NetworkEngine/images/TimeIcon.png";
-            DrawPanelImage(imageAddress, 0, 0);
-
-            //Send a message to write the given text
-            void HUDTextAction(string text, int yPos)
-            {
-                DrawPanelText(text, 32,0,yPos );
-            }
+            DrawPanelImage("data/NetworkEngine/images/Icons.png", 0, 128, 64, -256);
         }
         
         //Once the hudPanel has been made, run all actions to update the panel
@@ -163,7 +156,7 @@ public class PanelController
         });
     }
 
-    private void DrawPanelImage(string imageAddress, double x, double y)
+    private void DrawPanelImage(string imageAddress, double posX, double posY, double sizeX, double sizeY)
     {
         tunnel.SendTunnelMessage(new Dictionary<string, string>
         {
@@ -173,7 +166,8 @@ public class PanelController
                     {
                         { "_panelid_", hudPanel },
                         { "_image_", imageAddress},
-                        { "\"_position_\"", $"{x}, {y}" }, 
+                        { "\"_position_\"", $"{posX}, {posY}" }, 
+                        { "\"_size_\"", $"{sizeX}, {sizeY}" }, 
                     })
             },
         });

@@ -10,21 +10,15 @@ namespace ClientSide.VR
         private readonly VRClient vrClient;
         private readonly Tunnel tunnel;
 
-        public WorldGen(VRClient vrClient, Tunnel tunnel, World selectedWorld)
+        public WorldGen(VRClient vrClient, Tunnel tunnel)
         {
             this.vrClient = vrClient;
             this.tunnel = tunnel;
 
-            switch (selectedWorld)
-            {
-                default:
-                case World.forest:
-                    GenerateForest();
-                    break;
-            }
+            GenerateTerrain();
         }
 
-        private void GenerateForest()
+        private void GenerateTerrain()
         {
             //Set height values for tiles
             const int mapSize = 256;
@@ -38,7 +32,8 @@ namespace ClientSide.VR
             {
                 for (var y = 0; y < mapSize; y++)
                 {
-                    heightMap.Append($"{(noiseGen.GetPerlin(x, y) * terrainSensitivity).ToString(CultureInfo.InvariantCulture)},");
+                    heightMap.Append(
+                        $"{(noiseGen.GetPerlin(x, y) * terrainSensitivity).ToString(CultureInfo.InvariantCulture)},");
                 }
             }
 
@@ -128,7 +123,7 @@ namespace ClientSide.VR
             });
         }
 
-  
+
 
 
         private Point[] GenPoly(double RadiusMin, double RadiusMax, int minPoints, int maxPoints, Random random)
@@ -165,10 +160,5 @@ namespace ClientSide.VR
 
             return builder.ToString();
         }
-    }
-
-    public enum World
-    {
-        forest
     }
 }

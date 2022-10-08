@@ -26,7 +26,6 @@ public class VRClient
     public WorldGen worldGen;
     public PanelController panelController;
     public BikeController bikeController;
-    private World selectedWorld = World.forest;
 
     //Other
     private readonly List<string> removalTargets = new List<string>();
@@ -58,7 +57,7 @@ public class VRClient
         RemoveObjectRequest("GroundPlane", "RightHand", "LeftHand");
             
         //Start WorldGen
-        worldGen = new WorldGen(this, tunnel, selectedWorld);
+        worldGen = new WorldGen(this, tunnel);
         
         //Start HUDController
         panelController = new PanelController(this, tunnel);

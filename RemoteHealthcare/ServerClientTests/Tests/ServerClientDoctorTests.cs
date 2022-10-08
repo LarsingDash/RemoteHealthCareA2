@@ -1,3 +1,4 @@
+using System.Data;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ServerApplication;
@@ -319,7 +320,7 @@ public class ServerClientDoctorTests
             {"_name_", patientUserName}
         }, JsonFolder.Json.Path));
         
-        Thread.Sleep(200);
+        Thread.Sleep(300);
         if (uuid.Length == 0)
         {
             Assert.Fail("Did not get a response from start-bike-recording");
@@ -370,5 +371,63 @@ public class ServerClientDoctorTests
         Assert.That(UpdatesValues.received, Is.EqualTo(1), "Did not receive update-values message from server");
         
         Assert.Pass("Receiving update-values");
+    }
+
+    [Test]
+    public async Task Test93SerialTimeout()
+    {
+        var serial = Util.RandomString();
+        var done = false;
+        patient.SendEncryptedData(JsonFileReader.GetObjectAsString("WrongJson", new Dictionary<string, string>()
+        {
+            {"_serial_", serial},
+        }, JsonFolder.Json.Path));
+        await patient.AddSerialCallbackTimeout(
+            serial, 
+            ob =>
+        {
+            
+        },
+            () =>
+            {
+                done = true;
+            }, 
+            1000);
+        if (!done)
+        {
+            Assert.That(done, Is.True, "AddSerialCallbackTimeout is not working.");
+            return;
+        }
+        
+        Assert.Pass( "AddSerialCallbackTimeout is working");
+    }
+    
+    [Test]
+    public async Task Test94SerialTimeout()
+    {
+        var serial = Util.RandomString();
+        var done = false;
+        var millis = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+        patient.SendData(JsonFileReader.GetObjectAsString("PublicRSAKey", new Dictionary<string, string>()
+        {
+            {"_serial_", serial},
+        }, JsonFolder.Json.Path));
+        await patient.AddSerialCallbackTimeout(
+            serial, 
+            ob =>
+            {
+                done = true;
+            },
+            () =>
+            {
+            }, 
+            0);
+        
+        if (!done && millis - DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond < 4500)
+        {
+            Assert.That(done, Is.True, "AddSerialCallbackTimeout is not working.");
+            return;
+        }
+        Assert.Pass( "AddSerialCallbackTimeout is working");
     }
 }

@@ -241,6 +241,36 @@ public class DefaultClientConnection
         
         serialCallbacks.Add(serial, action);
     }
+
+    public void RemoveSerialCallback(string serial)
+    {
+        serialCallbacks.Remove(serial);
+    }
+
+    public async Task AddSerialCallbackTimeout(string serial, Action<JObject> action, Action timeoutAction, int timeout)
+    {
+        var received = false;
+        JObject? json = null;
+        AddSerialCallback(serial, ob =>
+        {
+            json = ob;
+            received = true;
+        });
+        var task = Task.Delay(timeout);
+        while (received == false && !task.IsCompleted)
+        {
+            await Task.Delay(1);
+        }
+        
+        if (received)
+        {
+            action.Invoke(json!);
+        }
+        else
+        {
+            timeoutAction.Invoke();
+        }
+    }
     
     /// <summary>
     /// It encrypts the message with AES, encrypts the AES key and IV with RSA, and sends the encrypted message

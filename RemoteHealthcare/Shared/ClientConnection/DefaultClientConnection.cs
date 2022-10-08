@@ -50,7 +50,6 @@ public class DefaultClientConnection
         client = new(hostname, port);
         stream = client.GetStream();
         stream.BeginRead(_buffer, 0, 1024, OnRead, null);
-
         SetupClient();
     }
 
@@ -60,10 +59,13 @@ public class DefaultClientConnection
     /// </summary>
     private void SetupClient()
     {
+        Thread.Sleep(100);
         var serial = Util.RandomString();
         AddSerialCallback(serial, ob =>
         {
-            PublicKey = ob["data"].Value<JArray>("key").Values<byte>().ToArray();
+            PublicKey = ob["data"]!.Value<JArray>("key")!.Values<byte>().ToArray();
+            Logger.LogMessage(LogImportance.Information, 
+                $"Received PublicKey from Server: {LogColor.Gray}\n{Util.ByteArrayToString(PublicKey)}");
         });
         
         SendData(JsonFileReader.GetObjectAsString("PublicRSAKey", new Dictionary<string, string>()

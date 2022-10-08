@@ -87,7 +87,14 @@ namespace ServerApplication.Client
                     if (_totalBuffer.Length >= packetSize + 4)
                     {
                         var json = Encoding.UTF8.GetString(_totalBuffer, 4, packetSize);
-                        DataHandler.HandleMessage(this, JObject.Parse(json));
+                        try
+                        {
+                            DataHandler.HandleMessage(this, JObject.Parse(json));
+                        }
+                        catch (IOException e)
+                        {
+                            Logger.LogMessage(LogImportance.Error, $"Could not parse json to JObject {LogColor.Gray}\n{json}", e);
+                        }
         
                         var newBuffer = new byte[_totalBuffer.Length - packetSize - 4];
                         Array.Copy(_totalBuffer, packetSize + 4, newBuffer, 0, newBuffer.Length);

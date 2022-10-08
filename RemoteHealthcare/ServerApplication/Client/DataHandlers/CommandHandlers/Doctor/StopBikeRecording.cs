@@ -1,10 +1,9 @@
 using System.Globalization;
 using Newtonsoft.Json.Linq;
-using ServerApplication.UtilData;
 using Shared;
 using JsonFolder = ServerApplication.UtilData.JsonFolder;
 
-namespace ServerApplication.Client.DataHandlers.CommandHandlers;
+namespace ServerApplication.Client.DataHandlers.CommandHandlers.Doctor;
 
 public class StopBikeRecording : CommandHandler
 {
@@ -18,6 +17,11 @@ public class StopBikeRecording : CommandHandler
     {
         if (ob["data"]?["uuid"]?.ToObject<string>() != null)
         {
+            if (!server.ActiveSessions.Contains(ob["data"]!["uuid"]!.ToObject<string>()!))
+            {
+                SendEncryptedError(data,ob, "Session is not found or active");
+                return;
+            }
             string fileName = ob["data"]!["uuid"]!.ToObject<string>()! + ".txt";
             
             //Getting current values
@@ -42,7 +46,7 @@ public class StopBikeRecording : CommandHandler
         }
         else
         {
-            //Sending error response
+            //Sending error response 
             SendEncryptedError(data,ob,"There is no session name");
            
         }

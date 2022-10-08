@@ -15,7 +15,9 @@ namespace ServerApplication.Client.DataHandlers
                 {"historic-client-data", new HistoricClientData()},
                 {"all-clients", new AllClients()},
                 {"start-bike-recording", new StartBikeRecording()},
-                {"chat-message", new ChatMessage()}
+                {"stop-bike-recording", new StopBikeRecording()},
+                {"chat-message", new ChatMessage()},
+                {"subscribe-to-session", new SubscribeToSession()},
             };
         }
     }

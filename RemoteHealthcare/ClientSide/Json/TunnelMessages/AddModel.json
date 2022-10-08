@@ -2,20 +2,21 @@
   "id" : "scene/node/add",
   "data" :
   {
-    "name" : "name",
-    "parent" : "guid",
+    "name" : "_name_",
+    "parent" : "_guid_",
     "components" :
     {
       "transform" :
       {
         "position" : [ "_position_" ],
+        "parent" : "_guid_",
         "scale" : 1,
         "rotation" : [ 0, 0, 0 ]
       },
       "model" :
       {
         "file" : "_filename_",
-        "cullbackfaces" : true,
+        "cullbackfaces" : false,
         "animated" : false,
         "animation" : "animationname"
       }

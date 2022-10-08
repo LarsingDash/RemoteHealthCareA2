@@ -9,9 +9,11 @@ namespace ClientSide.VR
     {
         private readonly VRClient vrClient;
         private readonly Tunnel tunnel;
-        
+
         private const int mapSize = 256;
-        private const string treePath = "data\\NetworkEngine\\models\\trees\fantasy\\tree7.obj";
+
+        private const string treePath = "data/NetworkEngine/models/trees/fantasy/tree7.obj";
+        // private const string treePath = "data/NetworkEngine/models/houses/set1/house1.obj";
 
         private List<Vector2> route = new List<Vector2>();
 
@@ -126,14 +128,68 @@ namespace ClientSide.VR
                         })
                 }
             });
-            
-            GenerateDecoration();
-        }
 
+            new Thread(GenerateDecoration).Start();
+        }
 
         private void GenerateDecoration()
         {
-            
+            tunnel.SendTunnelMessage(new Dictionary<string, string>()
+            {
+                {
+                    "\"_data_\"",
+                    JsonFileReader.GetObjectAsString("TunnelMessages\\AddNodeScene",
+                        new Dictionary<string, string>
+                        {
+                            { "_name_", "trees" }
+                        })
+                },
+            });
+
+            vrClient.IDWaitList.Add("trees", treesID =>
+            {
+                //Subdivide the route to get more sub-points
+                Console.WriteLine("Starting subdivision");
+                var fullRoute = new List<Vector2>();
+                for (var i = 0; i < route.Count; i++)
+                {
+                    var currentPoint = route[i];
+                    var nextPoint = route[(i + 1) % route.Count];
+
+                    var subPoint = (currentPoint + nextPoint) / 2;
+                    fullRoute.Add(subPoint);
+                }
+
+                Console.WriteLine("Subdivision completed");
+
+                const int maxAmountOfObjects = 50;
+                const int maxFailedAttempts = 10;
+                var amountOfObjects = 0;
+                var failedAttempts = 0;
+                Random random = new Random();
+                Console.WriteLine("Trees sent:");
+                while (amountOfObjects < maxAmountOfObjects && failedAttempts < maxFailedAttempts)
+                {
+                    var currentPoint = new Vector2(random.Next(0, 256), random.Next(0, 256));
+                    tunnel.SendTunnelMessage(new Dictionary<string, string>()
+                    {
+                        {
+                            "\"_data_\"",
+                            JsonFileReader.GetObjectAsString("TunnelMessages\\AddModel",
+                                new Dictionary<string, string>
+                                {
+                                    { "_name_", $"tree{amountOfObjects}" },
+                                    {"_guid_", treesID},
+                                    {"\"_position_\"", $"{currentPoint.X}, 0, {currentPoint.Y}"},
+                                    // { "\"_position_\"", "0, 0, 0" },
+                                    { "_filename_", treePath }
+                                })
+                        },
+                    });
+                    amountOfObjects++;
+                    Console.WriteLine(amountOfObjects);
+                }
+            });
         }
 
         private Vector2[] GenPoly(double RadiusMin, double RadiusMax, int minPoints, int maxPoints, Random random)

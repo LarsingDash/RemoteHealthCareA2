@@ -319,7 +319,7 @@ public class ServerClientDoctorTests
             {"_name_", patientUserName}
         }, JsonFolder.Json.Path));
         
-        Thread.Sleep(500);
+        Thread.Sleep(200);
         if (uuid.Length == 0)
         {
             Assert.Fail("Did not get a response from start-bike-recording");
@@ -342,7 +342,7 @@ public class ServerClientDoctorTests
                 subscribed = true;
             }
         });
-        Thread.Sleep(500);
+        Thread.Sleep(200);
         if (!subscribed)
         {
             if (json == null)
@@ -355,7 +355,7 @@ public class ServerClientDoctorTests
             }
             return;
         }
-        Thread.Sleep(500);
+        Thread.Sleep(200);
         
         //Changing values
         serial = Util.RandomString();
@@ -366,7 +366,7 @@ public class ServerClientDoctorTests
         }, JsonFolder.Json.Path));
         
         
-        Thread.Sleep(500);
+        Thread.Sleep(200);
         Assert.That(UpdatesValues.received, Is.EqualTo(1), "Did not receive update-values message from server");
         
         Assert.Pass("Receiving update-values");

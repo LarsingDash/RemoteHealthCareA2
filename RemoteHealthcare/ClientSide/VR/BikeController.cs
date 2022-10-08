@@ -127,7 +127,7 @@ public class BikeController
         var bikeSpeed = 0.0;
         try
         {
-            bikeSpeed = Double.Parse(speedRaw.Substring(0, speedRaw.IndexOf('.') + 2));
+            bikeSpeed = 3.6 * Double.Parse(speedRaw.Substring(0, speedRaw.IndexOf('.') + 2));
         }
         catch (Exception e)
         {
@@ -146,7 +146,7 @@ public class BikeController
         }
 
         //Modify the animation speed based on bike speed
-        var animationSpeed = 0.0 + bikeSpeed * 0.1;
+        var animationSpeed = 0.0 + bikeSpeed / 36;
         tunnel.SendTunnelMessage(new Dictionary<string, string>()
         {
             {
@@ -159,7 +159,7 @@ public class BikeController
         });
         
         //Modify the route follow speed based on bike speed
-        var followSpeed = 0.0 + bikeSpeed * 1.2;
+        var followSpeed = 0.0 + bikeSpeed / 10;
         tunnel.SendTunnelMessage(new Dictionary<string, string>()
         {
             {

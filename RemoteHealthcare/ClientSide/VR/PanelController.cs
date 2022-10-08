@@ -1,5 +1,6 @@
 using System.Globalization;
 using ClientSide.Bike;
+using Microsoft.VisualBasic;
 using Shared;
 
 namespace ClientSide.VR;
@@ -57,26 +58,39 @@ public class PanelController
         {
             //Get and convert the data from the bike
             var currentData = Program.GetBikeData();
-            var speedRaw = currentData[DataType.Speed].ToString(CultureInfo.InvariantCulture);
-            var speed = speedRaw.Substring(0, speedRaw.IndexOf('.') + 2);
-            var timeRaw = currentData[DataType.ElapsedTime].ToString(CultureInfo.InvariantCulture);
-            var time = timeRaw.Substring(0, timeRaw.IndexOf('.') + 2);
+            
+            //Speed
+            var speedRaw = (currentData[DataType.Speed] * 3.6).ToString(CultureInfo.InvariantCulture);
+            var speed = speedRaw.Substring(0, speedRaw.IndexOf('.') + 2) + " km/h";
+            
+            //Time
+            var timeRaw = (int) currentData[DataType.ElapsedTime];
+            var time = "";
+            if (timeRaw / 60 < 10)
+            {
+                time += "0";
+            }
+            time += timeRaw / 60 + " : ";
+            if (timeRaw % 60 < 10)
+            {
+                time += "0";
+            }
+
+            time += timeRaw % 60;
+            
+            //Distance
             var distRaw = currentData[DataType.Distance].ToString(CultureInfo.InvariantCulture);
-            var dist = distRaw.Substring(0, distRaw.IndexOf('.') + 2);
+            var distFull = distRaw.Substring(0, distRaw.IndexOf('.') + 2) + " Meters";
+            
+            //Heart
             var heartRaw = currentData[DataType.HeartRate].ToString(CultureInfo.InvariantCulture);
-            var heart = heartRaw.Substring(0, heartRaw.IndexOf('.') + 2);
+            var heart = heartRaw.Substring(0, heartRaw.IndexOf('.') + 2) + " BPM";
             
-            //Convert to doubles for check
-            var currentSpeed = double.Parse(speed);
-            var currentTime = double.Parse(time);
-            var currentDist = double.Parse(dist);
-            var currentHeart = double.Parse(heart);
-            
-            //Check if data has changed before updating VR engine
-            if (Math.Abs(currentSpeed - previousSpeed) > 0.0)   DrawPanelText(speed, 64, 70, 60);
-            if (Math.Abs(currentTime - previousTime) > 0.0)     DrawPanelText(time, 64, 70, 120);
-            if (Math.Abs(currentDist - previousDist) > 0.0)     DrawPanelText(dist, 64, 70, 180);
-            if (Math.Abs(currentHeart - previousHeart) > 0.0)   DrawPanelText(heart, 64, 70, 240);
+            //Draw all text
+            DrawPanelText(speed, 64, 70, 60);
+            DrawPanelText(time, 64, 70, 120);
+            DrawPanelText(distFull, 64, 70, 180);
+            DrawPanelText(heart, 64, 70, 240);
             
             PrintChat();
 
@@ -91,7 +105,7 @@ public class PanelController
             if (hudPanel != null) UpdatePanel(hudPanel, HUDInfoAction);
             i++;
             if (i % 50000 == 0) FormatChat();
-            Thread.Sleep(1000);
+            Thread.Sleep(333);
         }
     }
 

@@ -120,9 +120,12 @@ public class VRClient
             var readCount = stream.EndRead(asyncResult);
             totalBuffer = Concat(totalBuffer, buffer, readCount);
         }
-        catch (IOException)
+        catch (IOException e)
         {
             Console.WriteLine("OnRead Error");
+            Console.WriteLine(e.StackTrace);
+            Console.WriteLine(e.Message);
+            Console.WriteLine(e.Source);
             return;
         }
 

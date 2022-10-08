@@ -1,5 +1,5 @@
-﻿using System.Drawing;
-using System.Globalization;
+﻿using System.Globalization;
+using System.Numerics;
 using System.Text;
 using Shared;
 
@@ -9,6 +9,11 @@ namespace ClientSide.VR
     {
         private readonly VRClient vrClient;
         private readonly Tunnel tunnel;
+        
+        private const int mapSize = 256;
+        private const string treePath = "data\\NetworkEngine\\models\\trees\fantasy\\tree7.obj";
+
+        private List<Vector2> route = new List<Vector2>();
 
         public WorldGen(VRClient vrClient, Tunnel tunnel)
         {
@@ -21,7 +26,6 @@ namespace ClientSide.VR
         private void GenerateTerrain()
         {
             //Set height values for tiles
-            const int mapSize = 256;
             var noiseGen = new DotnetNoise.FastNoise();
             var heightMap = new StringBuilder();
 
@@ -84,7 +88,8 @@ namespace ClientSide.VR
         //Prepare road and send route
         public void PathGen()
         {
-            var poly = GenPoly(50, 80, 10, 15, new Random());
+            var poly = GenPoly(101, 100, 20, 25, new Random());
+            route.AddRange(poly);
 
             string nodeName = "route";
             vrClient.IDWaitList.Add(nodeName, routeId =>
@@ -121,25 +126,30 @@ namespace ClientSide.VR
                         })
                 }
             });
+            
+            GenerateDecoration();
         }
 
 
+        private void GenerateDecoration()
+        {
+            
+        }
 
-
-        private Point[] GenPoly(double RadiusMin, double RadiusMax, int minPoints, int maxPoints, Random random)
+        private Vector2[] GenPoly(double RadiusMin, double RadiusMax, int minPoints, int maxPoints, Random random)
         {
             //Choose the amount of points
             var amountOfPoints = random.Next(minPoints, maxPoints);
-            var points = new Point[amountOfPoints];
+            var points = new Vector2[amountOfPoints];
 
             //Determine the angle between the points
             var angle = (float)(Math.PI * 2) / amountOfPoints;
             for (var i = 0; i < amountOfPoints; i++)
             {
                 //Generate each point using some variety between each points
-                var RadiusUse = (float)(random.NextDouble() * (RadiusMax - RadiusMin) + RadiusMin);
+                var RadiusUse = (float)(random.NextDouble() / 10 * (RadiusMax - RadiusMin) + RadiusMin);
                 var currentAngle = angle * i;
-                var currentPoint = new Point(
+                var currentPoint = new Vector2(
                     (int)(Math.Sin(currentAngle) * RadiusUse),
                     (int)(Math.Cos(currentAngle) * RadiusUse));
 
@@ -149,14 +159,43 @@ namespace ClientSide.VR
             return points;
         }
 
-        private string PointConverter(Point point, Point nextPoint)
+        private string PointConverter(Vector2 point, Vector2 nextPoint)
         {
             var builder = new StringBuilder();
 
             builder.Append("{");
             builder.Append($"\"pos\": [{point.X}, 0, {point.Y}],");
+
+            // string dir;
+            // var horNegative = nextPoint.X < point.X;
+            // var verNegative = nextPoint.Y < point.Y;
+            //
+            // var scaleRaw = Math.Sqrt(Math.Pow(point.X - nextPoint.X, 2) + Math.Pow(point.Y - nextPoint.Y, 2));
+            // var scaleString = scaleRaw.ToString(CultureInfo.InvariantCulture);
+            // var scale = scaleString.Substring(0, scaleString.IndexOf('.') + 2);
+            //
+            // switch (horNegative)
+            // {
+            //     default:
+            //     case true when verNegative:
+            //         dir = $"-{scale}, 0, -{scale}";
+            //         break;
+            //     case false when verNegative:
+            //         dir = $"{scale}, 0, -{scale}";
+            //         break;
+            //     case false when !verNegative:
+            //         dir = $"{scale}, 0, {scale}";
+            //         break;
+            //     case true when !verNegative:
+            //         dir = $"-{scale}, 0, {scale}";
+            //         break;
+            // }
+
+            // builder.Append($"\"dir\": [{dir}]");
+
             builder.Append($"\"dir\": [{nextPoint.X - point.X}, 0, {nextPoint.Y - point.Y}]");
             builder.Append("}");
+
 
             return builder.ToString();
         }

@@ -1,0 +1,24 @@
+{
+  "id" : "scene/node/add",
+  "data" :
+  {
+    "name" : "name",
+    "parent" : "guid",
+    "components" :
+    {
+      "transform" :
+      {
+        "position" : [ "_position_" ],
+        "scale" : 1,
+        "rotation" : [ 0, 0, 0 ]
+      },
+      "model" :
+      {
+        "file" : "_filename_",
+        "cullbackfaces" : true,
+        "animated" : false,
+        "animation" : "animationname"
+      }
+    }
+  }
+}

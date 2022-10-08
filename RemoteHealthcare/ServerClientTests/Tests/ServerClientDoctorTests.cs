@@ -35,7 +35,8 @@ public class ServerClientDoctorTests
         doctorCommandHandler = new Dictionary<string, ICommandHandler>()
         {
             {"public-rsa-key", new RsaKey()},
-            {"encryptedMessage", new EncryptedMessage()}
+            {"encryptedMessage", new EncryptedMessage()},
+            {"update-values", new UpdatesValues()}
         };
 
         patientUserName = "OnlyFolder";
@@ -207,14 +208,13 @@ public class ServerClientDoctorTests
         Assert.Pass("Patient received chat message from doctor");
     }
 
-    private string uuid;
+    private string uuid = "";
     [Test]
     public void Test7StartBikeRecording()
     {
         Thread.Sleep(100);
         var serial = Util.RandomString();
         var passed = false;
-        uuid = "";
         doctor.AddSerialCallback(serial, ob =>
         {
             if (ob["data"]!["status"]!.ToObject<string>()!.Equals("ok"))
@@ -291,5 +291,84 @@ public class ServerClientDoctorTests
         Assert.IsFalse(file.Contains("_endtime_"), "Endtime has not changed in file. Check end-bike-recording");
         
         Assert.Pass("Bike Recording File is correct");
+    }
+    
+    [Test]
+    public void Test92SubscribeToSession()
+    {
+        Thread.Sleep(200);
+        
+        //Starting bike recording
+        var serial = Util.RandomString();
+        uuid = "";
+        doctor.AddSerialCallback(serial, ob =>
+        {
+            if (ob["data"]!["status"]!.ToObject<string>()!.Equals("ok"))
+            {
+                uuid = ob["data"]!["uuid"]!.ToObject<string>()!;
+            }
+            else
+            {
+                Assert.Fail("Could not start Bike recording. Error: " + ob["data"]?["error"]?.ToObject<string>());
+            }
+        });
+        doctor.SendData(JsonFileReader.GetObjectAsString("StartBikeRecording", new Dictionary<string, string>()
+        {
+            {"_session_", "TestSession1"},
+            {"_serial_", serial},
+            {"_name_", patientUserName}
+        }, JsonFolder.Json.Path));
+        
+        Thread.Sleep(500);
+        if (uuid.Length == 0)
+        {
+            Assert.Fail("Did not get a response from start-bike-recording");
+        }
+
+        //Subscribing to session
+        serial = Util.RandomString();
+        doctor.SendEncryptedData(JsonFileReader.GetObjectAsString("SubscribeToSession", new Dictionary<string, string>()
+        {
+            {"_uuid_", uuid},
+            {"_serial_", serial}
+        }));
+        var subscribed = false;
+        JObject? json = null;
+        doctor.AddSerialCallback(serial, ob =>
+        {
+            json = ob;
+            if (ob["data"]!["status"]!.ToObject<string>()!.Equals("ok"))
+            {
+                subscribed = true;
+            }
+        });
+        Thread.Sleep(500);
+        if (!subscribed)
+        {
+            if (json == null)
+            {
+                Assert.Fail("Could not subscribe to session: No response from server (ok / error)");
+            }
+            else
+            {
+                Assert.Fail("Could not subscribe to session: " + json!["data"]!["error"]!.ToObject<string>()!);
+            }
+            return;
+        }
+        Thread.Sleep(500);
+        
+        //Changing values
+        serial = Util.RandomString();
+        patient.SendEncryptedData(JsonFileReader.GetObjectAsString("ChangeData", new Dictionary<string, string>()
+        {
+            {"_serial_", serial},
+            {"_uuid_", uuid}
+        }, JsonFolder.Json.Path));
+        
+        
+        Thread.Sleep(500);
+        Assert.That(UpdatesValues.received, Is.EqualTo(1), "Did not receive update-values message from server");
+        
+        Assert.Pass("Receiving update-values");
     }
 }

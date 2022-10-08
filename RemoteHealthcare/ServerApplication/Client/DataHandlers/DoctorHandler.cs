@@ -16,7 +16,8 @@ namespace ServerApplication.Client.DataHandlers
                 {"all-clients", new AllClients()},
                 {"start-bike-recording", new StartBikeRecording()},
                 {"stop-bike-recording", new StopBikeRecording()},
-                {"chat-message", new ChatMessage()}
+                {"chat-message", new ChatMessage()},
+                {"subscribe-to-session", new SubscribeToSession()},
             };
         }
     }

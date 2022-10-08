@@ -38,9 +38,9 @@ public class ChangeData : CommandHandler
                 {
                     {"uuid", uuid},
                 }, JsonFolder.ClientMessages.Path);
-                CheckValue(ob, message, "distance");
-                CheckValue(ob, message, "speed");
-                CheckValue(ob, message, "heartrate");
+                CheckValueInData(ob, message, "distance");
+                CheckValueInData(ob, message, "speed");
+                CheckValueInData(ob, message, "heartrate");
                 foreach (var clientData in server.SubscribedSessions[uuid])
                 {
                     clientData.SendEncryptedData(message.ToString());
@@ -73,7 +73,22 @@ public class ChangeData : CommandHandler
             JArray distance = (JArray) file[value]!;
             distance.Merge((JArray) ob["data"]![value]!);
             file[value] = distance;
-
+        }
+    }
+    
+    /// <summary>
+    /// If the value exists in the object, merge the arrays
+    /// </summary>
+    /// <param name="ob">The JObject that is being merged into the file.</param>
+    /// <param name="file">The JObject that is being merged into the file.</param>
+    /// <param name="value">The value to check for in the data object.</param>
+    private void CheckValueInData(JObject ob, JObject file, string value)
+    {
+        if (ob["data"]?[value]?.ToObject<JArray>() != null)
+        {
+            JArray distance = (JArray) file["data"]![value]!;
+            distance.Merge((JArray) ob["data"]![value]!);
+            file["data"]![value] = distance;
         }
     }
 }

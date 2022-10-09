@@ -10,12 +10,20 @@
     d:DesignWidth="800"
     mc:Ignorable="d"
     x:Class="DoctorApplication.MVVM.View.DataView"
-    d:DataContext="{d:DesignInstance Type={x:Type m:DataViewModel}}">
+    d:DataContext="{d:DesignInstance Type={x:Type m:DataViewModel}}" Background="#FF112031">
 
     <UserControl.Resources>
         <Style TargetType="TextBlock">
-            <!--<Setter Property="Background" Value ="Blue"/>
-            <Setter Property="Foreground" Value ="Red"/>-->
+            <Setter Property="Background" Value ="#FF112031"/>
+            <Setter Property="Foreground" Value ="#D4ECDD"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value ="#FF365D65"/>
+            <Setter Property="Foreground" Value ="#D4ECDD"/>
+            <Setter Property="Padding" Value="4"></Setter>
+        </Style>
+        <Style TargetType="Label">
+            <Setter Property="Foreground" Value ="#D4ECDD"/>
         </Style>
     </UserControl.Resources>
     <Grid>
@@ -27,7 +35,7 @@
         <Grid Grid.Column="0">
 
             <Grid.RowDefinitions>
-                <RowDefinition Height="1*" />
+                <RowDefinition Height="1.3*" />
                 <RowDefinition Height="2*" />
                 <RowDefinition Height="3*" />
             </Grid.RowDefinitions>
@@ -36,7 +44,13 @@
                     FontWeight="Bold"
                     HorizontalAlignment="Center"
                     x:Name="SelectedUserLabel" Content="Selected User:"/>
-                <ComboBox ItemsSource="{Binding users}" SelectedItem="{Binding SelectedUser}">
+                <ComboBox ItemsSource="{Binding users}" SelectedItem="{Binding SelectedUser}" Width="154">
+                    <ComboBox.Background>
+                        <LinearGradientBrush EndPoint="0,1">
+                            <GradientStop Color="#FFF0F0F0"/>
+                            <GradientStop Color="#FFA3CEB3" Offset="1"/>
+                        </LinearGradientBrush>
+                    </ComboBox.Background>
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
@@ -46,7 +60,13 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <Button HorizontalAlignment="Center" x:Name="NewWindowButton" Content="Open in new window" Margin="0,5,0,5"/>
+                <Button HorizontalAlignment="Center" x:Name="NewWindowButton" Content="Open in window" Margin="0,5" Padding="6" BorderBrush="{x:Null}" FontFamily="Arial Black">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="5"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
             </StackPanel>
             <StackPanel
                 Grid.Row="1"
@@ -113,16 +133,13 @@
                     <TextBox
                         Grid.Column="0"
                         x:Name="ChatTextBox"
-                        Text="{Binding Message, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
+                        Text="{Binding Message, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" Background="#FFD4ECDD" Foreground="#FF152D35"
                         />
                     <Button
                         CommandParameter="{Binding Text, ElementName=ChatTextBox}"
                         Command="{Binding SendCommand}"
-                        Background="#FF1B47F5"
-                        BorderBrush="#FF1B1B1B"
                         Content="➤"
-                        Foreground="#FFFFF7F7"
-                        Grid.Column="1"
+                        Grid.Column="1" FontSize="8"
                         />
                 </Grid>
             </Grid>
@@ -246,12 +263,12 @@
                     HorizontalAlignment="Center"
                     x:Name="HeartInformationHeader" />
                 <Image
-                    Height="140"
+                    Height="133"
                     HorizontalAlignment="Center"
                     x:Name="HeartShapeImage"
                     Source="/Sources/HeartPNG2.png"
                     VerticalAlignment="Center"
-                    Width="140" />
+                    Width="116" />
                 <Label
                     Content="{Binding SelectedUser.LastEntry.CurrentRate}"
                     FontSize="48"
@@ -264,7 +281,7 @@
                     FontSize="36"
                     HorizontalAlignment="Center"
                     x:Name="HeartInformationBPM"
-                    VerticalAlignment="Bottom" />
+                    VerticalAlignment="Bottom" Background="{x:Null}" />
 
 
             </Grid>

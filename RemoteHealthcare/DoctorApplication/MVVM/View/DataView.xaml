@@ -12,8 +12,13 @@
     x:Class="DoctorApplication.MVVM.View.DataView"
     d:DataContext="{d:DesignInstance Type={x:Type m:DataViewModel}}">
 
-
-    <Grid Background="White">
+    <UserControl.Resources>
+        <Style TargetType="TextBlock">
+            <!--<Setter Property="Background" Value ="Blue"/>
+            <Setter Property="Foreground" Value ="Red"/>-->
+        </Style>
+    </UserControl.Resources>
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.6*" />
             <ColumnDefinition Width="1*" />
@@ -31,7 +36,7 @@
                     FontWeight="Bold"
                     HorizontalAlignment="Center"
                     x:Name="SelectedUserLabel" Content="Selected User:"/>
-                <ComboBox Width="240" ItemsSource="{Binding users}" SelectedItem="{Binding SelectedUser}">
+                <ComboBox ItemsSource="{Binding users}" SelectedItem="{Binding SelectedUser}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
@@ -41,7 +46,7 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <Button HorizontalAlignment="Center" x:Name="NewWindowButton" Content="Open in new window"/>
+                <Button HorizontalAlignment="Center" x:Name="NewWindowButton" Content="Open in new window" Margin="0,5,0,5"/>
             </StackPanel>
             <StackPanel
                 Grid.Row="1"
@@ -87,7 +92,7 @@
                     <RowDefinition/>
                     <RowDefinition MaxHeight="20"/>
                 </Grid.RowDefinitions>
-                <ListView ItemsSource="{Binding SelectedUser.messages}">
+                <ListView ItemsSource="{Binding SelectedUser.messages}" Background="{x:Null}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <Border Background="LightBlue" CornerRadius="5" BorderThickness="5">

@@ -43,16 +43,36 @@ namespace DoctorApplication.MVVM.ViewModel
             {
                 selectedUser = value;
                 OnPropertyChanged();
-
-
             }
         }
+
+        private DataModel selectedUserData;
+        public DataModel SelectedUserData
+        {
+            get
+            {
+                if(selectedUser != null)
+                {
+                    return selectedUser.userDataList[0];
+                }
+                return selectedUserData;
+            }
+            set
+            {
+                selectedUserData = value;
+                OnPropertyChanged();
+            }
+        }
+
         public DataViewModel()
         {
-
             users = new BindableCollection<UserDataModel>();
-            UserDataModel test1 = new UserDataModel("user1", "0612345678", 12345, 20, 80);
-            UserDataModel test2 = new UserDataModel("user2", "0698765432", 67890, 30, 70);
+            UserDataModel test1 = new UserDataModel("user1", "0612345678", 12345);
+            UserDataModel test2 = new UserDataModel("user2", "0698765432", 67890);
+
+            test1.addData(new DataModel(20, 30, 25, new TimeSpan(10000), 75, 70, 75, 80));
+            test2.addData(new DataModel());
+
             test1.AddMessage("Hello");
             test1.AddMessage("Im a console!");
             test1.AddMessage("Goodbye!");

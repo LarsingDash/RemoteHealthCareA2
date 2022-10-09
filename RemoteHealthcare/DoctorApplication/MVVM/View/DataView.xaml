@@ -227,25 +227,25 @@
                 </Label>
 
                 <Label
-                    Content="{Binding SelectedUser.CurrentSpeed}"
+                    Content="{Binding SelectedUserData.CurrentSpeed}"
                     Grid.Column="1"
                     Grid.Row="1"
                     HorizontalAlignment="Left"
                     Name="CurrentSpeedText" />
                 <Label
-                    Content="{Binding SelectedUser.TopSpeed}"
+                    Content="{Binding SelectedUserData.TopSpeed}"
                     Grid.Column="2"
                     Grid.Row="2"
                     HorizontalAlignment="Left"
                     Name="TopSpeedText" />
                 <Label
-                    Content="{Binding SelectedUser.AverageSpeed}"
+                    Content="{Binding SelectedUserData.AverageSpeed}"
                     Grid.Column="3"
                     Grid.Row="3"
                     HorizontalAlignment="Left"
                     Name="AverageSpeedText" />
                 <Label
-                    Content="{Binding SelectedUser.TimeElapsed}"
+                    Content="{Binding SelectedUserData.TimeElapsed}"
                     Grid.Column="4"
                     Grid.Row="4"
                     HorizontalAlignment="Left"
@@ -274,7 +274,7 @@
                     VerticalAlignment="Center"
                     Width="140" />
                 <Label
-                    Content="{Binding SelectedUser.CurrentRate}"
+                    Content="{Binding SelectedUserData.CurrentRate}"
                     FontSize="48"
                     HorizontalAlignment="Center"
                     Name="HeartInformationValue"
@@ -331,7 +331,7 @@
                     Peak
                 </Label>
                 <Label
-                    Content="{Binding SelectedUser.LowestRate}"
+                    Content="{Binding SelectedUserData.LowestRate}"
                     FontSize="16"
                     Grid.Column="0"
                     Grid.Row="1"
@@ -339,7 +339,7 @@
                     Name="HeartLowestText"
                     VerticalContentAlignment="Top" />
                 <Label
-                    Content="{Binding SelectedUser.AverageRate}"
+                    Content="{Binding SelectedUserData.AverageRate}"
                     FontSize="16"
                     Grid.Column="1"
                     Grid.Row="1"
@@ -347,7 +347,7 @@
                     Name="HeartAverageText"
                     VerticalContentAlignment="Top" />
                 <Label
-                    Content="{Binding SelectedUser.HighestRate}"
+                    Content="{Binding SelectedUserData.HighestRate}"
                     FontSize="16"
                     Grid.Column="2"
                     Grid.Row="1"

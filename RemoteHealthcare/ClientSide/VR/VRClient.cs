@@ -25,7 +25,7 @@ public class VRClient
     //VRClient
     public WorldGen worldGen;
     public PanelController panelController;
-    private World selectedWorld = World.forest;
+    public BikeController bikeController;
 
     //Other
     private readonly List<string> removalTargets = new List<string>();
@@ -57,12 +57,19 @@ public class VRClient
         RemoveObjectRequest("GroundPlane", "RightHand", "LeftHand");
             
         //Start WorldGen
-        worldGen = new WorldGen(this, tunnel, selectedWorld);
+        worldGen = new WorldGen(this, tunnel);
         
         //Start HUDController
         panelController = new PanelController(this, tunnel);
         var HUDThread = new Thread(panelController.RunController);
+
+        bikeController = new BikeController(this, tunnel);
+        var bikeAnimationThread = new Thread(bikeController.RunController);
+        
         HUDThread.Start();
+        
+        //TODO: make hud thread and bike thread linked (otherwise comment the next line for panel testing)
+        bikeAnimationThread.Start();
     }
 
     //It connects to the server, gets the stream, and starts reading the stream. Then it asks for all sessions to find the correct one in the response
@@ -113,9 +120,12 @@ public class VRClient
             var readCount = stream.EndRead(asyncResult);
             totalBuffer = Concat(totalBuffer, buffer, readCount);
         }
-        catch (IOException)
+        catch (IOException e)
         {
             Console.WriteLine("OnRead Error");
+            Console.WriteLine(e.StackTrace);
+            Console.WriteLine(e.Message);
+            Console.WriteLine(e.Source);
             return;
         }
 

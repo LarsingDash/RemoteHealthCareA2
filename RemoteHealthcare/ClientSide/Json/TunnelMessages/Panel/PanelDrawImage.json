@@ -5,6 +5,6 @@
     "id" : "_panelid_",
     "image" : "_image_",
     "position" : [ "_position_" ],
-    "size" : [ 32, 32 ]
+    "size" : [ "_size_" ]
   }
 }

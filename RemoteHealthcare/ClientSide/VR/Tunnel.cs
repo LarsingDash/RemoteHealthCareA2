@@ -76,8 +76,8 @@ public class Tunnel
         switch (messageID)
         {
             default:
-                Console.WriteLine("Message ID not recognized from JSON:");
-                Console.WriteLine(json);
+                // Console.WriteLine("Message ID not recognized from JSON:");
+                // Console.WriteLine(json);
                 break;
 
             case "session/list":
@@ -144,7 +144,7 @@ public class Tunnel
                     }
                 }
 
-                vrClient.worldGen.AnimateBike();
+                vrClient.bikeController.AnimateBike();
                 break;
             
             case "scene/node/find":

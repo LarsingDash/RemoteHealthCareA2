@@ -20,8 +20,17 @@ namespace DoctorApplication.MVVM.Model
         private string phoneNumber;
         private int bikeId;
         public List<DataModel> userDataList { get; set; }
-        public object LastEntry => userDataList.LastOrDefault();
 
+        public DataModel lastEntry;
+        public DataModel LastEntry
+        {
+            get { return userDataList.LastOrDefault(); }
+            set
+            {
+                lastEntry = value;
+                OnPropertyChanged(nameof(lastEntry));
+            }
+        }
         //chatdata
         public ObservableCollection<MessageModel> messages { get; set; }
 

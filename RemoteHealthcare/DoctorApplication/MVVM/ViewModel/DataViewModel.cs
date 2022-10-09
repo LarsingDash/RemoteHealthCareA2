@@ -47,6 +47,7 @@ namespace DoctorApplication.MVVM.ViewModel
             }
         }
 
+        
        
         
 
@@ -60,6 +61,8 @@ namespace DoctorApplication.MVVM.ViewModel
 
             //adding testdata for view
             test1.addData(new DataModel(20, 30, 25, new TimeSpan(10000), 75, 70, 75, 80));
+            test1.addData(new DataModel(20, 30, 25, new TimeSpan(10000), 40, 70, 75, 80));
+
             test2.addData(new DataModel());
 
             //adding test messages

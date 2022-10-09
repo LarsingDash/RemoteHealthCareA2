@@ -201,7 +201,7 @@
                     x:Name="TimeElapsedHeader" Content="Time Elapsed:"/>
 
                 <Label
-                    Content="{Binding SelectedUser.userDataList[0].CurrentSpeed}"
+                    Content="{Binding SelectedUser.LastEntry.CurrentSpeed}"
                     Grid.Column="1"
                     Grid.Row="1"
                     HorizontalAlignment="Left"
@@ -248,7 +248,7 @@
                     VerticalAlignment="Center"
                     Width="140" />
                 <Label
-                    Content="{Binding SelectedUser.userDataList[0].CurrentRate}"
+                    Content="{Binding SelectedUser.LastEntry.CurrentRate}"
                     FontSize="48"
                     HorizontalAlignment="Center"
                     x:Name="HeartInformationValue"

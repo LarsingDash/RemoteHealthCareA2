@@ -8,14 +8,14 @@ namespace ClientSide.Bike
         // Change this to the last 5 digits of the serial number of the bike.
         private string id = "01249";
         
-        private BikeHandler bikeHandler;
+        private BikeHandler handler;
         private Dictionary<int, DataPage> pages;
         private BluetoothDevice bikeDevice;
         private BluetoothDevice heartRateDevice;
 
         public BikePhysical(BikeHandler handler)
         {
-            this.bikeHandler = handler;
+            this.handler = handler;
             pages = new Dictionary<int, DataPage>()
             {
                 {0x10, new DataPage10(handler)},
@@ -75,7 +75,7 @@ namespace ClientSide.Bike
                 }
                 case DataMessageProtocol.HeartRate:
                 {
-                    bikeHandler.ChangeData(DataType.HeartRate, dataPoints[1]);
+                    handler.ChangeData(DataType.HeartRate, dataPoints[1]);
                     break;
                 }
                 default:

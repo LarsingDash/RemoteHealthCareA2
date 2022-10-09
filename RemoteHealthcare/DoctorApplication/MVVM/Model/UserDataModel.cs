@@ -19,6 +19,135 @@ namespace DoctorApplication.MVVM.Model
         private string userName;
         private string phoneNumber;
         private int bikeId;
+
+        //statistic data bike
+        private double topSpeed;
+
+        public double TopSpeed
+        {
+            get {
+                if (userDataList != null)
+                {
+                    double topValue = 0;
+                    foreach (DataModel dataModel in userDataList)
+                    {
+                        if(dataModel.CurrentSpeed > topValue)
+                        {
+                            topValue = dataModel.CurrentSpeed;
+                        }
+                    }
+                    return topValue;
+                }
+                return 0;
+            }
+            set
+            {
+                topSpeed = value;
+                OnPropertyChanged(nameof(lastEntry));
+            }
+        }
+
+        private double averageSpeed;
+        public double AverageSpeed
+        {
+            get
+            {
+                if (userDataList != null)
+                {
+                    double total = 0;
+                    foreach (DataModel dataModel in userDataList)
+                    {
+                        total += dataModel.CurrentSpeed;
+                    }
+                    return Math.Round((total / userDataList.Count), 1);
+                }
+                return 0;
+            }
+            set
+            {
+                averageSpeed = value;
+                OnPropertyChanged(nameof(lastEntry));
+            }
+        }
+
+        //statistic data heartmonitor
+        private int lowestRate;
+
+        public int LowestRate
+        {
+            get
+            {
+                if (userDataList != null)
+                {
+                    int lowestValue = 999;
+                    foreach (DataModel dataModel in userDataList)
+                    {
+                        if (dataModel.CurrentRate < lowestValue)
+                        {
+                            lowestValue = dataModel.CurrentRate;
+                        }
+                    }
+                    return lowestValue;
+                }
+                return 0;
+            }
+            set
+            {
+                lowestRate = value;
+                OnPropertyChanged(nameof(lastEntry));
+            }
+        }
+
+
+        private int averageRate;
+
+        public int AverageRate
+        {
+            get
+            {
+                if (userDataList != null)
+                {
+                    int total = 0;
+                    foreach (DataModel dataModel in userDataList)
+                    {
+                        total += dataModel.CurrentRate;
+                    }
+                    return (total/userDataList.Count);
+                }
+                return 0;
+            }
+            set
+            {
+                averageRate = value;
+                OnPropertyChanged(nameof(lastEntry));
+            }
+        }
+        private int highestRate;
+        public int HighestRate
+        {
+            get
+            {
+                if (userDataList != null)
+                {
+                    int topValue = 0;
+                    foreach (DataModel dataModel in userDataList)
+                    {
+                        if (dataModel.CurrentRate > topValue)
+                        {
+                            topValue = dataModel.CurrentRate;
+                        }
+                    }
+                    return topValue;
+                }
+                return 0;
+            }
+            set
+            {
+                highestRate = value;
+                OnPropertyChanged(nameof(lastEntry));
+            }
+        }
+
         public List<DataModel> userDataList { get; set; }
 
         public DataModel lastEntry;

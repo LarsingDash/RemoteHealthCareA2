@@ -207,19 +207,19 @@
                     HorizontalAlignment="Left"
                     x:Name="CurrentSpeedText" />
                 <Label
-                    Content="{Binding SelectedUser.userDataList[0].TopSpeed}"
+                    Content="{Binding SelectedUser.TopSpeed}"
                     Grid.Column="2"
                     Grid.Row="2"
                     HorizontalAlignment="Left"
                     x:Name="TopSpeedText" />
                 <Label
-                    Content="{Binding SelectedUser.userDataList[0].AverageSpeed}"
+                    Content="{Binding SelectedUser.AverageSpeed}"
                     Grid.Column="3"
                     Grid.Row="3"
                     HorizontalAlignment="Left"
                     x:Name="AverageSpeedText" />
                 <Label
-                    Content="{Binding SelectedUser.userDataList[0].TimeElapsed}"
+                    Content="{Binding SelectedUser.lastEntry.TimeElapsed}"
                     Grid.Column="4"
                     Grid.Row="4"
                     HorizontalAlignment="Left"
@@ -300,7 +300,7 @@
                     VerticalAlignment="Bottom"
                     VerticalContentAlignment="Center" Content="Peak"/>
                 <Label
-                    Content="{Binding SelectedUser.userDataList[0].LowestRate}"
+                    Content="{Binding SelectedUser.LowestRate}"
                     FontSize="16"
                     Grid.Column="0"
                     Grid.Row="1"
@@ -308,7 +308,7 @@
                     x:Name="HeartLowestText"
                     VerticalContentAlignment="Top" />
                 <Label
-                    Content="{Binding SelectedUser.userDataList[0].AverageRate}"
+                    Content="{Binding SelectedUser.AverageRate}"
                     FontSize="16"
                     Grid.Column="1"
                     Grid.Row="1"
@@ -316,7 +316,7 @@
                     x:Name="HeartAverageText"
                     VerticalContentAlignment="Top" />
                 <Label
-                    Content="{Binding SelectedUser.userDataList[0].HighestRate}"
+                    Content="{Binding SelectedUser.HighestRate}"
                     FontSize="16"
                     Grid.Column="2"
                     Grid.Row="1"

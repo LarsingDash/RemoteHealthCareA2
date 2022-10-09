@@ -19,8 +19,8 @@ namespace DoctorApplication.MVVM.Model
         private string userName;
         private string phoneNumber;
         private int bikeId;
-
         public List<DataModel> userDataList { get; set; }
+        public object LastEntry => userDataList.LastOrDefault();
 
         //chatdata
         public ObservableCollection<MessageModel> messages { get; set; }

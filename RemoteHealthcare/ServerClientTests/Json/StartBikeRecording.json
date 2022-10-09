@@ -1,0 +1,8 @@
+{
+  "id":"start-bike-recording",
+  "serial":"_serial_",
+  "data":{
+    "session-name":"_session_",
+    "username": "_name_"
+  }
+}

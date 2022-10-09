@@ -8,11 +8,30 @@
         xmlns:view="clr-namespace:DoctorApplication.MVVM.View"
         mc:Ignorable="d"
         Title="Doctor Application" Height="600" Width="850"
+        ResizeMode="NoResize"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
         >
     <Window.DataContext>
         <viewModel:MainViewModel/>
     </Window.DataContext>
-    <Grid>
-        <ContentControl Content="{Binding CurrentView}"/>
-    </Grid>
+    <Border CornerRadius="12" BorderThickness="10" BorderBrush="#112031" Background="#112031">
+        <Grid Background="#FF1A2B2F">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="25"></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <ContentControl Grid.Row="1" Content="{Binding CurrentView}"/>
+            <Border Grid.ColumnSpan="2" MouseDown="Border_MouseDown">
+                <Grid HorizontalAlignment="Stretch" Background="Transparent">
+                    <Label Content="Doctor Applicatie" Foreground="#FFD4ECDD" Background="#FF112031"/>
+                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Margin="0,0,5,0">
+                        <Button Width="20" Height="20" Content="⎯"  Background="Transparent" BorderThickness="0" Foreground="Gray" Click="ButtonMinimize_Click"/>
+                        <Button Width="20" Height="20" Content="╳" Background="Transparent" BorderThickness="0" Foreground="Gray"  FontSize="10" Click="ButtonClose_Click"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
 </Window>

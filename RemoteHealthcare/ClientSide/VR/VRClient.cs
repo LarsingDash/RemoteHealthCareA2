@@ -25,7 +25,7 @@ public class VRClient
     //VRClient
     public WorldGen worldGen;
     public PanelController panelController;
-    private World selectedWorld = World.forest;
+    public BikeController bikeController;
 
     //Other
     private readonly List<string> removalTargets = new List<string>();
@@ -57,10 +57,19 @@ public class VRClient
         RemoveObjectRequest("GroundPlane", "RightHand", "LeftHand");
             
         //Start WorldGen
-        worldGen = new WorldGen(this, tunnel, selectedWorld);
+        worldGen = new WorldGen(this, tunnel);
         
         //Start HUDController
         panelController = new PanelController(this, tunnel);
+        var HUDThread = new Thread(panelController.RunController);
+
+        bikeController = new BikeController(this, tunnel);
+        var bikeAnimationThread = new Thread(bikeController.RunController);
+        
+        HUDThread.Start();
+        
+        //TODO: make hud thread and bike thread linked (otherwise comment the next line for panel testing)
+        bikeAnimationThread.Start();
     }
 
     //It connects to the server, gets the stream, and starts reading the stream. Then it asks for all sessions to find the correct one in the response
@@ -74,8 +83,9 @@ public class VRClient
 
             SendData(JsonFileReader.GetObjectAsString("SessionList", new Dictionary<string, string>()));
         }
-        catch
+        catch (Exception e)
         {
+            Console.WriteLine(e.StackTrace);
             Console.WriteLine("Could not connect with VRServer...");
         }
     }
@@ -83,15 +93,15 @@ public class VRClient
     //Sends the message to the server by writing it to the streams (also prints it in the console). Use SendTunnelMessage() to include ID
     public void SendData(string text, bool silent = false)
     {
-        Console.WriteLine("-------------------------------------------Send Start");
-        if (!silent)
-        {
-            Console.WriteLine($"Sending data:\n{text}");
-        }
-        else
-        {
-            Console.WriteLine($"Sending data: (Silent)");
-        }
+        // Console.WriteLine("-------------------------------------------Send Start");
+        // if (!silent)
+        // {
+        //     Console.WriteLine($"Sending data:\n{text}");
+        // }
+        // else
+        // {
+        //     Console.WriteLine($"Sending data: (Silent)");
+        // }
 
         byte[] data = BitConverter.GetBytes(text.Length);
         byte[] command = Encoding.ASCII.GetBytes(text);
@@ -99,7 +109,7 @@ public class VRClient
         stream.Write(data, 0, data.Length);
         stream.Write(command, 0, command.Length);
 
-        Console.WriteLine("-------------------------------------------Send End");
+        // Console.WriteLine("-------------------------------------------Send End");
     }
 
     //Reads the data from the stream and passes the json to the response handler
@@ -110,9 +120,12 @@ public class VRClient
             var readCount = stream.EndRead(asyncResult);
             totalBuffer = Concat(totalBuffer, buffer, readCount);
         }
-        catch (IOException)
+        catch (IOException e)
         {
             Console.WriteLine("OnRead Error");
+            Console.WriteLine(e.StackTrace);
+            Console.WriteLine(e.Message);
+            Console.WriteLine(e.Source);
             return;
         }
 

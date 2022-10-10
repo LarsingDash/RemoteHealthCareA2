@@ -1,0 +1,9 @@
+{
+  "id": "encryptedMessage",
+  "serial": "_serial_",
+  "aes-keys": {
+    "IV": "_IV_",
+    "Key": "_key_"
+  },
+  "aes-data": "_data_"
+}

@@ -73,7 +73,5 @@ public class Client : DefaultClientConnection
         }, JsonFolder.Json.Path));
         
         SendEncryptedData(JsonFileReader.GetObjectAsString("AllClients", new Dictionary<string, string>(), JsonFolder.Json.Path));
-        
-
     }
 }

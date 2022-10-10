@@ -4,9 +4,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DoctorApplication"
+        xmlns:viewModel="clr-namespace:DoctorApplication.MVVM.ViewModel"
+        xmlns:view="clr-namespace:DoctorApplication.MVVM.View"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Doctor Application" Height="600" Width="850"
+        >
+    <Window.DataContext>
+        <viewModel:MainViewModel/>
+    </Window.DataContext>
     <Grid>
-
+        <ContentControl Content="{Binding CurrentView}"/>
     </Grid>
 </Window>

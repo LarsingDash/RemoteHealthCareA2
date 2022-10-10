@@ -1,6 +1,6 @@
-﻿using System.Drawing;
+﻿using System.Globalization;
+using System.Numerics;
 using System.Text;
-using Newtonsoft.Json.Linq;
 using Shared;
 
 namespace ClientSide.VR
@@ -10,27 +10,27 @@ namespace ClientSide.VR
         private readonly VRClient vrClient;
         private readonly Tunnel tunnel;
 
-        public WorldGen(VRClient vrClient, Tunnel tunnel, World selectedWorld)
+        private const int mapSize = 256;
+
+        private const string treePath = "data/NetworkEngine/models/trees/fantasy/tree7.obj";
+        // private const string treePath = "data/NetworkEngine/models/houses/set1/house1.obj";
+
+        private List<Vector2> route = new List<Vector2>();
+
+        public WorldGen(VRClient vrClient, Tunnel tunnel)
         {
             this.vrClient = vrClient;
             this.tunnel = tunnel;
 
-            switch (selectedWorld)
-            {
-                default:
-                case World.forest:
-                    GenerateForest();
-                    break;
-            }
+            GenerateTerrain();
         }
 
-        private void GenerateForest()
+        private void GenerateTerrain()
         {
             //Set height values for tiles
-            const int mapSize = 256;
             var noiseGen = new DotnetNoise.FastNoise();
             var heightMap = new StringBuilder();
-            
+
             //Determines sensitivity of the terrain height. Higher values equal to higher height difference
             var terrainSensitivity = 10;
 
@@ -38,7 +38,8 @@ namespace ClientSide.VR
             {
                 for (var y = 0; y < mapSize; y++)
                 {
-                    heightMap.Append($"{(noiseGen.GetPerlin(x, y) * terrainSensitivity)},");
+                    heightMap.Append(
+                        $"{(noiseGen.GetPerlin(x, y) * terrainSensitivity).ToString(CultureInfo.InvariantCulture)},");
                 }
             }
 
@@ -89,8 +90,9 @@ namespace ClientSide.VR
         //Prepare road and send route
         public void PathGen()
         {
-            var poly = GenPoly(50, 80, 10, 15, new Random());
-            
+            var poly = GenPoly(101, 100, 20, 25, new Random());
+            route.AddRange(poly);
+
             string nodeName = "route";
             vrClient.IDWaitList.Add(nodeName, routeId =>
             {
@@ -109,7 +111,7 @@ namespace ClientSide.VR
             var polyBuilder = new StringBuilder();
             for (int i = 0; i < poly.Length; i++)
             {
-                polyBuilder.Append(pointConverter(poly[i], poly[(i + 1) % poly.Length]));
+                polyBuilder.Append(PointConverter(poly[i], poly[(i + 1) % poly.Length]));
                 polyBuilder.Append(",");
             }
 
@@ -122,89 +124,136 @@ namespace ClientSide.VR
                     JsonFileReader.GetObjectAsString("TunnelMessages\\Route\\AddRoute",
                         new Dictionary<string, string>
                         {
-                            {"\"_nodes_\"", polyBuilder.ToString()}
+                            { "\"_nodes_\"", polyBuilder.ToString() }
                         })
                 }
             });
+
+            new Thread(GenerateDecoration).Start();
         }
 
-        //Prepare bike and add bike to scene
-        public void AnimateBike()
+        private void GenerateDecoration()
         {
-            string nodeName = "bike";
-            string routeId = "";
-
-            // After adding the route, prepare the to-be-added bike for following route
-            vrClient.IDWaitList.Add(nodeName, nodeId =>
-            {
-                // Retrieve routeId that was added
-                if (vrClient.SavedIDs.ContainsKey("route"))
-                {
-                    routeId = vrClient.SavedIDs["route"];
-                }
-
-                // check if routeid is saved and let bike follow route
-                if (!String.IsNullOrEmpty(routeId))
-                {
-                    tunnel.SendTunnelMessage(new Dictionary<string, string>()
-                    {
-                        {
-                            "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Route\\FollowRoute",
-                                new Dictionary<string, string>()
-                                {
-                                    { "routeid", routeId }, { "nodeid", nodeId.ToString() }
-                                })
-                        },
-                    });
-                }
-            });
-
             tunnel.SendTunnelMessage(new Dictionary<string, string>()
             {
                 {
                     "\"_data_\"",
-                    JsonFileReader.GetObjectAsString("TunnelMessages\\Route\\AddBike", new Dictionary<string, string>())
+                    JsonFileReader.GetObjectAsString("TunnelMessages\\AddNodeScene",
+                        new Dictionary<string, string>
+                        {
+                            { "_name_", "trees" }
+                        })
                 },
             });
+
+            vrClient.IDWaitList.Add("trees", treesID =>
+            {
+                //Subdivide the route to get more sub-points
+                Console.WriteLine("Starting subdivision");
+                var fullRoute = new List<Vector2>();
+                for (var i = 0; i < route.Count; i++)
+                {
+                    var currentPoint = route[i];
+                    var nextPoint = route[(i + 1) % route.Count];
+
+                    var subPoint = (currentPoint + nextPoint) / 2;
+                    fullRoute.Add(subPoint);
+                }
+
+                Console.WriteLine("Subdivision completed");
+
+                const int maxAmountOfObjects = 50;
+                const int maxFailedAttempts = 10;
+                var amountOfObjects = 0;
+                var failedAttempts = 0;
+                Random random = new Random();
+                Console.WriteLine("Trees sent:");
+                while (amountOfObjects < maxAmountOfObjects && failedAttempts < maxFailedAttempts)
+                {
+                    var currentPoint = new Vector2(random.Next(0, 256), random.Next(0, 256));
+                    tunnel.SendTunnelMessage(new Dictionary<string, string>()
+                    {
+                        {
+                            "\"_data_\"",
+                            JsonFileReader.GetObjectAsString("TunnelMessages\\AddModel",
+                                new Dictionary<string, string>
+                                {
+                                    { "_name_", $"tree{amountOfObjects}" },
+                                    {"_guid_", treesID},
+                                    {"\"_position_\"", $"{currentPoint.X}, 0, {currentPoint.Y}"},
+                                    // { "\"_position_\"", "0, 0, 0" },
+                                    { "_filename_", treePath }
+                                })
+                        },
+                    });
+                    amountOfObjects++;
+                    Console.WriteLine(amountOfObjects);
+                }
+            });
         }
-        
-        private Point[] GenPoly(double RadiusMin,double RadiusMax,int minPoints,int maxPoints,Random random)
+
+        private Vector2[] GenPoly(double RadiusMin, double RadiusMax, int minPoints, int maxPoints, Random random)
         {
             //Choose the amount of points
             var amountOfPoints = random.Next(minPoints, maxPoints);
-            var points = new Point[amountOfPoints];
-            
+            var points = new Vector2[amountOfPoints];
+
             //Determine the angle between the points
             var angle = (float)(Math.PI * 2) / amountOfPoints;
             for (var i = 0; i < amountOfPoints; i++)
             {
                 //Generate each point using some variety between each points
-                var RadiusUse = (float)(random.NextDouble() * (RadiusMax - RadiusMin) + RadiusMin);
+                var RadiusUse = (float)(random.NextDouble() / 10 * (RadiusMax - RadiusMin) + RadiusMin);
                 var currentAngle = angle * i;
-                var currentPoint = new Point(
+                var currentPoint = new Vector2(
                     (int)(Math.Sin(currentAngle) * RadiusUse),
                     (int)(Math.Cos(currentAngle) * RadiusUse));
 
                 points[i] = currentPoint;
             }
+
             return points;
         }
 
-        private string pointConverter(Point point, Point nextPoint)
+        private string PointConverter(Vector2 point, Vector2 nextPoint)
         {
             var builder = new StringBuilder();
 
             builder.Append("{");
             builder.Append($"\"pos\": [{point.X}, 0, {point.Y}],");
+
+            // string dir;
+            // var horNegative = nextPoint.X < point.X;
+            // var verNegative = nextPoint.Y < point.Y;
+            //
+            // var scaleRaw = Math.Sqrt(Math.Pow(point.X - nextPoint.X, 2) + Math.Pow(point.Y - nextPoint.Y, 2));
+            // var scaleString = scaleRaw.ToString(CultureInfo.InvariantCulture);
+            // var scale = scaleString.Substring(0, scaleString.IndexOf('.') + 2);
+            //
+            // switch (horNegative)
+            // {
+            //     default:
+            //     case true when verNegative:
+            //         dir = $"-{scale}, 0, -{scale}";
+            //         break;
+            //     case false when verNegative:
+            //         dir = $"{scale}, 0, -{scale}";
+            //         break;
+            //     case false when !verNegative:
+            //         dir = $"{scale}, 0, {scale}";
+            //         break;
+            //     case true when !verNegative:
+            //         dir = $"-{scale}, 0, {scale}";
+            //         break;
+            // }
+
+            // builder.Append($"\"dir\": [{dir}]");
+
             builder.Append($"\"dir\": [{nextPoint.X - point.X}, 0, {nextPoint.Y - point.Y}]");
             builder.Append("}");
 
+
             return builder.ToString();
         }
-    }
-    
-    public enum World
-    {
-        forest
     }
 }

@@ -23,14 +23,14 @@ public class Tunnel
     //Receive response from the server and handle it accordingly to the messageID
     public void HandleResponse(VRClient client, JObject json)
     {
-        Console.WriteLine("------------------------------------------------------------Response Start");
+        // Console.WriteLine("------------------------------------------------------------Response Start");
         string? messageID;
         
         //Attempt to find the messageID and handle any exceptions
         try
         {
             messageID = json["id"].ToObject<string>();
-            Console.WriteLine($"Message ID: {messageID}");
+            // Console.WriteLine($"Message ID: {messageID}");
         }
         catch
         {
@@ -69,15 +69,15 @@ public class Tunnel
         if (messageID.Equals("tunnel/send"))
         {
             messageID = json["data"]["data"]["id"].ToObject<string>();
-            Console.WriteLine($"TunnelSend => {messageID}");
+            // Console.WriteLine($"TunnelSend => {messageID}");
         }
 
         //Handle response according to message ID
         switch (messageID)
         {
             default:
-                Console.WriteLine("Message ID not recognized from JSON:");
-                Console.WriteLine(json);
+                // Console.WriteLine("Message ID not recognized from JSON:");
+                // Console.WriteLine(json);
                 break;
 
             case "session/list":
@@ -97,7 +97,7 @@ public class Tunnel
                 break;
 
             case "scene/get":
-                Console.WriteLine(json);
+                // Console.WriteLine(json);
                 vrClient.RemoveObject(json);
                 break;
             
@@ -106,14 +106,14 @@ public class Tunnel
                 {
                     var nodeName = json["data"]["data"]["data"]["name"].ToObject<string>();
                     var nodeId = json["data"]["data"]["data"]["uuid"].ToObject<string>();
-                    Console.WriteLine($"Added: {nodeName} with uuid {nodeId}");
+                    // Console.WriteLine($"Added: {nodeName} with uuid {nodeId}");
 
                     if (nodeName != null && nodeId != null)
                     {
                         vrClient.SavedIDs.Add(nodeName, nodeId);
                         if (vrClient.IDWaitList.ContainsKey(nodeName))
                         {
-                            Console.WriteLine("Running Action:");
+                            // Console.WriteLine("Running Action:");
                             vrClient.IDWaitList[nodeName].Invoke(nodeId);
                         }
                     }
@@ -132,28 +132,28 @@ public class Tunnel
             
             case "route/add":
                 var routeId = json["data"]["data"]["data"]["uuid"].ToObject<string>();
-                Console.WriteLine($"Added: route with uuid {routeId}");
+                // Console.WriteLine($"Added: route with uuid {routeId}");
                 string routeName = "route";
                 if (routeId != null)
                 {
                     vrClient.SavedIDs.Add(routeName, routeId);
                     if (vrClient.IDWaitList.ContainsKey(routeName))
                     {
-                        Console.WriteLine("Running Action:");
+                        // Console.WriteLine("Running Action:");
                         vrClient.IDWaitList[routeName].Invoke(routeId);
                     }
                 }
 
-                vrClient.worldGen.AnimateBike();
+                vrClient.bikeController.AnimateBike();
                 break;
             
             case "scene/node/find":
                 try
                 {
-                    Console.WriteLine(json);
+                    // Console.WriteLine(json);
                     var foundName = json["data"]["data"]["data"][0]["name"].ToObject<string>();
                     var foundID = json["data"]["data"]["data"][0]["uuid"].ToObject<string>();
-                    Console.WriteLine($"Found: {foundName} with uuid {foundID}");
+                    // Console.WriteLine($"Found: {foundName} with uuid {foundID}");
 
                     if (foundName != null && foundID != null)
                     {
@@ -170,6 +170,6 @@ public class Tunnel
 
                 break;
         }
-        Console.WriteLine("------------------------------------------------------------Response End");
+        // Console.WriteLine("------------------------------------------------------------Response End");
     }
 }

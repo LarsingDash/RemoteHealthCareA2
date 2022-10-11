@@ -13,6 +13,7 @@ internal class RsaKey : ICommandHandler
     /// <param name="JObject">The Json object that was sent to the server.</param>
     public void HandleCommand(DefaultClientConnection client, JObject ob)
     {
+        var t = Util.ByteArrayToString(client.GetRsaPublicKey());
         var dict = new Dictionary<string, string>
         {
             {"\"_key_\"", Util.ByteArrayToString(client.GetRsaPublicKey())},

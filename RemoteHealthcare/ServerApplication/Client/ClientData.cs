@@ -43,6 +43,7 @@ namespace ServerApplication.Client
             UserName = "Unknown";
             new Task((() =>
             {
+                Thread.Sleep(500);
                 var serialCallback = Util.RandomString();
                 AddSerialCallback(serialCallback, json =>
                 {

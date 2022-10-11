@@ -2,6 +2,7 @@
   "id":"chat-message",
   "serial":"_serial_",
   "data":{
+    "type": "_type_",
     "message":"_message_",
     "receiver":"_receiver_"
   }

@@ -173,14 +173,31 @@ public class ServerClientDoctorTests
         {
             {"_serial_", serial},
             {"_message_", "Testbericht"},
-            {"_receiver_", patientUserName}
+            {"_receiver_", patientUserName},
+            {"_type_", "personal"}
         }, JsonFolder.Json.Path));
         await doctor.AddSerialCallbackTimeout(serial, ob =>
         {
             Assert.That(ob["data"]!["status"]!.ToObject<string>()!, Is.EqualTo("ok"), "Did not receive a responds from server");
+            Assert.That(ChatMessage.received, Is.EqualTo(1), "Did not receive chat message");
         }, () =>
         {
-            Assert.Pass("No Response from Command chat-message received.");
+            Assert.Fail("No Response from Command chat-message received.");
+        }, 1000);
+        
+        doctor.SendEncryptedData(JsonFileReader.GetObjectAsString("ChatMessage", new Dictionary<string, string>()
+        {
+            {"_serial_", serial},
+            {"_message_", "Testbericht1"},
+            {"_type_", "broadcast"}
+        }, JsonFolder.Json.Path));
+        await doctor.AddSerialCallbackTimeout(serial, ob =>
+        {
+            Assert.That(ob["data"]!["status"]!.ToObject<string>()!, Is.EqualTo("ok"), "Did not receive a responds from server");
+            Assert.That(ChatMessage.received, Is.EqualTo(2), "Did not receive chat message");
+        }, () =>
+        {
+            Assert.Fail("No Response from Command chat-message received.");
         }, 1000);
         
         Assert.Pass("ChatMessage send to server, got status ok response");
@@ -343,9 +360,93 @@ public class ServerClientDoctorTests
         }, 1000);
         Assert.Pass("Receiving update-values");
     }
+    
+    [Test]
+    public async Task Test93UnsubscribeToSession()
+    {
+        Thread.Sleep(200);
+        
+        //Starting bike recording
+        var serial = Util.RandomString();
+        var uuid = "";
+        doctor.SendData(JsonFileReader.GetObjectAsString("StartBikeRecording", new Dictionary<string, string>()
+        {
+            {"_session_", "TestSession1"},
+            {"_serial_", serial},
+            {"_name_", patientUserName}
+        }, JsonFolder.Json.Path));
+        await doctor.AddSerialCallbackTimeout(serial, ob =>
+        {
+            if (ob["data"]!["status"]!.ToObject<string>()!.Equals("ok"))
+            {
+                uuid = ob["data"]!["uuid"]!.ToObject<string>()!;
+            }
+            else
+            {
+                Assert.Fail("Could not start Bike recording. Error: " + ob["data"]?["error"]?.ToObject<string>());
+            }
+        }, () =>
+        {
+            Assert.Fail("Did not get a response from start-bike-recording");
+        }, 1000);
+
+        //Subscribing to session
+        serial = Util.RandomString();
+        doctor.SendEncryptedData(JsonFileReader.GetObjectAsString("SubscribeToSession", new Dictionary<string, string>()
+        {
+            {"_uuid_", uuid},
+            {"_serial_", serial}
+        }));
+        await doctor.AddSerialCallbackTimeout(serial, ob =>
+        {
+
+        }, () =>
+        {
+            Assert.Fail("No response from subscribe-to-session");
+        }, 1000);
+        serial = Util.RandomString();
+        UpdatesValues.received = 0;
+        serial = Util.RandomString();
+        patient.SendEncryptedData(JsonFileReader.GetObjectAsString("ChangeData", new Dictionary<string, string>()
+        {
+            {"_serial_", serial},
+            {"_uuid_", uuid}
+        }, JsonFolder.Json.Path));
+        doctor.SendEncryptedData(JsonFileReader.GetObjectAsString("UnSubscribeToSession", new Dictionary<string, string>()
+        {
+            {"_uuid_", uuid},
+            {"_serial_", serial}
+        }));
+        await doctor.AddSerialCallbackTimeout(serial, ob =>
+        {
+
+        }, () =>
+        {
+            Assert.Fail("No response from unsubscribe-to-session");
+        }, 1000);
+        serial = Util.RandomString();
+        patient.SendEncryptedData(JsonFileReader.GetObjectAsString("ChangeData", new Dictionary<string, string>()
+        {
+            {"_serial_", serial},
+            {"_uuid_", uuid}
+        }, JsonFolder.Json.Path));
+        
+        await patient.AddSerialCallbackTimeout(serial, ob =>
+        {
+            if (!ob["data"]!["status"]!.ToObject<string>()!.Equals("ok"))
+            {
+                Assert.Fail("Status was not true"  + ob!["data"]!["error"]!.ToObject<string>()!);
+            }
+            Assert.That(UpdatesValues.received, Is.EqualTo(1), "Did not receive update-values message from server");
+        }, () =>
+        {
+            Assert.Fail("Could not subscribe to session: No response from server (ok / error)");
+        }, 1000);
+        Assert.Pass("Receiving update-values");
+    }
 
     [Test]
-    public async Task Test93SerialTimeout()
+    public async Task Test94SerialTimeout()
     {
         var serial = Util.RandomString();
         var done = false;
@@ -374,7 +475,7 @@ public class ServerClientDoctorTests
     }
     
     [Test]
-    public async Task Test94SerialTimeout()
+    public async Task Test95SerialTimeout()
     {
         var serial = Util.RandomString();
         var done = false;

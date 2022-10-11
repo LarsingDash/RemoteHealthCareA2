@@ -6,12 +6,12 @@
     "components" : {
       "transform" :
       {
-        "position" : [ 0, 0, -1.15],
+        "position" : [ -0.6, 0, -3],
         "scale" : 1,
         "rotation" : [ 0, 0, 0 ]
       },
       "panel" : {
-        "size" : [ 2, 2 ],
+        "size" : [ 1.5, 1.5],
         "resolution" : [ 512, 512 ],
         "background" : [ 0, 0, 0, 0],
         "castShadow" : false

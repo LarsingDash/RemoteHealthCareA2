@@ -367,7 +367,7 @@
                     <Slider Margin="30,0,30,0" x:Name="ResistanceSlider" />
                     <Label HorizontalAlignment="Center" x:Name="ResistanceValue" Content="1.0X"/>
                     <Label x:Name="ResistanceGraph" Content="Graph(Resistance / minute)"/>
-                    <Button x:Name="EmergencyButton" Content="Emergency Stop" HorizontalAlignment="Left" Width="70"></Button>
+                    <Button x:Name="EmergencyButton" Content="Emergency Stop" HorizontalAlignment="Left" Width="100" Background="#FFFF1200"></Button>
                 </StackPanel>
             </Grid>
 

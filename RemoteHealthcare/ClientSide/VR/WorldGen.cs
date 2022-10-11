@@ -146,6 +146,7 @@ namespace ClientSide.VR
                 },
             });
 
+            
             vrClient.IDWaitList.Add("trees", treesID =>
             {
                 //Subdivide the route to get more sub-points

@@ -159,7 +159,7 @@ public class BikeController
         });
         
         //Modify the route follow speed based on bike speed
-        var followSpeed = 0.0 + bikeSpeed / 10;
+        var followSpeed = 0.0 + bikeSpeed / 2;
         tunnel.SendTunnelMessage(new Dictionary<string, string>()
         {
             {

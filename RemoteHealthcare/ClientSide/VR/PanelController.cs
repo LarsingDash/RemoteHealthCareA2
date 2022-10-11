@@ -90,7 +90,6 @@ public class PanelController
             DrawPanelText(speed, 64, 70, 60);
             DrawPanelText(time, 64, 70, 120);
             DrawPanelText(distFull, 64, 70, 180);
-            DrawPanelText(heart, 64, 70, 240);
             
             PrintChat();
 
@@ -110,7 +109,7 @@ public class PanelController
     }
 
 
-    //todo: make a listener for receiving messages 
+    
     // clear chatLines
     // grab the last 9 messages and split them if they are too big for one line
     // then add them to chatLines

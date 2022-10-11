@@ -142,7 +142,11 @@
                         Grid.Column="0"
                         x:Name="ChatTextBox"
                         Text="{Binding Message, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" Background="#FFD4ECDD" Foreground="#FF152D35"
-                        />
+                        >
+                        <TextBox.InputBindings>
+                            <KeyBinding Command="{Binding SendCommand}" Key="Return" />
+                        </TextBox.InputBindings>
+                    </TextBox>
                     <Button
                         CommandParameter="{Binding Text, ElementName=ChatTextBox}"
                         Command="{Binding SendCommand}"
@@ -363,7 +367,7 @@
                     <Slider Margin="30,0,30,0" x:Name="ResistanceSlider" />
                     <Label HorizontalAlignment="Center" x:Name="ResistanceValue" Content="1.0X"/>
                     <Label x:Name="ResistanceGraph" Content="Graph(Resistance / minute)"/>
-
+                    <Button x:Name="EmergencyButton" Content="Emergency Stop" HorizontalAlignment="Left" Width="70"></Button>
                 </StackPanel>
             </Grid>
 

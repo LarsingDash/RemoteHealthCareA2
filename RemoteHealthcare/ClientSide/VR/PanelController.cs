@@ -93,15 +93,15 @@ public class PanelController
             // var heart = heartRaw.Substring(0, heartRaw.IndexOf('.') + 2) + " BPM";
             
             //Draw all text
-            DrawPanelText(speed, 64, 70, 60);
-            DrawPanelText(time, 64, 70, 120);
-            DrawPanelText(distFull, 64, 70, 180);
+            DrawPanelText(speed, 64, 140, 65);
+            DrawPanelText(time, 64, 140, 125);
+            DrawPanelText(distFull, 64, 140, 195);
             
             PrintChat();
 
             //Send a message to draw icons on the panel
             //todo: fix placement icon
-            DrawPanelImage("data/NetworkEngine/images/Icons.png", 0, 128, 64, -256);
+            DrawPanelImage("data/NetworkEngine/images/Icons.png", 30, 102, 64, -192);
         }
         
         //Once the hudPanel has been made, run all actions to update the panel

@@ -105,17 +105,31 @@ public class PanelController
         }
         
         //Once the hudPanel has been made, run all actions to update the panel
-        int i = 0;
         while (true)
         {
-            // if (i % 50000 == 0) FormatChat();
-            if (hudPanel != null) UpdatePanel(hudPanel, HUDInfoAction);
-            i++;
-            Thread.Sleep(333);
+            FormatChat();
+            if (hudPanel != null)
+            {
+                UpdatePanel(hudPanel, HUDInfoAction);
+            }
+            Thread.Sleep(500);
         }
     }
 
-
+    private void DrawPanelOutlines()
+    {
+        tunnel.SendTunnelMessage(new Dictionary<string, string>
+        {
+            {
+                "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Panel\\DrawPanelLines",
+                    new Dictionary<string, string>
+                    {
+                        {"uuid", hudPanel}
+                    })
+            },
+        });
+    }
+    
     
     /// <summary>
     /// Clears previously saved lines
@@ -125,6 +139,7 @@ public class PanelController
     /// </summary>
      void FormatChat()
     {
+        if (chatLines.Count==0) return;
         chatLines.Clear();
         var chatHistory = Program.getChatHistory().TakeLast(9);
         var length = 10;
@@ -233,6 +248,8 @@ public class PanelController
                 {"_uuid_", NodeID}
             })}
         });
+
+        DrawPanelOutlines();
 
         foreach (var action in actions)
         {

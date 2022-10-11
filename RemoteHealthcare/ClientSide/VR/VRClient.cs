@@ -182,8 +182,8 @@ public class VRClient
             if (host == null || user == null) continue;
 
             //Check if the host and user correspond to the systems host and user
-            if (host.ToLower().Contains("VR3".ToLower()) &&
-                user.ToLower().Contains("CavePC_1".ToLower()))
+            if (host.ToLower().Contains(Environment.MachineName.ToLower()) &&
+                user.ToLower().Contains(Environment.UserName.ToLower()))
             {
                 //Save the session object if there wasn't one saved already or if this one is newer
                 if (savedSession == null)

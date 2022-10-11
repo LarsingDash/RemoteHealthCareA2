@@ -51,6 +51,12 @@ public class PanelController
         });
     }
 
+    /// <summary>
+    /// The method takes the bike data (speed, time and distance) and formats them
+    /// The values are then displayed on the panel in VR using helper methods
+    ///
+    /// The chat text is also sent using this method (see: FormatChat() and PrintChat())
+    /// </summary>
     public void RunController()
     {
         //Preparing methods for when the updateThread starts running
@@ -82,9 +88,9 @@ public class PanelController
             var distRaw = currentData[DataType.Distance].ToString(CultureInfo.InvariantCulture);
             var distFull = distRaw.Substring(0, distRaw.IndexOf('.') + 2) + " Meters";
             
-            //Heart
-            var heartRaw = currentData[DataType.HeartRate].ToString(CultureInfo.InvariantCulture);
-            var heart = heartRaw.Substring(0, heartRaw.IndexOf('.') + 2) + " BPM";
+            // //Heart
+            // var heartRaw = currentData[DataType.HeartRate].ToString(CultureInfo.InvariantCulture);
+            // var heart = heartRaw.Substring(0, heartRaw.IndexOf('.') + 2) + " BPM";
             
             //Draw all text
             DrawPanelText(speed, 64, 70, 60);
@@ -94,6 +100,7 @@ public class PanelController
             PrintChat();
 
             //Send a message to draw icons on the panel
+            //todo: fix placement icon
             DrawPanelImage("data/NetworkEngine/images/Icons.png", 0, 128, 64, -256);
         }
         
@@ -101,18 +108,21 @@ public class PanelController
         int i = 0;
         while (true)
         {
+            // if (i % 50000 == 0) FormatChat();
             if (hudPanel != null) UpdatePanel(hudPanel, HUDInfoAction);
             i++;
-            if (i % 50000 == 0) FormatChat();
             Thread.Sleep(333);
         }
     }
 
 
     
-    // clear chatLines
-    // grab the last 9 messages and split them if they are too big for one line
-    // then add them to chatLines
+    /// <summary>
+    /// Clears previously saved lines
+    /// Grabs the last 9 string inputs from a test list
+    /// Splits a string if it is too big
+    /// Finally puts them in chatLines to be printed by PrintChat()
+    /// </summary>
      void FormatChat()
     {
         chatLines.Clear();
@@ -136,7 +146,10 @@ public class PanelController
         }
     }
     
-    //Print the last 9 lines in chat
+    /// <summary>
+    /// Method takes the last 9 lines of strings, reverses the order and
+    /// prints them one by one to the VR panel with an offset of based on the index of the string in the list
+    /// </summary>
     private void PrintChat()
     {
         var printLines = chatLines.TakeLast(9)
@@ -148,10 +161,20 @@ public class PanelController
             string chatMessage = printLines.ElementAt(i);
             double x = 512 - (32 + chatMessage.Length*3.5); 
             double y = 300 - i * 15;
-            DrawPanelText(chatMessage, 12, x, y);
+            DrawPanelText(chatMessage, 2, x, y);
         }
     }
 
+    
+    /// <summary>
+    /// Help method for putting text on the panel
+    /// Overwrites PanelDrawText.json with new values and sends it to the VR engine
+    /// Sends the following properties: text, size, x and y
+    /// </summary>
+    /// <param name="text">The text that is to be displayed on the panel</param>
+    /// <param name="size">The size of the text displayed on the panel. Smaller values, smaller text</param>
+    /// <param name="x">The x-position of the text</param>
+    /// <param name="y">The y-position of the text</param>
     private void DrawPanelText(string text, double size, double x, double y)
     {
         tunnel.SendTunnelMessage(new Dictionary<string, string>
@@ -168,8 +191,18 @@ public class PanelController
             },
         });
     }
-
-    private void DrawPanelImage(string imageAddress, double posX, double posY, double sizeX, double sizeY)
+    
+    /// <summary>
+    /// Help method for putting image on the panel
+    /// Overwrites PanelDrawImage.json with new values and sends it to the VR engine
+    /// Sends the following properties: imagePath, posX, posY, sizeX and sizeY
+    /// </summary>
+    /// <param name="imagePath">The path referencing the location of the image in the Networkengine folder</param>
+    /// <param name="posX">The x-position of the image</param>
+    /// <param name="posY">The y-position of the image</param>
+    /// <param name="sizeX">Stretches image in x-axis</param>
+    /// <param name="sizeY">Stretches image in y-axis</param>
+    private void DrawPanelImage(string imagePath, double posX, double posY, double sizeX, double sizeY)
     {
         tunnel.SendTunnelMessage(new Dictionary<string, string>
         {
@@ -178,7 +211,7 @@ public class PanelController
                     new Dictionary<string, string>
                     {
                         { "_panelid_", hudPanel },
-                        { "_image_", imageAddress},
+                        { "_image_", imagePath},
                         { "\"_position_\"", $"{posX}, {posY}" }, 
                         { "\"_size_\"", $"{sizeX}, {sizeY}" }, 
                     })
@@ -186,7 +219,11 @@ public class PanelController
         });
     }
 
-    //Clear the screen - perform the given actions - update de panel
+    /// <summary>
+    /// This method clears the screen, invokes the method(s) provided as parameters and then swaps the panel
+    /// </summary>
+    /// <param name="NodeID">The node ID of the panel (can be used for different panels</param>
+    /// <param name="actions">The methods given as parameter</param>
     private void UpdatePanel(string NodeID, params Action[] actions)
     {
         tunnel.SendTunnelMessage(new Dictionary<string, string>

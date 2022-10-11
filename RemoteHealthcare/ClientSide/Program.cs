@@ -57,6 +57,9 @@ namespace ClientSide
         {
             return chatHistory;
         }
+        /// <summary>
+        /// Simulates chat by adding strings to a list, which are then used by panelController to display chat
+        /// </summary>
         private static void SimulateChat()
         {
             chatHistory = new List<string>();

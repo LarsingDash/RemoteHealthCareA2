@@ -5,6 +5,9 @@ using Shared;
 
 namespace ClientSide.VR
 {
+    /// <summary>
+    /// Manages terrain and route generation as well object placement
+    /// </summary>
     public class WorldGen
     {
         private readonly VRClient vrClient;

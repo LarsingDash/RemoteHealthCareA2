@@ -30,7 +30,17 @@ public class VRClient
     //Other
     private readonly List<string> removalTargets = new List<string>();
     public readonly Dictionary<string, string> SavedIDs = new Dictionary<string, string>();
+    /// <summary>
+    /// Contains Actions that are called when the string/id is in a response JSON (see tunnel.HandleResponse())
+    /// (when a node is added containing that string name)
+    /// </summary>
     public readonly Dictionary<string, Action<string>> IDWaitList = new Dictionary<string, Action<string>>();       //Waiting for it to be added
+   
+    /// <summary>
+    /// Contains Actions that are called
+    /// when the string/id is found in the response of the "scene/node/find" JSON message
+    /// (see: tunnel.HandleResponse())
+    /// </summary>
     public readonly Dictionary<string, Action<string>> IDSearchList = new Dictionary<string, Action<string>>();     //Waiting for it to be found
 
     public VRClient()
@@ -48,6 +58,11 @@ public class VRClient
         }));
     }
 
+    /// <summary>
+    /// Sets up the VR scene
+    /// Makes and starts new threads for panelController and bikeController main methods
+    /// </summary>
+    /// <param name="id"></param>
     //Run startup actions after the tunnel has been created
     public void TunnelStartup(string id)
     {
@@ -67,8 +82,6 @@ public class VRClient
         var bikeAnimationThread = new Thread(bikeController.RunController);
         
         HUDThread.Start();
-        
-        //TODO: make hud thread and bike thread linked (otherwise comment the next line for panel testing)
         bikeAnimationThread.Start();
     }
 

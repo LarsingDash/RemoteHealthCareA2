@@ -97,17 +97,13 @@ public class PanelController
             DrawPanelText(time, 64, 140, 125);
             DrawPanelText(distFull, 64, 140, 195);
             
-            PrintChat();
-
             //Send a message to draw icons on the panel
-            //todo: fix placement icon
             DrawPanelImage("data/NetworkEngine/images/Icons.png", 30, 102, 64, -192);
         }
         
         //Once the hudPanel has been made, run all actions to update the panel
         while (true)
         {
-            FormatChat();
             if (hudPanel != null)
             {
                 UpdatePanel(hudPanel, HUDInfoAction);
@@ -116,6 +112,9 @@ public class PanelController
         }
     }
 
+    /// <summary>
+    /// Adds an outline to the VR panel
+    /// </summary>
     private void DrawPanelOutlines()
     {
         tunnel.SendTunnelMessage(new Dictionary<string, string>

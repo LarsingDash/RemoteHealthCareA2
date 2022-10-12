@@ -14,6 +14,7 @@ namespace DoctorApplication.Core
     {
         private Client client { get; set; }
         private string serial { get; set; }
+        private string? uuid { get; set; }
 
         public ConnectionHandler()
         {
@@ -34,7 +35,7 @@ namespace DoctorApplication.Core
             });
         }
 
-        public async Task SubscribeToSessionAsync(string uuid)
+        public async Task SubscribeToSessionAsync()
         {
             serial = Util.RandomString();
             client.SendEncryptedData(JsonFileReader.GetObjectAsString("SubscribeToSession", new Dictionary<string, string>()
@@ -53,7 +54,6 @@ namespace DoctorApplication.Core
         public async Task StartRecordingAsync(string patientUserName)
         {
             var serial = Util.RandomString();
-            var uuid = "";
             client.SendData(JsonFileReader.GetObjectAsString("StartBikeRecording", new Dictionary<string, string>()
         {
             {"_session_", "TestSession1"},

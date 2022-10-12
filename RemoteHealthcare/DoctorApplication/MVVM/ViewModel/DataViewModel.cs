@@ -20,7 +20,7 @@ namespace DoctorApplication.MVVM.ViewModel
 {
     internal class DataViewModel : ObservableObject
     {
-        private DataHandler dataHandler;
+        private ConnectionHandler dataHandler;
         
         //WPF Text change strings
         private string message;
@@ -134,7 +134,12 @@ namespace DoctorApplication.MVVM.ViewModel
                 lineSeries
             };
 
-            dataHandler = new DataHandler();
+            dataHandler = new ConnectionHandler();
+            Task task = dataHandler.StartRecordingAsync("Testing");
+            if (task.IsCompleted)
+            {
+                Task task1 = dataHandler.SubscribeToSessionAsync();
+            }
             dataHandler.ListClients();
         }
 

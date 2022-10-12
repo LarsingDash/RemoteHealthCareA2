@@ -50,7 +50,6 @@ public class DefaultClientConnection
         client = new(hostname, port);
         stream = client.GetStream();
         stream.BeginRead(_buffer, 0, 1024, OnRead, null);
-
         SetupClient();
     }
 
@@ -60,10 +59,13 @@ public class DefaultClientConnection
     /// </summary>
     private void SetupClient()
     {
+        Thread.Sleep(100);
         var serial = Util.RandomString();
         AddSerialCallback(serial, ob =>
         {
-            PublicKey = ob["data"].Value<JArray>("key").Values<byte>().ToArray();
+            PublicKey = ob["data"]!.Value<JArray>("key")!.Values<byte>().ToArray();
+            Logger.LogMessage(LogImportance.Information, 
+                $"Received PublicKey from Server: {LogColor.Gray}\n{Util.ByteArrayToString(PublicKey)}");
         });
         
         SendData(JsonFileReader.GetObjectAsString("PublicRSAKey", new Dictionary<string, string>()
@@ -240,6 +242,36 @@ public class DefaultClientConnection
         }
         
         serialCallbacks.Add(serial, action);
+    }
+
+    public void RemoveSerialCallback(string serial)
+    {
+        serialCallbacks.Remove(serial);
+    }
+
+    public async Task AddSerialCallbackTimeout(string serial, Action<JObject> action, Action timeoutAction, int timeout)
+    {
+        var received = false;
+        JObject? json = null;
+        AddSerialCallback(serial, ob =>
+        {
+            json = ob;
+            received = true;
+        });
+        var task = Task.Delay(timeout);
+        while (received == false && !task.IsCompleted)
+        {
+            await Task.Delay(1);
+        }
+        
+        if (received)
+        {
+            action.Invoke(json!);
+        }
+        else
+        {
+            timeoutAction.Invoke();
+        }
     }
     
     /// <summary>

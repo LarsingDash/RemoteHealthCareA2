@@ -1,0 +1,8 @@
+{
+  "id" : "route/follow/speed",
+  "data" :
+  {
+    "node" : "nodeid",
+    "speed" : "_speed_"
+  }
+}

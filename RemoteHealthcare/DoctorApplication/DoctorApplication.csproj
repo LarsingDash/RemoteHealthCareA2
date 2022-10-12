@@ -5,9 +5,12 @@
         <TargetFramework>net6.0-windows</TargetFramework>
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
+        <StartupObject></StartupObject>
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Caliburn.Micro.Core" Version="4.0.212" />
+      <PackageReference Include="LiveCharts.Wpf" Version="0.9.7" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta2" />
     </ItemGroup>
 

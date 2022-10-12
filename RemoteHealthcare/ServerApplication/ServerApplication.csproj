@@ -15,24 +15,27 @@
 
     <ItemGroup>
       <Folder Include="Client\DataHandlers\CommandHandlers\Client" />
-      <Folder Include="Data\Tes123t1" />
-      <Folder Include="Data\TestClient53242" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Remove="Json\ClientMessages\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <EmbeddedResource Remove="Json\ClientMessages\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Remove="Json\ClientMessages\**" />
+      <Folder Include="Data\Test\" />
+      <Folder Include="Data\TestUser\" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Shared\Shared.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="Json\ClientMessages\ActiveClientsResponse.json" />
+      <Content Include="Json\ClientMessages\AllClientsResponse.json" />
+      <Content Include="Json\ClientMessages\ChatMessageResponse.json" />
+      <Content Include="Json\ClientMessages\ErrorResponse.json" />
+      <Content Include="Json\ClientMessages\ForwardChatMessage.json" />
+      <Content Include="Json\ClientMessages\HistoricClientDataResponse.json" />
+      <Content Include="Json\ClientMessages\LoginResponse.json" />
+      <Content Include="Json\ClientMessages\PublicRSAKey.json" />
+      <Content Include="Json\ClientMessages\RandomMessage.json" />
+      <Content Include="Json\ClientMessages\StartBikeRecordingResponse.json" />
+      <Content Include="Json\ClientMessages\StopBikeRecordingResponse.json" />
+      <Content Include="Json\ClientMessages\UpdateValues.json" />
     </ItemGroup>
     
 

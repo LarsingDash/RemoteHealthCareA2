@@ -25,12 +25,22 @@ public class VRClient
     //VRClient
     public WorldGen worldGen;
     public PanelController panelController;
-    private World selectedWorld = World.forest;
+    public BikeController bikeController;
 
     //Other
     private readonly List<string> removalTargets = new List<string>();
     public readonly Dictionary<string, string> SavedIDs = new Dictionary<string, string>();
+    /// <summary>
+    /// Contains Actions that are called when the string/id is in a response JSON (see tunnel.HandleResponse())
+    /// (when a node is added containing that string name)
+    /// </summary>
     public readonly Dictionary<string, Action<string>> IDWaitList = new Dictionary<string, Action<string>>();       //Waiting for it to be added
+   
+    /// <summary>
+    /// Contains Actions that are called
+    /// when the string/id is found in the response of the "scene/node/find" JSON message
+    /// (see: tunnel.HandleResponse())
+    /// </summary>
     public readonly Dictionary<string, Action<string>> IDSearchList = new Dictionary<string, Action<string>>();     //Waiting for it to be found
 
     public VRClient()
@@ -48,6 +58,11 @@ public class VRClient
         }));
     }
 
+    /// <summary>
+    /// Sets up the VR scene
+    /// Makes and starts new threads for panelController and bikeController main methods
+    /// </summary>
+    /// <param name="id"></param>
     //Run startup actions after the tunnel has been created
     public void TunnelStartup(string id)
     {
@@ -57,12 +72,17 @@ public class VRClient
         RemoveObjectRequest("GroundPlane", "RightHand", "LeftHand");
             
         //Start WorldGen
-        worldGen = new WorldGen(this, tunnel, selectedWorld);
+        worldGen = new WorldGen(this, tunnel);
         
         //Start HUDController
         panelController = new PanelController(this, tunnel);
         var HUDThread = new Thread(panelController.RunController);
+
+        bikeController = new BikeController(this, tunnel);
+        var bikeAnimationThread = new Thread(bikeController.RunController);
+        
         HUDThread.Start();
+        bikeAnimationThread.Start();
     }
 
     //It connects to the server, gets the stream, and starts reading the stream. Then it asks for all sessions to find the correct one in the response
@@ -113,9 +133,12 @@ public class VRClient
             var readCount = stream.EndRead(asyncResult);
             totalBuffer = Concat(totalBuffer, buffer, readCount);
         }
-        catch (IOException)
+        catch (IOException e)
         {
             Console.WriteLine("OnRead Error");
+            Console.WriteLine(e.StackTrace);
+            Console.WriteLine(e.Message);
+            Console.WriteLine(e.Source);
             return;
         }
 

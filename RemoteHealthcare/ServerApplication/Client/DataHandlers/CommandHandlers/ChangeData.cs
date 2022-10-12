@@ -16,7 +16,8 @@ public class ChangeData : CommandHandler
     {
         if (ob["data"]?["uuid"]?.ToObject<string>() != null)
         {
-            string fileName = ob["data"]!["uuid"]!.ToObject<string>()! + ".txt";
+            string uuid = ob["data"]!["uuid"]!.ToObject<string>()!;
+            string fileName = uuid + ".txt";
             
             //Getting current Values
             JObject file = JsonFileReader.GetEncryptedObject(fileName,
@@ -31,7 +32,20 @@ public class ChangeData : CommandHandler
             //Writing combined Values
             JsonFileWriter.WriteTextToFileEncrypted(fileName, file.ToString(),
                 JsonFolder.Data.Path + data.UserName + "\\");
-            
+            if (server.SubscribedSessions.ContainsKey(uuid))
+            {
+                JObject message = JsonFileReader.GetObject("UpdateValues", new Dictionary<string, string>()
+                {
+                    {"uuid", uuid},
+                }, JsonFolder.ClientMessages.Path);
+                CheckValueInData(ob, message, "distance");
+                CheckValueInData(ob, message, "speed");
+                CheckValueInData(ob, message, "heartrate");
+                foreach (var clientData in server.SubscribedSessions[uuid])
+                {
+                    clientData.SendEncryptedData(message.ToString());
+                }
+            }
             data.SendEncryptedData(JsonFileReader.GetObjectAsString("ErrorResponse",new Dictionary<string, string>()
             {
                 {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
@@ -56,12 +70,25 @@ public class ChangeData : CommandHandler
     {
         if (ob["data"]?[value]?.ToObject<JArray>() != null)
         {
-            Console.WriteLine(file.ToString());
-            Console.WriteLine(value);
             JArray distance = (JArray) file[value]!;
             distance.Merge((JArray) ob["data"]![value]!);
             file[value] = distance;
-
+        }
+    }
+    
+    /// <summary>
+    /// If the value exists in the object, merge the arrays
+    /// </summary>
+    /// <param name="ob">The JObject that is being merged into the file.</param>
+    /// <param name="file">The JObject that is being merged into the file.</param>
+    /// <param name="value">The value to check for in the data object.</param>
+    private void CheckValueInData(JObject ob, JObject file, string value)
+    {
+        if (ob["data"]?[value]?.ToObject<JArray>() != null)
+        {
+            JArray distance = (JArray) file["data"]![value]!;
+            distance.Merge((JArray) ob["data"]![value]!);
+            file["data"]![value] = distance;
         }
     }
 }

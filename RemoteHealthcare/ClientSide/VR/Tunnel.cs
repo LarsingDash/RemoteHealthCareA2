@@ -4,6 +4,9 @@ using Shared;
 
 namespace ClientSide.VR;
 
+/// <summary>
+/// Manages the communication between client and server AKA tunnel
+/// </summary>
 public class Tunnel
 {
     private VRClient vrClient;
@@ -21,6 +24,16 @@ public class Tunnel
     }
 
     //Receive response from the server and handle it accordingly to the messageID
+    
+    /// <summary>
+    /// This method handles the response send from the VR server
+    /// and invokes methods/actions in the dictionaries of VRClient (see: VRClient)
+    /// After confirming the JSON object is valid, the method looks at the ids and/or the sub ids in json[data][data][id]
+    /// Based on the id, the method will call an Action that has that id as a key (see: dictionary fields in VRClient)
+    /// todo: replace with observer pattern
+    /// </summary>
+    /// <param name="client">VRClient that is connected with the VR engine</param>
+    /// <param name="json">The response message of the VR engine</param>
     public void HandleResponse(VRClient client, JObject json)
     {
         // Console.WriteLine("------------------------------------------------------------Response Start");
@@ -76,8 +89,8 @@ public class Tunnel
         switch (messageID)
         {
             default:
-                Console.WriteLine("Message ID not recognized from JSON:");
-                Console.WriteLine(json);
+                // Console.WriteLine("Message ID not recognized from JSON:");
+                // Console.WriteLine(json);
                 break;
 
             case "session/list":
@@ -144,7 +157,7 @@ public class Tunnel
                     }
                 }
 
-                vrClient.worldGen.AnimateBike();
+                vrClient.bikeController.AnimateBike();
                 break;
             
             case "scene/node/find":

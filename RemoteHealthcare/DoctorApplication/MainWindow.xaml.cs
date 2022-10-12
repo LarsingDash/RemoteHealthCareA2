@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DoctorApplication.MVVM.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,11 +24,25 @@ namespace DoctorApplication
         public MainWindow()
         {
             InitializeComponent();
+
         }
 
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void Border_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            if(e.LeftButton== MouseButtonState.Pressed)
+            {
+                DragMove();
+            }
+        }
 
+        private void ButtonMinimize_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.MainWindow.WindowState = WindowState.Minimized;
+        }
+
+        private void ButtonClose_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
         }
     }
 }

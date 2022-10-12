@@ -13,7 +13,9 @@ namespace ClientSide
         /// arguments.</param>
 
         private static BikeHandler handler;
-        
+
+        private static List<string> chatHistory;
+
         public static void Main(string[] args)
         {
             Console.Write("Choose application (1=Bike / VR  2=Client / 3=DoctorGUI): ");
@@ -28,6 +30,9 @@ namespace ClientSide
                     Console.WriteLine("VRClient started");
                     var vrClient = new VRClient();
                     vrClient.StartConnectionAsync();
+                    
+                    // Thread chatThread = new Thread(SimulateChat);
+                    // chatThread.Start();
                     break;
                 case "2":
                     Console.WriteLine("ServerClient started");
@@ -48,6 +53,23 @@ namespace ClientSide
 
         }
 
+        public static List<string> getChatHistory()
+        {
+            return chatHistory;
+        }
+        /// <summary>
+        /// Simulates chat by adding strings to a list, which are then used by panelController to display chat
+        /// </summary>
+        private static void SimulateChat()
+        {
+            chatHistory = new List<string>();
+            int i = 0;
+            while (true)
+            {
+                chatHistory.Add($"This is a test to see if this long chat message is printed correctly on the panel. Not sure if it is working tho.");
+                Thread.Sleep(10000);
+            }
+        }
 
         private static void StartBikeClient()
         {
@@ -62,7 +84,8 @@ namespace ClientSide
         {
             //TODO: Add login once finished
             Client client = new Client();
-            
+           // ClientV2 client = new ClientV2();
+
         }
 
         public static Dictionary<DataType, double> GetBikeData()

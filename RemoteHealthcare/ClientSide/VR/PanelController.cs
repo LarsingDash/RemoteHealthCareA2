@@ -19,7 +19,7 @@ public class PanelController
     
     private List<string> chatLines = new List<string>();
 
-    public PanelController(VRClient vrClient, Tunnel tunnel)
+    public PanelController(VrClient vrClient, Tunnel tunnel)
     {
         this.tunnel = tunnel;
 

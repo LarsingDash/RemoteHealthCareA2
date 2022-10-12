@@ -9,9 +9,9 @@ namespace ClientSide.VR;
 /// </summary>
 public class Tunnel
 {
-    private VRClient vrClient;
+    private VrClient vrClient;
 
-    public Tunnel(VRClient vrClient)
+    public Tunnel(VrClient vrClient)
     {
         this.vrClient = vrClient;
     }
@@ -34,7 +34,7 @@ public class Tunnel
     /// </summary>
     /// <param name="client">VRClient that is connected with the VR engine</param>
     /// <param name="json">The response message of the VR engine</param>
-    public void HandleResponse(VRClient client, JObject json)
+    public void HandleResponse(VrClient client, JObject json)
     {
         // Console.WriteLine("------------------------------------------------------------Response Start");
         string? messageID;
@@ -98,7 +98,7 @@ public class Tunnel
                 break;
 
             case "tunnel/create":
-                string? sessionID = json["data"]["id"].ToObject<string>();
+                string? sessionID = json["data"]?["id"]?.ToObject<string>();
 
                 if (sessionID == null)
                 {

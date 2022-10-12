@@ -1,5 +1,6 @@
 ﻿using ClientSide.Bike;
 using ClientSide.VR;
+using ClientSide.VR2;
 using Shared;
 
 namespace ClientSide
@@ -19,8 +20,8 @@ namespace ClientSide
         public static void Main(string[] args)
         {
             Console.Write("Choose application (1=Bike / VR  2=Client / 3=DoctorGUI): ");
-            string option = Console.ReadLine() ?? string.Empty;
-
+            //string option = Console.ReadLine() ?? string.Empty;
+            string option = "1";
             switch (option)
             {
                 case "1":
@@ -28,8 +29,9 @@ namespace ClientSide
                     StartBikeClient();
                     
                     Console.WriteLine("VRClient started");
-                    var vrClient = new VRClient();
-                    vrClient.StartConnectionAsync();
+                    // var vrClient = new VrClient();
+                    // vrClient.StartConnectionAsync();
+                    VRClient vr = new VRClient();
                     
                     // Thread chatThread = new Thread(SimulateChat);
                     // chatThread.Start();

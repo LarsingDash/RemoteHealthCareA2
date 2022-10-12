@@ -10,7 +10,7 @@ namespace ClientSide.VR
     /// </summary>
     public class WorldGen
     {
-        private readonly VRClient vrClient;
+        private readonly VrClient vrClient;
         private readonly Tunnel tunnel;
 
         private const int mapSize = 256;
@@ -20,7 +20,7 @@ namespace ClientSide.VR
 
         private List<Vector2> route = new List<Vector2>();
 
-        public WorldGen(VRClient vrClient, Tunnel tunnel)
+        public WorldGen(VrClient vrClient, Tunnel tunnel)
         {
             this.vrClient = vrClient;
             this.tunnel = tunnel;

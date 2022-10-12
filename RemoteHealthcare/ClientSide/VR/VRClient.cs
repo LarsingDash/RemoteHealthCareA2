@@ -6,7 +6,7 @@ using Shared;
 
 namespace ClientSide.VR;
 
-public class VRClient
+public class VrClient
 {
     //Session List
     private JObject savedSession;
@@ -43,7 +43,7 @@ public class VRClient
     /// </summary>
     public readonly Dictionary<string, Action<string>> IDSearchList = new Dictionary<string, Action<string>>();     //Waiting for it to be found
 
-    public VRClient()
+    public VrClient()
     {
         tunnel = new Tunnel(this);
     }

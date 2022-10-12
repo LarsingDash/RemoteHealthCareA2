@@ -12,13 +12,13 @@ namespace ClientSide.VR;
  */
 public class BikeController
 {
-    private VRClient vrClient;
+    private VrClient vrClient;
     private Tunnel tunnel;
     private string? bikeId;
     private string? _routeId;
     private double previousSpeed;
     
-    public BikeController(VRClient vrClient, Tunnel tunnel)
+    public BikeController(VrClient vrClient, Tunnel tunnel)
     {
         this.vrClient = vrClient;
         this.tunnel = tunnel;

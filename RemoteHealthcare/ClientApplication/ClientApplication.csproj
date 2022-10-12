@@ -7,4 +7,8 @@
         <UseWPF>true</UseWPF>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="FontAwesome.Sharp" Version="6.1.1" />
+    </ItemGroup>
+
 </Project>

@@ -4,13 +4,99 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ClientApplication"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        xmlns:sharp="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="500" Width="800"
-        WindowStartupLocation="CenterScreen">
-    
-    
-    
-    <Grid>
+        Title="MainWindow" Height="700" Width="1300"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        Background="Transparent"
+        AllowsTransparency="True"
+        ResizeMode="NoResize"
+        MouseDown="MainWindow_OnMouseDown">
 
-    </Grid>
+    <Border CornerRadius="25"
+            BorderThickness="5">
+
+        <Border.BorderBrush>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="{StaticResource winBorderColor1}" Offset="0.0" />
+                <GradientStop Color="{StaticResource winBorderColor2}" Offset="0.75" />
+                <GradientStop Color="{StaticResource winBorderColor3}" Offset="1.0" />
+            </LinearGradientBrush>
+        </Border.BorderBrush>
+
+        <Border.Background>
+            <LinearGradientBrush StartPoint="0,1" EndPoint="1,0">
+                <GradientStop Color="{StaticResource primaryBackColor1}" Offset="0.0" />
+                <GradientStop Color="{StaticResource primaryBackColor2}" Offset="0.75" />
+            </LinearGradientBrush>
+        </Border.Background>
+
+        <Grid>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            
+            <!-- Navigation Window -->
+            <Border CornerRadius="25,0,0,25"
+                    Grid.Column="0">
+                
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Color="{StaticResource secondaryBackColor1}" Offset="0.0" />
+                        <GradientStop Color="{StaticResource secondaryBackColor2}" Offset="1.0" />
+                    </LinearGradientBrush>
+                </Border.Background>
+            </Border>
+            
+            <StackPanel>
+                
+                <!-- Title Bar -->
+                <StackPanel Orientation="Horizontal"
+                            Height="35"
+                            Margin="15,25,0,40">
+                    <TextBlock Text = "HealthCare"
+                               Foreground="{StaticResource titleColor2}"
+                               FontSize="25"
+                               Margin="30,0,0,0"
+                               FontFamily="Montserrat"
+                               FontWeight="Medium"
+                               VerticalAlignment="Center"
+                               >
+                    </TextBlock>
+                    
+                </StackPanel>
+                
+                <!-- Menu Buttons -->
+                <RadioButton Style="{StaticResource MenuButton}"
+                             Tag="{StaticResource color1}">
+                    
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Dashboard" Style="{StaticResource menuButtonText}"
+                                   Foreground="{StaticResource titleColor3}"/>
+                    </StackPanel>
+                    
+                </RadioButton>
+                
+            </StackPanel>
+            
+            <!-- Main Window -->
+            <Border CornerRadius="0,25,25,0"
+                    Grid.Column="1">
+                
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="1,0" EndPoint="0,0">
+                        <GradientStop Color="{StaticResource primaryBackColor1}" Offset="0" />
+                        <GradientStop Color="{StaticResource primaryBackColor2}" Offset="1" />
+                    </LinearGradientBrush>
+                </Border.Background>
+            </Border>
+            
+        </Grid>
+
+    </Border>
+
 </Window>

@@ -24,5 +24,13 @@ namespace ClientApplication
 		{
 			InitializeComponent();
 		}
+
+		private void MainWindow_OnMouseDown(object sender, MouseButtonEventArgs e)
+		{
+			if (e.LeftButton == MouseButtonState.Pressed)
+			{
+				DragMove();
+			}
+		}
 	}
 }

@@ -20,7 +20,8 @@ namespace DoctorApplication.MVVM.ViewModel
 {
     internal class DataViewModel : ObservableObject
     {
-
+        private DataHandler dataHandler;
+        
         //WPF Text change strings
         private string message;
 
@@ -132,22 +133,16 @@ namespace DoctorApplication.MVVM.ViewModel
             {
                 lineSeries
             };
-            Client client = App.GetClientInstance();
-            var serial = Util.RandomString();
-            client.SendEncryptedData(JsonFileReader.GetObjectAsString("AllClients", new Dictionary<string, string>()
-            {
-                {"_serial_", serial}
-            }, JsonFolder.Json.Path));
-            client.AddSerialCallback(serial, ob =>
-            {
-                Logger.LogMessage(LogImportance.Fatal, ob.ToString());
 
-            });
+            dataHandler = new DataHandler();
+            dataHandler.ListClients();
         }
 
         public void StartBikeRecording()
         {
             //todo start session
+
+
         }
         public void StopBikeRecording()
         {

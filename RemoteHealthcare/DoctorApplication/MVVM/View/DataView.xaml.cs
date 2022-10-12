@@ -23,12 +23,11 @@ namespace DoctorApplication.MVVM.View
     /// </summary>
     public partial class DataView : UserControl
     {
+        
         public DataView()
         {
             InitializeComponent();
         }
-
-       
 
     }
 

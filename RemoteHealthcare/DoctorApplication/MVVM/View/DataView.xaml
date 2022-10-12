@@ -1,46 +1,56 @@
 ﻿<UserControl
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:DoctorApplication.MVVM.View"
-    xmlns:m="clr-namespace:DoctorApplication.MVVM.ViewModel"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:Model="clr-namespace:DoctorApplication.MVVM.Model"
+    Background="#FF112031"
+    d:DataContext="{d:DesignInstance Type={x:Type m:DataViewModel}}"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d"
     x:Class="DoctorApplication.MVVM.View.DataView"
-    d:DataContext="{d:DesignInstance Type={x:Type m:DataViewModel}}" Background="#FF112031"
-    >
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:Model="clr-namespace:DoctorApplication.MVVM.Model"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:DoctorApplication.MVVM.View"
+    xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+    xmlns:m="clr-namespace:DoctorApplication.MVVM.ViewModel"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <UserControl.Resources>
         <Style TargetType="TextBlock">
-            <Setter Property="Background" Value ="#FF112031"/>
-            <Setter Property="Foreground" Value ="#D4ECDD"/>
+            <Setter Property="Background" Value="#FF112031" />
+            <Setter Property="Foreground" Value="#D4ECDD" />
         </Style>
         <Style TargetType="Button">
-            <Setter Property="Background" Value ="#FF365D65"/>
-            <Setter Property="Foreground" Value ="#D4ECDD"/>
-            <Setter Property="Padding" Value="4"></Setter>
+            <Setter Property="Background" Value="#FF365D65" />
+            <Setter Property="Foreground" Value="#D4ECDD" />
+            <Setter Property="Padding" Value="4" />
         </Style>
         <Style TargetType="Label">
-            <Setter Property="Foreground" Value ="#D4ECDD"/>
+            <Setter Property="Foreground" Value="#D4ECDD" />
         </Style>
-      
+
         <Style TargetType="ListViewItem">
-            <Setter Property="BorderThickness" Value="0"></Setter>
-            <Setter Property="FocusVisualStyle" Value="{x:Null}"></Setter>
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         </Style>
-        <Style x:Key="ToggleStyle1" TargetType="{x:Type ToggleButton}">
+        <Style TargetType="{x:Type ToggleButton}" x:Key="ToggleStyle1">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ToggleButton}">
-                        <Border HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="border" Padding="5,5,5,5" CornerRadius="5,5,5,5" Background="#3ce85c" BorderBrush="#FF000000" BorderThickness="1,1,1,1" SnapsToDevicePixels="True">
-                            <ContentPresenter x:Name="contentPresenter"/>
+                        <Border
+                            Background="#3ce85c"
+                            BorderBrush="#FF000000"
+                            BorderThickness="1,1,1,1"
+                            CornerRadius="5,5,5,5"
+                            HorizontalAlignment="Center"
+                            Padding="5,5,5,5"
+                            SnapsToDevicePixels="True"
+                            VerticalAlignment="Center"
+                            x:Name="border">
+                            <ContentPresenter x:Name="contentPresenter" />
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsChecked" Value="true">
-                                <Setter Property="Background" TargetName="border" Value="#eb2337"/>
+                                <Setter Property="Background" TargetName="border" Value="#eb2337" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -63,117 +73,150 @@
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0" Orientation="Vertical">
                 <Label
+                    Content="Selected User:"
                     FontWeight="Bold"
                     HorizontalAlignment="Center"
-                    x:Name="SelectedUserLabel" Content="Selected User:"/>
-                <ComboBox ItemsSource="{Binding users}" SelectedItem="{Binding SelectedUser}" Width="154">
+                    x:Name="SelectedUserLabel" />
+                <ComboBox
+                    ItemsSource="{Binding users}"
+                    SelectedItem="{Binding SelectedUser}"
+                    Width="154">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="{Binding UserName}" />
-                                <TextBlock Padding="10, 0" Text="{Binding BikeId}" />
+                                <TextBlock Padding="10,0" Text="{Binding BikeId}" />
                             </StackPanel>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
                 <StackPanel Orientation="Horizontal">
-                    
-                    <Button HorizontalAlignment="Center" x:Name="NewWindowButton" Content="Open in window" Margin="0,5" Padding="6" BorderBrush="{x:Null}" FontFamily="Arial Black">
+
+                    <Button
+                        BorderBrush="{x:Null}"
+                        Content="Open in window"
+                        FontFamily="Arial Black"
+                        HorizontalAlignment="Center"
+                        Margin="0,5"
+                        Padding="6"
+                        x:Name="NewWindowButton">
                         <Button.Resources>
                             <Style TargetType="Border">
-                                <Setter Property="CornerRadius" Value="5"/>
+                                <Setter Property="CornerRadius" Value="5" />
                             </Style>
                         </Button.Resources>
                     </Button>
                     <ToggleButton
-                    Style="{StaticResource ToggleStyle1}"
-                    Command="{Binding StartRecordingCommand}" 
-                    CommandParameter="{Binding IsChecked,RelativeSource={RelativeSource Self}}"
-                    Content="{Binding ButtonText}" Foreground="White"
-                    />
+                        Command="{Binding StartRecordingCommand}"
+                        CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}"
+                        Content="{Binding ButtonText}"
+                        Foreground="White"
+                        Style="{StaticResource ToggleStyle1}" />
                 </StackPanel>
-               
+
             </StackPanel>
             <StackPanel
                 Grid.Row="1"
-                x:Name="UserInformationPagePanel"
-                Orientation="Vertical">
+                Orientation="Vertical"
+                x:Name="UserInformationPagePanel">
                 <Label
+                    Content="About:"
                     FontWeight="Bold"
                     HorizontalAlignment="Center"
-                    x:Name="AboutLabel"
-                    Padding="5,5,5,0" Content="About:"/>
+                    Padding="5,5,5,0"
+                    x:Name="AboutLabel" />
                 <Label
+                    Content="Username:"
                     HorizontalAlignment="Left"
-                    x:Name="UsernameHeader"
-                    Padding="5,5,5,0" Content="Username:"/>
+                    Padding="5,5,5,0"
+                    x:Name="UsernameHeader" />
                 <TextBlock
-                    Text="{Binding SelectedUser.UserName}"
                     HorizontalAlignment="Left"
-                    Padding="5,0,5,5" />
+                    Padding="5,0,5,5"
+                    Text="{Binding SelectedUser.UserName}" />
                 <Label
+                    Content="Bike ID:"
                     HorizontalAlignment="Left"
-                    x:Name="BikeIdHeader"
-                    Padding="5,5,5,0" Content="Bike ID:"/>
+                    Padding="5,5,5,0"
+                    x:Name="BikeIdHeader" />
                 <Label
                     Content="{Binding SelectedUser.BikeId}"
                     HorizontalAlignment="Left"
-                    x:Name="BikeIdText"
-                    Padding="5,0,5,5" />
+                    Padding="5,0,5,5"
+                    x:Name="BikeIdText" />
                 <Label
+                    Content="Phone Number:"
                     HorizontalAlignment="Left"
-                    x:Name="PhoneNumberHeader"
-                    Padding="5,5,5,0" Content="Phone Number:"/>
+                    Padding="5,5,5,0"
+                    x:Name="PhoneNumberHeader" />
                 <Label
                     Content="{Binding SelectedUser.PhoneNumber}"
                     HorizontalAlignment="Left"
-                    x:Name="PhoneNumberText"
-                    Padding="5,0,5,5" />
+                    Padding="5,0,5,5"
+                    x:Name="PhoneNumberText" />
                 <Label
+                    Content="Chat:"
                     HorizontalAlignment="Left"
-                    Padding="5,10,5,0" Content="Chat:"/>
+                    Padding="5,10,5,0" />
 
             </StackPanel>
-            <Grid
-                Grid.Row="2"
-                >
+            <Grid Grid.Row="2">
                 <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition MaxHeight="20"/>
+                    <RowDefinition />
+                    <RowDefinition MaxHeight="20" />
                 </Grid.RowDefinitions>
-                <ListView ItemsSource="{Binding SelectedUser.messages}" Background="{x:Null}" BorderBrush="{x:Null}">
+                <ListView
+                    Background="{x:Null}"
+                    BorderBrush="{x:Null}"
+                    ItemsSource="{Binding SelectedUser.messages}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <Border Background="#152D35" CornerRadius="5" BorderThickness="5" Padding="5, 2">
+                            <Border
+                                Background="#152D35"
+                                BorderThickness="5"
+                                CornerRadius="5"
+                                Padding="5,2">
 
                                 <StackPanel Orientation="Vertical">
-                                    <Label Padding="3, 3, 3, 3" Content="{Binding message}" />
-                                    <Label HorizontalAlignment="Right" Padding="10, 0" Content="{Binding time}" FontSize="11" FontStyle="Italic" />
+                                    <Label Content="{Binding message}" Padding="3,3,3,3" />
+                                    <Label
+                                        Content="{Binding time}"
+                                        FontSize="11"
+                                        FontStyle="Italic"
+                                        HorizontalAlignment="Right"
+                                        Padding="10,0" />
                                 </StackPanel>
                             </Border>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-                <Grid Grid.Row="2" DockPanel.Dock="Bottom" x:Name="ChatTextBoxPanel">
+                <Grid
+                    DockPanel.Dock="Bottom"
+                    Grid.Row="2"
+                    x:Name="ChatTextBoxPanel">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="8*" />
                         <ColumnDefinition Width="2*" />
                     </Grid.ColumnDefinitions>
                     <TextBox
+                        Background="#FFD4ECDD"
+                        Foreground="#FF152D35"
                         Grid.Column="0"
-                        x:Name="ChatTextBox"
-                        Text="{Binding Message, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="#FFD4ECDD" Foreground="#FF152D35"
-                        >
+                        Text="{Binding Message, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        x:Name="ChatTextBox">
                         <TextBox.InputBindings>
-                            <KeyBinding CommandParameter="{Binding Text, ElementName=ChatTextBox}" Command="{Binding SendCommand}" Key="Enter" />
+                            <KeyBinding
+                                Command="{Binding SendCommand}"
+                                CommandParameter="{Binding Text, ElementName=ChatTextBox}"
+                                Key="Enter" />
                         </TextBox.InputBindings>
                     </TextBox>
                     <Button
-                        CommandParameter="{Binding Text, ElementName=ChatTextBox}"
                         Command="{Binding SendCommand}"
+                        CommandParameter="{Binding Text, ElementName=ChatTextBox}"
                         Content="➤"
-                        Grid.Column="1" FontSize="8"
-                        />
+                        FontSize="8"
+                        Grid.Column="1" />
                 </Grid>
             </Grid>
         </Grid>
@@ -185,27 +228,29 @@
 
             <Grid Grid.Row="0">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition/>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
                 </Grid.RowDefinitions>
                 <StackPanel Orientation="Vertical">
                     <Label
-                    FontWeight="Bold"
-                    HorizontalAlignment="Center"
-                    x:Name="BikeInformationLabel"
-                    Padding="5,5,5,0" Content="Bike information:"/>
+                        Content="Bike information:"
+                        FontWeight="Bold"
+                        HorizontalAlignment="Center"
+                        Padding="5,5,5,0"
+                        x:Name="BikeInformationLabel" />
                     <Label
-                    HorizontalAlignment="Left"
-                    x:Name="BikeGraphHeaderLabel"
-                    Padding="5,5,5,0" Content="Graph(Kilometer / Hour):"/>
+                        Content="Graph(Kilometer / Hour):"
+                        HorizontalAlignment="Left"
+                        Padding="5,5,5,0"
+                        x:Name="BikeGraphHeaderLabel" />
                 </StackPanel>
                 <Grid Grid.Row="1">
                     <lvc:CartesianChart Series="{Binding SeriesCollection}" Zoom="X">
                         <lvc:CartesianChart.AxisY>
-                            <lvc:Axis Title="Kilometer/Hour" LabelFormatter="{Binding YFormatter}"/>
+                            <lvc:Axis LabelFormatter="{Binding YFormatter}" Title="Kilometer/Hour" />
                         </lvc:CartesianChart.AxisY>
                         <lvc:CartesianChart.AxisX>
-                            <lvc:Axis Title="Time" Labels="{Binding Labels}"/>
+                            <lvc:Axis Labels="{Binding Labels}" Title="Time" />
                         </lvc:CartesianChart.AxisX>
                     </lvc:CartesianChart>
                 </Grid>
@@ -226,34 +271,39 @@
                     <RowDefinition Height="1*" />
                 </Grid.RowDefinitions>
                 <Label
+                    Content="Current Bike Reading:"
                     FontWeight="Bold"
                     Grid.Column="0"
                     Grid.Row="0"
                     HorizontalAlignment="Right"
-                    x:Name="BikeValueHeader"
-                    VerticalAlignment="Bottom" Content="Current Bike Reading:"/>
+                    VerticalAlignment="Bottom"
+                    x:Name="BikeValueHeader" />
 
 
                 <Label
+                    Content="Current Speed:"
                     Grid.Column="0"
                     Grid.Row="1"
                     HorizontalAlignment="Left"
-                    x:Name="CurrentSpeedHeader" Content="Current Speed:"/>
+                    x:Name="CurrentSpeedHeader" />
                 <Label
+                    Content="Top Speed:"
                     Grid.Column="0"
                     Grid.Row="2"
                     HorizontalAlignment="Left"
-                    x:Name="TopSpeedHeader" Content="Top Speed:"/>
+                    x:Name="TopSpeedHeader" />
                 <Label
+                    Content="Average speed:"
                     Grid.Column="0"
                     Grid.Row="3"
                     HorizontalAlignment="Left"
-                    x:Name="AverageSpeedheader" Content="Average speed:"/>
+                    x:Name="AverageSpeedheader" />
                 <Label
+                    Content="Time Elapsed:"
                     Grid.Column="0"
                     Grid.Row="4"
                     HorizontalAlignment="Left"
-                    x:Name="TimeElapsedHeader" Content="Time Elapsed:"/>
+                    x:Name="TimeElapsedHeader" />
 
                 <Label
                     Content="{Binding SelectedUser.LastEntry.CurrentSpeed}"
@@ -279,7 +329,7 @@
                     Grid.Row="4"
                     HorizontalAlignment="Left"
                     x:Name="TimeElapsedText" />
-                
+
             </Grid>
         </Grid>
 
@@ -306,15 +356,15 @@
                     Content="{Binding SelectedUser.LastEntry.CurrentRate}"
                     FontSize="48"
                     HorizontalAlignment="Center"
-                    x:Name="HeartInformationValue"
-                    VerticalAlignment="Center" >
-                </Label>
+                    VerticalAlignment="Center"
+                    x:Name="HeartInformationValue" />
                 <Label
+                    Background="{x:Null}"
                     Content="BPM"
                     FontSize="36"
                     HorizontalAlignment="Center"
-                    x:Name="HeartInformationBPM"
-                    VerticalAlignment="Bottom" Background="{x:Null}" />
+                    VerticalAlignment="Bottom"
+                    x:Name="HeartInformationBPM" />
 
 
             </Grid>
@@ -331,65 +381,77 @@
                     <RowDefinition Height="1*" />
                 </Grid.RowDefinitions>
                 <Label
+                    Content="Lowest"
                     FontSize="16"
                     Grid.Column="0"
                     Grid.Row="0"
                     HorizontalContentAlignment="Center"
-                    x:Name="HeartLowestHeader"
                     VerticalAlignment="Bottom"
-                    VerticalContentAlignment="Center" Content="Lowest"/>
+                    VerticalContentAlignment="Center"
+                    x:Name="HeartLowestHeader" />
                 <Label
+                    Content="Average"
                     FontSize="16"
                     Grid.Column="1"
                     Grid.Row="0"
                     HorizontalContentAlignment="Center"
-                    x:Name="HeartAverageHeader"
                     VerticalAlignment="Bottom"
-                    VerticalContentAlignment="Center" Content="Average"/>
+                    VerticalContentAlignment="Center"
+                    x:Name="HeartAverageHeader" />
                 <Label
+                    Content="Peak"
                     FontSize="16"
                     Grid.Column="2"
                     Grid.Row="0"
                     HorizontalContentAlignment="Center"
-                    x:Name="HeartPeakHeader"
                     VerticalAlignment="Bottom"
-                    VerticalContentAlignment="Center" Content="Peak"/>
+                    VerticalContentAlignment="Center"
+                    x:Name="HeartPeakHeader" />
                 <Label
                     Content="{Binding SelectedUser.LowestRate}"
                     FontSize="16"
                     Grid.Column="0"
                     Grid.Row="1"
                     HorizontalContentAlignment="Center"
-                    x:Name="HeartLowestText"
-                    VerticalContentAlignment="Top" />
+                    VerticalContentAlignment="Top"
+                    x:Name="HeartLowestText" />
                 <Label
                     Content="{Binding SelectedUser.AverageRate}"
                     FontSize="16"
                     Grid.Column="1"
                     Grid.Row="1"
                     HorizontalContentAlignment="Center"
-                    x:Name="HeartAverageText"
-                    VerticalContentAlignment="Top" />
+                    VerticalContentAlignment="Top"
+                    x:Name="HeartAverageText" />
                 <Label
                     Content="{Binding SelectedUser.HighestRate}"
                     FontSize="16"
                     Grid.Column="2"
                     Grid.Row="1"
                     HorizontalContentAlignment="Center"
-                    x:Name="HeartPeakText"
-                    VerticalContentAlignment="Top" />
+                    VerticalContentAlignment="Top"
+                    x:Name="HeartPeakText" />
             </Grid>
             <Grid Grid.Row="2">
-                <StackPanel x:Name="BikeValuePanel" Orientation="Vertical">
+                <StackPanel Orientation="Vertical" x:Name="BikeValuePanel">
                     <Label
+                        Content="Adjust Bike Values"
                         FontWeight="Bold"
                         HorizontalAlignment="Center"
-                        x:Name="AdjustBikeValuesHeader" Content="Adjust Bike Values"/>
-                    <Label x:Name="BikeResistanceHeader" Content="Bike Resistance:"/>
+                        x:Name="AdjustBikeValuesHeader" />
+                    <Label Content="Bike Resistance:" x:Name="BikeResistanceHeader" />
                     <Slider Margin="30,0,30,0" x:Name="ResistanceSlider" />
-                    <Label HorizontalAlignment="Center" x:Name="ResistanceValue" Content="1.0X"/>
-                    <Label x:Name="ResistanceGraph" Content="Graph(Resistance / minute)"/>
-                    <Button x:Name="EmergencyButton" Content="Emergency Stop" HorizontalAlignment="Left" Width="100" Background="#FFFF1200"></Button>
+                    <Label
+                        Content="1.0X"
+                        HorizontalAlignment="Center"
+                        x:Name="ResistanceValue" />
+                    <Label Content="Graph(Resistance / minute)" x:Name="ResistanceGraph" />
+                    <Button
+                        Background="#FFFF1200"
+                        Content="Emergency Stop"
+                        HorizontalAlignment="Left"
+                        Width="100"
+                        x:Name="EmergencyButton" />
                 </StackPanel>
             </Grid>
 

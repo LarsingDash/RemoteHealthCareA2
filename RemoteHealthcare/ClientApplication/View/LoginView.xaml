@@ -4,6 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:ClientApplication.View"
+        xmlns:viewModel="clr-namespace:ClientApplication.ViewModel"
         mc:Ignorable="d"
         Title="LoginView" Height="500" Width="800"
         WindowStyle="None"
@@ -13,9 +14,22 @@
         WindowStartupLocation="CenterScreen"
         MouseDown="LoginView_OnMouseDown">
     
+    <Window.DataContext>
+        <viewModel:LoginViewModel/>
+    </Window.DataContext>
     
-        <Border CornerRadius="25"
-                BorderThickness="5">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibility"/>
+    </Window.Resources>
+    
+    <Window.Visibility>
+        <Binding Path="IsViewVisable" Mode="TwoWay" 
+                 Converter="{StaticResource BooleanToVisibility}"/>
+    </Window.Visibility>
+    
+    
+    <Border CornerRadius="25"
+            BorderThickness="5">
         
         <Border.BorderBrush>
             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
@@ -138,14 +152,15 @@
                                Margin="0,50,0,0"
                                />
                     
-                    <TextBlock Text= "Username" 
+                    <TextBlock Text= "Phone Number" 
                                Foreground="#ACACAC"
                                FontSize="16"
                                FontFamily="Montserrat"
                                Margin="0,60,0,0"
                     />
                     
-                    <TextBox x:Name="txtUser"
+                    <TextBox x:Name="txtPhoneNumber"
+                             Text="{Binding PhoneNumber}"
                              FontSize="15"
                              FontFamily="Montserrat"
                              Background="Transparent"

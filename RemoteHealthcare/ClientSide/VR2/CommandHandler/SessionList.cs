@@ -1,9 +1,8 @@
 using System.Globalization;
-using ClientSide.VR2;
 using Newtonsoft.Json.Linq;
 using Shared.Log;
 
-namespace DoctorApplication.Communication.CommandHandlers;
+namespace ClientSide.VR2.CommandHandler;
 
 public class SessionList : ICommandHandlerVR
 {

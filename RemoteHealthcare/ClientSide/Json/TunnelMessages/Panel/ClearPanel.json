@@ -1,7 +1,8 @@
 {
   "id" : "scene/panel/clear",
+  "serial": "_serial_",
   "data" :
   {
-    "id" : "_uuid_"
+    "id" : "uuid"
   }
 }

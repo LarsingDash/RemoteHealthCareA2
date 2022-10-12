@@ -1,5 +1,6 @@
 {
   "id" : "scene/node/add",
+  "serial": "_serial_",
   "data" : {
     "name" : "_name_",
     "parent" : "_parent_",

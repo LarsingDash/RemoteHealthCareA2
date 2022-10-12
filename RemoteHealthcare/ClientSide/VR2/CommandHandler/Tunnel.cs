@@ -1,12 +1,10 @@
 using ClientSide.Helpers;
-using ClientSide.VR;
-using ClientSide.VR2;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Shared;
 using Shared.Log;
 
-namespace DoctorApplication.Communication.CommandHandlers;
+namespace ClientSide.VR2.CommandHandler;
 
 public class Tunnel : ICommandHandlerVR
 {

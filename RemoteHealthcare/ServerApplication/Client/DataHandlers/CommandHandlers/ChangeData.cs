@@ -43,7 +43,6 @@ public class ChangeData : CommandHandler
                 CheckValueInData(ob, message, "heartrate");
                 foreach (var clientData in server.SubscribedSessions[uuid])
                 {
-                    clientData.SendEncryptedData(message.ToString());
                 }
             }
             data.SendEncryptedData(JsonFileReader.GetObjectAsString("ErrorResponse",new Dictionary<string, string>()

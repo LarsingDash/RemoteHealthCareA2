@@ -1,8 +1,9 @@
 {
   "id" : "scene/panel/image",
+  "serial": "_serial_",
   "data" :
   {
-    "id" : "_panelid_",
+    "id" : "uuid",
     "image" : "_image_",
     "position" : [ "_position_" ],
     "size" : [ "_size_" ]

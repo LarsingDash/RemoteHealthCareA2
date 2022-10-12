@@ -3,6 +3,7 @@ using System.Numerics;
 using System.Text;
 using ClientSide.Helpers;
 using ClientSide.VR2;
+using ClientSide.VR2.CommandHandler;
 using DoctorApplication.Communication.CommandHandlers;
 using Shared;
 using Shared.Log;
@@ -148,7 +149,7 @@ namespace ClientSide.VR
                 });
                 routeId = "";
                 vrClient.BikeController.Setup();
-                
+                vrClient.PanelController.Setup();
                 await vrClient.AddSerialCallbackTimeout(serial, ob =>
                 {
                     if (ob["status"]!.ToObject<string>()!.Equals("ok"))

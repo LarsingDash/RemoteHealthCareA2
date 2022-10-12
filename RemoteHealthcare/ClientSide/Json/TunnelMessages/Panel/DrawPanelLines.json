@@ -1,5 +1,6 @@
 {
   "id" : "scene/panel/drawlines",
+  "serial": "_serial_",
   "data" :
   {
     "id" : "uuid",

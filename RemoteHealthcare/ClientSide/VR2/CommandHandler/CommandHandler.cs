@@ -1,7 +1,6 @@
-using ClientSide.VR2;
 using Newtonsoft.Json.Linq;
 
-namespace DoctorApplication.Communication.CommandHandlers;
+namespace ClientSide.VR2.CommandHandler;
 
 public interface ICommandHandlerVR
 {

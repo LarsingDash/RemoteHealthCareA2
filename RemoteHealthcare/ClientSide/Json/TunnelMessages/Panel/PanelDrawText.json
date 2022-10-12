@@ -1,8 +1,9 @@
 {
   "id" : "scene/panel/drawtext",
+  "serial" : "_serial_",
   "data" :
   {
-    "id" : "_panelid_",
+    "id" : "uuid",
     "text" : "_text_",
     "position" : [ "_position_" ],
     "size" : "_size_",

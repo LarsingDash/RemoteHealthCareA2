@@ -1,11 +1,12 @@
 using ClientSide.Helpers;
 using ClientSide.VR;
+using ClientSide.VR2.CommandHandler;
 using DoctorApplication.Communication.CommandHandlers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Shared;
 using Shared.Log;
-using Tunnel = DoctorApplication.Communication.CommandHandlers.Tunnel;
+using Tunnel = ClientSide.VR2.CommandHandler.Tunnel;
 
 namespace ClientSide.VR2;
 
@@ -16,6 +17,7 @@ public class VRClient : DefaultClientConnection
     public readonly Tunnel tunnel;
     public WorldGen worldGen;
     public BikeController BikeController;
+    public PanelController PanelController;
     public VRClient()
     {
         Init("145.48.6.10", 6666, (json, encrypted) =>
@@ -86,6 +88,7 @@ public class VRClient : DefaultClientConnection
          //Start WorldGen
          worldGen = new WorldGen(this, tunnel);
          BikeController = new BikeController(this, tunnel);
+         PanelController = new PanelController(this, tunnel);
          //
          // //Start HUDController
          // panelController = new PanelController(this, tunnel);

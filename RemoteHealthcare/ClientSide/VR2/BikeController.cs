@@ -1,6 +1,7 @@
 using System.Globalization;
 using ClientSide.Bike;
 using ClientSide.Helpers;
+using ClientSide.VR2.CommandHandler;
 using DoctorApplication.Communication.CommandHandlers;
 using Microsoft.VisualBasic.FileIO;
 using Shared;
@@ -57,7 +58,8 @@ public class BikeController
         {
             {"\"_data_\"", JsonFileReader.GetObjectAsString("UpdateCamera", new Dictionary<string, string>()
                 {
-                    {"_guid_", cameraId}, {"_parent_", bikeId}
+                    {"_guid_", cameraId}, {"_parent_", bikeId},
+                    {"_serial_", serial}
                 }, JsonFolder.Panel.Path)
                 
             }

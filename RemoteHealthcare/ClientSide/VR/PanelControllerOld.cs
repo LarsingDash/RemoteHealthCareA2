@@ -37,7 +37,7 @@ public class PanelController
             })}
         });
 
-        //Sending the message to create hudPanel once the camera has been found
+        //Sending the message to create hudPanel once the head has been found
         vrClient.IDSearchList.Add("Head", HeadID =>
         {
             tunnelOld.SendTunnelMessage(new Dictionary<string, string>()

@@ -145,6 +145,15 @@ namespace DoctorApplication.MVVM.ViewModel
             });
         }
 
+        public void StartBikeRecording()
+        {
+            //todo start session
+        }
+        public void StopBikeRecording()
+        {
+            //todo stop session
+        }
+
         public void SendMessage(object Message)
         {
             selectedUser.AddMessage(Message.ToString());
@@ -161,12 +170,14 @@ namespace DoctorApplication.MVVM.ViewModel
                 //checked
                 Console.WriteLine("Checked");
                 ButtonText = "Stop";
+                StartBikeRecording();
             }
             else
             {
                 //unchecked
                 Console.WriteLine("Unchecked");
                 ButtonText = "Start";
+                StopBikeRecording();
 
             }
         }

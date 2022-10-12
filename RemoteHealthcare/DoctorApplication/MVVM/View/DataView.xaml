@@ -274,7 +274,7 @@
                     HorizontalAlignment="Left"
                     x:Name="AverageSpeedText" />
                 <Label
-                    Content="{Binding SelectedUser.lastEntry.TimeElapsed}"
+                    Content="{Binding SelectedUser.LastEntry.TimeElapsed}"
                     Grid.Column="4"
                     Grid.Row="4"
                     HorizontalAlignment="Left"
@@ -389,7 +389,7 @@
                     <Slider Margin="30,0,30,0" x:Name="ResistanceSlider" />
                     <Label HorizontalAlignment="Center" x:Name="ResistanceValue" Content="1.0X"/>
                     <Label x:Name="ResistanceGraph" Content="Graph(Resistance / minute)"/>
-
+                    <Button x:Name="EmergencyButton" Content="Emergency Stop" HorizontalAlignment="Left" Width="100" Background="#FFFF1200"></Button>
                 </StackPanel>
             </Grid>
 

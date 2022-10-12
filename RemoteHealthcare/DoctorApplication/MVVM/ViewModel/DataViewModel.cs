@@ -12,6 +12,9 @@ using System.Windows;
 using LiveCharts.Wpf;
 using LiveCharts;
 using System.DirectoryServices;
+using Shared;
+using DoctorApplication.Communication;
+using Shared.Log;
 
 namespace DoctorApplication.MVVM.ViewModel
 {
@@ -129,6 +132,17 @@ namespace DoctorApplication.MVVM.ViewModel
             {
                 lineSeries
             };
+            Client client = App.GetClientInstance();
+            var serial = Util.RandomString();
+            client.SendEncryptedData(JsonFileReader.GetObjectAsString("AllClients", new Dictionary<string, string>()
+            {
+                {"_serial_", serial}
+            }, JsonFolder.Json.Path));
+            client.AddSerialCallback(serial, ob =>
+            {
+                Logger.LogMessage(LogImportance.Fatal, ob.ToString());
+
+            });
         }
 
         public void SendMessage(object Message)

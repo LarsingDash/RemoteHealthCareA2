@@ -5,6 +5,9 @@ using Shared;
 
 namespace ClientSide.VR
 {
+    /// <summary>
+    /// Manages terrain and route generation as well object placement
+    /// </summary>
     public class WorldGen
     {
         private readonly VRClient vrClient;
@@ -146,6 +149,7 @@ namespace ClientSide.VR
                 },
             });
 
+            
             vrClient.IDWaitList.Add("trees", treesID =>
             {
                 //Subdivide the route to get more sub-points

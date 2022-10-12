@@ -1,6 +1,7 @@
 ﻿/* This is the model for the userdata. It contains all the data that is currently needed to be displayed. */
 using DoctorApplication.Core;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -19,21 +20,148 @@ namespace DoctorApplication.MVVM.Model
         private string phoneNumber;
         private int bikeId;
 
-        //bikedata
-        private double currentSpeed;
+        //statistic data bike
         private double topSpeed;
+
+        public double TopSpeed
+        {
+            get {
+                if (userDataList != null)
+                {
+                    double topValue = 0;
+                    foreach (DataModel dataModel in userDataList)
+                    {
+                        if(dataModel.CurrentSpeed > topValue)
+                        {
+                            topValue = dataModel.CurrentSpeed;
+                        }
+                    }
+                    return topValue;
+                }
+                return 0;
+            }
+            set
+            {
+                topSpeed = value;
+                OnPropertyChanged(nameof(lastEntry));
+            }
+        }
+
         private double averageSpeed;
-        private TimeSpan timeElapsed;
+        public double AverageSpeed
+        {
+            get
+            {
+                if (userDataList != null)
+                {
+                    double total = 0;
+                    foreach (DataModel dataModel in userDataList)
+                    {
+                        total += dataModel.CurrentSpeed;
+                    }
+                    return Math.Round((total / userDataList.Count), 1);
+                }
+                return 0;
+            }
+            set
+            {
+                averageSpeed = value;
+                OnPropertyChanged(nameof(lastEntry));
+            }
+        }
 
-        //heartdata
-        private int currentRate;
+        //statistic data heartmonitor
         private int lowestRate;
-        private int averageRate;
-        private int highestRate;
 
+        public int LowestRate
+        {
+            get
+            {
+                if (userDataList != null)
+                {
+                    int lowestValue = 999;
+                    foreach (DataModel dataModel in userDataList)
+                    {
+                        if (dataModel.CurrentRate < lowestValue)
+                        {
+                            lowestValue = dataModel.CurrentRate;
+                        }
+                    }
+                    return lowestValue;
+                }
+                return 0;
+            }
+            set
+            {
+                lowestRate = value;
+                OnPropertyChanged(nameof(lastEntry));
+            }
+        }
+
+
+        private int averageRate;
+
+        public int AverageRate
+        {
+            get
+            {
+                if (userDataList != null)
+                {
+                    int total = 0;
+                    foreach (DataModel dataModel in userDataList)
+                    {
+                        total += dataModel.CurrentRate;
+                    }
+                    return (total/userDataList.Count);
+                }
+                return 0;
+            }
+            set
+            {
+                averageRate = value;
+                OnPropertyChanged(nameof(lastEntry));
+            }
+        }
+        private int highestRate;
+        public int HighestRate
+        {
+            get
+            {
+                if (userDataList != null)
+                {
+                    int topValue = 0;
+                    foreach (DataModel dataModel in userDataList)
+                    {
+                        if (dataModel.CurrentRate > topValue)
+                        {
+                            topValue = dataModel.CurrentRate;
+                        }
+                    }
+                    return topValue;
+                }
+                return 0;
+            }
+            set
+            {
+                highestRate = value;
+                OnPropertyChanged(nameof(lastEntry));
+            }
+        }
+
+        public List<DataModel> userDataList { get; set; }
+
+        public DataModel lastEntry;
+        public DataModel LastEntry
+        {
+            get { return userDataList.LastOrDefault(); }
+            set
+            {
+                lastEntry = value;
+                OnPropertyChanged(nameof(lastEntry));
+            }
+        }
         //chatdata
         public ObservableCollection<MessageModel> messages { get; set; }
-        public string lastMessage => messages.Last().message;
 
         //constructor currently with test values
         public UserDataModel()
@@ -42,32 +170,22 @@ namespace DoctorApplication.MVVM.Model
             this.phoneNumber = "06 12345678";
             this.bikeId = 01249;
 
-            this.currentSpeed = 1;
-            this.topSpeed = 2;
-            this.averageRate = 3;
-            this.TimeElapsed = new TimeSpan(10000000);
-
-            this.currentRate = 68;
-            this.lowestRate = 69;
-            this.averageRate = 71;
-            this.highestRate = 72;
-
         }
 
-        public UserDataModel(string userName, string phoneNumber, int bikeId, double currentSpeed, int currentRate)
+        public UserDataModel(string userName, string phoneNumber, int bikeId)
         {
             UserName = userName;
             PhoneNumber = phoneNumber;
             BikeId = bikeId;
-            CurrentSpeed = currentSpeed;
-            CurrentRate = currentRate;
             this.messages = new ObservableCollection<MessageModel>();
+            this.userDataList = new List<DataModel>();
         }
 
-        public void chatMessage(string phoneNumber, string message)
+        public void addData(DataModel dataModel)
         {
-            
+            userDataList.Add(dataModel);
         }
+        
         public void AddMessage(string message)
         {
             messages.Add(new MessageModel(UserName, message));
@@ -99,89 +217,18 @@ namespace DoctorApplication.MVVM.Model
                 OnPropertyChanged(nameof(PhoneNumber));
             }
         }
-        public double CurrentSpeed
-        {
-            get { return currentSpeed; }
-            set
-            {
-                currentSpeed = value;
-                OnPropertyChanged(nameof(CurrentSpeed));
-            }
-        }
-        public double TopSpeed
-        {
-            get { return topSpeed; }
-            set
-            {
-                topSpeed = value;
-                OnPropertyChanged(nameof(TopSpeed));
-            }
-        }
-        public double AverageSpeed
-        {
-            get { return averageSpeed; }
-            set
-            {
-                averageSpeed = value;
-                OnPropertyChanged(nameof(AverageSpeed));
-            }
-        }
-        public TimeSpan TimeElapsed
-        {
-            get { return timeElapsed; }
-            set
-            {
-                timeElapsed = value;
-                OnPropertyChanged(nameof(TimeElapsed));
-            }
-        }
-        public int CurrentRate
-        {
-            get { return currentRate; }
-            set
-            {
-                currentRate = value;
-                OnPropertyChanged(nameof(CurrentRate));
-            }
-        }
-        public int LowestRate
-        {
-            get { return lowestRate; }
-            set
-            {
-                lowestRate = value;
-                OnPropertyChanged(nameof(LowestRate));
-            }
-        }
-        public int AverageRate
-        {
-            get { return averageRate; }
-            set
-            {
-                averageRate = value;
-                OnPropertyChanged(nameof(AverageRate));
-            }
-        }
-        public int HighestRate
-        {
-            get { return highestRate; }
-            set
-            {
-                highestRate = value;
-                OnPropertyChanged(nameof(HighestRate));
-            }
-        }
 
 
-       
 
-       
+
+
+
 
         /* This is a method that is used to update the view when the model changes. */
         public event PropertyChangedEventHandler? PropertyChanged;
         private void OnPropertyChanged(string propertyName)
         {
-            if(PropertyChanged != null)
+            if (PropertyChanged != null)
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }

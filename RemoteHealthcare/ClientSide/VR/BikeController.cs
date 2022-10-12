@@ -8,7 +8,7 @@ namespace ClientSide.VR;
 
 
 /**
- * Manages the bike animation in the VR engine
+ * Manages the bike animation and the camera placement in the VR engine
  */
 public class BikeController
 {
@@ -27,9 +27,13 @@ public class BikeController
         _routeId = null;
         previousSpeed = 0;
     }
-      /**
-       * Sets up camera and bike for animation, then loads in bike
-       */
+      /// <summary>
+      /// This method prepares the animation of the bike and adds the bike as well the route
+      /// (create action -> add bike -> add route -> action gets invoked in tunnel)
+      /// Adds an Action to the IDWaitList which is invoked when the bike is added to the scene
+      /// The Action retrieves the route id and bike id when found
+      ///   and connects the camera node as well the route node to the bike
+      /// </summary>
         public void AnimateBike()
         {
             
@@ -96,9 +100,10 @@ public class BikeController
             });
         }
         
-    /**
-     * Continuously checks for changes in speed data and updates the VR engine respectively to those changes
-     */
+  /// <summary>
+  /// In a while-loop the method UpdateFollowRoute() gets called once the routeId and bikeId are found
+  /// The thread sleeps every 100 milliseconds after executing the method
+  /// </summary>
     public void RunController()
     {
         while (true)
@@ -116,9 +121,16 @@ public class BikeController
         }
     }
 
-    /**
-     * Updates the bike animation speed and speed at which it follows the route based on the bike data received
-     */
+    /// <summary>
+    /// The method retrieves bike data and converts it to km/h
+    /// Checks whether current bike speed differs between previous speed and updates the value
+    /// todo: only update VR engine when either the bike data is sent to the client
+    /// todo: or only when the speed changes significantly
+    ///
+    /// Then the bike speed is copied to animationSpeed and followSpeed and modified to feel realistic in VR
+    /// animationSpeed: speed of the 3D animation
+    /// followSpeed: speed of the bike in VR
+    /// </summary>
     private void UpdateFollowRoute()
     {
         //Retrieve bike data (speed)
@@ -159,7 +171,7 @@ public class BikeController
         });
         
         //Modify the route follow speed based on bike speed
-        var followSpeed = 0.0 + bikeSpeed / 10;
+        var followSpeed = 0.0 + bikeSpeed / 2;
         tunnel.SendTunnelMessage(new Dictionary<string, string>()
         {
             {

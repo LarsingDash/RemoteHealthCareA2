@@ -5,6 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:ClientApplication.View"
         xmlns:viewModel="clr-namespace:ClientApplication.ViewModel"
+        xmlns:customControls="clr-namespace:ClientApplication.CustomControls"
         mc:Ignorable="d"
         Title="LoginView" Height="500" Width="800"
         WindowStyle="None"
@@ -23,7 +24,7 @@
     </Window.Resources>
     
     <Window.Visibility>
-        <Binding Path="IsViewVisable" Mode="TwoWay" 
+        <Binding Path="IsViewVisible" Mode="TwoWay" 
                  Converter="{StaticResource BooleanToVisibility}"/>
     </Window.Visibility>
     
@@ -33,16 +34,16 @@
         
         <Border.BorderBrush>
             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="#462AD8" Offset="0.0"/>
-                <GradientStop Color="#B71C94" Offset="0.75"/>
-                <GradientStop Color="#8A16C1" Offset="1.0"/>
+                <GradientStop Color="{StaticResource winBorderColor1}" Offset="0.0"/>
+                <GradientStop Color="{StaticResource winBorderColor2}" Offset="0.75"/>
+                <GradientStop Color="{StaticResource winBorderColor3}" Offset="1.0"/>
             </LinearGradientBrush>
         </Border.BorderBrush>
         
         <Border.Background>
             <LinearGradientBrush StartPoint="0,1" EndPoint="1,0">
-                <GradientStop Color="#060531" Offset="0.0"/>
-                <GradientStop Color="#1B1448" Offset="0.75"/>
+                <GradientStop Color="{StaticResource primaryBackColor1}" Offset="0.0"/>
+                <GradientStop Color="{StaticResource primaryBackColor2}" Offset="0.75"/>
             </LinearGradientBrush>
         </Border.Background>
             
@@ -160,7 +161,7 @@
                     />
                     
                     <TextBox x:Name="txtPhoneNumber"
-                             Text="{Binding PhoneNumber}"
+                             Text="{Binding PhoneNumber, UpdateSourceTrigger=PropertyChanged}"
                              FontSize="15"
                              FontFamily="Montserrat"
                              Background="Transparent"
@@ -179,20 +180,23 @@
                                Margin="0,15,0,0"
                     />
                     
-                    <PasswordBox x:Name="txtPassword"
-                             FontSize="15"
-                             FontFamily="Montserrat"
-                             Background="Transparent"
-                             Foreground="White"
-                             CaretBrush="LightGray"
-                             BorderBrush="DarkGray"
-                             BorderThickness="0,0,0,1"
-                             Height="28"
+                    <customControls:BindablePasswordBox x:Name="txtPassword"
+                                                        Password="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                        Height="28"
                              VerticalContentAlignment="Center"
                              Margin="0,5,0,0"/>
                     
+                    <TextBlock Text= "{Binding ErrorMessage}" 
+                               Foreground="#D75960"
+                               FontSize="12"
+                               FontFamily="Montserrat"
+                               Margin="0,5,0,0"
+                               TextWrapping="Wrap"
+                    />
+                    
                 
                 <Button Grid.Row="1" x:Name="btnLogin"
+                        Command="{Binding LoginCommand}"
                         BorderThickness="0"
                         Content="Log in"
                         Foreground="White"
@@ -200,8 +204,7 @@
                         FontFamily="Montserrat"
                         Cursor="Hand"
                         Grid.Column="2"
-                        Margin="0,25,0,0"
-                        Click="BtnClose_OnClick" >
+                        Margin="0,25,0,0">
                     
                     <Button.Style>
                         <Style TargetType="Button">

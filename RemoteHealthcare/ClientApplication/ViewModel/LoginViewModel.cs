@@ -1,4 +1,5 @@
 using System;
+using System.Security;
 using System.Windows.Input;
 
 namespace ClientApplication.ViewModel;
@@ -7,9 +8,9 @@ public class LoginViewModel: ViewModelBase
 {
 	//Fields
 	private string phoneNumber;
-	private string password;
+	private SecureString password;
 	private string errorMessage;
-	private bool isViewVisable = true;
+	private bool isViewVisible = true;
 
 	public string PhoneNumber
 	{
@@ -17,7 +18,7 @@ public class LoginViewModel: ViewModelBase
 		set { phoneNumber = value; OnPropertyChanged("PhoneNumber"); }
 	}
 
-	public string Password
+	public SecureString Password
 	{
 		get { return password; }
 		set { password = value; OnPropertyChanged("Password"); }
@@ -29,10 +30,10 @@ public class LoginViewModel: ViewModelBase
 		set { errorMessage = value; OnPropertyChanged("ErrorMessage"); }
 	}
 
-	public bool IsViewVisable
+	public bool IsViewVisible
 	{
-		get { return isViewVisable; }
-		set { isViewVisable = value; OnPropertyChanged("IsViewVisable"); }
+		get { return isViewVisible; }
+		set { isViewVisible = value; OnPropertyChanged("IsViewVisible"); }
 	}
 	
 	//Commands ->
@@ -50,6 +51,7 @@ public class LoginViewModel: ViewModelBase
 
 	private void ExecuteRecoveryPasswordCommand(string username, string email)
 	{
+		//TODO : Implement recovery password logic
 		throw new NotImplementedException();
 	}
 
@@ -68,6 +70,14 @@ public class LoginViewModel: ViewModelBase
 
 	private void ExecuteLoginCommand(object obj)
 	{
-		throw new NotImplementedException();
+		var canLogin = true;
+		if (canLogin)
+		{
+			IsViewVisible = false;
+		}
+		else
+		{
+			ErrorMessage = "Invalid phone number or password";
+		}
 	}
 }

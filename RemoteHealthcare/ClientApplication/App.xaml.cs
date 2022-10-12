@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using ClientApplication.View;
 
 namespace ClientApplication
 {
@@ -12,5 +13,20 @@ namespace ClientApplication
 	/// Interaction logic for App.xaml
 	/// </summary>
 	public partial class App : Application
-	{ }
+	{
+		private void ApplicationStart(object sender, StartupEventArgs e)
+		{
+			var loginView = new LoginView();
+			loginView.Show();
+			loginView.IsVisibleChanged += (s, ev) =>
+			{
+				if (loginView.IsVisible==false && loginView.IsLoaded)
+				{
+					var mainWindow = new MainWindow();
+					mainWindow.Show();
+					loginView.Close();
+				}
+			};
+		}
+	}
 }

@@ -36,7 +36,7 @@ public class ChangeData : CommandHandler
             {
                 JObject message = JsonFileReader.GetObject("UpdateValues", new Dictionary<string, string>()
                 {
-                    {"uuid", uuid},
+                    {"_uuid_", uuid},
                 }, JsonFolder.ClientMessages.Path);
                 CheckValueInData(ob, message, "distance");
                 CheckValueInData(ob, message, "speed");

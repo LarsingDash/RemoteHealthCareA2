@@ -14,9 +14,15 @@ namespace DoctorApplication
     /// </summary>
     public partial class App : Application
     {
+        private static Client client;
+
+        public static Client GetClientInstance()
+        {
+            return client;  
+        }
         public App()
         {
-            Client client = new Client();
+            client = new Client();
         }
     }
 }

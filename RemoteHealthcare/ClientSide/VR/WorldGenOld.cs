@@ -8,10 +8,10 @@ namespace ClientSide.VR
     /// <summary>
     /// Manages terrain and route generation as well object placement
     /// </summary>
-    public class WorldGen
+    public class WorldGenOld
     {
         private readonly VrClient vrClient;
-        private readonly Tunnel tunnel;
+        private readonly TunnelOld tunnelOld;
 
         private const int mapSize = 256;
 
@@ -20,10 +20,10 @@ namespace ClientSide.VR
 
         private List<Vector2> route = new List<Vector2>();
 
-        public WorldGen(VrClient vrClient, Tunnel tunnel)
+        public WorldGenOld(VrClient vrClient, TunnelOld tunnelOld)
         {
             this.vrClient = vrClient;
-            this.tunnel = tunnel;
+            this.tunnelOld = tunnelOld;
 
             GenerateTerrain();
         }
@@ -51,7 +51,7 @@ namespace ClientSide.VR
             //Plan to add grass to terrain
             vrClient.IDWaitList.Add("terrain", terrainID =>
             {
-                tunnel.SendTunnelMessage(new Dictionary<string, string>()
+                tunnelOld.SendTunnelMessage(new Dictionary<string, string>()
                 {
                     {
                         "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Terrain\\AddLayer",
@@ -66,7 +66,7 @@ namespace ClientSide.VR
             });
 
             //Add terrain
-            tunnel.SendTunnelMessage(new Dictionary<string, string>()
+            tunnelOld.SendTunnelMessage(new Dictionary<string, string>()
             {
                 {
                     "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Terrain\\AddTerrain",
@@ -80,7 +80,7 @@ namespace ClientSide.VR
             }, true);
 
             //Add root node
-            tunnel.SendTunnelMessage(new Dictionary<string, string>()
+            tunnelOld.SendTunnelMessage(new Dictionary<string, string>()
             {
                 {
                     "\"_data_\"",
@@ -99,7 +99,7 @@ namespace ClientSide.VR
             string nodeName = "route";
             vrClient.IDWaitList.Add(nodeName, routeId =>
             {
-                tunnel.SendTunnelMessage(new Dictionary<string, string>()
+                tunnelOld.SendTunnelMessage(new Dictionary<string, string>()
                 {
                     {
                         "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Route\\AddRoad",
@@ -120,7 +120,7 @@ namespace ClientSide.VR
 
             polyBuilder.Remove(polyBuilder.Length - 1, 1);
 
-            tunnel.SendTunnelMessage(new Dictionary<string, string>()
+            tunnelOld.SendTunnelMessage(new Dictionary<string, string>()
             {
                 {
                     "\"_data_\"",
@@ -137,7 +137,7 @@ namespace ClientSide.VR
 
         private void GenerateDecoration()
         {
-            tunnel.SendTunnelMessage(new Dictionary<string, string>()
+            tunnelOld.SendTunnelMessage(new Dictionary<string, string>()
             {
                 {
                     "\"_data_\"",
@@ -175,7 +175,7 @@ namespace ClientSide.VR
                 while (amountOfObjects < maxAmountOfObjects && failedAttempts < maxFailedAttempts)
                 {
                     var currentPoint = new Vector2(random.Next(0, 256), random.Next(0, 256));
-                    tunnel.SendTunnelMessage(new Dictionary<string, string>()
+                    tunnelOld.SendTunnelMessage(new Dictionary<string, string>()
                     {
                         {
                             "\"_data_\"",

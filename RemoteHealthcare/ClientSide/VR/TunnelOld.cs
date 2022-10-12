@@ -7,11 +7,11 @@ namespace ClientSide.VR;
 /// <summary>
 /// Manages the communication between client and server AKA tunnel
 /// </summary>
-public class Tunnel
+public class TunnelOld
 {
     private VrClient vrClient;
 
-    public Tunnel(VrClient vrClient)
+    public TunnelOld(VrClient vrClient)
     {
         this.vrClient = vrClient;
     }

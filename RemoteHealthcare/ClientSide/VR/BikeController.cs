@@ -13,15 +13,15 @@ namespace ClientSide.VR;
 public class BikeController
 {
     private VrClient vrClient;
-    private Tunnel tunnel;
+    private TunnelOld tunnelOld;
     private string? bikeId;
     private string? _routeId;
     private double previousSpeed;
     
-    public BikeController(VrClient vrClient, Tunnel tunnel)
+    public BikeController(VrClient vrClient, TunnelOld tunnelOld)
     {
         this.vrClient = vrClient;
-        this.tunnel = tunnel;
+        this.tunnelOld = tunnelOld;
 
         bikeId = null;
         _routeId = null;
@@ -48,7 +48,7 @@ public class BikeController
                 }
 
                 // look for camera id
-                tunnel.SendTunnelMessage(new Dictionary<string, string>()
+                tunnelOld.SendTunnelMessage(new Dictionary<string, string>()
                 {
                     {
                         "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Find",
@@ -62,7 +62,7 @@ public class BikeController
                 // snap camera on bike (via parent id)
                 vrClient.IDSearchList.Add("Camera", cameraId =>
                 {
-                    tunnel.SendTunnelMessage(new Dictionary<string, string>()
+                    tunnelOld.SendTunnelMessage(new Dictionary<string, string>()
                     {
                         {
                             "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Panel\\UpdateCamera",
@@ -75,7 +75,7 @@ public class BikeController
                 });
                 
                 // let bike follow route
-                tunnel.SendTunnelMessage(new Dictionary<string, string>()
+                tunnelOld.SendTunnelMessage(new Dictionary<string, string>()
                 {
                     {
                         "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Route\\FollowRoute",
@@ -91,7 +91,7 @@ public class BikeController
 
             
 
-            tunnel.SendTunnelMessage(new Dictionary<string, string>()
+            tunnelOld.SendTunnelMessage(new Dictionary<string, string>()
             {
                 {
                     "\"_data_\"",
@@ -159,7 +159,7 @@ public class BikeController
 
         //Modify the animation speed based on bike speed
         var animationSpeed = 0.0 + bikeSpeed / 36;
-        tunnel.SendTunnelMessage(new Dictionary<string, string>()
+        tunnelOld.SendTunnelMessage(new Dictionary<string, string>()
         {
             {
                 "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Route\\AnimationSpeed",
@@ -172,7 +172,7 @@ public class BikeController
         
         //Modify the route follow speed based on bike speed
         var followSpeed = 0.0 + bikeSpeed / 2;
-        tunnel.SendTunnelMessage(new Dictionary<string, string>()
+        tunnelOld.SendTunnelMessage(new Dictionary<string, string>()
         {
             {
                 "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Route\\FollowSpeed",

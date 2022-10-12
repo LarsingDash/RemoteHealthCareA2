@@ -131,8 +131,9 @@ public class DefaultClientConnection
             var numberOfBytes = stream.EndRead(readResult);
             _totalBuffer = Concat(_totalBuffer, _buffer, numberOfBytes);
         }
-        catch
+        catch(Exception e)
         {
+            Logger.LogMessage(LogImportance.Error, "Error (Unknown Reason) ", e);
             return;
         }
 

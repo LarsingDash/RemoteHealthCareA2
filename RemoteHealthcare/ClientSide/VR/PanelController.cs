@@ -9,7 +9,7 @@ namespace ClientSide.VR;
 //Meanwhile a separate thread is waiting for this process to finish, and once it is it will update the panel at 10fps.
 public class PanelController
 {
-    private readonly Tunnel tunnel;
+    private readonly TunnelOld tunnelOld;
     private string hudPanel = null;
 
     private double previousSpeed = 0;
@@ -19,9 +19,9 @@ public class PanelController
     
     private List<string> chatLines = new List<string>();
 
-    public PanelController(VrClient vrClient, Tunnel tunnel)
+    public PanelController(VrClient vrClient, TunnelOld tunnelOld)
     {
-        this.tunnel = tunnel;
+        this.tunnelOld = tunnelOld;
 
         vrClient.IDWaitList.Add("hudPanel", NodeID =>
         {
@@ -29,7 +29,7 @@ public class PanelController
         });
         
         //Finding the camera
-        tunnel.SendTunnelMessage(new Dictionary<string, string>
+        tunnelOld.SendTunnelMessage(new Dictionary<string, string>
         {
             {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Find", new Dictionary<string, string>
             {
@@ -40,7 +40,7 @@ public class PanelController
         //Sending the message to create hudPanel once the camera has been found
         vrClient.IDSearchList.Add("Head", HeadID =>
         {
-            tunnel.SendTunnelMessage(new Dictionary<string, string>()
+            tunnelOld.SendTunnelMessage(new Dictionary<string, string>()
             {
                 {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Panel\\AddPanel", new Dictionary<string, string>
                 {
@@ -117,7 +117,7 @@ public class PanelController
     /// </summary>
     private void DrawPanelOutlines()
     {
-        tunnel.SendTunnelMessage(new Dictionary<string, string>
+        tunnelOld.SendTunnelMessage(new Dictionary<string, string>
         {
             {
                 "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Panel\\DrawPanelLines",
@@ -191,7 +191,7 @@ public class PanelController
     /// <param name="y">The y-position of the text</param>
     private void DrawPanelText(string text, double size, double x, double y)
     {
-        tunnel.SendTunnelMessage(new Dictionary<string, string>
+        tunnelOld.SendTunnelMessage(new Dictionary<string, string>
         {
             {
                 "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Panel\\PanelDrawText",
@@ -218,7 +218,7 @@ public class PanelController
     /// <param name="sizeY">Stretches image in y-axis</param>
     private void DrawPanelImage(string imagePath, double posX, double posY, double sizeX, double sizeY)
     {
-        tunnel.SendTunnelMessage(new Dictionary<string, string>
+        tunnelOld.SendTunnelMessage(new Dictionary<string, string>
         {
             {
                 "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Panel\\PanelDrawImage",
@@ -240,7 +240,7 @@ public class PanelController
     /// <param name="actions">The methods given as parameter</param>
     private void UpdatePanel(string NodeID, params Action[] actions)
     {
-        tunnel.SendTunnelMessage(new Dictionary<string, string>
+        tunnelOld.SendTunnelMessage(new Dictionary<string, string>
         {
             {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Panel\\ClearPanel", new Dictionary<string, string>
             {
@@ -255,7 +255,7 @@ public class PanelController
             action.Invoke();
         }
             
-        tunnel.SendTunnelMessage(new Dictionary<string, string>
+        tunnelOld.SendTunnelMessage(new Dictionary<string, string>
         {
             {"\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\Panel\\SwapPanel", new Dictionary<string, string>
             {

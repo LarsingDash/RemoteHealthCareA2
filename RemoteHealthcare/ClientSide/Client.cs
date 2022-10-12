@@ -39,7 +39,7 @@ namespace ClientSide
                 SendData(JsonFileReader.GetObjectAsString("PublicRSAKey", new Dictionary<string, string>()
                 {
                     {"_serial_", serial}
-                }, JsonFolder.Json.path));
+                }, JsonFolder.Json.Path));
                 AddSerialCallback(serial, ob =>
                 {
                     PublicKey = ob["data"]?.Value<JArray>("key")?.Values<byte>().ToArray() ?? Array.Empty<byte>();
@@ -63,7 +63,7 @@ namespace ClientSide
                                 {"_username_", "TestUsername"},
                                 {"_serial_", "TestSerial"},
                                 {"_password_", "TestPassword"}
-                            }, JsonFolder.Json.path));
+                            }, JsonFolder.Json.Path));
                             break;
                         
                         case "start bike recording":
@@ -71,7 +71,7 @@ namespace ClientSide
                             {
                                 {"_name_", "TestName"},
                                 {"_serial_", "TestSerial"},
-                            }, JsonFolder.Json.path));
+                            }, JsonFolder.Json.Path));
                             break;
                         
                         case "stop bike recording":
@@ -79,7 +79,7 @@ namespace ClientSide
                             {
                                 {"_uuid_", "TestUuid"},
                                 {"_serial_", "TestSerial"},
-                            }, JsonFolder.Json.path));
+                            }, JsonFolder.Json.Path));
                             break;
                         
                         case "exit":
@@ -214,7 +214,7 @@ namespace ClientSide
                 {"\"_key_\"", Util.ByteArrayToString(keyCrypt)},
                 {"\"_data_\"", Util.ByteArrayToString(aesCrypt)},
                 {"_serial_", serial}
-            }, JsonFolder.Json.path));
+            }, JsonFolder.Json.Path));
 
         }
         
@@ -269,7 +269,7 @@ namespace ClientSide
                     {
                         {"\"_key_\"", Util.ByteArrayToString(GetRsaPublicKey())},
                         {"_serial_", json["serial"].ToObject<string>()}
-                    }, JsonFolder.Json.path));
+                    }, JsonFolder.Json.Path));
                     break;
                 }
                 case "encryptedMessage":

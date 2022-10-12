@@ -1,9 +1,11 @@
 using ClientSide.Helpers;
+using ClientSide.VR;
 using DoctorApplication.Communication.CommandHandlers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Shared;
 using Shared.Log;
+using Tunnel = DoctorApplication.Communication.CommandHandlers.Tunnel;
 
 namespace ClientSide.VR2;
 
@@ -12,6 +14,7 @@ public class VRClient : DefaultClientConnection
     private Dictionary<string, ICommandHandlerVR> commandHandler = new();
     public String TunnelID;
     private Tunnel tunnel;
+    private WorldGen worldGen;
     public VRClient()
     {
         Init("145.48.6.10", 6666, (json, encrypted) =>
@@ -56,18 +59,31 @@ public class VRClient : DefaultClientConnection
         //Code
     }
     
-    public void TunnelStartup(string id)
+    public async Task TunnelStartup(string id)
     {
         TunnelID = id;
-        RemoveObject("GroundPlane");
-        RemoveObject("LeftHand");
-        RemoveObject("RightHand");
-        //
-        // //Remove Default Objects
-        // RemoveObjectRequest("GroundPlane", "RightHand", "LeftHand");
-        //     
-        // //Start WorldGen
-        // worldGen = new WorldGen(this, tunnel);
+        var serial = Util.RandomString();
+        tunnel.SendTunnelMessage(new Dictionary<string, string>
+        {
+            {"\"_data_\"", JsonFileReader.GetObjectAsString("ResetScene", new Dictionary<string, string>()
+            {
+                {"_serial_", serial}
+            }, JsonFolder.TunnelMessages.Path)},
+        });
+        await AddSerialCallbackTimeout(serial, ob =>
+        {
+            Logger.LogMessage(LogImportance.Information, "Scene rebuild.");
+        }, () =>
+        {
+            
+        }, 1000);
+        
+        await RemoveObject("GroundPlane");
+        await RemoveObject("LeftHand");
+        await RemoveObject("RightHand");
+        
+         //Start WorldGen
+         worldGen = new WorldGen(this, tunnel);
         //
         // //Start HUDController
         // panelController = new PanelController(this, tunnel);
@@ -82,52 +98,66 @@ public class VRClient : DefaultClientConnection
 
     public async Task<string> FindObjectUuid(string name)
     {
-        var serial = Util.RandomString();
-        tunnel.SendTunnelMessage(new Dictionary<string, string>()
+        try
         {
-            {"\"_data_\"", JsonFileReader.GetObjectAsString("GetScene", new Dictionary<string, string>()
+            var serial = Util.RandomString();
+            tunnel.SendTunnelMessage(new Dictionary<string, string>()
             {
-                {"_serial_", serial}
-            }, JsonFolder.TunnelMessages.path)}
-        });
-        var uuid = "";
-        await AddSerialCallbackTimeout(serial, ob =>
-        {
-            foreach (var jToken in ob["data"]!["children"]!)
-            {
-                var currentObject = (JObject)jToken;
-                if (currentObject.ContainsKey("name") && currentObject.ContainsKey("uuid"))
                 {
-                    string foundName = currentObject["name"]!.ToObject<string>()!;
-                    if (name.ToLower().Equals(foundName.ToLower()))
+                    "\"_data_\"", JsonFileReader.GetObjectAsString("Find", new Dictionary<string, string>()
                     {
-                        uuid = currentObject["uuid"]!.ToObject<string>()!;
-                        return;
-                    }
+                        {"_serial_", serial},
+                        {"_name_", name}
+                    }, JsonFolder.TunnelMessages.Path)
                 }
-            }
-        }, () =>
+            });
+            var uuid = "";
+            await AddSerialCallbackTimeout(serial, ob =>
+                {
+                    if (ob["status"]!.ToObject<string>()!.Equals("ok"))
+                    {
+                        uuid = ob["data"]![0]!["uuid"]!.ToObject<string>()!;
+                    }
+                },
+                () =>
+                {
+                    Logger.LogMessage(LogImportance.Warn, "No response from VR server when requesting scene/get");
+                },
+                1000);
+            return uuid;
+        }
+        catch (Exception e)
         {
-            Logger.LogMessage(LogImportance.Warn, "No response from VR server when requesting scene/get" );
-        }, 1000);
+            Logger.LogMessage(LogImportance.Error, "Error (Unknown Reason) ", e);
+        }
 
-        return uuid;
+        return "";
     }
 
-    public async void RemoveObject(string name)
+    public async Task RemoveObject(string name)
     {
-        string uuid = await FindObjectUuid(name);
-        if (uuid.Length == 0)
+        try
         {
-            Logger.LogMessage(LogImportance.Warn, $"No object found with name: {name}, (RemoveObject)");
-        }
-        tunnel.SendTunnelMessage(new Dictionary<string, string>()
-        {
-            {"\"_data_\"", JsonFileReader.GetObjectAsString("DeleteNodeScene", new Dictionary<string, string>()
+            string uuid = await FindObjectUuid(name);
+            if (uuid.Length == 0)
             {
-                {"_id_", uuid}
-            }, JsonFolder.TunnelMessages.path)}
-        });
+                Logger.LogMessage(LogImportance.Warn, $"RemoveObject: No object found with name: {name},");
+            }
+
+            tunnel.SendTunnelMessage(new Dictionary<string, string>()
+            {
+                {
+                    "\"_data_\"", JsonFileReader.GetObjectAsString("DeleteNodeScene", new Dictionary<string, string>()
+                    {
+                        {"_id_", uuid}
+                    }, JsonFolder.TunnelMessages.Path)
+                }
+            });
+        }
+        catch (Exception e)
+        {
+            Logger.LogMessage(LogImportance.Error, "Error (Unknown Reason) ", e);
+        }
     }
     
 }

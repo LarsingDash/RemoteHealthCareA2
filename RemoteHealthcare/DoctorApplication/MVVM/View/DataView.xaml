@@ -10,7 +10,8 @@
     d:DesignWidth="800"
     mc:Ignorable="d"
     x:Class="DoctorApplication.MVVM.View.DataView"
-    d:DataContext="{d:DesignInstance Type={x:Type m:DataViewModel}}" Background="#FF112031">
+    d:DataContext="{d:DesignInstance Type={x:Type m:DataViewModel}}" Background="#FF112031"
+    >
 
     <UserControl.Resources>
         <Style TargetType="TextBlock">
@@ -29,6 +30,22 @@
         <Style TargetType="ListViewItem">
             <Setter Property="BorderThickness" Value="0"></Setter>
             <Setter Property="FocusVisualStyle" Value="{x:Null}"></Setter>
+        </Style>
+        <Style x:Key="ToggleStyle1" TargetType="{x:Type ToggleButton}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <Border HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="border" Padding="5,5,5,5" CornerRadius="5,5,5,5" Background="#3ce85c" BorderBrush="#FF000000" BorderThickness="1,1,1,1" SnapsToDevicePixels="True">
+                            <ContentPresenter x:Name="contentPresenter"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="true">
+                                <Setter Property="Background" TargetName="border" Value="#eb2337"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </UserControl.Resources>
     <Grid>
@@ -50,12 +67,6 @@
                     HorizontalAlignment="Center"
                     x:Name="SelectedUserLabel" Content="Selected User:"/>
                 <ComboBox ItemsSource="{Binding users}" SelectedItem="{Binding SelectedUser}" Width="154">
-                    <ComboBox.Background>
-                        <LinearGradientBrush EndPoint="0,1">
-                            <GradientStop Color="#FFF0F0F0"/>
-                            <GradientStop Color="#FFA3CEB3" Offset="1"/>
-                        </LinearGradientBrush>
-                    </ComboBox.Background>
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
@@ -65,13 +76,23 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <Button HorizontalAlignment="Center" x:Name="NewWindowButton" Content="Open in window" Margin="0,5" Padding="6" BorderBrush="{x:Null}" FontFamily="Arial Black">
-                    <Button.Resources>
-                        <Style TargetType="Border">
-                            <Setter Property="CornerRadius" Value="5"/>
-                        </Style>
-                    </Button.Resources>
-                </Button>
+                <StackPanel Orientation="Horizontal">
+                    
+                    <Button HorizontalAlignment="Center" x:Name="NewWindowButton" Content="Open in window" Margin="0,5" Padding="6" BorderBrush="{x:Null}" FontFamily="Arial Black">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="5"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                    <ToggleButton
+                    Style="{StaticResource ToggleStyle1}"
+                    Command="{Binding StartRecordingCommand}" 
+                    CommandParameter="{Binding IsChecked,RelativeSource={RelativeSource Self}}"
+                    Content="{Binding ButtonText}" Foreground="White"
+                    />
+                </StackPanel>
+               
             </StackPanel>
             <StackPanel
                 Grid.Row="1"
@@ -141,8 +162,12 @@
                     <TextBox
                         Grid.Column="0"
                         x:Name="ChatTextBox"
-                        Text="{Binding Message, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" Background="#FFD4ECDD" Foreground="#FF152D35"
-                        />
+                        Text="{Binding Message, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="#FFD4ECDD" Foreground="#FF152D35"
+                        >
+                        <TextBox.InputBindings>
+                            <KeyBinding CommandParameter="{Binding Text, ElementName=ChatTextBox}" Command="{Binding SendCommand}" Key="Enter" />
+                        </TextBox.InputBindings>
+                    </TextBox>
                     <Button
                         CommandParameter="{Binding Text, ElementName=ChatTextBox}"
                         Command="{Binding SendCommand}"
@@ -254,6 +279,7 @@
                     Grid.Row="4"
                     HorizontalAlignment="Left"
                     x:Name="TimeElapsedText" />
+                
             </Grid>
         </Grid>
 

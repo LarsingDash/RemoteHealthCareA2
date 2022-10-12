@@ -33,10 +33,11 @@ public class Tunnel : ICommandHandlerVR
     
     public void HandleCommand(VRClient client, JObject ob)
     {
-        Logger.LogMessage(LogImportance.Information, $"Got message from vr-server: {LogColor.Gray}\n{ob.ToString(Formatting.None)}");
-        if (ob["data"]!.ToObject<JObject>()!.ContainsKey("serial"))
+        ob = ob["data"]!["data"]!.ToObject<JObject>()!;
+        Logger.LogMessage(LogImportance.Information, $"Got message from Tunnel: {LogColor.Gray}\n{ob.ToString(Formatting.None)}");
+        if (ob.ContainsKey("serial"))
         {
-            var serial = ob["data"]!["serial"]!.ToObject<string>();
+            var serial = ob["serial"]!.ToObject<string>();
             if (client.SerialCallbacks.ContainsKey(serial!))
             {
                 client.SerialCallbacks[serial!].Invoke(ob);
@@ -46,11 +47,11 @@ public class Tunnel : ICommandHandlerVR
         }
         if (commandHandler.ContainsKey(ob["id"]!.ToObject<string>()!))
         {
-            commandHandler[ob["id"]!.ToObject<string>()!].HandleCommand(vrClient, ob["data"]!.ToObject<JObject>()!);
+            commandHandler[ob["id"]!.ToObject<string>()!].HandleCommand(vrClient, ob);
         }
         else
         {
-            Logger.LogMessage(LogImportance.Warn, $"Got message from vr-server but no commandHandler found: {LogColor.Gray}\n{ob.ToString(Formatting.None)}");
+            Logger.LogMessage(LogImportance.Debug, $"Got message from Tunnel but no commandHandler found: {LogColor.Gray}\n{ob.ToString(Formatting.None)}");
         }
     }
 

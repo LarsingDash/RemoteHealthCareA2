@@ -16,18 +16,17 @@ public class VRClient : DefaultClientConnection
     {
         Init("145.48.6.10", 6666, (json, encrypted) =>
         {
-            string extraText = encrypted ? "Encrypted " : "";
             if (commandHandler.ContainsKey(json["id"]!.ToObject<string>()!))
             {
-                if (!json["id"]!.ToObject<string>()!.Equals("encryptedMessage"))
+                if (!json["id"]!.ToObject<string>()!.Equals("tunnel/send"))
                 {
-                    Logger.LogMessage(LogImportance.Information, $"Got {extraText}message from server: {LogColor.Gray}\n{json.ToString(Formatting.None)}");
+                    Logger.LogMessage(LogImportance.Information, $"Got message from vr-server: {LogColor.Gray}\n{json.ToString(Formatting.None)}");
                 }
                 commandHandler[json["id"]!.ToObject<string>()!].HandleCommand(this, json);
             }
             else
             {
-                Logger.LogMessage(LogImportance.Warn, $"Got {extraText}message from server but no commandHandler found: {LogColor.Gray}\n{json.ToString(Formatting.None)}");
+                Logger.LogMessage(LogImportance.Warn, $"Got  message from vr-server but no commandHandler found: {LogColor.Gray}\n{json.ToString(Formatting.None)}");
             }
         }, false);
         commandHandler.Add("session/list", new SessionList());
@@ -86,15 +85,15 @@ public class VRClient : DefaultClientConnection
         var serial = Util.RandomString();
         tunnel.SendTunnelMessage(new Dictionary<string, string>()
         {
-            {"\"_data_\"", JsonFileReader.GetObjectAsString("GetScene" , new Dictionary<string, string>()
+            {"\"_data_\"", JsonFileReader.GetObjectAsString("GetScene", new Dictionary<string, string>()
             {
-                //{"_serial_", serial}
+                {"_serial_", serial}
             }, JsonFolder.TunnelMessages.path)}
         });
         var uuid = "";
         await AddSerialCallbackTimeout(serial, ob =>
         {
-            foreach (var jToken in ob["data"]!["data"]!["data"]!["children"]!)
+            foreach (var jToken in ob["data"]!["children"]!)
             {
                 var currentObject = (JObject)jToken;
                 if (currentObject.ContainsKey("name") && currentObject.ContainsKey("uuid"))
@@ -109,7 +108,7 @@ public class VRClient : DefaultClientConnection
             }
         }, () =>
         {
-            Logger.LogMessage(LogImportance.Warn, "No response from VR server when requesting getscene" );
+            Logger.LogMessage(LogImportance.Warn, "No response from VR server when requesting scene/get" );
         }, 1000);
 
         return uuid;
@@ -118,6 +117,10 @@ public class VRClient : DefaultClientConnection
     public async void RemoveObject(string name)
     {
         string uuid = await FindObjectUuid(name);
+        if (uuid.Length == 0)
+        {
+            Logger.LogMessage(LogImportance.Warn, $"No object found with name: {name}, (RemoveObject)");
+        }
         tunnel.SendTunnelMessage(new Dictionary<string, string>()
         {
             {"\"_data_\"", JsonFileReader.GetObjectAsString("DeleteNodeScene", new Dictionary<string, string>()

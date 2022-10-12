@@ -1,5 +1,6 @@
 {
   "id": "scene/node/add",
+  "serial": "_serial_",
   "data": {
     "name": "bike",
     "components": {

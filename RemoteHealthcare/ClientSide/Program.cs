@@ -13,7 +13,7 @@ namespace ClientSide
         /// <param name="args">This is an array of strings that contains the command-line
         /// arguments.</param>
 
-        private static BikeHandler handler;
+        public static BikeHandler handler { get; private set; }
 
         private static List<string> chatHistory;
 
@@ -27,6 +27,7 @@ namespace ClientSide
                 case "1":
                     Console.WriteLine("BikeClient started");
                     StartBikeClient();
+                    handler = new BikeHandler();
                     
                     Console.WriteLine("VRClient started");
                     // var vrClient = new VrClient();
@@ -75,7 +76,6 @@ namespace ClientSide
 
         private static void StartBikeClient()
         {
-            handler = new BikeHandler();
             // handler.Subscribe(DataType.Distance, val => Console.WriteLine($"Distance: {val}"));
             // handler.Subscribe(DataType.Speed, val => Console.WriteLine($"Speed: {val}"));
             // handler.Subscribe(DataType.ElapsedTime, val => Console.WriteLine($"ElapsedTime: {val}"));

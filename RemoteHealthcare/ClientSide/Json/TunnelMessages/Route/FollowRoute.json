@@ -1,5 +1,6 @@
 {
   "id" : "route/follow",
+  "serial": "_serial_",
   "data" :
   {
     "route" : "routeid",

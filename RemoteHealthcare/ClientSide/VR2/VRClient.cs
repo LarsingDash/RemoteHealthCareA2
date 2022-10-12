@@ -13,8 +13,9 @@ public class VRClient : DefaultClientConnection
 {
     private Dictionary<string, ICommandHandlerVR> commandHandler = new();
     public String TunnelID;
-    private Tunnel tunnel;
-    private WorldGen worldGen;
+    public readonly Tunnel tunnel;
+    public WorldGen worldGen;
+    public BikeController BikeController;
     public VRClient()
     {
         Init("145.48.6.10", 6666, (json, encrypted) =>
@@ -84,16 +85,17 @@ public class VRClient : DefaultClientConnection
         
          //Start WorldGen
          worldGen = new WorldGen(this, tunnel);
-        //
-        // //Start HUDController
-        // panelController = new PanelController(this, tunnel);
-        // var HUDThread = new Thread(panelController.RunController);
-        //
-        // bikeController = new BikeController(this, tunnel);
-        // var bikeAnimationThread = new Thread(bikeController.RunController);
-        //
-        // HUDThread.Start();
-        // bikeAnimationThread.Start();
+         BikeController = new BikeController(this, tunnel);
+         //
+         // //Start HUDController
+         // panelController = new PanelController(this, tunnel);
+         // var HUDThread = new Thread(panelController.RunController);
+         //
+         // bikeController = new BikeController(this, tunnel);
+         // var bikeAnimationThread = new Thread(bikeController.RunController);
+         //
+         // HUDThread.Start();
+         // bikeAnimationThread.Start();
     }
 
     public async Task<string> FindObjectUuid(string name)

@@ -36,7 +36,6 @@ public class BikeController
       /// </summary>
         public void AnimateBike()
         {
-            
             // After adding the route, prepare the to-be-added bike for following route
             vrClient.IDWaitList.Add("bike", bikeId =>
             {

@@ -19,6 +19,7 @@ namespace ClientSide.VR
 
         private const int mapSize = 256;
         private double[,] heights = new double[256, 256];
+        public string routeId;
 
         private List<string> treePath = new()
         {
@@ -145,12 +146,14 @@ namespace ClientSide.VR
                     },
                     {"_serial_", serial}
                 });
-                string uuid = "";
+                routeId = "";
+                vrClient.BikeController.Setup();
+                
                 await vrClient.AddSerialCallbackTimeout(serial, ob =>
                 {
                     if (ob["status"]!.ToObject<string>()!.Equals("ok"))
                     {
-                        uuid = ob["data"]!["uuid"]!.ToObject<string>()!;
+                        routeId = ob["data"]!["uuid"]!.ToObject<string>()!;
                     }
                 }, () =>
                 {
@@ -162,7 +165,7 @@ namespace ClientSide.VR
                         "\"_data_\"", JsonFileReader.GetObjectAsString("AddRoad",
                             new Dictionary<string, string>()
                             {
-                                {"_uuid_", uuid}
+                                {"_uuid_", routeId}
                             }, JsonFolder.Route.Path)
                     },
                 });

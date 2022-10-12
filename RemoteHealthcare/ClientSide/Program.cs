@@ -62,7 +62,8 @@ namespace ClientSide
         {
             //TODO: Add login once finished
             Client client = new Client();
-            
+           // ClientV2 client = new ClientV2();
+
         }
 
         public static Dictionary<DataType, double> GetBikeData()

@@ -1,19 +1,28 @@
+using System;
+using System.Linq;
+using System.Security.Cryptography;
+using ClientSide;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Shared;
 using Shared.Encryption;
 using Shared.Log;
 
-namespace ServerClientTests.UtilClasses.CommandHandlers;
+namespace DoctorApplication.Communication.CommandHandlers;
 
 public class EncryptedMessage : ICommandHandler
 {
+    private RSA rsa;
+
+    public EncryptedMessage(RSA rsa)
+    {
+        this.rsa = rsa;
+    }
     /// <summary>
-    /// It decrypts the message, and then handles it
+    /// It decrypts the message, and then passes it to the DataHandler
     /// </summary>
-    /// <param name="DefaultClientConnection">The connection to the client</param>
-    /// <param name="JObject">The JObject that was received from the client.</param>
-    public void HandleCommand(DefaultClientConnection client, JObject ob)
+    /// <param name="client">The client instance</param>
+    /// <param name="ob">The message that was received</param>
+    public void HandleCommand(ClientV2 client, JObject ob)
     {
         try
         {
@@ -22,22 +31,24 @@ public class EncryptedMessage : ICommandHandler
                         
             var messageCrypted = ob.Value<JArray>("aes-data")!.Values<byte>().ToArray();  
                         
-            var key = RsaHelper.DecryptMessage(keyCrypted, client.Rsa.ExportParameters(true), false);
-            var iV = RsaHelper.DecryptMessage(iVCrypted, client.Rsa.ExportParameters(true), false);
+            var key = RsaHelper.DecryptMessage(keyCrypted, rsa.ExportParameters(true), false);
+            var iV = RsaHelper.DecryptMessage(iVCrypted, rsa.ExportParameters(true), false);
             if (key != null && iV != null)
             {
                 var message = AesHelper.DecryptMessage(messageCrypted, key, iV);
                 if (message != null)
                 {
+                    JObject json;
                     try
                     {
-                        JObject json = JObject.Parse(message);
-                        //Logger.LogMessage(LogImportance.Information, $"Got encrypted message: {LogColor.Gray}\n{ob.ToString(Formatting.None)}");
-                        client.HandleMessage(json);
+                        json = JObject.Parse(message);
+                       // Logger.LogMessage(LogImportance.Information, $"Got encrypted message: {LogColor.Gray}\n{ob.ToString(Formatting.None)}");
                     } catch(JsonReaderException e)
                     {
                         Logger.LogMessage(LogImportance.Warn, $"Got encrypted message, but message could not be parsed to JSON: {LogColor.Gray}\n{message}", e);
+                        return;
                     }
+                    client.HandleMessage(json, true);
                 }
                 else
                 {

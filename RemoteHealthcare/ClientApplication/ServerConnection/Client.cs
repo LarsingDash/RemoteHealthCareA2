@@ -13,6 +13,7 @@ public class Client : DefaultClientConnection
     
     public Client()
     {
+        Logger.LogMessage(LogImportance.Information, "Connection with Server started");
         commandHandler.Add("public-rsa-key", new RsaKey());
         
         Init("127.0.0.1", 2460, (json, encrypted) =>

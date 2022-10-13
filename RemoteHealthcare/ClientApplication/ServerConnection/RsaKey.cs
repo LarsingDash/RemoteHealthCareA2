@@ -11,11 +11,10 @@ public class RsaKey : ICommandHandler
     /// <summary>
     /// It sends the client the public RSA key of the server
     /// </summary>
-    /// <param name="Client">The client that sent the command</param>
-    /// <param name="JObject">The JSON object that was sent from the client.</param>
+    /// <param name="client">The client that sent the command</param>
+    /// <param name="ob">The JSON object that was sent from the client.</param>
     public void HandleCommand(Client client, JObject ob)
     {
-        Logger.LogMessage(LogImportance.Debug, client.GetRsaPublicKey());
         var dict = new Dictionary<string, string>
         {
             {"_key_", client.GetRsaPublicKey()},

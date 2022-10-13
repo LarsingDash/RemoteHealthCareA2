@@ -14,17 +14,41 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <UserControl.Resources>
+
         <Style TargetType="TextBlock">
             <Setter Property="Background" Value="{x:Null}" />
-            <Setter Property="Foreground" Value="#D4ECDD" />
+            <Setter Property="Foreground" Value="#FFF7F7F7" />
         </Style>
         <Style TargetType="Button">
-            <Setter Property="Background" Value="#FF365D65" />
-            <Setter Property="Foreground" Value="#D4ECDD" />
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="{StaticResource winBorderColor1}" Offset="0.0"/>
+                        <GradientStop Color="{StaticResource winBorderColor2}" Offset="0.75"/>
+                        <GradientStop Color="{StaticResource winBorderColor3}" Offset="1.0"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="#FFFDFDFD" />
             <Setter Property="Padding" Value="4" />
+
+        </Style>
+        
+        <Style TargetType="Label" x:Key="Header">
+            <Setter Property="Label.Foreground">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#FF4C2FDA" Offset="0.75"/>
+                        <GradientStop Color="{StaticResource winBorderColor1}" Offset="0.0"/>
+                        <GradientStop Color="#FF4C2FDA" Offset="0.75"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="FontSize" Value="16"/>
+
         </Style>
         <Style TargetType="Label">
-            <Setter Property="Foreground" Value="#D4ECDD" />
+            <Setter Property="Foreground" Value="White" />
         </Style>
 
         <Style TargetType="ListViewItem">
@@ -72,6 +96,7 @@
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0" Orientation="Vertical">
                 <Label
+                    Style="{StaticResource Header}"
                     Content="Selected User:"
                     FontWeight="Bold"
                     HorizontalAlignment="Center"
@@ -106,6 +131,7 @@
                         </Button.Resources>
                     </Button>
                     <ToggleButton
+                        Width="Auto"
                         Command="{Binding StartRecordingCommand}"
                         CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}"
                         Content="{Binding ButtonText}"
@@ -209,13 +235,24 @@
                                 CommandParameter="{Binding Text, ElementName=ChatTextBox}"
                                 Key="Enter" />
                         </TextBox.InputBindings>
+                        <TextBox.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="10" />
+                            </Style>
+                        </TextBox.Resources>
                     </TextBox>
                     <Button
                         Command="{Binding SendCommand}"
                         CommandParameter="{Binding Text, ElementName=ChatTextBox}"
                         Content="➤"
                         FontSize="8"
-                        Grid.Column="1" />
+                        Grid.Column="1" BorderBrush="{x:Null}" >
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="5" />
+                            </Style>
+                        </Button.Resources>
+                    </Button>
                 </Grid>
             </Grid>
         </Grid>
@@ -232,6 +269,7 @@
                 </Grid.RowDefinitions>
                 <StackPanel Orientation="Vertical">
                     <Label
+                        Style="{StaticResource Header}"
                         Content="Bike information:"
                         FontWeight="Bold"
                         HorizontalAlignment="Center"
@@ -260,7 +298,7 @@
                     <ColumnDefinition Width="1*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1.5*" />
                     <RowDefinition Height="1*" />
                     <RowDefinition Height="1*" />
                     <RowDefinition Height="1*" />
@@ -270,11 +308,13 @@
                     <RowDefinition Height="1*" />
                 </Grid.RowDefinitions>
                 <Label
+                    Style="{StaticResource Header}"
                     Content="Current Bike Reading:"
                     FontWeight="Bold"
                     Grid.Column="0"
                     Grid.Row="0"
-                    HorizontalAlignment="Right"
+                    Grid.ColumnSpan="2"
+                    HorizontalAlignment="center"
                     VerticalAlignment="Bottom"
                     x:Name="BikeValueHeader" />
 
@@ -340,17 +380,12 @@
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
                 <Label
+                    Style="{StaticResource Header}"
                     Content="Heart Information:"
                     DockPanel.Dock="Top"
                     FontWeight="Bold"
                     HorizontalAlignment="Center"
                     x:Name="HeartInformationHeader" />
-                <Image
-                    Height="133"
-                    HorizontalAlignment="Center"
-                    Source="/Sources/HeartPNG2.png"
-                    VerticalAlignment="Center"
-                    Width="116" />
                 <Label
                     Content="{Binding SelectedUser.LastEntry.CurrentRate}"
                     FontSize="48"
@@ -434,6 +469,7 @@
             <Grid Grid.Row="2">
                 <StackPanel Orientation="Vertical" x:Name="BikeValuePanel">
                     <Label
+                        Style="{StaticResource Header}"
                         Content="Adjust Bike Values"
                         FontWeight="Bold"
                         HorizontalAlignment="Center"
@@ -444,13 +480,18 @@
                         Content="1.0X"
                         HorizontalAlignment="Center"
                         x:Name="ResistanceValue" />
-                    <Label Content="Graph(Resistance / minute)" x:Name="ResistanceGraph" />
                     <Button
                         Background="#FFF94538"
-                        Content="Emergency Stop"
-                        HorizontalAlignment="Left"
-                        Width="100"
-                        x:Name="EmergencyButton" />
+                        Content="Emergency"
+                        HorizontalAlignment="Center"
+                        Width="75" BorderBrush="{x:Null}" Height="73"
+                         >
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="100" />
+                            </Style>
+                        </Button.Resources>
+                    </Button>
                 </StackPanel>
             </Grid>
 

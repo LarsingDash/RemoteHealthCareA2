@@ -1,8 +1,8 @@
 using System.Globalization;
-using ClientSide.Bike;
+using ClientApplication.ServerConnection.Bike;
 using Shared;
 
-namespace ClientSide.VR;
+namespace ClientApplication.ServerConnection.VR;
 
 //First the uuid of the head will be found, after that the panel will be added as a child of that head.
 //Meanwhile a separate thread is waiting for this process to finish, and once it is it will update the panel at 10fps.

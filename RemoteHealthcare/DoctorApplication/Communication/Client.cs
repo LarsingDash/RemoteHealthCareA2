@@ -7,14 +7,14 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
-using DoctorApplication.Communication.CommandHandlers;
+using ClientApplication.ServerConnection.Communication.CommandHandlers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Shared;
 using Shared.Log;
 using Formatting = Newtonsoft.Json.Formatting;
 
-namespace DoctorApplication.Communication;
+namespace ClientApplication.ServerConnection.Communication;
 
 public class Client : DefaultClientConnection
 {

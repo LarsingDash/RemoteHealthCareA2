@@ -1,13 +1,13 @@
 using System;
 using System.Linq;
 using System.Security.Cryptography;
-using ClientSide;
+using ClientApplication.ServerConnection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Shared.Encryption;
 using Shared.Log;
 
-namespace DoctorApplication.Communication.CommandHandlers;
+namespace ClientApplication.ServerConnection.Communication.CommandHandlers;
 
 public class EncryptedMessage : ICommandHandler
 {

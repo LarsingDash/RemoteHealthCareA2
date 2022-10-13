@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Text;
 using Shared;
 
-namespace ClientSide.VR
+namespace ClientApplication.ServerConnection.VR
 {
     public class WorldGen
     {

@@ -15,7 +15,7 @@ internal class RsaKey : ICommandHandler
     {
         var dict = new Dictionary<string, string>
         {
-            {"\"_key_\"", Util.ByteArrayToString(client.GetRsaPublicKey())},
+            {"\"_key_\"", client.GetRsaPublicKey()},
         };
         if(ob.ContainsKey("serial"))
             dict.Add("_serial_", ob["serial"]?.ToObject<string>() ??"_serial_");

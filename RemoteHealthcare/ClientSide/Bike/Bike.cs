@@ -1,4 +1,4 @@
-namespace ClientSide.Bike;
+namespace ClientApplication.ServerConnection.Bike;
 
 public abstract class Bike
 {

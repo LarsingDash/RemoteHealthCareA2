@@ -1,14 +1,15 @@
 ﻿using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
+using ClientApplication.ServerConnection.Helpers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Shared;
 using Shared.Encryption;
 using Shared.Log;
-using JsonFolder = ClientSide.Helpers.JsonFolder;
+using JsonFolder = ClientApplication.ServerConnection.Helpers.JsonFolder;
 
-namespace ClientSide
+namespace ClientApplication.ServerConnection
 {
     internal class Client
     {

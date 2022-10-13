@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Avans.TI.BLE;
-using ClientSide.Bike.DataPages;
+using ClientApplication.ServerConnection.Bike.DataPages;
 using Shared.Log;
 
-namespace ClientSide.Bike
+namespace ClientApplication.ServerConnection.Bike
 {
     public class BikePhysical : Bike
     {

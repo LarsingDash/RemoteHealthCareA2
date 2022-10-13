@@ -1,6 +1,6 @@
 using Newtonsoft.Json.Linq;
 
-namespace ClientSide;
+namespace ClientApplication.ServerConnection;
 
 public interface ICommandHandler
 {

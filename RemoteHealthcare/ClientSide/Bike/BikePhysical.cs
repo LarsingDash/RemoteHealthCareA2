@@ -1,7 +1,7 @@
 using Avans.TI.BLE;
-using ClientSide.Bike.DataPages;
+using ClientApplication.ServerConnection.Bike.DataPages;
 
-namespace ClientSide.Bike
+namespace ClientApplication.ServerConnection.Bike
 {
     public class BikePhysical : Bike
     {

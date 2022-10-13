@@ -4,7 +4,7 @@ using System.Text;
 using Newtonsoft.Json.Linq;
 using Shared;
 
-namespace ClientSide.VR;
+namespace ClientApplication.ServerConnection.VR;
 
 public class VRClient
 {

@@ -1,4 +1,4 @@
-namespace ClientSide.Bike.DataPages;
+namespace ClientApplication.ServerConnection.Bike.DataPages;
 
 public abstract class DataPage
 {

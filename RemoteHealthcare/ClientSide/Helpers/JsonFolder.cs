@@ -1,4 +1,4 @@
-namespace ClientSide.Helpers;
+namespace ClientApplication.ServerConnection.Helpers;
 
 public class JsonFolder
 {

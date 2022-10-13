@@ -1,4 +1,4 @@
-namespace ClientSide.Bike;
+namespace ClientApplication.ServerConnection.Bike;
 //The BikeSimulator class has the purpose to simulate the bike.
 public class BikeSimulator : Bike
 {

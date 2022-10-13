@@ -5,9 +5,9 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using DoctorApplication.Communication;
+using ClientApplication.ServerConnection.Communication;
 
-namespace DoctorApplication
+namespace ClientApplication.ServerConnection
 {
     /// <summary>
     /// Interaction logic for App.xaml

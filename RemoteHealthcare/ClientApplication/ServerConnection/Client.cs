@@ -1,12 +1,11 @@
 using System.Collections.Generic;
 using System.Threading;
-using ClientSide.Helpers;
-using DoctorApplication.Communication.CommandHandlers;
+using ClientApplication.Util;
 using Newtonsoft.Json;
 using Shared;
 using Shared.Log;
 
-namespace ClientSide;
+namespace ClientApplication.ServerConnection;
 
 public class ClientV2 : DefaultClientConnection
 {
@@ -41,6 +40,6 @@ public class ClientV2 : DefaultClientConnection
             {"_username_", "TestUsername"},
             {"_serial_", "TestSerial"},
             {"_password_", "TestPassword"}
-        }, JsonFolder.Json.path));
+        }, JsonFolder.Json.Path));
     }
 }

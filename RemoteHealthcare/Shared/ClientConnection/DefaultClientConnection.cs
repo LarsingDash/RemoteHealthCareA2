@@ -63,9 +63,9 @@ public class DefaultClientConnection
         var serial = Util.RandomString();
         AddSerialCallback(serial, ob =>
         {
-            PublicKey = ob["data"]!.Value<JArray>("key")!.Values<byte>().ToArray();
+            PublicKey = ob["data"]!.Value<JArray>("key")!.ToObject<string>();
             Logger.LogMessage(LogImportance.Information, 
-                $"Received PublicKey from Server: {LogColor.Gray}\n{Util.ByteArrayToString(PublicKey)}");
+                $"Received PublicKey from Server: {LogColor.Gray}\n{(PublicKey)}");
         });
         
         SendData(JsonFileReader.GetObjectAsString("PublicRSAKey", new Dictionary<string, string>()
@@ -78,7 +78,7 @@ public class DefaultClientConnection
     private byte[] _totalBuffer = Array.Empty<byte>();
     private readonly byte[] _buffer = new byte[1024];
     public event EventHandler<JObject> OnMessage;
-    private byte[] PublicKey;
+    private string PublicKey;
 
     /// <summary>
     /// It checks if the message has a serial, if it does it checks if the client has a callback for that serial, if it does
@@ -224,9 +224,9 @@ public class DefaultClientConnection
     /// <returns>
     /// The public key of the RSA object.
     /// </returns>
-    public byte[] GetRsaPublicKey()
+    public string GetRsaPublicKey()
     {
-        return Rsa.ExportRSAPublicKey();
+        return Rsa.ToXmlString(false);
     }
     
     /// <summary>
@@ -263,7 +263,7 @@ public class DefaultClientConnection
         }
         Aes aes = Aes.Create("AesManaged")!;
         RSA newRsa = new RSACryptoServiceProvider();
-        newRsa.ImportRSAPublicKey(PublicKey, out int a);
+        newRsa.FromXmlString(PublicKey);
 
         var keyCrypt = RsaHelper.EncryptMessage(aes.Key, newRsa.ExportParameters(false), false);
         var iVCrypt = RsaHelper.EncryptMessage(aes.IV, newRsa.ExportParameters(false), false);

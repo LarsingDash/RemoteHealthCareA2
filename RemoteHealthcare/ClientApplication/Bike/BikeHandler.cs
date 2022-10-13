@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace ClientSide.Bike;
+namespace ClientApplication.ServerConnection.Bike;
 //TheBikeHandler class is used for the purpose of receiving data from the Bike.
 public class BikeHandler
 {

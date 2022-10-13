@@ -1,6 +1,6 @@
 using Avans.TI.BLE;
 
-namespace ClientSide.Bike;
+namespace ClientApplication.ServerConnection.Bike;
 
 public class BluetoothDevice
 {

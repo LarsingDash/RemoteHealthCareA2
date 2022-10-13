@@ -1,10 +1,10 @@
-using ClientSide.Helpers;
-using DoctorApplication.Communication.CommandHandlers;
+using ClientApplication.ServerConnection.Helpers;
+using ClientApplication.ServerConnection.Communication.CommandHandlers;
 using Newtonsoft.Json;
 using Shared;
 using Shared.Log;
 
-namespace ClientSide;
+namespace ClientApplication.ServerConnection;
 
 public class ClientV2 : DefaultClientConnection
 {

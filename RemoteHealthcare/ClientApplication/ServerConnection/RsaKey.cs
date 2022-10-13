@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using ClientSide.Helpers;
+using ClientApplication.Util;
 using Newtonsoft.Json.Linq;
 using Shared;
 
-namespace ClientSide;
+namespace ClientApplication.ServerConnection;
 
 public class RsaKey : ICommandHandler
 {
@@ -20,6 +20,6 @@ public class RsaKey : ICommandHandler
         };
         if(ob.ContainsKey("serial"))
             dict.Add("_serial_", ob["serial"]?.ToObject<string>() ??"_serial_");
-        client.SendData(JsonFileReader.GetObjectAsString("PublicRSAKey", dict, JsonFolder.Json.path));
+        client.SendData(JsonFileReader.GetObjectAsString("PublicRSAKey", dict, JsonFolder.Json.Path));
     }
 }

@@ -9,5 +9,5 @@ public interface ICommandHandler
     /// </summary>
     /// <param name="Client">The client that sent the command</param>
     /// <param name="JObject">The JSON object that was sent to the server.</param>
-    public void HandleCommand(ClientV2 client, JObject ob);
+    public void HandleCommand(Client client, JObject ob);
 }

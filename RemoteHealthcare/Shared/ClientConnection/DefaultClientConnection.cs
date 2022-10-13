@@ -18,9 +18,9 @@ public class DefaultClientConnection
     
     public RSA Rsa = new RSACryptoServiceProvider();
     #endregion
-    
-    
 
+
+    public bool Connected = false;
     public DefaultClientConnection(string hostname, int port, Action<JObject, bool> commandHandlerMethod)
     {
         Init(hostname, port, commandHandlerMethod);
@@ -46,11 +46,18 @@ public class DefaultClientConnection
         OnMessage += (_, json) => HandleMessage(json);
 
         this.commandHandlerMethod = commandHandlerMethod;
-        
-        client = new(hostname, port);
-        stream = client.GetStream();
-        stream.BeginRead(_buffer, 0, 1024, OnRead, null);
-        SetupClient();
+        try
+        {
+            client = new(hostname, port);
+            stream = client.GetStream();
+            stream.BeginRead(_buffer, 0, 1024, OnRead, null);
+            SetupClient();
+            Connected = true;
+        }
+        catch (SocketException e)
+        {
+            Logger.LogMessage(LogImportance.Fatal, "Could not connect with server", e);
+        }
     }
 
     /// <summary>
@@ -63,7 +70,7 @@ public class DefaultClientConnection
         var serial = Util.RandomString();
         AddSerialCallback(serial, ob =>
         {
-            PublicKey = ob["data"]!.Value<JArray>("key")!.ToObject<string>();
+            PublicKey = ob["data"]!["key"]!.ToObject<string>()!;
             Logger.LogMessage(LogImportance.Information, 
                 $"Received PublicKey from Server: {LogColor.Gray}\n{(PublicKey)}");
         });
@@ -77,7 +84,7 @@ public class DefaultClientConnection
     #region Sending and retrieving data
     private byte[] _totalBuffer = Array.Empty<byte>();
     private readonly byte[] _buffer = new byte[1024];
-    public event EventHandler<JObject> OnMessage;
+    public event EventHandler<JObject> OnMessage; 
     private string PublicKey;
 
     /// <summary>

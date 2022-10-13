@@ -19,6 +19,6 @@ public class JsonFolder
     /// </returns>
     public override string ToString(){ return Path; }
     
-    public static readonly JsonFolder Json = new JsonFolder("Json\\");
-    public static readonly JsonFolder ClientMessages = new JsonFolder("Json\\ClientMessages\\");
+    public static readonly JsonFolder ServerConnection = new JsonFolder("Json\\ServerConnection\\");
+    public static readonly JsonFolder Vr = new JsonFolder("Json\\VR\\");
 }

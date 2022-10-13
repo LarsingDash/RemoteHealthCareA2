@@ -22,7 +22,7 @@ public class EncryptedMessage : ICommandHandler
     /// </summary>
     /// <param name="client">The client instance</param>
     /// <param name="ob">The message that was received</param>
-    public void HandleCommand(ClientV2 client, JObject ob)
+    public void HandleCommand(Client client, JObject ob)
     {
         try
         {

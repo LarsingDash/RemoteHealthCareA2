@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
@@ -28,7 +29,7 @@ namespace ServerApplication.Client
         
         #region Userdata
         public string UserName { get; set; }
-        private byte[]? PublicKey { set; get; }
+        private string? PublicKey { set; get; }
         #endregion
 
 
@@ -46,9 +47,9 @@ namespace ServerApplication.Client
                 var serialCallback = Util.RandomString();
                 AddSerialCallback(serialCallback, json =>
                 {
-                    PublicKey = json["data"]?.Value<JArray>("key")?.Values<byte>().ToArray() ?? Array.Empty<byte>();
+                    PublicKey = json["data"]!["key"]!.ToObject<string>();
                     Logger.LogMessage(LogImportance.Information, 
-                        $"Received PublicKey from {UserName}: {LogColor.Gray}\n{Util.ByteArrayToString(PublicKey)}");
+                        $"Received PublicKey from {UserName}: {LogColor.Gray}\n{PublicKey}");
                 });
                 SendData(JsonFileReader.GetObjectAsString("PublicRSAKey", new Dictionary<string,string>()
                 {
@@ -187,7 +188,7 @@ namespace ServerApplication.Client
                 }
                 Aes aes = Aes.Create("AesManaged")!;
                 RSA rsa = new RSACryptoServiceProvider();
-                rsa.ImportRSAPublicKey(PublicKey, out int a);
+                rsa.FromXmlString(PublicKey!);
 
                 var keyCrypt = RsaHelper.EncryptMessage(aes.Key, rsa.ExportParameters(false), false);
                 var iVCrypt = RsaHelper.EncryptMessage(aes.IV, rsa.ExportParameters(false), false);

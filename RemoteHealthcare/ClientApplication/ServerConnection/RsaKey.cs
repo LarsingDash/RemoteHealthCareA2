@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using ClientApplication.Util;
 using Newtonsoft.Json.Linq;
 using Shared;
+using Shared.Log;
 
 namespace ClientApplication.ServerConnection;
 
@@ -12,14 +13,15 @@ public class RsaKey : ICommandHandler
     /// </summary>
     /// <param name="Client">The client that sent the command</param>
     /// <param name="JObject">The JSON object that was sent from the client.</param>
-    public void HandleCommand(ClientV2 client, JObject ob)
+    public void HandleCommand(Client client, JObject ob)
     {
+        Logger.LogMessage(LogImportance.Debug, client.GetRsaPublicKey());
         var dict = new Dictionary<string, string>
         {
-            {"\"_key_\"", client.GetRsaPublicKey()},
+            {"_key_", client.GetRsaPublicKey()},
         };
         if(ob.ContainsKey("serial"))
             dict.Add("_serial_", ob["serial"]?.ToObject<string>() ??"_serial_");
-        client.SendData(JsonFileReader.GetObjectAsString("PublicRSAKey", dict, JsonFolder.Json.Path));
+        client.SendData(JsonFileReader.GetObjectAsString("PublicRSAKey", dict, JsonFolder.ServerConnection.Path));
     }
 }

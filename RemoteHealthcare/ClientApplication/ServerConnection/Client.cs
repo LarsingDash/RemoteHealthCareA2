@@ -7,11 +7,11 @@ using Shared.Log;
 
 namespace ClientApplication.ServerConnection;
 
-public class ClientV2 : DefaultClientConnection
+public class Client : DefaultClientConnection
 {
     private Dictionary<string, ICommandHandler> commandHandler = new();
     
-    public ClientV2()
+    public Client()
     {
         commandHandler.Add("public-rsa-key", new RsaKey());
         
@@ -31,15 +31,17 @@ public class ClientV2 : DefaultClientConnection
                 Logger.LogMessage(LogImportance.Warn, $"Got {extraText}message from server but no commandHandler found: {LogColor.Gray}\n{json.ToString(Formatting.None)}");
             }
         });
-        
-        commandHandler.Add("encryptedMessage", new EncryptedMessage(Rsa));
-        Thread.Sleep(500);
-        SendEncryptedData(JsonFileReader.GetObjectAsString("Login", new Dictionary<string, string>()
+        if (Connected)
         {
-            {"_type_", "Client"},
-            {"_username_", "TestUsername"},
-            {"_serial_", "TestSerial"},
-            {"_password_", "TestPassword"}
-        }, JsonFolder.Json.Path));
+            commandHandler.Add("encryptedMessage", new EncryptedMessage(Rsa));
+            Thread.Sleep(500);
+            SendEncryptedData(JsonFileReader.GetObjectAsString("Login", new Dictionary<string, string>()
+            {
+                {"_type_", "Client"},
+                {"_username_", "TestUsername"},
+                {"_serial_", "TestSerial"},
+                {"_password_", "TestPassword"}
+            }, JsonFolder.ServerConnection.Path)); 
+        }
     }
 }

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using DoctorApplication.Communication;
+using DoctorApplication.View;
 
 namespace DoctorApplication
 {
@@ -23,5 +24,22 @@ namespace DoctorApplication
         {
              client = new Client();
         }
+
+        private void ApplicationStart(object sender, StartupEventArgs e)
+        {
+            var loginView = new LoginView();
+            loginView.Show();
+            loginView.IsVisibleChanged += (s, ev) =>
+            {
+                if (loginView.IsVisible == false && loginView.IsLoaded)
+                {
+                    var mainWindow = new MainWindow();
+                    mainWindow.Show();
+                    loginView.Close();
+                }
+            };
+        }
+
+       
     }
 }

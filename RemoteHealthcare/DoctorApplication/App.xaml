@@ -5,12 +5,12 @@
              xmlns:viewModel="clr-namespace:DoctorApplication.MVVM.ViewModel"
              xmlns:view="clr-namespace:DoctorApplication.MVVM.View"
              
-             StartupUri="MainWindow.xaml">
+             Startup="ApplicationStart">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-            <!--Add themes here-->
-                
+                <ResourceDictionary Source="Styles/UIColors.xaml" />
+                <ResourceDictionary Source="Styles/ButtonStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <DataTemplate DataType="{x:Type viewModel:DataViewModel}">
                 <view:DataView/>

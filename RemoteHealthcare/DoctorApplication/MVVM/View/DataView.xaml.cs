@@ -29,6 +29,7 @@ namespace DoctorApplication.MVVM.View
             InitializeComponent();
         }
 
+        
     }
 
 }

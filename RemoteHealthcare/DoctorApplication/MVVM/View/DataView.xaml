@@ -1,5 +1,4 @@
 ﻿<UserControl
-    Background="#FF112031"
     d:DataContext="{d:DesignInstance Type={x:Type m:DataViewModel}}"
     d:DesignHeight="450"
     d:DesignWidth="800"
@@ -16,7 +15,7 @@
 
     <UserControl.Resources>
         <Style TargetType="TextBlock">
-            <Setter Property="Background" Value="#FF112031" />
+            <Setter Property="Background" Value="{x:Null}" />
             <Setter Property="Foreground" Value="#D4ECDD" />
         </Style>
         <Style TargetType="Button">
@@ -37,7 +36,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ToggleButton}">
                         <Border
-                            Background="#3ce85c"
+                            Background="#FF46EA65"
                             BorderBrush="#FF000000"
                             BorderThickness="1,1,1,1"
                             CornerRadius="5,5,5,5"
@@ -58,7 +57,7 @@
             </Setter>
         </Style>
     </UserControl.Resources>
-    <Grid>
+    <Grid Margin="20">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.6*" />
             <ColumnDefinition Width="1*" />
@@ -447,7 +446,7 @@
                         x:Name="ResistanceValue" />
                     <Label Content="Graph(Resistance / minute)" x:Name="ResistanceGraph" />
                     <Button
-                        Background="#FFFF1200"
+                        Background="#FFF94538"
                         Content="Emergency Stop"
                         HorizontalAlignment="Left"
                         Width="100"

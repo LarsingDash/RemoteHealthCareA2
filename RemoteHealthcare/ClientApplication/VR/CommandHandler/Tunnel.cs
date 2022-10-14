@@ -11,6 +11,11 @@ public class Tunnel : ICommandHandlerVR
 {
     private VRClient vrClient;
     private Dictionary<string, ICommandHandlerVR> commandHandler = new();
+
+    private List<string> hideList = new List<string>()
+    {
+        "scene/node/update"
+    };
     
     public Tunnel(VRClient vrClient)
     {
@@ -23,10 +28,10 @@ public class Tunnel : ICommandHandlerVR
     }
 
     //Helper method to send tunnelMessages without having to add the tunnelID
-    public void SendTunnelMessage(Dictionary<string, string> values)
+    public void SendTunnelMessage(Dictionary<string, string> values, bool hide = false)
     {
         values.Add("_tunnelID_", vrClient.TunnelID);
-        vrClient.SendData(JsonFileReader.GetObjectAsString("SendTunnel", values, JsonFolder.Vr.Path));
+        vrClient.SendData(JsonFileReader.GetObjectAsString("SendTunnel", values, JsonFolder.Vr.Path), hide);
     }
     
     
@@ -55,7 +60,11 @@ public class Tunnel : ICommandHandlerVR
         }
         else
         {
-            Logger.LogMessage(LogImportance.Debug, $"Got message from Tunnel but no commandHandler found: {LogColor.Gray}\n{ob.ToString(Formatting.None)}");
+            if (!hideList.Contains(ob["id"]!.ToObject<string>()!))
+            {
+                Logger.LogMessage(LogImportance.Debug,
+                    $"Got message from Tunnel but no commandHandler found: {LogColor.Gray}\n{ob.ToString(Formatting.None)}");
+            }
         }
     }
 

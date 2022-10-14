@@ -153,7 +153,7 @@ namespace ClientSide.VR
                 });
                 routeId = "";
                 vrClient.BikeController.Setup();
-                vrClient.PanelController.Setup();
+               // vrClient.PanelController.Setup();
                 await vrClient.AddSerialCallbackTimeout(serial, ob =>
                 {
                     if (ob["status"]!.ToObject<string>()!.Equals("ok"))

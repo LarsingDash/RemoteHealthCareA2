@@ -1,5 +1,4 @@
-﻿using DoctorApplication.Communication;
-using Shared;
+﻿using Shared;
 using Shared.Log;
 using System;
 using System.Collections.Generic;
@@ -7,6 +6,8 @@ using System.Linq;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
+using ClientApplication.ServerConnection;
+using ClientApplication.ServerConnection.Communication;
 
 namespace DoctorApplication.Core
 {

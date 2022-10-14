@@ -41,7 +41,16 @@
             <ContentControl Grid.Row="1" Content="{Binding CurrentView}"/>
             
                 <Grid HorizontalAlignment="Stretch" Background="Transparent">
-                    <Label Content="Doctor Applicatie" Margin="10,0" Foreground="#FFD4ECDD" MouseDown="Label_MouseDown" />
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Doctor Applicatie" Margin="10,0" Foreground="#FFD4ECDD" Width="110" HorizontalAlignment="Left" MouseDown="Label_MouseDown" />
+                    <ToggleButton
+                        Width="Auto"
+                        Command="{Binding StartRecordingCommand}"
+                        CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}"
+                        Content="{Binding ToggleButtonText}"
+                        Foreground="White"
+                        />
+                </StackPanel>
                     <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Margin="0,0,5,0">
                         <Button Width="20" Height="20" Content="⎯"  Background="Transparent" BorderThickness="0" Foreground="Gray" Click="ButtonMinimize_Click"/>
                         <Button Width="20" Height="20" Content="╳" Background="Transparent" BorderThickness="0" Foreground="Gray"  FontSize="10" Click="ButtonClose_Click"/>

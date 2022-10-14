@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using System.Globalization;
+using ClientApplication;
 using ClientApplication.ServerConnection.Bike;
-using ClientApplication.ServerConnection.Helpers;
+using ClientApplication.Util;
 using ClientSide.VR2.CommandHandler;
 using Shared;
 using Shared.Log;
@@ -46,7 +48,7 @@ public class PanelController
         hudPanelId = await client.FindObjectUuid("hudPanel");
         Logger.LogMessage(LogImportance.DebugHighlight, $"HudPanelId: {hudPanelId}");
         
-        BikeHandler handler = Program.handler;
+        BikeHandler handler = App.GetBikeHandlerInstance();
         handler.Subscribe(DataType.Speed, speedRaw =>
         {
             var speed = (speedRaw * 3.6).ToString(CultureInfo.InvariantCulture);

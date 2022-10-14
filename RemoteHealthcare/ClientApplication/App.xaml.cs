@@ -9,6 +9,7 @@ using System.Windows;
 using ClientApplication.ServerConnection;
 using ClientApplication.ServerConnection.Bike;
 using ClientApplication.View;
+using ClientSide.VR2;
 using Shared.Log;
 
 namespace ClientApplication
@@ -20,6 +21,7 @@ namespace ClientApplication
 	{
 		private static BikeHandler handler;
 		private static Client client;
+		private static VRClient vrClient;
 
 		private void ApplicationStart(object sender, StartupEventArgs e)
 		{
@@ -28,6 +30,7 @@ namespace ClientApplication
 			{
 				handler = new BikeHandler();
 				client = new Client();
+				vrClient = new VRClient();
 			}).Start();
 			
 			var loginView = new LoginView();
@@ -48,9 +51,14 @@ namespace ClientApplication
 			return handler;
 		}
 
-		public static Client getClientConnectedToServer()
+		public static Client GetClientConnectedToServerInstance()
 		{
 			return client;
+		}
+
+		public static VRClient GetVrClientInstance()
+		{
+			return vrClient;
 		}
 	}
 }

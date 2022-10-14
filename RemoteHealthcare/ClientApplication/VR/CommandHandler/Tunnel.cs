@@ -1,4 +1,5 @@
-using ClientApplication.ServerConnection.Helpers;
+using System.Collections.Generic;
+using ClientApplication.Util;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Shared;
@@ -25,7 +26,7 @@ public class Tunnel : ICommandHandlerVR
     public void SendTunnelMessage(Dictionary<string, string> values)
     {
         values.Add("_tunnelID_", vrClient.TunnelID);
-        vrClient.SendData(JsonFileReader.GetObjectAsString("SendTunnel", values, JsonFolder.Json.Path));
+        vrClient.SendData(JsonFileReader.GetObjectAsString("SendTunnel", values, JsonFolder.Vr.Path));
     }
     
     

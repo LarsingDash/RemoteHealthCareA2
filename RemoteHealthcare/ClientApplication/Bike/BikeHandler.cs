@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ClientApplication.Bike;
 
 namespace ClientApplication.ServerConnection.Bike;
 //TheBikeHandler class is used for the purpose of receiving data from the Bike.

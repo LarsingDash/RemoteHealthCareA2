@@ -1,6 +1,9 @@
+using System;
+using System.Collections.Generic;
 using System.Globalization;
+using ClientApplication;
 using ClientApplication.ServerConnection.Bike;
-using ClientApplication.ServerConnection.Helpers;
+using ClientApplication.Util;
 using ClientSide.VR2.CommandHandler;
 using Shared;
 using Shared.Log;
@@ -62,7 +65,7 @@ public class BikeController
                 
             }
         });
-        BikeHandler handler = Program.handler;
+        BikeHandler handler = App.GetBikeHandlerInstance();
         handler.Subscribe(DataType.Speed, speedRaw =>
         {
             var bikeSpeed = 3.6 * Math.Round(speedRaw,2);

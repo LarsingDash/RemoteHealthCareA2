@@ -1,4 +1,8 @@
-using ClientApplication.ServerConnection.Helpers;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using ClientApplication.Util;
 using ClientSide.VR;
 using ClientSide.VR2.CommandHandler;
 using Newtonsoft.Json;
@@ -46,7 +50,7 @@ public class VRClient : DefaultClientConnection
     {
         SendData(JsonFileReader.GetObjectAsString("SessionList", new Dictionary<string, string>()
         {
-        }));
+        }, JsonFolder.Vr.Path));
     }
 
     public void CreateTunnel(string sessionId)
@@ -57,7 +61,7 @@ public class VRClient : DefaultClientConnection
         {
             { "_id_", sessionId },
             { "_serial_", serial }
-        }));
+        }, JsonFolder.Vr.Path));
         //Code
     }
     

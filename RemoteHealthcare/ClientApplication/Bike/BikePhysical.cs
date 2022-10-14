@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using Avans.TI.BLE;
+using ClientApplication.ServerConnection.Bike;
 using ClientApplication.ServerConnection.Bike.DataPages;
 using Shared.Log;
 
-namespace ClientApplication.ServerConnection.Bike
+namespace ClientApplication.Bike
 {
-    public class BikePhysical : Bike
+    public class BikePhysical : ServerConnection.Bike.Bike
     {
         // Change this to the last 5 digits of the serial number of the bike.
         private string id = "24517";

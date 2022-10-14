@@ -9,14 +9,9 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="DotnetNoise" Version="1.0.0" />
       <PackageReference Include="FontAwesome.Sharp" Version="6.1.1" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta2" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <None Update="BLELibrary.dll">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
     </ItemGroup>
 
     <ItemGroup>
@@ -31,10 +26,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Shared\Shared.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Json\VR" />
     </ItemGroup>
 
 </Project>

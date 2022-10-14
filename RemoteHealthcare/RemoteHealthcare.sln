@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32819.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClientSide", "ClientSide\ClientSide.csproj", "{8E347DDD-E9AF-4806-BB09-E593745EBE60}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerApplication", "ServerApplication\ServerApplication.csproj", "{C350CE80-5523-48F6-B701-0C474263F5D8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerClientTests", "ServerClientTests\ServerClientTests.csproj", "{C6D0ADF2-DB80-47B8-878E-92F514E2695D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DoctorApplication", "DoctorApplication\DoctorApplication.csproj", "{4D6C920A-AFEC-4132-B515-67D0FE7C4C57}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{819A466C-0FFD-40A6-84F5-E2773948C2EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csproj", "{819A466C-0FFD-40A6-84F5-E2773948C2EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientApplication", "ClientApplication\ClientApplication.csproj", "{D8E450EB-F95E-433B-A07F-1DC5ABC48DC7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,10 +19,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8E347DDD-E9AF-4806-BB09-E593745EBE60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8E347DDD-E9AF-4806-BB09-E593745EBE60}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8E347DDD-E9AF-4806-BB09-E593745EBE60}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8E347DDD-E9AF-4806-BB09-E593745EBE60}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C350CE80-5523-48F6-B701-0C474263F5D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C350CE80-5523-48F6-B701-0C474263F5D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C350CE80-5523-48F6-B701-0C474263F5D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -39,18 +35,15 @@ Global
 		{819A466C-0FFD-40A6-84F5-E2773948C2EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{819A466C-0FFD-40A6-84F5-E2773948C2EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{819A466C-0FFD-40A6-84F5-E2773948C2EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8E450EB-F95E-433B-A07F-1DC5ABC48DC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8E450EB-F95E-433B-A07F-1DC5ABC48DC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8E450EB-F95E-433B-A07F-1DC5ABC48DC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8E450EB-F95E-433B-A07F-1DC5ABC48DC7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B5AF3B19-4B66-4608-8C4B-9EB7FD1B789E}
-	EndGlobalSection
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		SharedProject\SharedProject.projitems*{4d6c920a-afec-4132-b515-67d0fe7c4c57}*SharedItemsImports = 5
-		SharedProject\SharedProject.projitems*{8e347ddd-e9af-4806-bb09-e593745ebe60}*SharedItemsImports = 5
-		SharedProject\SharedProject.projitems*{b7898cfb-285c-4f28-8305-7800fe9a18b1}*SharedItemsImports = 13
-		SharedProject\SharedProject.projitems*{c350ce80-5523-48f6-b701-0c474263f5d8}*SharedItemsImports = 5
-		SharedProject\SharedProject.projitems*{c6d0adf2-db80-47b8-878e-92f514e2695d}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal

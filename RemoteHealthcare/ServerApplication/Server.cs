@@ -15,6 +15,9 @@ namespace ServerApplication
         private Thread requestThread;
         #endregion
 
+        public readonly Dictionary<string, List<ClientData>> SubscribedSessions = new();
+        public readonly List<string> ActiveSessions = new();
+
 
         public Server(int port = 2460)
         {
@@ -40,9 +43,9 @@ namespace ServerApplication
         /// <returns>
         /// The public key of the RSA object.
         /// </returns>
-        public byte[] GetRsaPublicKey()
+        public string GetRsaPublicKey()
         {
-            return Rsa.ExportRSAPublicKey();
+            return Rsa.ToXmlString(false);
         }
 
         public void RemoveUser(ClientData clientData)

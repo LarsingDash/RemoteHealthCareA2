@@ -47,6 +47,7 @@ namespace ClientSide.VR
         {
             try
             {
+                Logger.LogMessage(LogImportance.Debug, "Generating Terrain");
                 //Set height values for tiles
                 var noiseGen = new DotnetNoise.FastNoise();
                 var heightMap = new StringBuilder();
@@ -115,7 +116,7 @@ namespace ClientSide.VR
             }
             catch (Exception e)
             {
-                Logger.LogMessage(LogImportance.Warn, "No response from VR server when requesting scene/get");
+                Logger.LogMessage(LogImportance.Error, "No response from VR server when requesting scene/get", e);
             }
 
         }
@@ -179,7 +180,7 @@ namespace ClientSide.VR
             }
             catch (Exception e)
             {
-                Logger.LogMessage(LogImportance.Warn, "No response from VR server when requesting scene/get");
+                Logger.LogMessage(LogImportance.Error, "No response from VR server when requesting scene/get", e);
             }
         }
 
@@ -233,22 +234,23 @@ namespace ClientSide.VR
                 Console.WriteLine("Trees sent:");
                 for (int i = 0; i < maxAmountOfObjects; i++)
                 {
+                    await Task.Delay(10);
                     new Thread(async start =>
                     {
 
                         var currentPoint = new Vector2(random.Next(0, 256), random.Next(0, 256));
                         serial = Util.RandomString();
-                        tunnel.SendTunnelMessage(new Dictionary<string, string>()
-                        {
-                            {
-                                "\"_data_\"", JsonFileReader.GetObjectAsString("GetHeight",
-                                    new Dictionary<string, string>()
-                                    {
-                                        {"_serial_", serial},
-                                        {"\"_pos_\"", $"{currentPoint.X}, {currentPoint.Y}"}
-                                    }, JsonFolder.Terrain.Path)
-                            }
-                        });
+                        // tunnel.SendTunnelMessage(new Dictionary<string, string>()
+                        // {
+                        //     {
+                        //         "\"_data_\"", JsonFileReader.GetObjectAsString("GetHeight",
+                        //             new Dictionary<string, string>()
+                        //             {
+                        //                 {"_serial_", serial},
+                        //                 {"\"_pos_\"", $"{currentPoint.X}, {currentPoint.Y}"}
+                        //             }, JsonFolder.Terrain.Path)
+                        //     }
+                        // });
                         string height = "0";
                         await vrClient.AddSerialCallbackTimeout(serial,
                             ob => { height = ob["data"]!["height"]!.ToObject<string>()!; },
@@ -275,7 +277,6 @@ namespace ClientSide.VR
                         amountOfObjects++;
                         Logger.LogMessage(LogImportance.Debug, $"Amount of Trees placed: {amountOfObjects}");
                     }).Start();
-                    await Task.Delay(10);
                 }
             }
             catch (Exception e)

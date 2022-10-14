@@ -91,7 +91,7 @@ public class VRClient : DefaultClientConnection
          //Start WorldGen
          worldGen = new WorldGen(this, tunnel);
          BikeController = new BikeController(this, tunnel);
-         PanelController = new PanelController(this, tunnel);
+         //PanelController = new PanelController(this, tunnel);
          //
          // //Start HUDController
          // panelController = new PanelController(this, tunnel);
@@ -129,7 +129,7 @@ public class VRClient : DefaultClientConnection
                 },
                 () =>
                 {
-                    Logger.LogMessage(LogImportance.Warn, "No response from VR server when requesting scene/get");
+                    Logger.LogMessage(LogImportance.Warn, "No response from VR server when requesting scene/get (Object: " + name + ")");
                 },
                 1000);
             return uuid;

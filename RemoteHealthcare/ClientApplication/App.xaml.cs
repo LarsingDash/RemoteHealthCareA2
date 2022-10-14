@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using ClientApplication.Bike;
 using ClientApplication.ServerConnection;
 using ClientApplication.ServerConnection.Bike;
 using ClientApplication.View;
@@ -26,9 +27,11 @@ namespace ClientApplication
 		private void ApplicationStart(object sender, StartupEventArgs e)
 		{
 			Logger.LogMessage(LogImportance.Information, "ClientApplication Started");
-			new Thread(start =>
+			new Thread(async start =>
 			{
 				handler = new BikeHandler();
+				BikePhysical bike = (BikePhysical) handler.Bike;
+				await bike.StartConnection();
 				client = new Client();
 				vrClient = new VRClient();
 			}).Start();

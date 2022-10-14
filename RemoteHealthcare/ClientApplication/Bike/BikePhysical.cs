@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Avans.TI.BLE;
 using ClientApplication.ServerConnection.Bike;
 using ClientApplication.ServerConnection.Bike.DataPages;
@@ -24,12 +25,12 @@ namespace ClientApplication.Bike
             {
                 {0x10, new DataPage10(handler)},
             };
-            StartConnection();
+            //StartConnection();
             // Test message
             // NewMessage(DataMessageProtocol.BleBike, "A4 09 4E 05 10 19 6C EE 00 00 FF 24 B6");
         }
 
-        private async void StartConnection()
+        public async Task StartConnection()
         {
             bikeDevice = new BluetoothDevice($"Tacx Flux {id}", "6e40fec1-b5a3-f393-e0a9-e50e24dcca9e", "6e40fec2-b5a3-f393-e0a9-e50e24dcca9e", ValueChangedBike);
             await bikeDevice.StartConnection();

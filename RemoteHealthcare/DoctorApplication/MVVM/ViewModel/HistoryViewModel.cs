@@ -27,8 +27,8 @@ namespace DoctorApplication.MVVM.ViewModel
         }
 
 
-        private UserDataModel selectedSession;
-        public UserDataModel SelectedSession
+        private SessionModel selectedSession;
+        public SessionModel SelectedSession
         {
             get { return selectedSession; }
             set { selectedSession = value; OnPropertyChanged(); }

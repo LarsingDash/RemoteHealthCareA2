@@ -10,10 +10,10 @@ using System.Windows.Media.Media3D;
 
 namespace DoctorApplication.MVVM.Model
 {
-    internal class SessionModel : INotifyPropertyChanged
+    public class SessionModel : INotifyPropertyChanged
     {
-        string uuid { get; set; }
-        string sessionName { get; set; }
+        public string uuid { get; set; }
+        public string sessionName { get; set; }
         DateTime startTime { get; set; }
         DateTime endTime { get; set; }
 

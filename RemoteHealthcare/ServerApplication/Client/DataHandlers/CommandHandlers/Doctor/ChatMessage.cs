@@ -28,7 +28,7 @@ public class ChatMessage : CommandHandler
 
         if (ob["data"]?["type"]?.ToObject<string>() == null)
         {
-            //Sending error message(no Receiver)
+            //Sending error message(no Type)
             SendEncryptedError(data, ob, "There is no type");
             return;
         }

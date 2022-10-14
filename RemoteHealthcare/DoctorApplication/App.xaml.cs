@@ -5,7 +5,6 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using DoctorApplication.Communication;
 using DoctorApplication.View;
 using ClientApplication.ServerConnection.Communication;
 

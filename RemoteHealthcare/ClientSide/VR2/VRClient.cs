@@ -1,7 +1,6 @@
-using ClientSide.Helpers;
+using ClientApplication.ServerConnection.Helpers;
 using ClientSide.VR;
 using ClientSide.VR2.CommandHandler;
-using DoctorApplication.Communication.CommandHandlers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Shared;

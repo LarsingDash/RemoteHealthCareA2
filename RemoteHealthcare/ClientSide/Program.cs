@@ -1,8 +1,8 @@
-﻿using ClientApplication.ServerConnection.Bike;
-using ClientApplication.ServerConnection.VR;
-using Shared;
+﻿using ClientApplication.ServerConnection;
+using ClientApplication.ServerConnection.Bike;
+using ClientSide.VR2;
 
-namespace ClientApplication.ServerConnection
+namespace ClientSide
 {
     internal static class Program
     {

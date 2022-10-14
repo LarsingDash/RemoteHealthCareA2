@@ -1,8 +1,7 @@
 using System.Globalization;
-using ClientSide.Bike;
-using ClientSide.Helpers;
+using ClientApplication.ServerConnection.Bike;
+using ClientApplication.ServerConnection.Helpers;
 using ClientSide.VR2.CommandHandler;
-using DoctorApplication.Communication.CommandHandlers;
 using Shared;
 using Shared.Log;
 

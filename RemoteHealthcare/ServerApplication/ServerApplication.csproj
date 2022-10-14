@@ -15,8 +15,6 @@
 
     <ItemGroup>
       <Folder Include="Client\DataHandlers\CommandHandlers\Client" />
-      <Folder Include="Data\Test\" />
-      <Folder Include="Data\TestUser\" />
     </ItemGroup>
 
     <ItemGroup>

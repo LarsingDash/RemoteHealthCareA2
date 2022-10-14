@@ -1,4 +1,4 @@
-using ClientSide.Helpers;
+using ClientApplication.ServerConnection.Helpers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Shared;

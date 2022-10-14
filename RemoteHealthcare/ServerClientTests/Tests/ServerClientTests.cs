@@ -68,7 +68,7 @@ public class ServerClientTests
     public void TestServerSendingRsaKey()
     {
         Thread.Sleep(500);
-        byte[] pKey = client.GetFieldValue<byte[]>("PublicKey");
+        string pKey = client.GetFieldValue<string>("PublicKey");
         Assert.That(pKey.Length, Is.GreaterThan(0), "Client got no response when requesting public RSA key of server.");
         Assert.Pass("Client received public RSA key of server.");
     }
@@ -80,7 +80,7 @@ public class ServerClientTests
     public void TestClientSendingRsaKey()
     {
         Thread.Sleep(500);
-        byte[]? pKey = server.users[0].GetPropertyValue<byte[]?>("PublicKey");
+        string? pKey = server.users[0].GetPropertyValue<string?>("PublicKey");
         Assert.That(pKey?.Length ?? 0, Is.GreaterThan(0), "Server got no response when requesting public RSA key of client.");
         Assert.Pass("Server received public RSA key of client.");
     }

@@ -84,8 +84,8 @@
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding }" />
-                            <TextBlock Padding="10,0" Text="{Binding}" />
+                            <TextBlock Text="{Binding uuid}" />
+                            <TextBlock Padding="10,0" Text="{Binding sessionName}" />
                         </StackPanel>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>

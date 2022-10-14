@@ -48,7 +48,7 @@ namespace DoctorApplication.MVVM.Model
             }
         }
 
-        public BindableCollection<SessionModel> sessions { get; set; }
+        public ObservableCollection<SessionModel> sessions { get; set; }
 
         private double averageSpeed;
         public double AverageSpeed

@@ -237,7 +237,7 @@
                         </TextBox.InputBindings>
                         <TextBox.Resources>
                             <Style TargetType="Border">
-                                <Setter Property="CornerRadius" Value="10" />
+                                <Setter Property="CornerRadius" Value="6" />
                             </Style>
                         </TextBox.Resources>
                     </TextBox>

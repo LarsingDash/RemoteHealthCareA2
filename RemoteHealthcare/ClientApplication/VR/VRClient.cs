@@ -17,12 +17,20 @@ public class VRClient : DefaultClientConnection
 {
     private Dictionary<string, ICommandHandlerVR> commandHandler = new();
     public String TunnelID;
-    public readonly Tunnel tunnel;
+    public Tunnel tunnel;
     public WorldGen worldGen;
     public BikeController BikeController;
     public PanelController PanelController;
+
+    private bool started = false;
     public VRClient()
     {
+    }
+
+    public void Setup()
+    {
+        if (started)
+            return;
         Init("145.48.6.10", 6666, (json, encrypted) =>
         {
             if (commandHandler.ContainsKey(json["id"]!.ToObject<string>()!))
@@ -43,11 +51,6 @@ public class VRClient : DefaultClientConnection
         tunnel = new Tunnel(this);
         commandHandler.Add("tunnel/send", tunnel);
         Thread.Sleep(500);
-        Setup();
-    }
-
-    private void Setup()
-    {
         SendData(JsonFileReader.GetObjectAsString("SessionList", new Dictionary<string, string>()
         {
         }, JsonFolder.Vr.Path));

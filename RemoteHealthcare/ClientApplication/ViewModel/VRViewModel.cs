@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using ClientSide.VR;
+using ClientSide.VR2;
 
 namespace ClientApplication.ViewModel;
 
@@ -15,8 +16,7 @@ public class VRViewModel:ViewModelBase
 
 	private static void startVRSessionExecute(object obj)
 	{
-		var vrClient = new VRClient();
-		vrClient.StartConnectionAsync();
+		App.GetVrClientInstance().Setup();
 	}
 
 	public ICommand startVRSession

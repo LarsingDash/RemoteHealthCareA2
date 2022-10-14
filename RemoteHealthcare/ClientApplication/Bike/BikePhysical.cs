@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Avans.TI.BLE;
 using ClientApplication.ServerConnection.Bike;
@@ -43,7 +44,33 @@ namespace ClientApplication.Bike
                 Logger.LogMessage(LogImportance.Information, "Switching to Bike Simulator");
                 handler.Bike = new BikeSimulator(handler);
             }
+            else
+            {
+                await SetResistanceAsync(1);
+                Thread.Sleep(10000);
+                await SetResistanceAsync(1000);
+            }
         }
+
+        public async Task SetResistanceAsync(int resistance)
+        {
+            byte[] output = new byte[13];
+            output[0] = 0x4A; //sync byte
+            output[1] = 0x09; //Message Lenght
+            output[2] = 0x4E; //Message type
+            output[3] = 0x05; //Message type
+            output[4] = 0x30; //Datatype
+            output[11] = (byte)resistance;
+            byte checksum = output[0];
+            for (int i = 1; i < 12; i++)
+            {
+                checksum ^= output[i];
+            }
+
+            output[12] = (byte)checksum;
+            await bikeDevice.ble.WriteCharacteristic("6e40fec3-b5a3-f393-e0a9-e50e24dcca9e", output);
+        }
+        
 
         /// <summary>
         /// The function takes in a message and a protocol, and then parses the message based on the protocol
@@ -130,5 +157,6 @@ namespace ClientApplication.Bike
         BleBike = 1,
         HeartRate = 2,
     }
+    
     
 }

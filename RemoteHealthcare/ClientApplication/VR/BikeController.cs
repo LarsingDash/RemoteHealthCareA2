@@ -98,7 +98,7 @@ public class BikeController
                         { "nodeid", bikeId }, {"\"_speed_\"", $"{followSpeed.ToString(CultureInfo.InvariantCulture)}"}
                     }, JsonFolder.Route.Path)
                 }
-            });
+            }, true);
         });
     }
     

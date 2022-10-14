@@ -46,7 +46,7 @@ namespace DoctorApplication.MVVM.ViewModel
             DataVM = new DataViewModel();
             HistoryVM = new HistoryViewModel();
             CurrentView = DataVM;
-            
+            ToggleButtonText = "Switch to current data";
         }
 
         public void ChangeViewToggled(object state)
@@ -54,7 +54,7 @@ namespace DoctorApplication.MVVM.ViewModel
             if ((bool)state)
             {
                 //checked
-                Console.WriteLine("History View Checked");
+                Console.WriteLine("Switch to history");
                 ToggleButtonText = "History View";
                 CurrentView = HistoryVM;
             }
@@ -62,7 +62,7 @@ namespace DoctorApplication.MVVM.ViewModel
             {
                 //unchecked
                 Console.WriteLine("Data View Unchecked");
-                ToggleButtonText = "Data View";
+                ToggleButtonText = "Switch to current data";
                 CurrentView = DataVM;
 
             }

@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace DoctorApplication.MVVM.View
 {
     /// <summary>
-    /// Interaction logic for UserControl1.xaml
+    /// Interaction logic for HistoryView.xaml
     /// </summary>
-    public partial class UserControl1 : UserControl
+    public partial class HistoryView : UserControl
     {
-        public UserControl1()
+        public HistoryView()
         {
             InitializeComponent();
         }

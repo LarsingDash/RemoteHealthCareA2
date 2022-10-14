@@ -38,20 +38,41 @@
                 <RowDefinition Height="25"></RowDefinition>
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
-            <ContentControl Grid.Row="1" Content="{Binding CurrentView}"/>
-            
-                <Grid HorizontalAlignment="Stretch" Background="Transparent">
+            <ContentControl Grid.Row="1" Content="{Binding CurrentView}">
+                <ContentControl.Resources>
+                    <DataTemplate DataType="{x:Type viewModel:DataViewModel}" >
+                        <view:DataView/>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type viewModel:HistoryViewModel}" >
+                        <view:HistoryView/>
+                    </DataTemplate>
+                </ContentControl.Resources>
+
+            </ContentControl>
+            <Grid HorizontalAlignment="Stretch" Background="Transparent">
                 <StackPanel Orientation="Horizontal">
                     <Label Content="Doctor Applicatie" Margin="10,0" Foreground="#FFD4ECDD" Width="110" HorizontalAlignment="Left" MouseDown="Label_MouseDown" />
                     <ToggleButton
                         Width="Auto"
-                        Command="{Binding StartRecordingCommand}"
+                        Command="{Binding ChangeView}"
                         CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}"
                         Content="{Binding ToggleButtonText}"
-                        Foreground="White"
-                        />
+                        Foreground="White" Background="{x:Null}" Padding="4,1,4,1"
+                        >
+                        <ToggleButton.BorderBrush>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FF7309F9"/>
+                                <GradientStop Color="#FFC417F9" Offset="1"/>
+                            </LinearGradientBrush>
+                        </ToggleButton.BorderBrush>
+                        <ToggleButton.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="4" />
+                            </Style>
+                        </ToggleButton.Resources>
+                    </ToggleButton>
                 </StackPanel>
-                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Margin="0,0,5,0">
+                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Margin="0,0,15,0">
                         <Button Width="20" Height="20" Content="⎯"  Background="Transparent" BorderThickness="0" Foreground="Gray" Click="ButtonMinimize_Click"/>
                         <Button Width="20" Height="20" Content="╳" Background="Transparent" BorderThickness="0" Foreground="Gray"  FontSize="10" Click="ButtonClose_Click"/>
                     </StackPanel>

@@ -5,13 +5,13 @@
     mc:Ignorable="d"
     x:Class="DoctorApplication.MVVM.View.DataView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:Model="clr-namespace:DoctorApplication.MVVM.Model"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:DoctorApplication.MVVM.View"
     xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
     xmlns:m="clr-namespace:DoctorApplication.MVVM.ViewModel"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Model="clr-namespace:DoctorApplication.MVVM.Model"
+    xmlns:local="clr-namespace:DoctorApplication.MVVM.View">
 
     <UserControl.Resources>
 

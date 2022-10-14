@@ -7,7 +7,7 @@
         xmlns:viewModel="clr-namespace:DoctorApplication.MVVM.ViewModel"
         xmlns:view="clr-namespace:DoctorApplication.MVVM.View"
         mc:Ignorable="d"
-        Title="Doctor Application" Height="600" Width="850"
+        Title="Doctor Application" Height="650" Width="850"
         ResizeMode="NoResize"
         WindowStyle="None"
         AllowsTransparency="True"
@@ -16,22 +16,68 @@
     <Window.DataContext>
         <viewModel:MainViewModel/>
     </Window.DataContext>
-    <Border CornerRadius="12" BorderThickness="10" BorderBrush="#112031" Background="#112031">
-        <Grid Background="#FF1A2B2F">
+    <Border CornerRadius="25"
+            BorderThickness="5">
+
+        <Border.BorderBrush>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="{StaticResource winBorderColor1}" Offset="0.0"/>
+                <GradientStop Color="{StaticResource winBorderColor2}" Offset="0.75"/>
+                <GradientStop Color="{StaticResource winBorderColor3}" Offset="1.0"/>
+            </LinearGradientBrush>
+        </Border.BorderBrush>
+
+        <Border.Background>
+            <LinearGradientBrush StartPoint="0,1" EndPoint="1,0">
+                <GradientStop Color="{StaticResource primaryBackColor1}" Offset="0.0"/>
+                <GradientStop Color="{StaticResource primaryBackColor2}" Offset="0.75"/>
+            </LinearGradientBrush>
+        </Border.Background>
+        <Grid >
             <Grid.RowDefinitions>
                 <RowDefinition Height="25"></RowDefinition>
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
-            <ContentControl Grid.Row="1" Content="{Binding CurrentView}"/>
-            <Border Grid.ColumnSpan="2" MouseDown="Border_MouseDown">
-                <Grid HorizontalAlignment="Stretch" Background="Transparent">
-                    <Label Content="Doctor Applicatie" Foreground="#FFD4ECDD" Background="#FF112031"/>
-                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Margin="0,0,5,0">
+            <ContentControl Grid.Row="1" Content="{Binding CurrentView}">
+                <ContentControl.Resources>
+                    <DataTemplate DataType="{x:Type viewModel:DataViewModel}" >
+                        <view:DataView/>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type viewModel:HistoryViewModel}" >
+                        <view:HistoryView/>
+                    </DataTemplate>
+                </ContentControl.Resources>
+
+            </ContentControl>
+            <Grid HorizontalAlignment="Stretch" Background="Transparent">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Doctor Applicatie" Margin="10,0" Foreground="#FFD4ECDD" Width="110" HorizontalAlignment="Left" MouseDown="Label_MouseDown" />
+                    <ToggleButton
+                        Width="Auto"
+                        Command="{Binding ChangeView}"
+                        CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}"
+                        Content="{Binding ToggleButtonText}"
+                        Foreground="White" Background="{x:Null}" Padding="4,1,4,1"
+                        >
+                        <ToggleButton.BorderBrush>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FF7309F9"/>
+                                <GradientStop Color="#FFC417F9" Offset="1"/>
+                            </LinearGradientBrush>
+                        </ToggleButton.BorderBrush>
+                        <ToggleButton.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="4" />
+                            </Style>
+                        </ToggleButton.Resources>
+                    </ToggleButton>
+                </StackPanel>
+                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Margin="0,0,15,0">
                         <Button Width="20" Height="20" Content="⎯"  Background="Transparent" BorderThickness="0" Foreground="Gray" Click="ButtonMinimize_Click"/>
                         <Button Width="20" Height="20" Content="╳" Background="Transparent" BorderThickness="0" Foreground="Gray"  FontSize="10" Click="ButtonClose_Click"/>
                     </StackPanel>
                 </Grid>
-            </Border>
+            
         </Grid>
     </Border>
 </Window>

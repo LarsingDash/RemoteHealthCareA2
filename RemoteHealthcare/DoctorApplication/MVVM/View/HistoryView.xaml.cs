@@ -1,5 +1,4 @@
-﻿using DoctorApplication.MVVM.ViewModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,24 +12,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using LiveCharts;
-using LiveCharts.Wpf;
 
 namespace DoctorApplication.MVVM.View
 {
     /// <summary>
-    /// Interaction logic for DataView.xaml
+    /// Interaction logic for HistoryView.xaml
     /// </summary>
-    public partial class DataView : UserControl
+    public partial class HistoryView : UserControl
     {
-        
-        public DataView()
+        public HistoryView()
         {
             InitializeComponent();
         }
-
-        
     }
-
 }
-

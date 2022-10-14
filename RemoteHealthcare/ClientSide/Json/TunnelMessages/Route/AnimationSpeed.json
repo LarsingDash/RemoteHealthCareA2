@@ -1,0 +1,11 @@
+{
+  "id" : "scene/node/update",
+  "data" :
+  {
+    "id" : "nodeid",
+    "animation" :
+    {
+      "speed" : "_speed_"
+    }
+  }
+}

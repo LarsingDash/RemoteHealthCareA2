@@ -13,7 +13,7 @@ public class DefaultClientConnection
     #region ClientConnection
     private TcpClient client;
     private NetworkStream stream;
-    private Dictionary<string, Action<JObject>> serialCallbacks = new();
+    public readonly Dictionary<string, Action<JObject>> SerialCallbacks = new();
     private Action<JObject, bool> commandHandlerMethod;
     
     public RSA Rsa = new RSACryptoServiceProvider();
@@ -41,7 +41,7 @@ public class DefaultClientConnection
     /// <param name="port">The port to connect to.</param>
     /// <param name="commandHandlerMethod">This is the method that will be called when a command is received from the
     /// server.</param>
-    public void Init(string hostname, int port, Action<JObject, bool> commandHandlerMethod)
+    public void Init(string hostname, int port, Action<JObject, bool> commandHandlerMethod, bool setup = true)
     {
         OnMessage += (_, json) => HandleMessage(json);
 
@@ -64,7 +64,7 @@ public class DefaultClientConnection
     /// It sends a request to the server for the public key, and when the server responds, it sets the public key to the
     /// value it received
     /// </summary>
-    private void SetupClient()
+    public void SetupClient()
     {
         Thread.Sleep(100);
         var serial = Util.RandomString();
@@ -109,10 +109,10 @@ public class DefaultClientConnection
         if (json.ContainsKey("serial"))
         {
             var serial = json["serial"]!.ToObject<string>();
-            if (serialCallbacks.ContainsKey(serial!))
+            if (SerialCallbacks.ContainsKey(serial!))
             {
-                serialCallbacks[serial!].Invoke(json);
-                serialCallbacks.Remove(serial!);
+                SerialCallbacks[serial!].Invoke(json);
+                SerialCallbacks.Remove(serial!);
                 return;
             }
         }
@@ -135,8 +135,9 @@ public class DefaultClientConnection
             var numberOfBytes = stream.EndRead(readResult);
             _totalBuffer = Concat(_totalBuffer, _buffer, numberOfBytes);
         }
-        catch
+        catch(Exception e)
         {
+            Logger.LogMessage(LogImportance.Error, "Error (Unknown Reason) ", e);
             return;
         }
 
@@ -243,12 +244,42 @@ public class DefaultClientConnection
     /// <param name="action">The function to be called when the serial is received.</param>
     public void AddSerialCallback(string serial, Action<JObject> action)
     {
-        if (serialCallbacks.ContainsKey(serial))
+        if (SerialCallbacks.ContainsKey(serial))
         {
-            serialCallbacks.Remove(serial);
+            SerialCallbacks.Remove(serial);
         }
         
-        serialCallbacks.Add(serial, action);
+        SerialCallbacks.Add(serial, action);
+    }
+
+    public void RemoveSerialCallback(string serial)
+    {
+        SerialCallbacks.Remove(serial);
+    }
+
+    public async Task AddSerialCallbackTimeout(string serial, Action<JObject> action, Action timeoutAction, int timeout)
+    {
+        var received = false;
+        JObject? json = null;
+        AddSerialCallback(serial, ob =>
+        {
+            json = ob;
+            received = true;
+        });
+        var task = Task.Delay(timeout);
+        while (received == false && !task.IsCompleted)
+        {
+            await Task.Delay(1);
+        }
+        
+        if (received)
+        {
+            action.Invoke(json!);
+        }
+        else
+        {
+            timeoutAction.Invoke();
+        }
     }
     
     /// <summary>

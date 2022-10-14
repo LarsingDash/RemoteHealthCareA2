@@ -3,6 +3,6 @@
   "serial":"_serial_",
   "data":{
     "status":"_status_",
-    "error":"_error_"
+    "error":"_error_",
   }
 }

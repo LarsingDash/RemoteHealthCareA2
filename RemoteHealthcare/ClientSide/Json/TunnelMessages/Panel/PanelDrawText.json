@@ -1,11 +1,12 @@
 {
   "id" : "scene/panel/drawtext",
+  "serial" : "_serial_",
   "data" :
   {
-    "id" : "_panelid_",
+    "id" : "uuid",
     "text" : "_text_",
     "position" : [ "_position_" ],
-    "size" : 32.0,
+    "size" : "_size_",
     "color" : [ 0,0,0,1 ],
     "font" : "segoeui"
   }

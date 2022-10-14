@@ -1,12 +1,13 @@
 using System.Globalization;
 using System.Net.Sockets;
 using System.Text;
+using DoctorApplication.Communication.CommandHandlers;
 using Newtonsoft.Json.Linq;
 using Shared;
 
 namespace ClientApplication.ServerConnection.VR;
 
-public class VRClient
+public class VrClient
 {
     //Session List
     private JObject savedSession;
@@ -16,26 +17,36 @@ public class VRClient
     private readonly TcpClient tcpClient = new TcpClient();
     private NetworkStream stream;
     public string TunnelID { get; private set; }
-    private Tunnel tunnel { get; }
+    private TunnelOld TunnelOld { get; }
 
     //Data buffers for stream
     private byte[] totalBuffer = Array.Empty<byte>();
     private readonly byte[] buffer = new byte[1024];
 
     //VRClient
-    public WorldGen worldGen;
+    public WorldGenOld worldGen;
     public PanelController panelController;
-    private World selectedWorld = World.forest;
+    public BikeController bikeController;
 
     //Other
     private readonly List<string> removalTargets = new List<string>();
     public readonly Dictionary<string, string> SavedIDs = new Dictionary<string, string>();
+    /// <summary>
+    /// Contains Actions that are called when the string/id is in a response JSON (see tunnel.HandleResponse())
+    /// (when a node is added containing that string name)
+    /// </summary>
     public readonly Dictionary<string, Action<string>> IDWaitList = new Dictionary<string, Action<string>>();       //Waiting for it to be added
+   
+    /// <summary>
+    /// Contains Actions that are called
+    /// when the string/id is found in the response of the "scene/node/find" JSON message
+    /// (see: tunnel.HandleResponse())
+    /// </summary>
     public readonly Dictionary<string, Action<string>> IDSearchList = new Dictionary<string, Action<string>>();     //Waiting for it to be found
 
-    public VRClient()
+    public VrClient()
     {
-        tunnel = new Tunnel(this);
+        TunnelOld = new TunnelOld(this);
     }
 
     //After the correct session has been located the tunnel will be created using the sessionID
@@ -48,21 +59,33 @@ public class VRClient
         }));
     }
 
+    /// <summary>
+    /// Sets up the VR scene
+    /// Makes and starts new threads for panelController and bikeController main methods
+    /// </summary>
+    /// <param name="id"></param>
     //Run startup actions after the tunnel has been created
     public void TunnelStartup(string id)
     {
         TunnelID = id;
 
         //Remove Default Objects
+        
+        
         RemoveObjectRequest("GroundPlane", "RightHand", "LeftHand");
             
         //Start WorldGen
-        worldGen = new WorldGen(this, tunnel, selectedWorld);
+        worldGen = new WorldGenOld(this, TunnelOld);
         
         //Start HUDController
-        panelController = new PanelController(this, tunnel);
+        panelController = new PanelController(this, TunnelOld);
         var HUDThread = new Thread(panelController.RunController);
+
+        bikeController = new BikeController(this, TunnelOld);
+        var bikeAnimationThread = new Thread(bikeController.RunController);
+        
         HUDThread.Start();
+        bikeAnimationThread.Start();
     }
 
     //It connects to the server, gets the stream, and starts reading the stream. Then it asks for all sessions to find the correct one in the response
@@ -113,9 +136,12 @@ public class VRClient
             var readCount = stream.EndRead(asyncResult);
             totalBuffer = Concat(totalBuffer, buffer, readCount);
         }
-        catch (IOException)
+        catch (IOException e)
         {
             Console.WriteLine("OnRead Error");
+            Console.WriteLine(e.StackTrace);
+            Console.WriteLine(e.Message);
+            Console.WriteLine(e.Source);
             return;
         }
 
@@ -126,7 +152,7 @@ public class VRClient
             {
                 var data = Encoding.UTF8.GetString(totalBuffer, 4, packetSize);
                 var jData = JObject.Parse(data);
-                tunnel.HandleResponse(this, jData);
+                TunnelOld.HandleResponse(this, jData);
                 var newBuffer = new byte[totalBuffer.Length - packetSize - 4];
                 Array.Copy(totalBuffer, packetSize + 4, newBuffer, 0, newBuffer.Length);
                 totalBuffer = newBuffer;
@@ -202,7 +228,7 @@ public class VRClient
     {
         foreach (var target in targets) removalTargets.Add(target);
 
-        tunnel.SendTunnelMessage(new Dictionary<string, string>()
+        TunnelOld.SendTunnelMessage(new Dictionary<string, string>()
         {
             {
                 "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\GetScene",
@@ -225,7 +251,7 @@ public class VRClient
                 //Send a message to remove the node with the found uuid
                 string? uuid = currentObject["uuid"].ToObject<string>();
 
-                tunnel.SendTunnelMessage(new Dictionary<string, string>()
+                TunnelOld.SendTunnelMessage(new Dictionary<string, string>()
                 {
                     {
                         "\"_data_\"", JsonFileReader.GetObjectAsString("TunnelMessages\\DeleteNodeScene",

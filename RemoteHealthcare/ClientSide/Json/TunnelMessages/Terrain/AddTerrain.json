@@ -1,5 +1,6 @@
 {
   "id" : "scene/terrain/add",
+  "serial": "_serial_",
   "data": {
     "size": [ "_size1_", "_size2_" ],
     "heights": [ "_heights_" ]

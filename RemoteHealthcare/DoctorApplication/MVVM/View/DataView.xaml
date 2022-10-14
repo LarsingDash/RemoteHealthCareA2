@@ -1,0 +1,378 @@
+﻿<UserControl
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:DoctorApplication.MVVM.View"
+    xmlns:m="clr-namespace:DoctorApplication.MVVM.ViewModel"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:Model="clr-namespace:DoctorApplication.MVVM.Model"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d"
+    x:Class="DoctorApplication.MVVM.View.DataView"
+    d:DataContext="{d:DesignInstance Type={x:Type m:DataViewModel}}" Background="#FF112031">
+
+    <UserControl.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="Background" Value ="#FF112031"/>
+            <Setter Property="Foreground" Value ="#D4ECDD"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value ="#FF365D65"/>
+            <Setter Property="Foreground" Value ="#D4ECDD"/>
+            <Setter Property="Padding" Value="4"></Setter>
+        </Style>
+        <Style TargetType="Label">
+            <Setter Property="Foreground" Value ="#D4ECDD"/>
+        </Style>
+      
+        <Style TargetType="ListViewItem">
+            <Setter Property="BorderThickness" Value="0"></Setter>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"></Setter>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.6*" />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1.3*" />
+                <RowDefinition Height="2*" />
+                <RowDefinition Height="3*" />
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0" Orientation="Vertical">
+                <Label
+                    FontWeight="Bold"
+                    HorizontalAlignment="Center"
+                    x:Name="SelectedUserLabel" Content="Selected User:"/>
+                <ComboBox ItemsSource="{Binding users}" SelectedItem="{Binding SelectedUser}" Width="154">
+                    <ComboBox.Background>
+                        <LinearGradientBrush EndPoint="0,1">
+                            <GradientStop Color="#FFF0F0F0"/>
+                            <GradientStop Color="#FFA3CEB3" Offset="1"/>
+                        </LinearGradientBrush>
+                    </ComboBox.Background>
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding UserName}" />
+                                <TextBlock Padding="10, 0" Text="{Binding BikeId}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <Button HorizontalAlignment="Center" x:Name="NewWindowButton" Content="Open in window" Margin="0,5" Padding="6" BorderBrush="{x:Null}" FontFamily="Arial Black">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="5"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+            </StackPanel>
+            <StackPanel
+                Grid.Row="1"
+                x:Name="UserInformationPagePanel"
+                Orientation="Vertical">
+                <Label
+                    FontWeight="Bold"
+                    HorizontalAlignment="Center"
+                    x:Name="AboutLabel"
+                    Padding="5,5,5,0" Content="About:"/>
+                <Label
+                    HorizontalAlignment="Left"
+                    x:Name="UsernameHeader"
+                    Padding="5,5,5,0" Content="Username:"/>
+                <TextBlock
+                    Text="{Binding SelectedUser.UserName}"
+                    HorizontalAlignment="Left"
+                    Padding="5,0,5,5" />
+                <Label
+                    HorizontalAlignment="Left"
+                    x:Name="BikeIdHeader"
+                    Padding="5,5,5,0" Content="Bike ID:"/>
+                <Label
+                    Content="{Binding SelectedUser.BikeId}"
+                    HorizontalAlignment="Left"
+                    x:Name="BikeIdText"
+                    Padding="5,0,5,5" />
+                <Label
+                    HorizontalAlignment="Left"
+                    x:Name="PhoneNumberHeader"
+                    Padding="5,5,5,0" Content="Phone Number:"/>
+                <Label
+                    Content="{Binding SelectedUser.PhoneNumber}"
+                    HorizontalAlignment="Left"
+                    x:Name="PhoneNumberText"
+                    Padding="5,0,5,5" />
+                <Label
+                    HorizontalAlignment="Left"
+                    Padding="5,10,5,0" Content="Chat:"/>
+
+            </StackPanel>
+            <Grid
+                Grid.Row="2"
+                >
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition MaxHeight="20"/>
+                </Grid.RowDefinitions>
+                <ListView ItemsSource="{Binding SelectedUser.messages}" Background="{x:Null}" BorderBrush="{x:Null}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="#152D35" CornerRadius="5" BorderThickness="5" Padding="5, 2">
+
+                                <StackPanel Orientation="Vertical">
+                                    <Label Padding="3, 3, 3, 3" Content="{Binding message}" />
+                                    <Label HorizontalAlignment="Right" Padding="10, 0" Content="{Binding time}" FontSize="11" FontStyle="Italic" />
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <Grid Grid.Row="2" DockPanel.Dock="Bottom" x:Name="ChatTextBoxPanel">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="8*" />
+                        <ColumnDefinition Width="2*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox
+                        Grid.Column="0"
+                        x:Name="ChatTextBox"
+                        Text="{Binding Message, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" Background="#FFD4ECDD" Foreground="#FF152D35"
+                        >
+                        <TextBox.InputBindings>
+                            <KeyBinding Command="{Binding SendCommand}" Key="Return" />
+                        </TextBox.InputBindings>
+                    </TextBox>
+                    <Button
+                        CommandParameter="{Binding Text, ElementName=ChatTextBox}"
+                        Command="{Binding SendCommand}"
+                        Content="➤"
+                        Grid.Column="1" FontSize="8"
+                        />
+                </Grid>
+            </Grid>
+        </Grid>
+        <Grid Grid.Column="1" x:Name="BikeInformationGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <StackPanel Orientation="Vertical">
+                    <Label
+                    FontWeight="Bold"
+                    HorizontalAlignment="Center"
+                    x:Name="BikeInformationLabel"
+                    Padding="5,5,5,0" Content="Bike information:"/>
+                    <Label
+                    HorizontalAlignment="Left"
+                    x:Name="BikeGraphHeaderLabel"
+                    Padding="5,5,5,0" Content="Graph(Kilometer / Hour):"/>
+                </StackPanel>
+                <Grid Grid.Row="1">
+                    <lvc:CartesianChart Series="{Binding SeriesCollection}" Zoom="X">
+                        <lvc:CartesianChart.AxisY>
+                            <lvc:Axis Title="Kilometer/Hour" LabelFormatter="{Binding YFormatter}"/>
+                        </lvc:CartesianChart.AxisY>
+                        <lvc:CartesianChart.AxisX>
+                            <lvc:Axis Title="Time" Labels="{Binding Labels}"/>
+                        </lvc:CartesianChart.AxisX>
+                    </lvc:CartesianChart>
+                </Grid>
+            </Grid>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                </Grid.RowDefinitions>
+                <Label
+                    FontWeight="Bold"
+                    Grid.Column="0"
+                    Grid.Row="0"
+                    HorizontalAlignment="Right"
+                    x:Name="BikeValueHeader"
+                    VerticalAlignment="Bottom" Content="Current Bike Reading:"/>
+
+
+                <Label
+                    Grid.Column="0"
+                    Grid.Row="1"
+                    HorizontalAlignment="Left"
+                    x:Name="CurrentSpeedHeader" Content="Current Speed:"/>
+                <Label
+                    Grid.Column="0"
+                    Grid.Row="2"
+                    HorizontalAlignment="Left"
+                    x:Name="TopSpeedHeader" Content="Top Speed:"/>
+                <Label
+                    Grid.Column="0"
+                    Grid.Row="3"
+                    HorizontalAlignment="Left"
+                    x:Name="AverageSpeedheader" Content="Average speed:"/>
+                <Label
+                    Grid.Column="0"
+                    Grid.Row="4"
+                    HorizontalAlignment="Left"
+                    x:Name="TimeElapsedHeader" Content="Time Elapsed:"/>
+
+                <Label
+                    Content="{Binding SelectedUser.LastEntry.CurrentSpeed}"
+                    Grid.Column="1"
+                    Grid.Row="1"
+                    HorizontalAlignment="Left"
+                    x:Name="CurrentSpeedText" />
+                <Label
+                    Content="{Binding SelectedUser.TopSpeed}"
+                    Grid.Column="2"
+                    Grid.Row="2"
+                    HorizontalAlignment="Left"
+                    x:Name="TopSpeedText" />
+                <Label
+                    Content="{Binding SelectedUser.AverageSpeed}"
+                    Grid.Column="3"
+                    Grid.Row="3"
+                    HorizontalAlignment="Left"
+                    x:Name="AverageSpeedText" />
+                <Label
+                    Content="{Binding SelectedUser.TimeElapsed}"
+                    Grid.Column="4"
+                    Grid.Row="4"
+                    HorizontalAlignment="Left"
+                    x:Name="TimeElapsedText" />
+            </Grid>
+        </Grid>
+
+        <Grid Grid.Column="2" x:Name="HeartInformationGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*" />
+                <RowDefinition Height="0.7*" />
+                <RowDefinition Height="2*" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Label
+                    Content="Heart Information:"
+                    DockPanel.Dock="Top"
+                    FontWeight="Bold"
+                    HorizontalAlignment="Center"
+                    x:Name="HeartInformationHeader" />
+                <Image
+                    Height="133"
+                    HorizontalAlignment="Center"
+                    Source="/Sources/HeartPNG2.png"
+                    VerticalAlignment="Center"
+                    Width="116" />
+                <Label
+                    Content="{Binding SelectedUser.LastEntry.CurrentRate}"
+                    FontSize="48"
+                    HorizontalAlignment="Center"
+                    x:Name="HeartInformationValue"
+                    VerticalAlignment="Center" >
+                </Label>
+                <Label
+                    Content="BPM"
+                    FontSize="36"
+                    HorizontalAlignment="Center"
+                    x:Name="HeartInformationBPM"
+                    VerticalAlignment="Bottom" Background="{x:Null}" />
+
+
+            </Grid>
+
+
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                </Grid.RowDefinitions>
+                <Label
+                    FontSize="16"
+                    Grid.Column="0"
+                    Grid.Row="0"
+                    HorizontalContentAlignment="Center"
+                    x:Name="HeartLowestHeader"
+                    VerticalAlignment="Bottom"
+                    VerticalContentAlignment="Center" Content="Lowest"/>
+                <Label
+                    FontSize="16"
+                    Grid.Column="1"
+                    Grid.Row="0"
+                    HorizontalContentAlignment="Center"
+                    x:Name="HeartAverageHeader"
+                    VerticalAlignment="Bottom"
+                    VerticalContentAlignment="Center" Content="Average"/>
+                <Label
+                    FontSize="16"
+                    Grid.Column="2"
+                    Grid.Row="0"
+                    HorizontalContentAlignment="Center"
+                    x:Name="HeartPeakHeader"
+                    VerticalAlignment="Bottom"
+                    VerticalContentAlignment="Center" Content="Peak"/>
+                <Label
+                    Content="{Binding SelectedUser.LowestRate}"
+                    FontSize="16"
+                    Grid.Column="0"
+                    Grid.Row="1"
+                    HorizontalContentAlignment="Center"
+                    x:Name="HeartLowestText"
+                    VerticalContentAlignment="Top" />
+                <Label
+                    Content="{Binding SelectedUser.AverageRate}"
+                    FontSize="16"
+                    Grid.Column="1"
+                    Grid.Row="1"
+                    HorizontalContentAlignment="Center"
+                    x:Name="HeartAverageText"
+                    VerticalContentAlignment="Top" />
+                <Label
+                    Content="{Binding SelectedUser.HighestRate}"
+                    FontSize="16"
+                    Grid.Column="2"
+                    Grid.Row="1"
+                    HorizontalContentAlignment="Center"
+                    x:Name="HeartPeakText"
+                    VerticalContentAlignment="Top" />
+            </Grid>
+            <Grid Grid.Row="2">
+                <StackPanel x:Name="BikeValuePanel" Orientation="Vertical">
+                    <Label
+                        FontWeight="Bold"
+                        HorizontalAlignment="Center"
+                        x:Name="AdjustBikeValuesHeader" Content="Adjust Bike Values"/>
+                    <Label x:Name="BikeResistanceHeader" Content="Bike Resistance:"/>
+                    <Slider Margin="30,0,30,0" x:Name="ResistanceSlider" />
+                    <Label HorizontalAlignment="Center" x:Name="ResistanceValue" Content="1.0X"/>
+                    <Label x:Name="ResistanceGraph" Content="Graph(Resistance / minute)"/>
+                    <Button x:Name="EmergencyButton" Content="Emergency Stop" HorizontalAlignment="Left" Width="100" Background="#FFFF1200"></Button>
+                </StackPanel>
+            </Grid>
+
+        </Grid>
+
+
+    </Grid>
+</UserControl>

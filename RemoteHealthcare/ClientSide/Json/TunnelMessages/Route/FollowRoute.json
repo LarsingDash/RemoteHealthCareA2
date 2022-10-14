@@ -1,15 +1,15 @@
 {
   "id" : "route/follow",
+  "serial": "_serial_",
   "data" :
   {
     "route" : "routeid",
     "node" : "nodeid",
-    "speed" : 5.0,
+    "speed" : "_speed_",
     "offset" : 0.0,
     "rotate" : "XZ",
     "smoothing" : 1.0,
     "followHeight" : true,
     "rotateOffset" : [ 0, 0, 0 ],
-    "positionOffset" : [ 0, 0, 0]
   }
 }

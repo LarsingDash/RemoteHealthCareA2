@@ -19,6 +19,6 @@ public class RsaKey : ICommandHandler
         };
         if(ob.ContainsKey("serial"))
             dict.Add("_serial_", ob["serial"]?.ToObject<string>() ??"_serial_");
-        client.SendData(JsonFileReader.GetObjectAsString("PublicRSAKey", dict, JsonFolder.Json.path));
+        client.SendData(JsonFileReader.GetObjectAsString("PublicRSAKey", dict, JsonFolder.Json.Path));
     }
 }

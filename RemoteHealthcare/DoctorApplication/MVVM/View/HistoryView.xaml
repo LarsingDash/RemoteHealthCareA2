@@ -9,7 +9,7 @@
     xmlns:local="clr-namespace:DoctorApplication.MVVM.View"
     xmlns:m="clr-namespace:DoctorApplication.MVVM.ViewModel"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf">
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -58,7 +58,7 @@
 
             <ComboBox
                 Style="{StaticResource ComboBoxMainStyle}"
-                Height="30"
+                Height="20"
                 ItemsSource="{Binding users}"
                 SelectedItem="{Binding SelectedUser}"
                 Width="150">
@@ -78,7 +78,7 @@
 
             <ComboBox
                 ItemsSource="{Binding SelectedUser.sessions}"
-                Height="30"
+                Height="20"
                 Width="150">
                 <!--SelectedItem="{Binding }"-->
                 <ComboBox.ItemTemplate>
@@ -91,5 +91,154 @@
                 </ComboBox.ItemTemplate>
             </ComboBox>
         </StackPanel>
+
+        <lvc:CartesianChart Grid.Row="1" Grid.Column="1" Series="{Binding SeriesCollection}" Zoom="X">
+            <lvc:CartesianChart.AxisY>
+                <lvc:Axis LabelFormatter="{Binding YFormatter}" Title="Kilometer/Hour" />
+            </lvc:CartesianChart.AxisY>
+            <lvc:CartesianChart.AxisX>
+                <lvc:Axis Labels="{Binding Labels}" Title="Time" />
+            </lvc:CartesianChart.AxisX>
+        </lvc:CartesianChart>
+        <Grid Grid.Row="2" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1.5*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+            <Label
+                    Style="{DynamicResource HeaderStyle1}"
+                    Content="Bike Statistics"
+                    FontWeight="Bold"
+                    Grid.Column="0"
+                    Grid.Row="0"
+                    Grid.ColumnSpan="2"
+                    HorizontalAlignment="center"
+                    VerticalAlignment="Bottom"
+                    />
+
+
+            <Label
+                    Style="{DynamicResource LabelStyleMain}" 
+                    Content="Top Speed:"
+                    Grid.Column="0"
+                    Grid.Row="2"
+                    HorizontalAlignment="Left"
+                   />
+            <Label
+                    Style="{DynamicResource LabelStyleMain}" 
+                    Content="Average speed:"
+                    Grid.Column="0"
+                    Grid.Row="3"
+                    HorizontalAlignment="Left"
+                    />
+            <Label
+                    Style="{DynamicResource LabelStyleMain}" 
+                    Content="Time Elapsed:"
+                    Grid.Column="0"
+                    Grid.Row="4"
+                    HorizontalAlignment="Left"
+                    />
+
+            <Label
+                    Style="{DynamicResource LabelStyleMain}" 
+                    Content="{Binding SelectedUser.TopSpeed}"
+                    Grid.Column="2"
+                    Grid.Row="2"
+                    HorizontalAlignment="Left"
+                     />
+            <Label
+                    Style="{DynamicResource LabelStyleMain}" 
+                    Content="{Binding SelectedUser.AverageSpeed}"
+                    Grid.Column="3"
+                    Grid.Row="3"
+                    HorizontalAlignment="Left"
+                     />
+
+
+        </Grid>
+        <lvc:CartesianChart Grid.Row="1" Grid.Column="2" Series="{Binding SeriesCollection}" Zoom="X">
+            <lvc:CartesianChart.AxisY>
+                <lvc:Axis LabelFormatter="{Binding YFormatter}" Title="Kilometer/Hour" />
+            </lvc:CartesianChart.AxisY>
+            <lvc:CartesianChart.AxisX>
+                <lvc:Axis Labels="{Binding Labels}" Title="Time" />
+            </lvc:CartesianChart.AxisX>
+        </lvc:CartesianChart>
+        <Grid Grid.Row="2" Grid.Column="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1.5*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+            <Label
+                    Style="{DynamicResource HeaderStyle1}"
+                    Content="Heart Statistics"
+                    FontWeight="Bold"
+                    Grid.Column="0"
+                    Grid.Row="0"
+                    Grid.ColumnSpan="2"
+                    HorizontalAlignment="center"
+                    VerticalAlignment="Bottom"
+                    />
+
+
+            <Label
+                    Style="{DynamicResource LabelStyleMain}" 
+                    Content="Peak heart rate:"
+                    Grid.Column="0"
+                    Grid.Row="2"
+                    HorizontalAlignment="Left"
+                   />
+            <Label
+                    Style="{DynamicResource LabelStyleMain}" 
+                    Content="Average heart rate:"
+                    Grid.Column="0"
+                    Grid.Row="3"
+                    HorizontalAlignment="Left"
+                    />
+            <Label
+                    Style="{DynamicResource LabelStyleMain}" 
+                    Content="Lowest heart rate:"
+                    Grid.Column="0"
+                    Grid.Row="4"
+                    HorizontalAlignment="Left"
+                    />
+
+            <Label
+                    Style="{DynamicResource LabelStyleMain}" 
+                    Content="{Binding SelectedUser.TopSpeed}"
+                    Grid.Column="2"
+                    Grid.Row="2"
+                    HorizontalAlignment="Left"
+                     />
+            <Label
+                    Style="{DynamicResource LabelStyleMain}" 
+                    Content="{Binding SelectedUser.AverageSpeed}"
+                    Grid.Column="3"
+                    Grid.Row="3"
+                    HorizontalAlignment="Left"
+                     />
+           
+
+        </Grid>
     </Grid>
 </UserControl>

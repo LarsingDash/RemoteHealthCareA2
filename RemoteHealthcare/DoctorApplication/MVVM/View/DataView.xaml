@@ -13,74 +13,7 @@
     xmlns:Model="clr-namespace:DoctorApplication.MVVM.Model"
     xmlns:local="clr-namespace:DoctorApplication.MVVM.View">
 
-    <UserControl.Resources>
 
-        <Style TargetType="TextBlock">
-            <Setter Property="Background" Value="{x:Null}" />
-            <Setter Property="Foreground" Value="#FFF7F7F7" />
-        </Style>
-        <Style TargetType="Button">
-            <Setter Property="Background">
-                <Setter.Value>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                        <GradientStop Color="{StaticResource winBorderColor1}" Offset="0.0"/>
-                        <GradientStop Color="{StaticResource winBorderColor2}" Offset="0.75"/>
-                        <GradientStop Color="{StaticResource winBorderColor3}" Offset="1.0"/>
-                    </LinearGradientBrush>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Foreground" Value="#FFFDFDFD" />
-            <Setter Property="Padding" Value="4" />
-
-        </Style>
-
-        <Style TargetType="Label" x:Key="Header">
-            <Setter Property="Label.Foreground">
-                <Setter.Value>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                        <GradientStop Color="#FF4C2FDA" Offset="0.75"/>
-                        <GradientStop Color="{StaticResource winBorderColor1}" Offset="0.0"/>
-                        <GradientStop Color="#FF4C2FDA" Offset="0.75"/>
-                    </LinearGradientBrush>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="FontSize" Value="16"/>
-
-        </Style>
-        <Style TargetType="Label">
-            <Setter Property="Foreground" Value="White" />
-        </Style>
-
-        <Style TargetType="ListViewItem">
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-        </Style>
-        <Style TargetType="{x:Type ToggleButton}" x:Key="ToggleStyle1">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type ToggleButton}">
-                        <Border
-                            Background="#FF46EA65"
-                            BorderBrush="#FF000000"
-                            BorderThickness="1,1,1,1"
-                            CornerRadius="5,5,5,5"
-                            HorizontalAlignment="Center"
-                            Padding="5,5,5,5"
-                            SnapsToDevicePixels="True"
-                            VerticalAlignment="Center"
-                            x:Name="border">
-                            <ContentPresenter x:Name="contentPresenter" />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsChecked" Value="true">
-                                <Setter Property="Background" TargetName="border" Value="#eb2337" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-    </UserControl.Resources>
     <Grid Margin="20">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.6*" />
@@ -96,7 +29,7 @@
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0" Orientation="Vertical">
                 <Label
-                    Style="{StaticResource Header}"
+                    Style="{DynamicResource HeaderStyle1}"
                     Content="Selected User:"
                     FontWeight="Bold"
                     HorizontalAlignment="Center"
@@ -117,6 +50,7 @@
                 <StackPanel Orientation="Horizontal">
 
                     <Button
+                        Style="{StaticResource ButtonGradientStyle}"
                         BorderBrush="{x:Null}"
                         Content="Open in window"
                         FontFamily="Arial Black"
@@ -149,37 +83,46 @@
                     FontWeight="Bold"
                     HorizontalAlignment="Center"
                     Padding="5,5,5,0"
-                    x:Name="AboutLabel" />
+                    x:Name="AboutLabel" 
+                    Style="{DynamicResource LabelStyleMain}" 
+                    />
                 <Label
+                    Style="{DynamicResource LabelStyleMain}" 
                     Content="Username:"
                     HorizontalAlignment="Left"
                     Padding="5,5,5,0"
                     x:Name="UsernameHeader" />
-                <TextBlock
+                <Label
+                    Style="{DynamicResource LabelStyleMain}" 
                     HorizontalAlignment="Left"
                     Padding="5,0,5,5"
-                    Text="{Binding SelectedUser.UserName}" />
+                    Content="{Binding SelectedUser.UserName}" />
                 <Label
+                    Style="{DynamicResource LabelStyleMain}" 
                     Content="Bike ID:"
                     HorizontalAlignment="Left"
                     Padding="5,5,5,0"
                     x:Name="BikeIdHeader" />
                 <Label
+                    Style="{DynamicResource LabelStyleMain}" 
                     Content="{Binding SelectedUser.BikeId}"
                     HorizontalAlignment="Left"
                     Padding="5,0,5,5"
                     x:Name="BikeIdText" />
                 <Label
+                    Style="{DynamicResource LabelStyleMain}" 
                     Content="Phone Number:"
                     HorizontalAlignment="Left"
                     Padding="5,5,5,0"
                     x:Name="PhoneNumberHeader" />
                 <Label
+                    Style="{DynamicResource LabelStyleMain}" 
                     Content="{Binding SelectedUser.PhoneNumber}"
                     HorizontalAlignment="Left"
                     Padding="5,0,5,5"
                     x:Name="PhoneNumberText" />
                 <Label
+                    Style="{DynamicResource LabelStyleMain}" 
                     Content="Chat:"
                     HorizontalAlignment="Left"
                     Padding="5,10,5,0" />
@@ -197,19 +140,24 @@
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <Border
-                                Background="#152D35"
                                 BorderThickness="5"
                                 CornerRadius="5"
                                 Padding="5,2">
+                                <Border.Background>
+                                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                        <GradientStop Color="#FFB238D8"/>
+                                        <GradientStop Color="#FF8912D0" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
 
                                 <StackPanel Orientation="Vertical">
-                                    <Label Content="{Binding message}" Padding="3,3,3,3" />
+                                    <Label Content="{Binding message}" Padding="3,3,3,3" Foreground="White" />
                                     <Label
                                         Content="{Binding time}"
                                         FontSize="11"
                                         FontStyle="Italic"
                                         HorizontalAlignment="Right"
-                                        Padding="10,0" />
+                                        Padding="10,0" Foreground="#FFF9F9F9" />
                                 </StackPanel>
                             </Border>
                         </DataTemplate>
@@ -224,8 +172,8 @@
                         <ColumnDefinition Width="2*" />
                     </Grid.ColumnDefinitions>
                     <TextBox
-                        Background="#FFD4ECDD"
-                        Foreground="#FF152D35"
+                        Background="#FFF7DAF7"
+                        Foreground="Black"
                         Grid.Column="0"
                         Text="{Binding Message, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         x:Name="ChatTextBox">
@@ -242,6 +190,7 @@
                         </TextBox.Resources>
                     </TextBox>
                     <Button
+                        Style="{StaticResource ButtonGradientStyle}"
                         Command="{Binding SendCommand}"
                         CommandParameter="{Binding Text, ElementName=ChatTextBox}"
                         Content="➤"
@@ -269,7 +218,7 @@
                 </Grid.RowDefinitions>
                 <StackPanel Orientation="Vertical">
                     <Label
-                        Style="{StaticResource Header}"
+                        Style="{DynamicResource HeaderStyle1}"
                         Content="Bike information:"
                         FontWeight="Bold"
                         HorizontalAlignment="Center"
@@ -279,7 +228,7 @@
                         Content="Graph(Kilometer / Hour):"
                         HorizontalAlignment="Left"
                         Padding="5,5,5,0"
-                        x:Name="BikeGraphHeaderLabel" />
+                        x:Name="BikeGraphHeaderLabel" Style="{DynamicResource LabelStyleMain}" />
                 </StackPanel>
                 <Grid Grid.Row="1">
                     <lvc:CartesianChart Series="{Binding SeriesCollection}" Zoom="X">
@@ -308,7 +257,7 @@
                     <RowDefinition Height="1*" />
                 </Grid.RowDefinitions>
                 <Label
-                    Style="{StaticResource Header}"
+                    Style="{DynamicResource HeaderStyle1}"
                     Content="Current Bike Reading:"
                     FontWeight="Bold"
                     Grid.Column="0"
@@ -320,24 +269,28 @@
 
 
                 <Label
+                    Style="{DynamicResource LabelStyleMain}" 
                     Content="Current Speed:"
                     Grid.Column="0"
                     Grid.Row="1"
                     HorizontalAlignment="Left"
                     x:Name="CurrentSpeedHeader" />
                 <Label
+                    Style="{DynamicResource LabelStyleMain}" 
                     Content="Top Speed:"
                     Grid.Column="0"
                     Grid.Row="2"
                     HorizontalAlignment="Left"
                     x:Name="TopSpeedHeader" />
                 <Label
+                    Style="{DynamicResource LabelStyleMain}" 
                     Content="Average speed:"
                     Grid.Column="0"
                     Grid.Row="3"
                     HorizontalAlignment="Left"
                     x:Name="AverageSpeedheader" />
                 <Label
+                    Style="{DynamicResource LabelStyleMain}" 
                     Content="Time Elapsed:"
                     Grid.Column="0"
                     Grid.Row="4"
@@ -345,24 +298,28 @@
                     x:Name="TimeElapsedHeader" />
 
                 <Label
+                    Style="{DynamicResource LabelStyleMain}" 
                     Content="{Binding SelectedUser.LastEntry.CurrentSpeed}"
                     Grid.Column="1"
                     Grid.Row="1"
                     HorizontalAlignment="Left"
                     x:Name="CurrentSpeedText" />
                 <Label
+                    Style="{DynamicResource LabelStyleMain}" 
                     Content="{Binding SelectedUser.TopSpeed}"
                     Grid.Column="2"
                     Grid.Row="2"
                     HorizontalAlignment="Left"
                     x:Name="TopSpeedText" />
                 <Label
+                    Style="{DynamicResource LabelStyleMain}" 
                     Content="{Binding SelectedUser.AverageSpeed}"
                     Grid.Column="3"
                     Grid.Row="3"
                     HorizontalAlignment="Left"
                     x:Name="AverageSpeedText" />
                 <Label
+                    Style="{DynamicResource LabelStyleMain}" 
                     Content="{Binding SelectedUser.TimeElapsed}"
                     Grid.Column="4"
                     Grid.Row="4"
@@ -380,19 +337,21 @@
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
                 <Label
-                    Style="{StaticResource Header}"
+                    Style="{DynamicResource HeaderStyle1}"
                     Content="Heart Information:"
                     DockPanel.Dock="Top"
                     FontWeight="Bold"
                     HorizontalAlignment="Center"
                     x:Name="HeartInformationHeader" />
                 <Label
+                    Style="{DynamicResource LabelStyleMain}" 
                     Content="{Binding SelectedUser.LastEntry.CurrentRate}"
                     FontSize="48"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     x:Name="HeartInformationValue" />
                 <Label
+                    Style="{DynamicResource LabelStyleMain}" 
                     Background="{x:Null}"
                     Content="BPM"
                     FontSize="36"
@@ -415,6 +374,7 @@
                     <RowDefinition Height="1*" />
                 </Grid.RowDefinitions>
                 <Label
+                    Style="{DynamicResource LabelStyleMain}" 
                     Content="Lowest"
                     FontSize="16"
                     Grid.Column="0"
@@ -424,6 +384,7 @@
                     VerticalContentAlignment="Center"
                     x:Name="HeartLowestHeader" />
                 <Label
+                    Style="{DynamicResource LabelStyleMain}" 
                     Content="Average"
                     FontSize="16"
                     Grid.Column="1"
@@ -433,6 +394,7 @@
                     VerticalContentAlignment="Center"
                     x:Name="HeartAverageHeader" />
                 <Label
+                    Style="{DynamicResource LabelStyleMain}" 
                     Content="Peak"
                     FontSize="16"
                     Grid.Column="2"
@@ -442,6 +404,7 @@
                     VerticalContentAlignment="Center"
                     x:Name="HeartPeakHeader" />
                 <Label
+                    Style="{DynamicResource LabelStyleMain}" 
                     Content="{Binding SelectedUser.LowestRate}"
                     FontSize="16"
                     Grid.Column="0"
@@ -450,6 +413,7 @@
                     VerticalContentAlignment="Top"
                     x:Name="HeartLowestText" />
                 <Label
+                    Style="{DynamicResource LabelStyleMain}" 
                     Content="{Binding SelectedUser.AverageRate}"
                     FontSize="16"
                     Grid.Column="1"
@@ -458,6 +422,7 @@
                     VerticalContentAlignment="Top"
                     x:Name="HeartAverageText" />
                 <Label
+                    Style="{DynamicResource LabelStyleMain}" 
                     Content="{Binding SelectedUser.HighestRate}"
                     FontSize="16"
                     Grid.Column="2"
@@ -469,14 +434,17 @@
             <Grid Grid.Row="2">
                 <StackPanel Orientation="Vertical" x:Name="BikeValuePanel">
                     <Label
-                        Style="{StaticResource Header}"
+                        Style="{DynamicResource HeaderStyle1}"
                         Content="Adjust Bike Values"
                         FontWeight="Bold"
                         HorizontalAlignment="Center"
                         x:Name="AdjustBikeValuesHeader" />
-                    <Label Content="Bike Resistance:" x:Name="BikeResistanceHeader" />
+                    <Label 
+                    Style="{DynamicResource LabelStyleMain}" 
+                        Content="Bike Resistance:" x:Name="BikeResistanceHeader" />
                     <Slider Margin="30,0,30,0" x:Name="ResistanceSlider" />
                     <Label
+                    Style="{DynamicResource LabelStyleMain}" 
                         Content="1.0X"
                         HorizontalAlignment="Center"
                         x:Name="ResistanceValue" />

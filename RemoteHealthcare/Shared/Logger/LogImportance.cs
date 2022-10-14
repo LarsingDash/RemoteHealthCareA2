@@ -22,6 +22,7 @@ namespace Shared.Log
         public override string ToString() { return Name; }
 
         public static readonly LogImportance Fatal = new("Fatal", 1, LogColor.Red.Color);
+        public static readonly LogImportance DebugHighlight = new("DebugHighLight", 1, LogColor.Magenta.Color);
         public static readonly LogImportance Error = new("Error", 2, LogColor.Yellow.Color);
         public static readonly LogImportance Warn = new("Warn", 3, LogColor.LightYellow.Color);
         public static readonly LogImportance Information = new("Information", 4, LogColor.Cyan.Color);

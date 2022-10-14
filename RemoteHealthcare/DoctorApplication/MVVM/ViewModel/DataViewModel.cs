@@ -12,8 +12,9 @@ using System.Windows;
 using LiveCharts.Wpf;
 using LiveCharts;
 using System.DirectoryServices;
+using ClientApplication.ServerConnection;
+using ClientApplication.ServerConnection.Communication;
 using Shared;
-using DoctorApplication.Communication;
 using Shared.Log;
 
 namespace DoctorApplication.MVVM.ViewModel

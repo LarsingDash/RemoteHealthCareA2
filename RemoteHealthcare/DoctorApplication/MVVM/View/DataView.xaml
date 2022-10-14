@@ -253,7 +253,7 @@
                     HorizontalAlignment="Left"
                     x:Name="AverageSpeedText" />
                 <Label
-                    Content="{Binding SelectedUser.LastEntry.TimeElapsed}"
+                    Content="{Binding SelectedUser.TimeElapsed}"
                     Grid.Column="4"
                     Grid.Row="4"
                     HorizontalAlignment="Left"

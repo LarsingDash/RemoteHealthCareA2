@@ -1,7 +1,7 @@
 using System;
 using Shared.Log;
 
-namespace DoctorApplication.Communication;
+namespace ClientApplication.ServerConnection.Communication;
 
 public class JsonFolder
 {

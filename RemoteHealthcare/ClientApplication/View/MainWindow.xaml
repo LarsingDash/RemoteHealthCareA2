@@ -24,6 +24,12 @@
         <DataTemplate DataType="{x:Type viewModel:HomeViewModel}">
             <view:HomeView/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModel:VRViewModel}">
+            <view:VRView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModel:ChatViewModel}">
+            <view:ChatView/>
+        </DataTemplate>
     </Window.Resources>
 
     <Border CornerRadius="25"
@@ -101,7 +107,8 @@
                 </RadioButton>
 
                 <RadioButton Style="{StaticResource menuButton}"
-                             Tag="{StaticResource color3}">
+                             Tag="{StaticResource color3}"
+                             Command="{Binding ShowVRViewCommand}">
                     <StackPanel Orientation="Horizontal">
                         <fa:IconImage Icon="Glasses" Style="{StaticResource menuButtonIcon}" />
                         <TextBlock Text="VR Session" Style="{StaticResource menuButtonText}" />
@@ -109,7 +116,8 @@
                 </RadioButton>
 
                 <RadioButton Style="{StaticResource menuButton}"
-                             Tag="{StaticResource color4}">
+                             Tag="{StaticResource color4}"
+                             Command="{Binding ShowChatViewCommand}">
                     <StackPanel Orientation="Horizontal">
                         <fa:IconImage Icon="Message" Style="{StaticResource menuButtonIcon}" />
                         <TextBlock Text="Chat" Style="{StaticResource menuButtonText}" />
@@ -143,7 +151,7 @@
                                 Orientation="Horizontal"
                                 FlowDirection="RightToLeft"
                                 Background="Transparent"
-                                Margin="0,0,5,0"
+                                Margin="0,0,15,0"
                                 MouseLeftButtonDown="PnlControlBar_OnMouseLeftButtonDown">
                         
                         <Button x:Name="closeBtn"

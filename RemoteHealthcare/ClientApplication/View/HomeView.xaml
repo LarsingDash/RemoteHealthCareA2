@@ -10,63 +10,34 @@
     
     <Grid>
         
-    
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="25" />
-            <ColumnDefinition Width="400" />
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="200"/>
         </Grid.ColumnDefinitions>
         
-        <Grid Grid.Column="0">
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition Height="25"/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
+        <StackPanel Grid.Column="1">
             
-            <StackPanel Grid.Row="0">
-                <TextBlock Text="Data komt hier"
-                           FontFamily="Montserrat"
-                           FontSize="35"
-                           FontWeight="Medium"
-                           Foreground="{StaticResource titleColor2}"
-                           TextAlignment="Center"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Center"
-                           Margin="0,110,0,0">
-                    
-                </TextBlock>
-            </StackPanel>
-            
-            <StackPanel Grid.Row="2">
-                <TextBlock Text="VR Sessie Starten komt hier"
-                           FontFamily="Montserrat"
-                           FontSize="35"
-                           FontWeight="Medium"
-                           Foreground="{StaticResource titleColor2}"
-                           TextAlignment="Center"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Center"
-                           Margin="0,110,0,0">
-                    
-                </TextBlock>
-            </StackPanel>
-            
-        </Grid>
-        
-        <!--Chat Box-->
-        <StackPanel Grid.Column="2">
-            
-            <TextBlock Text="Chat komt hier"
-                       FontFamily="Montserrat"
-                       FontSize="35"
-                       Foreground="{StaticResource titleColor2}"
-                       FontWeight="Medium"
+            <TextBlock Text="Welcome to Healthcare"
                        TextAlignment="Center"
-                       VerticalAlignment="Center"
                        HorizontalAlignment="Center"
-                       Margin="0,250,0,0">
-                    
+                       VerticalAlignment="Center"
+                       FontFamily="Montserrat"
+                       FontSize="25"
+                       FontWeight="Medium"
+                       Foreground="{StaticResource titleColor2}"
+                       Margin="0,200,0,0">
+            </TextBlock>
+            
+            <TextBlock Text="by group A2"
+                       TextAlignment="Center"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       FontFamily="Montserrat"
+                       FontSize="25"
+                       FontWeight="Medium"
+                       Foreground="{StaticResource titleColor2}"
+                       Margin="0,20,0,0">
             </TextBlock>
             
         </StackPanel>

@@ -27,4 +27,12 @@ public partial class LoginView : Window
 	{
 		Application.Current.Shutdown();
 	}
+
+	private void TxtPhoneNumber_OnKeyDown(object sender, KeyEventArgs e)
+	{
+		if (System.Text.RegularExpressions.Regex.IsMatch(txtPhoneNumber.Text, "[^0-9]"))
+		{
+			txtPhoneNumber.Text = "";
+		}
+	}
 }

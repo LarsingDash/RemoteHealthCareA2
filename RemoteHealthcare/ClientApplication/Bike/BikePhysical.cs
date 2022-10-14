@@ -46,13 +46,13 @@ namespace ClientApplication.Bike
             }
             else
             {
-                await SetResistanceAsync(1);
+                SetResistanceAsync(1);
                 Thread.Sleep(10000);
-                await SetResistanceAsync(1000);
+                SetResistanceAsync(1000);
             }
         }
 
-        public async Task SetResistanceAsync(int resistance)
+        public override void SetResistanceAsync(int resistance)
         {
             byte[] output = new byte[13];
             output[0] = 0x4A; //sync byte
@@ -66,9 +66,8 @@ namespace ClientApplication.Bike
             {
                 checksum ^= output[i];
             }
-
-            output[12] = (byte)checksum;
-            await bikeDevice.ble.WriteCharacteristic("6e40fec3-b5a3-f393-e0a9-e50e24dcca9e", output);
+            output[12] = checksum;
+            bikeDevice.ble.WriteCharacteristic("6e40fec3-b5a3-f393-e0a9-e50e24dcca9e", output);
         }
         
 

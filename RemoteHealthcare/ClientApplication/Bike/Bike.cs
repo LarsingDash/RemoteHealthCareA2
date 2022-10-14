@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ClientApplication.ServerConnection.Bike;
 
@@ -15,6 +16,8 @@ public abstract class Bike
             bikeData.Add(u, 0);
         }
     }
+
+    public abstract void SetResistanceAsync(int ressistance);
 }
 
 /* Creating an enumeration of the different types of data that can be sent from the bike. */

@@ -3,6 +3,7 @@ using DoctorApplication.Core;
 using DoctorApplication.MVVM.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -36,9 +37,9 @@ namespace DoctorApplication.MVVM.ViewModel
 
 
 
-        public HistoryViewModel()
+        public HistoryViewModel(BindableCollection<UserDataModel> users)
         {
-
+            this.users = users;
         }
     }
 }

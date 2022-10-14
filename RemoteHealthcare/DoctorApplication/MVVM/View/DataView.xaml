@@ -33,7 +33,7 @@
             <Setter Property="Padding" Value="4" />
 
         </Style>
-        
+
         <Style TargetType="Label" x:Key="Header">
             <Setter Property="Label.Foreground">
                 <Setter.Value>
@@ -481,16 +481,29 @@
                         HorizontalAlignment="Center"
                         x:Name="ResistanceValue" />
                     <Button
-                        Background="{x:Null}"
+                        Background="#0AFB0404"
                         Content="Emergency"
                         HorizontalAlignment="Center"
-                        Width="75" BorderBrush="{x:Null}" Height="73"
+                        Width="75" Height="73" BorderThickness="2,2,2,2"
                          >
                         <Button.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="100" />
                             </Style>
                         </Button.Resources>
+                        <Button.BorderBrush>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FFEC2D1A"/>
+                                <GradientStop Color="#FFC54538" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Button.BorderBrush>
+                        <Button.Foreground>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FF901414"/>
+                                <GradientStop Color="#FFD21717" Offset="1"/>
+                                <GradientStop Color="#FF9E1919" Offset="0.614"/>
+                            </LinearGradientBrush>
+                        </Button.Foreground>
                     </Button>
                 </StackPanel>
             </Grid>

@@ -81,11 +81,11 @@ namespace DoctorApplication.MVVM.ViewModel
        
         
 
-        public DataViewModel()
+        public DataViewModel(BindableCollection<UserDataModel> users)
         {
 
             //creating users (test data)
-            users = new BindableCollection<UserDataModel>();
+            this.users = users;
             UserDataModel test1 = new UserDataModel("user1", "0612345678", 12345);
             UserDataModel test2 = new UserDataModel("user2", "0698765432", 67890);
             UserDataModel test3 = new UserDataModel("user3", "0698665232", 98765);

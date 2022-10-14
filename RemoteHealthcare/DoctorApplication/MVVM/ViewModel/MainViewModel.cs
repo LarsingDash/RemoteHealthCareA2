@@ -1,4 +1,5 @@
-﻿using DoctorApplication.Core;
+﻿using Caliburn.Micro;
+using DoctorApplication.Core;
 using DoctorApplication.MVVM.Model;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace DoctorApplication.MVVM.ViewModel
         public HistoryViewModel HistoryVM { get; }
         public DataViewModel DataVM { get; set; }
 
-        public ObservableCollection<UserDataModel> users { get; set; }
+        public BindableCollection<UserDataModel> users { get; set; }
 
         private string toggleButtonText;
 
@@ -47,8 +48,8 @@ namespace DoctorApplication.MVVM.ViewModel
         public MainViewModel()
         {
             ChangeView = new RelayCommand(ChangeViewToggled);
-            DataVM = new DataViewModel();
-            HistoryVM = new HistoryViewModel();
+            DataVM = new DataViewModel(users);
+            HistoryVM = new HistoryViewModel(users);
             CurrentView = DataVM;
             ToggleButtonText = "Switch to current data";
         }

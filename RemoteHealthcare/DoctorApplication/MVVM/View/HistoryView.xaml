@@ -6,7 +6,19 @@
              xmlns:local="clr-namespace:DoctorApplication.MVVM.View"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+ 
     <Grid>
-            
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+        <RowDefinition Height="50"></RowDefinition>
+        <RowDefinition></RowDefinition>
+        <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Label Style="{StaticResource HeaderStyle1}" FontSize="15" Content="Session History" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Global User Interface"/>
     </Grid>
 </UserControl>

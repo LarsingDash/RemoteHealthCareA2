@@ -481,7 +481,7 @@
                         HorizontalAlignment="Center"
                         x:Name="ResistanceValue" />
                     <Button
-                        Background="#FFF94538"
+                        Background="{x:Null}"
                         Content="Emergency"
                         HorizontalAlignment="Center"
                         Width="75" BorderBrush="{x:Null}" Height="73"

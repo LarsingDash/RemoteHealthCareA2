@@ -1,6 +1,8 @@
 ﻿using DoctorApplication.Core;
+using DoctorApplication.MVVM.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +14,8 @@ namespace DoctorApplication.MVVM.ViewModel
         private object currentView;
         public HistoryViewModel HistoryVM { get; }
         public DataViewModel DataVM { get; set; }
+
+        public ObservableCollection<UserDataModel> users { get; set; }
 
         private string toggleButtonText;
 

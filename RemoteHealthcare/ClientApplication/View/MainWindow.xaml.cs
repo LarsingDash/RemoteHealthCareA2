@@ -23,14 +23,35 @@ namespace ClientApplication
 		public MainWindow()
 		{
 			InitializeComponent();
+			this.MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
+			
 		}
 
-		private void MainWindow_OnMouseDown(object sender, MouseButtonEventArgs e)
+		private void PnlControlBar_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 		{
-			if (e.LeftButton == MouseButtonState.Pressed)
+			DragMove();
+		}
+
+		private void btnClose_Click(object sender, RoutedEventArgs e)
+		{
+			Application.Current.Shutdown();
+		}
+
+		private void MaxBtn_OnClick(object sender, RoutedEventArgs e)
+		{
+			if (WindowState == WindowState.Maximized)
 			{
-				DragMove();
+				WindowState = WindowState.Normal;
 			}
+			else
+			{
+				WindowState = WindowState.Maximized;
+			}
+		}
+
+		private void MinBtn_OnClick(object sender, RoutedEventArgs e)
+		{
+			WindowState = WindowState.Minimized;
 		}
 	}
 }

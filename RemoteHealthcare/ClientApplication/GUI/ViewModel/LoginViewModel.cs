@@ -58,7 +58,7 @@ public class LoginViewModel: ViewModelBase
 	private bool CanExecuteLoginCommand(object obj)
 	{
 		bool validData;
-		if (string.IsNullOrWhiteSpace(PhoneNumber) || PhoneNumber.Length < 3 ||
+		if (string.IsNullOrWhiteSpace(PhoneNumber) || PhoneNumber.Length < 10 || PhoneNumber.Length > 10 ||
 		    Password == null || Password.Length < 3) {
 			validData = false;	
 		}

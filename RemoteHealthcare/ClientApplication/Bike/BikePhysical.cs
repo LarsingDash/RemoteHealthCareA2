@@ -10,7 +10,7 @@ namespace ClientApplication.ServerConnection.Bike
     public class BikePhysical : Bike
     {
         // Change this to the last 5 digits of the serial number of the bike.
-        private string id = "01249";
+        private string id = "24517";
         
         private BikeHandler handler;
         private Dictionary<int, DataPage> pages;
@@ -33,10 +33,11 @@ namespace ClientApplication.ServerConnection.Bike
         {
             bikeDevice = new BluetoothDevice($"Tacx Flux {id}", "6e40fec1-b5a3-f393-e0a9-e50e24dcca9e", "6e40fec2-b5a3-f393-e0a9-e50e24dcca9e", ValueChangedBike);
             await bikeDevice.StartConnection();
-            heartRateDevice = new BluetoothDevice("Decathlon Dual HR","HeartRate", "HeartRateMeasurement", ValueChangedHeartRate);
-            await heartRateDevice.StartConnection();
+            // heartRateDevice = new BluetoothDevice("Decathlon Dual HR","HeartRate", "HeartRateMeasurement", ValueChangedHeartRate);
+            // await heartRateDevice.StartConnection();
 
-            if (!bikeDevice.Connected || heartRateDevice.Connected)
+            // if (!bikeDevice.Connected || heartRateDevice.Connected)
+            if (!bikeDevice.Connected)
             {
                 Logger.LogMessage(LogImportance.Information, "Switching to Bike Simulator");
                 handler.Bike = new BikeSimulator(handler);

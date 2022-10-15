@@ -30,7 +30,8 @@ public class ServerClientDoctorTests
         {
             {"public-rsa-key", new RsaKey()},
             {"encryptedMessage", new EncryptedMessage()},
-            {"forward-chat-message", new ChatMessage()}
+            {"forward-chat-message", new ChatMessage()},
+            {"forward-set-resistance", new SetResistance()}
         };
         
         doctorCommandHandler = new Dictionary<string, ICommandHandler>()
@@ -501,5 +502,27 @@ public class ServerClientDoctorTests
             return;
         }
         Assert.Pass( "AddSerialCallbackTimeout is working");
+    }
+    
+    [Test]
+    public async Task Test96SetBikeResistanceDoctor()
+    {
+        var serial = Util.RandomString();
+
+        doctor.SendData(JsonFileReader.GetObjectAsString("SetResistance", new Dictionary<string, string>()
+        {
+            {"_serial_", serial},
+            {"_resistance_", "3"},
+            {"_user_", patientUserName}
+        }, JsonFolder.Json.Path));
+        await doctor.AddSerialCallbackTimeout(serial, ob =>
+        {
+            Assert.That(ob["data"]!["status"]!.ToObject<string>()!, Is.EqualTo("ok"), "Could not set resistance: " + ob["data"]!["error"]!.ToObject<string>()!);
+        }, () =>
+        {
+            Assert.Fail("No Response from Command set-resistance received.");
+        }, 1000);
+        Assert.That(SetResistance.received, Is.EqualTo(1), "Resistance change has not been received by client.");
+        Assert.Pass("SetResistance has been received by server.");
     }
 }

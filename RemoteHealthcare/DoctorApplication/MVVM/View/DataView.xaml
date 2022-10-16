@@ -49,22 +49,6 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
                 <StackPanel Orientation="Horizontal">
-
-                    <Button
-                        Style="{StaticResource ButtonGradientStyle}"
-                        BorderBrush="{x:Null}"
-                        Content="Open in window"
-                        FontFamily="Arial Black"
-                        HorizontalAlignment="Center"
-                        Margin="0,5"
-                        Padding="6"
-                        x:Name="NewWindowButton">
-                        <Button.Resources>
-                            <Style TargetType="Border">
-                                <Setter Property="CornerRadius" Value="5" />
-                            </Style>
-                        </Button.Resources>
-                    </Button>
                     <ToggleButton
                         Width="Auto"
                         Command="{Binding StartRecordingCommand}"

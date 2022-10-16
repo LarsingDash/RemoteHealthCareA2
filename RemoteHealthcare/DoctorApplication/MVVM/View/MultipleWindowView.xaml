@@ -10,6 +10,79 @@
              d:DesignHeight="450" d:DesignWidth="800"
              >
     <Grid>
-            
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Label Content="Multiple Session View:" Style="{StaticResource HeaderStyle1}"/>
+        <ListView
+            VerticalAlignment="Top"
+            Grid.Row="1"
+            Background="{x:Null}"
+            BorderBrush="{x:Null}"
+            ItemsSource="{Binding users}" d:ItemsSource="{d:SampleData ItemCount=5}">
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"></StackPanel>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Border
+                        BorderThickness="5"
+                        CornerRadius="5"
+                        Padding="5,2">
+                        <Border.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FFB238D8"/>
+                                <GradientStop Color="#FF8912D0" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <StackPanel VerticalAlignment="Top" Orientation="Vertical" Background="MediumPurple">
+
+                            <!--User info-->
+                            <Label Content="User info" Style="{StaticResource HeaderStyle1}"/>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Username: " Style="{StaticResource LabelStyleMain}" FontWeight="Bold"/>
+                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding UserName}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Bike ID: " Style="{StaticResource LabelStyleMain}" FontWeight="Bold"/>
+                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding BikeId}"/>
+                            </StackPanel>
+                            <!--Bike info-->
+                            <Label Content="Bike info" Style="{StaticResource HeaderStyle1}"/>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Current speed: " Style="{StaticResource LabelStyleMain}" FontWeight="Bold"/>
+                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding LastEntry.CurrentSpeed}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Average Speed: " Style="{StaticResource LabelStyleMain}" FontWeight="Bold"/>
+                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding AverageSpeed}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Top Speed: " Style="{StaticResource LabelStyleMain}" FontWeight="Bold"/>
+                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding TopSpeed}"/>
+                            </StackPanel>
+
+                            <!--Heart info-->
+                            <Label Content="Heart info" Style="{StaticResource HeaderStyle1}"/>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Average heartrate: " Style="{StaticResource LabelStyleMain}" FontWeight="Bold"/>
+                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding AverageRate}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Peak heartrate: " Style="{StaticResource LabelStyleMain}" FontWeight="Bold"/>
+                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding HighestRate}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Lowest heartrate: " Style="{StaticResource LabelStyleMain}" FontWeight="Bold"/>
+                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding LowestRate}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
 </UserControl>

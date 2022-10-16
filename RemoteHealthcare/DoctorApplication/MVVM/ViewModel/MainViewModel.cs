@@ -110,7 +110,7 @@ namespace DoctorApplication.MVVM.ViewModel
                 //checked
                 Console.WriteLine("Switch to history");
                 ToggleButtonText = "History View";
-                CurrentView = HistoryVM;
+                CurrentView = MultipleVM;
             }
             else
             {

@@ -23,8 +23,9 @@
         <Grid Grid.Column="0">
 
             <Grid.RowDefinitions>
-                <RowDefinition Height="1.3*" />
+                <RowDefinition Height="1.5*" />
                 <RowDefinition Height="2*" />
+                <RowDefinition Height="0.5*" />
                 <RowDefinition Height="3*" />
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0" Orientation="Vertical">
@@ -35,7 +36,7 @@
                     HorizontalAlignment="Center"
                     x:Name="SelectedUserLabel" />
                 <ComboBox
-                    ItemsSource="{Binding users}"
+                    ItemsSource="{Binding Users}"
                     SelectedItem="{Binding SelectedUser}"
                     Width="154">
                     <ComboBox.ItemTemplate>
@@ -48,22 +49,6 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
                 <StackPanel Orientation="Horizontal">
-
-                    <Button
-                        Style="{StaticResource ButtonGradientStyle}"
-                        BorderBrush="{x:Null}"
-                        Content="Open in window"
-                        FontFamily="Arial Black"
-                        HorizontalAlignment="Center"
-                        Margin="0,5"
-                        Padding="6"
-                        x:Name="NewWindowButton">
-                        <Button.Resources>
-                            <Style TargetType="Border">
-                                <Setter Property="CornerRadius" Value="5" />
-                            </Style>
-                        </Button.Resources>
-                    </Button>
                     <ToggleButton
                         Width="Auto"
                         Command="{Binding StartRecordingCommand}"
@@ -97,38 +82,10 @@
                     HorizontalAlignment="Left"
                     Padding="5,0,5,5"
                     Content="{Binding SelectedUser.UserName}" />
-                <Label
-                    Style="{DynamicResource LabelStyleMain}" 
-                    Content="Bike ID:"
-                    HorizontalAlignment="Left"
-                    Padding="5,5,5,0"
-                    x:Name="BikeIdHeader" />
-                <Label
-                    Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding SelectedUser.BikeId}"
-                    HorizontalAlignment="Left"
-                    Padding="5,0,5,5"
-                    x:Name="BikeIdText" />
-                <Label
-                    Style="{DynamicResource LabelStyleMain}" 
-                    Content="Phone Number:"
-                    HorizontalAlignment="Left"
-                    Padding="5,5,5,0"
-                    x:Name="PhoneNumberHeader" />
-                <Label
-                    Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding SelectedUser.PhoneNumber}"
-                    HorizontalAlignment="Left"
-                    Padding="5,0,5,5"
-                    x:Name="PhoneNumberText" />
-                <Label
-                    Style="{DynamicResource LabelStyleMain}" 
-                    Content="Chat:"
-                    HorizontalAlignment="Left"
-                    Padding="5,10,5,0" />
-
+                
             </StackPanel>
-            <Grid Grid.Row="2">
+            <Label HorizontalAlignment="Center" Style="{StaticResource HeaderStyle1}" FontWeight="Bold" Grid.Row="2" Content="Chat:"/>
+            <Grid Grid.Row="3">
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition MaxHeight="20" />
@@ -236,9 +193,10 @@
                             <lvc:Axis LabelFormatter="{Binding YFormatter}" Title="Kilometer/Hour" />
                         </lvc:CartesianChart.AxisY>
                         <lvc:CartesianChart.AxisX>
-                            <lvc:Axis Labels="{Binding Labels}" Title="Time" />
+                            <lvc:Axis Labels="{Binding Labels}" Title="Time HH:MM" />
                         </lvc:CartesianChart.AxisX>
                     </lvc:CartesianChart>
+
                 </Grid>
             </Grid>
             <Grid Grid.Row="1">
@@ -296,10 +254,16 @@
                     Grid.Row="4"
                     HorizontalAlignment="Left"
                     x:Name="TimeElapsedHeader" />
-
+<Label
+                    Style="{DynamicResource LabelStyleMain}" 
+                    Content="Distance Travelled:"
+                    Grid.Column="0"
+                    Grid.Row="5"
+                    HorizontalAlignment="Left"
+                    />
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding SelectedUser.LastEntry.CurrentSpeed}"
+                    Content="{Binding SelectedUser.LastSpeed}"
                     Grid.Column="1"
                     Grid.Row="1"
                     HorizontalAlignment="Left"
@@ -307,24 +271,31 @@
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
                     Content="{Binding SelectedUser.TopSpeed}"
-                    Grid.Column="2"
+                    Grid.Column="1"
                     Grid.Row="2"
                     HorizontalAlignment="Left"
                     x:Name="TopSpeedText" />
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
                     Content="{Binding SelectedUser.AverageSpeed}"
-                    Grid.Column="3"
+                    Grid.Column="1"
                     Grid.Row="3"
                     HorizontalAlignment="Left"
                     x:Name="AverageSpeedText" />
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding SelectedUser.TimeElapsed}"
-                    Grid.Column="4"
+                    Content="{Binding SelectedUser.LastSession.TimeElapsed}"
+                    Grid.Column="1"
                     Grid.Row="4"
                     HorizontalAlignment="Left"
                     x:Name="TimeElapsedText" />
+                <Label
+                    Style="{DynamicResource LabelStyleMain}" 
+                    Content="{Binding SelectedUser.LastDistance}"
+                    Grid.Column="1"
+                    Grid.Row="5"
+                    HorizontalAlignment="Left"
+                    x:Name="DistanceTravelledText" />
 
             </Grid>
         </Grid>
@@ -345,7 +316,7 @@
                     x:Name="HeartInformationHeader" />
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding SelectedUser.LastEntry.CurrentRate}"
+                    Content="{Binding SelectedUser.LastHeartRate}"
                     FontSize="48"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
@@ -442,7 +413,7 @@
                     <Label 
                     Style="{DynamicResource LabelStyleMain}" 
                         Content="Bike Resistance:" x:Name="BikeResistanceHeader" />
-                    <Slider Value="{Binding SliderValue}" Maximum="100" Margin="30,0,30,0" x:Name="ResistanceSlider" IsSnapToTickEnabled="True" TickFrequency="10" >
+                    <Slider Value="{Binding SliderValue}" Maximum="1000" Margin="30,0,30,0" x:Name="ResistanceSlider" IsSnapToTickEnabled="True" TickFrequency="50" >
                         
                     </Slider>
                     <StackPanel Orientation="Horizontal">
@@ -454,6 +425,7 @@
                         x:Name="ResistanceValue" />
                     </StackPanel>
                     <Button
+                        Command="{Binding EmergencyPressedCommand}"
                         Background="#0AFB0404"
                         Content="Emergency"
                         HorizontalAlignment="Center"

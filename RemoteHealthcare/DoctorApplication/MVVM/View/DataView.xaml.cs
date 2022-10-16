@@ -27,6 +27,8 @@ namespace DoctorApplication.MVVM.View
         public DataView()
         {
             InitializeComponent();
+
+
         }
 
         

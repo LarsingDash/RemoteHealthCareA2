@@ -15,6 +15,24 @@ public class StopBikeRecording : CommandHandler
     /// <param name="ob">The JObject that was sent from the client.</param>
     public override void HandleMessage(Server server, ClientData data, JObject ob)
     {
+        if (ob["data"]?["username"]?.ToObject<string>() == null)
+        {
+            SendEncryptedError(data,ob,"No Username given");
+            return;
+        }
+        string name = ob["data"]!["username"]!.ToObject<string>()!;
+        ClientData? user = server.GetUser(name);
+        if (user == null)
+        {
+            SendEncryptedError(data,ob,"Username given, but not found");
+            return;
+        }
+
+        if (user.DataHandler.GetType() != typeof(ClientHandler))
+        {
+            SendEncryptedError(data,ob,"User is not a patient");
+            return;
+        }
         if (ob["data"]?["uuid"]?.ToObject<string>() != null)
         {
             if (!server.ActiveSessions.Contains(ob["data"]!["uuid"]!.ToObject<string>()!))
@@ -27,14 +45,14 @@ public class StopBikeRecording : CommandHandler
             //Getting current values
             JObject file = JsonFileReader.GetEncryptedObject(fileName,
                 new Dictionary<string, string>(),
-                JsonFolder.Data.Path + data.UserName + "\\");
+                JsonFolder.Data.Path + user.UserName + "\\");
 
             //Adding end time
             file["end-time"] = DateTime.Now.ToString(CultureInfo.InvariantCulture);
             
             
             //Writing updated values
-            JsonFileWriter.WriteTextToFileEncrypted(fileName, file.ToString(), JsonFolder.Data.Path+data.UserName+"\\");
+            JsonFileWriter.WriteTextToFileEncrypted(fileName, file.ToString(), JsonFolder.Data.Path+user.UserName+"\\");
              //JsonFileWriter.WriteTextToFile(fileName, file.ToString(), JsonFolder.Data.Path+data.UserName+"\\"); Debugging to see data
             
             //Sending ok response
@@ -43,6 +61,7 @@ public class StopBikeRecording : CommandHandler
                 {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
                 {"_status_", "ok"},
             }, JsonFolder.ClientMessages.Path));
+            server.ActiveSessions.Remove(ob["data"]!["uuid"]!.ToObject<string>()!);
         }
         else
         {

@@ -15,17 +15,16 @@ namespace DoctorApplication.Core
     internal class ConnectionHandler
     {
         private Client client { get; set; }
-        private string serial { get; set; }
         private string? uuid { get; set; }
 
         public ConnectionHandler()
         {
             this.client = App.GetClientInstance();
-            this.serial = Util.RandomString();
         }
 
         public void ListClients()
         {
+            var serial = Util.RandomString();
             client.SendEncryptedData(JsonFileReader.GetObjectAsString("AllClients", new Dictionary<string, string>()
             {
                 {"_serial_", serial}
@@ -39,12 +38,12 @@ namespace DoctorApplication.Core
 
         public async Task SubscribeToSessionAsync()
         {
-            serial = Util.RandomString();
+            var serial = Util.RandomString();
             client.SendEncryptedData(JsonFileReader.GetObjectAsString("SubscribeToSession", new Dictionary<string, string>()
-        {
-            {"_uuid_", uuid},
-            {"_serial_", serial}
-        }));
+            {
+                {"_uuid_", uuid},
+                {"_serial_", serial}
+            }));
             await client.AddSerialCallbackTimeout(serial, ob =>
             {
                 //Check status ok

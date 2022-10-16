@@ -14,17 +14,20 @@ using LiveCharts;
 using System.DirectoryServices;
 using ClientApplication.ServerConnection;
 using ClientApplication.ServerConnection.Communication;
+using DoctorApplication.Communication;
 using Shared;
 using Shared.Log;
+using LiveCharts.Helpers;
 
 namespace DoctorApplication.MVVM.ViewModel
 {
     internal class DataViewModel : ObservableObject
     {
         private ConnectionHandler dataHandler;
-        
+
         //WPF Text change strings
         private string message;
+        private string currentSessionUuid;
 
         public string Message
         {
@@ -49,7 +52,15 @@ namespace DoctorApplication.MVVM.ViewModel
 
         private void ApplySliderValue()
         {
-            Console.WriteLine("Slider value changed to: " + SliderValue);
+            Logger.LogMessage(LogImportance.Information, sliderValue.ToString());
+            Client client = App.GetClientInstance();
+            var serial = Util.RandomString();
+            client.SendEncryptedData(JsonFileReader.GetObjectAsString("SetResistance", new Dictionary<string, string>()
+            {
+                {"_serial_" , serial},
+                {"_resistance_" , SliderValue.ToString()},
+                {"_user_", "TestUsername" }
+            }, JsonFolder.Json.Path));
         }
 
         private string buttonText;
@@ -64,19 +75,24 @@ namespace DoctorApplication.MVVM.ViewModel
             }
         }
 
-        //data for graph
-        public LineSeries lineSeries = new LineSeries
-        {
-            Title = "Series 1",
-            Values = new ChartValues<double> { 4, 6, 5, 2, 4 }
-        };
+
         //commands
         public RelayCommand SendCommand { get; set; }
         public RelayCommand GetUserCommand { get; set; }
         public RelayCommand StartRecordingCommand { get; set; }
+        public RelayCommand EmergencyPressedCommand { get; set; }
 
         //Data collections
-        public BindableCollection<UserDataModel> users { get; set; }
+        private BindableCollection<UserDataModel> users;
+        public BindableCollection<UserDataModel> Users
+        {
+            get { return users; }
+            set
+            {
+                users = value;
+                OnPropertyChanged();
+            }
+        }
         public ObservableCollection<MessageModel> messages { get; set; }
         public SeriesCollection SeriesCollection { get; set; }
         public string[] Labels { get; set; }
@@ -95,58 +111,123 @@ namespace DoctorApplication.MVVM.ViewModel
             }
         }
 
-        
-       
-        
+        private SessionModel selectedSession;
+        public SessionModel SelectedSession
+        {
+            get { return selectedSession; }
+            set
+            {
+                selectedSession = value;
+                OnPropertyChanged();
+            }
+        }
+
+        //data for graph
+        public LineSeries lineSeries;
+
+
 
         public DataViewModel(BindableCollection<UserDataModel> users)
         {
 
+
+
             //creating users (test data)
-            this.users = users;
-           
+            this.Users = users;
+
 
             //initializing sendcommand 
             SendCommand = new RelayCommand(SendMessage);
             GetUserCommand = new RelayCommand(GetUser);
             StartRecordingCommand = new RelayCommand(StartRecordingToggled);
+            EmergencyPressedCommand = new RelayCommand(EmergencyFunction);
 
             //predetermined text in button
             buttonText = "Start";
 
             //graph series initialisation
-            SeriesCollection = new SeriesCollection
-            {
-                lineSeries
-            };
-
+            //if (SelectedUser != null)
+            //{
+            //    SeriesCollection = new SeriesCollection
+            //{
+            //    new LineSeries{
+            //    Title = "KM/H",
+            //    Values = SelectedUser.LastSession.Speed.AsChartValues(),
+            //},
+            //};
+            //}
             dataHandler = new ConnectionHandler();
             Task task = dataHandler.StartRecordingAsync("Testing");
             if (task.IsCompleted)
             {
                 Task task1 = dataHandler.SubscribeToSessionAsync();
             }
-            dataHandler.ListClients();
         }
 
-        public void StartBikeRecording()
+        private void EmergencyFunction(object obj)
         {
-            //todo start session
+            StopBikeRecording();
+            Console.WriteLine("Emergency Pressed!");
+        }
+
+        public async void StartBikeRecording()
+        {
+            Client client = App.GetClientInstance();
+            var serial = Util.RandomString();
+            client.SendEncryptedData(JsonFileReader.GetObjectAsString("StartBikeRecording", new Dictionary<string, string>()
+            {
+                {"_serial_", serial},
+                {"_name_", selectedUser.UserName},
+            }, JsonFolder.Json.Path));
+            await client.AddSerialCallbackTimeout(serial, ob =>
+            {
+                currentSessionUuid = ob["data"]!["uuid"]!.ToObject<string>()!;
+                client.SendEncryptedData(JsonFileReader.GetObjectAsString("SubscribeToSession", new Dictionary<string, string>()
+                {
+                    {"_serial_", serial},
+                    {"_uuid_", currentSessionUuid},
+                }, JsonFolder.Json.Path));
+            }, () =>
+            {
+
+            }, 1000);
+            
 
 
         }
         public void StopBikeRecording()
         {
-            //todo stop session
+            Client client = App.GetClientInstance();
+            var serial = Util.RandomString();
+            client.SendEncryptedData(JsonFileReader.GetObjectAsString("StopBikeRecording", new Dictionary<string, string>()
+            {
+                {"_serial_", serial},
+                {"_uuid_", currentSessionUuid},
+                {"_name_", selectedUser.UserName}
+            }, JsonFolder.Json.Path));
         }
 
         public void SendMessage(object Message)
         {
             if (selectedUser != null && Message!="")
             {
-                selectedUser.AddMessage(Message.ToString());
+                Client client = App.GetClientInstance();
+                var serial = Util.RandomString();
+                client.SendEncryptedData(JsonFileReader.GetObjectAsString("ChatMessage", new Dictionary<string, string>()
+                {
+                    {"_serial_", serial},
+                    {"_type_", "personal"},
+                    {"_message_", Message.ToString()!},
+                    {"_receiver_", selectedUser.UserName}
+                }, JsonFolder.Json.Path));
                 this.Message = string.Empty;
-                users.Add(new UserDataModel());
+                client.AddSerialCallbackTimeout(serial, ob =>
+                {
+                    selectedUser.AddMessage(Message.ToString());
+                }, () =>
+                {
+                    //No Response from server
+                }, 1000);
             }
         }
         public void GetUser(object user)

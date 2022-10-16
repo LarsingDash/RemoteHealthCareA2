@@ -80,7 +80,7 @@ namespace ClientSide.VR
                         }, JsonFolder.Terrain.Path)
                     },
                     {"_serial_", serial}
-                });
+                },true);
                 //TODO Check status etc?
                 await vrClient.AddSerialCallbackTimeout(serial, ob => { }, () => { }, 1000);
 
@@ -153,7 +153,7 @@ namespace ClientSide.VR
                 });
                 routeId = "";
                 vrClient.BikeController.Setup();
-               // vrClient.PanelController.Setup();
+                vrClient.PanelController.Setup();
                 await vrClient.AddSerialCallbackTimeout(serial, ob =>
                 {
                     if (ob["status"]!.ToObject<string>()!.Equals("ok"))
@@ -213,7 +213,6 @@ namespace ClientSide.VR
 
                 Logger.LogMessage(LogImportance.Debug, $"Treesid: {treesId}");
                 //Subdivide the route to get more sub-points
-                Console.WriteLine("Starting subdivision");
                 var fullRoute = new List<Vector2>();
                 for (var i = 0; i < route.Count; i++)
                 {
@@ -223,8 +222,7 @@ namespace ClientSide.VR
                     var subPoint = (currentPoint + nextPoint) / 2;
                     fullRoute.Add(subPoint);
                 }
-
-                Console.WriteLine("Subdivision completed");
+                
 
                 const int maxAmountOfObjects = 50;
                 //const int maxFailedAttempts = 10;
@@ -252,9 +250,9 @@ namespace ClientSide.VR
                         //     }
                         // });
                         string height = "0";
-                        await vrClient.AddSerialCallbackTimeout(serial,
-                            ob => { height = ob["data"]!["height"]!.ToObject<string>()!; },
-                            () => { Logger.LogMessage(LogImportance.Fatal, "No response"); }, 1000);
+                        // await vrClient.AddSerialCallbackTimeout(serial,
+                        //     ob => { height = ob["data"]!["height"]!.ToObject<string>()!; },
+                        //     () => { Logger.LogMessage(LogImportance.Fatal, "No response"); }, 1000);
 
                         tunnel.SendTunnelMessage(new Dictionary<string, string>()
                         {
@@ -277,6 +275,12 @@ namespace ClientSide.VR
                         amountOfObjects++;
                         Logger.LogMessage(LogImportance.Debug, $"Amount of Trees placed: {amountOfObjects}");
                     }).Start();
+                    
+                    Thread.Sleep(1500);
+                    tunnel.SendTunnelMessage(new Dictionary<string, string>()
+                    {
+                        {"\"_data_\"", JsonFileReader.GetObjectAsString("Play", new Dictionary<string, string>(), JsonFolder.TunnelMessages.Path)},
+                    });
                 }
             }
             catch (Exception e)

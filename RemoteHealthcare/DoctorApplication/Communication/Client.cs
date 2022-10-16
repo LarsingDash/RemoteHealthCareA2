@@ -1,35 +1,31 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.Sockets;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Xml;
+using ClientApplication.ServerConnection.Communication;
 using ClientApplication.ServerConnection.Communication.CommandHandlers;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Shared;
 using Shared.Log;
 using Formatting = Newtonsoft.Json.Formatting;
 
-namespace ClientApplication.ServerConnection.Communication;
+namespace DoctorApplication.Communication;
 
 public class Client : DefaultClientConnection
 {
     private Dictionary<string, ICommandHandler> commandHandler = new();
+    public List<string> hideMessages = new List<string>();
     
     public Client()
     {
         commandHandler.Add("public-rsa-key", new RsaKey());
+        hideMessages = new List<string>()
+        {
+        };
         
         Init("127.0.0.1", 2460, (json, encrypted) =>
             {
                 string extraText = encrypted ? "Encrypted " : "";
                if (commandHandler.ContainsKey(json["id"]!.ToObject<string>()!))
                {
-                   if (!json["id"]!.ToObject<string>()!.Equals("encryptedMessage"))
+                   if (!json["id"]!.ToObject<string>()!.Equals("encryptedMessage") && !hideMessages.Contains(json["id"]!.ToObject<string>()!))
                    {
                        Logger.LogMessage(LogImportance.Information, $"Got {extraText}message from server: {LogColor.Gray}\n{json.ToString(Formatting.None)}");
                    }

@@ -32,9 +32,9 @@ namespace ClientApplication
 				handler = new BikeHandler();
 				BikePhysical bike = (BikePhysical) handler.Bike;
 				await bike.StartConnection();
-				// client = new Client();
-				// vrClient = new VRClient();
-				// vrClient.Setup();
+				client = new Client();
+				vrClient = new VRClient();
+				vrClient.Setup();
 			}).Start();
 			
 			var loginView = new LoginView();

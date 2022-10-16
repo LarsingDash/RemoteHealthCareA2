@@ -95,7 +95,8 @@ public class BikeController
             {
                 {"\"_data_\"", JsonFileReader.GetObjectAsString("FollowSpeed", new Dictionary<string, string>()
                     {
-                        { "nodeid", bikeId }, {"\"_speed_\"", $"{followSpeed.ToString(CultureInfo.InvariantCulture)}"}
+                        {"nodeid", bikeId}, 
+                        {"\"_speed_\"", $"{followSpeed.ToString(CultureInfo.InvariantCulture)}"},
                     }, JsonFolder.Route.Path)
                 }
             }, true);

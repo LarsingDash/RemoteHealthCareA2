@@ -18,8 +18,7 @@ public class DefaultClientConnection
     
     public RSA Rsa = new RSACryptoServiceProvider();
     #endregion
-
-
+    
     public bool Connected = false;
     public DefaultClientConnection(string hostname, int port, Action<JObject, bool> commandHandlerMethod)
     {

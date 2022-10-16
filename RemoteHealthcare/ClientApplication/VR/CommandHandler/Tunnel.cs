@@ -12,11 +12,6 @@ public class Tunnel : ICommandHandlerVR
     private VRClient vrClient;
     private Dictionary<string, ICommandHandlerVR> commandHandler = new();
 
-    private List<string> hideList = new List<string>()
-    {
-        "scene/node/update"
-    };
-    
     public Tunnel(VRClient vrClient)
     {
         this.vrClient = vrClient;
@@ -43,15 +38,17 @@ public class Tunnel : ICommandHandlerVR
             var serial = ob["serial"]!.ToObject<string>();
             if (client.SerialCallbacks.ContainsKey(serial!))
             {
-                Logger.LogMessage(LogImportance.Information, $"Got message from Tunnel (returning to serial): {LogColor.Gray}\n{ob.ToString(Formatting.None)}");
+                if (!vrClient.hideMessages.Contains(ob["id"]!.ToObject<string>()!))
+                {
+                    Logger.LogMessage(LogImportance.Information, $"Got message from Tunnel (returning to serial): {LogColor.Gray}\n{ob.ToString(Formatting.None)}");
+                }
+                
                 client.SerialCallbacks[serial!].Invoke(ob);
                 client.SerialCallbacks.Remove(serial!);
                 return;
             }
-            else
-            {
-                Logger.LogMessage(LogImportance.Warn, $"Got message from Tunnel (Serial could not be found): {LogColor.Gray}\n{ob.ToString(Formatting.None)}");
-            }
+
+            Logger.LogMessage(LogImportance.Warn, $"Got message from Tunnel (Serial could not be found): {LogColor.Gray}\n{ob.ToString(Formatting.None)}");
         }
         if (commandHandler.ContainsKey(ob["id"]!.ToObject<string>()!))
         {
@@ -60,7 +57,7 @@ public class Tunnel : ICommandHandlerVR
         }
         else
         {
-            if (!hideList.Contains(ob["id"]!.ToObject<string>()!))
+            if (!vrClient.hideMessages.Contains(ob["id"]!.ToObject<string>()!))
             {
                 Logger.LogMessage(LogImportance.Debug,
                     $"Got message from Tunnel but no commandHandler found: {LogColor.Gray}\n{ob.ToString(Formatting.None)}");

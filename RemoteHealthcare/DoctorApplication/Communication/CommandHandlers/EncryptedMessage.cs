@@ -3,6 +3,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using ClientApplication.ServerConnection.Communication;
 using ClientApplication.ServerConnection.Communication.CommandHandlers;
+using DoctorApplication.Communication;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Shared.Encryption;

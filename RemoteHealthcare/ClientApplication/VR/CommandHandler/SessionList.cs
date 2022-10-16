@@ -8,14 +8,15 @@ namespace ClientSide.VR2.CommandHandler;
 public class SessionList : ICommandHandlerVR
 {
     
-    private JObject savedSession;
+    private JObject? savedSession;
     private DateTime savedSessionDate;
     public void HandleCommand(VRClient client, JObject ob)
     {
-        foreach (JObject currentObject in ob["data"])
+        foreach (var jToken in ob["data"]!)
         {
-            string? host = currentObject["clientinfo"]["host"].ToObject<string>();
-            string? user = currentObject["clientinfo"]["user"].ToObject<string>();
+            var currentObject = (JObject) jToken;
+            string? host = currentObject["clientinfo"]!["host"]!.ToObject<string>();
+            string? user = currentObject["clientinfo"]!["user"]!.ToObject<string>();
 
             //Make sure neither are null
             if (host == null || user == null) continue;
@@ -53,7 +54,7 @@ public class SessionList : ICommandHandlerVR
     
     private DateTime CustomParseDate(JObject jsonTime)
     {
-        return DateTime.ParseExact(jsonTime["lastPing"].ToObject<string>(), "MM/dd/yyyy HH:mm:ss",
+        return DateTime.ParseExact(jsonTime["lastPing"]!.ToObject<string>()!, "MM/dd/yyyy HH:mm:ss",
             CultureInfo.InvariantCulture);
     }
 }

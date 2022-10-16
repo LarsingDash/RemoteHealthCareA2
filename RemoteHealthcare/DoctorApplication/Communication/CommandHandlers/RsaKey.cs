@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DoctorApplication.Communication;
 using Newtonsoft.Json.Linq;
 using Shared;
 

@@ -2,6 +2,7 @@ using System.Globalization;
 using Newtonsoft.Json.Linq;
 using ServerApplication.UtilData;
 using Shared;
+using Shared.Log;
 
 namespace ServerApplication.Client.DataHandlers.CommandHandlers.Doctor;
 
@@ -31,6 +32,7 @@ public class SetResistance : CommandHandler
                 {
                     { "_resistance_", ob["data"]!["resistance"]!.ToObject<string>()! },
                 }, JsonFolder.ClientMessages.Path));
+            Logger.LogMessage(LogImportance.Fatal,  ob["data"]?["resistance"]?.ToObject<string>());
             
             //Sending ok status
             data.SendEncryptedData(JsonFileReader.GetObjectAsString("ErrorResponse",

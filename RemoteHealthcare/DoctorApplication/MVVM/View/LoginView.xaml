@@ -152,7 +152,7 @@
                                Margin="0,50,0,0"
                                />
                     
-                    <TextBlock Text= "Phone Number" 
+                    <TextBlock Text= "UserName" 
                                Foreground="#ACACAC"
                                FontSize="16"
                                FontFamily="Montserrat"
@@ -160,7 +160,7 @@
                     />
                     
                     <TextBox x:Name="txtPhoneNumber"
-                             Text="{Binding PhoneNumber, UpdateSourceTrigger=PropertyChanged}"
+                             Text="{Binding UserName, UpdateSourceTrigger=PropertyChanged}"
                              FontSize="15"
                              FontFamily="Montserrat"
                              Background="Transparent"

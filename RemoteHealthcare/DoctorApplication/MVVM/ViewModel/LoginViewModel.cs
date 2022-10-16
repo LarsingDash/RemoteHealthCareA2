@@ -14,7 +14,7 @@ namespace DoctorApplication.ViewModel;
 public class LoginViewModel: INotifyPropertyChanged
 {
 	//Fields
-	private string phoneNumber;
+	private string userName;
 	private SecureString password;
 	private string errorMessage;
 	private bool isViewVisible = true;
@@ -29,10 +29,10 @@ public class LoginViewModel: INotifyPropertyChanged
         }
     }
 
-    public string PhoneNumber
+    public string UserName
 	{
-		get { return phoneNumber; }
-		set { phoneNumber = value; OnPropertyChanged("PhoneNumber"); }
+		get { return userName; }
+		set { userName = value; OnPropertyChanged("UserName"); }
 	}
 
 	public SecureString Password
@@ -75,8 +75,8 @@ public class LoginViewModel: INotifyPropertyChanged
 	private bool CanExecuteLoginCommand(object obj)
 	{
 		bool validData;
-		if (string.IsNullOrWhiteSpace(PhoneNumber) || PhoneNumber.Length < 3 ||
-		    Password == null || Password.Length < 3) {
+		if (string.IsNullOrWhiteSpace(UserName) || UserName.Length < 1 ||
+		    Password == null || Password.Length < 1) {
 			validData = false;	
 		}
 		else {
@@ -93,7 +93,7 @@ public class LoginViewModel: INotifyPropertyChanged
 		client.SendEncryptedData(JsonFileReader.GetObjectAsString("Login", new Dictionary<string, string>()
 		{
 			{"_serial_", serial},
-			{"_username_", phoneNumber},
+			{"_username_", userName},
 			{"_type_", "Doctor"},
 			{"_password_", pass}
 		}, JsonFolder.Json.Path));

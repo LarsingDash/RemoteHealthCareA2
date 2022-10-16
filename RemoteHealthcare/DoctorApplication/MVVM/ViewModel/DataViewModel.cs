@@ -14,6 +14,7 @@ using LiveCharts;
 using System.DirectoryServices;
 using ClientApplication.ServerConnection;
 using ClientApplication.ServerConnection.Communication;
+using DoctorApplication.Communication;
 using Shared;
 using Shared.Log;
 
@@ -49,7 +50,15 @@ namespace DoctorApplication.MVVM.ViewModel
 
         private void ApplySliderValue()
         {
-            Console.WriteLine("Slider value changed to: " + SliderValue);
+            Logger.LogMessage(LogImportance.Information, sliderValue.ToString());
+            Client client  = App.GetClientInstance();
+            var serial = Util.RandomString();
+            client.SendEncryptedData(JsonFileReader.GetObjectAsString("SetResistance", new Dictionary<string, string>()
+            {
+                {"_serial_" , serial},
+                {"_resistance_" , SliderValue.ToString()},
+                {"_user_", "TestUsername" }
+            }, JsonFolder.Json.Path));
         }
 
         private string buttonText;

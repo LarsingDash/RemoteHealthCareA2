@@ -83,6 +83,7 @@ namespace DoctorApplication.MVVM.ViewModel
         public RelayCommand SendCommand { get; set; }
         public RelayCommand GetUserCommand { get; set; }
         public RelayCommand StartRecordingCommand { get; set; }
+        public RelayCommand EmergencyPressedCommand { get; set; }
 
         //Data collections
         public BindableCollection<UserDataModel> users { get; set; }
@@ -119,6 +120,7 @@ namespace DoctorApplication.MVVM.ViewModel
             SendCommand = new RelayCommand(SendMessage);
             GetUserCommand = new RelayCommand(GetUser);
             StartRecordingCommand = new RelayCommand(StartRecordingToggled);
+            EmergencyPressedCommand = new RelayCommand(EmergencyFunction);
 
             //predetermined text in button
             buttonText = "Start";
@@ -135,6 +137,11 @@ namespace DoctorApplication.MVVM.ViewModel
             {
                 Task task1 = dataHandler.SubscribeToSessionAsync();
             }
+        }
+
+        private void EmergencyFunction(object obj)
+        {
+            Console.WriteLine("Emergency Pressed!");
         }
 
         public void StartBikeRecording()

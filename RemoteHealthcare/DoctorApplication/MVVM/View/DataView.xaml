@@ -454,6 +454,7 @@
                         x:Name="ResistanceValue" />
                     </StackPanel>
                     <Button
+                        Command="{Binding EmergencyPressedCommand}"
                         Background="#0AFB0404"
                         Content="Emergency"
                         HorizontalAlignment="Center"

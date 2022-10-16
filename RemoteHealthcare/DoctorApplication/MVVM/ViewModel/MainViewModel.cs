@@ -7,6 +7,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ClientApplication.ServerConnection;
+using DoctorApplication.Communication;
 
 namespace DoctorApplication.MVVM.ViewModel
 {
@@ -101,6 +103,8 @@ namespace DoctorApplication.MVVM.ViewModel
             users.Add(test1);
             users.Add(test2);
             users.Add(test3);
+
+            Client client = App.GetClientInstance();
         }
 
         public void ChangeViewToggled(object state)

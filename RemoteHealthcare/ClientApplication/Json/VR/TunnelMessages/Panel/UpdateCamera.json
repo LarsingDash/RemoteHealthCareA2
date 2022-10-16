@@ -1,0 +1,15 @@
+{
+  "id" : "scene/node/update",
+  "serial": "_serial_",
+  "data" :
+  {
+    "id" : "_guid_",
+    "transform" :
+    {
+      "position" : [ 0, 0, -2],
+      "scale": 100,
+      "rotation" : [0, 90, 0]
+    },
+    "parent" : "_parent_"
+  }
+}

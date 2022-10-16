@@ -3,6 +3,7 @@
   "data":{
     "message":"_message_",
     "sender":"_sender_",
-    "time":"_time_"
+    "time":"_time_",
+    "type": "_type_"
   }
 }

@@ -1,6 +1,7 @@
+using DoctorApplication.Communication;
 using Newtonsoft.Json.Linq;
 
-namespace DoctorApplication.Communication.CommandHandlers;
+namespace ClientApplication.ServerConnection.Communication.CommandHandlers;
 
 public interface ICommandHandler
 {

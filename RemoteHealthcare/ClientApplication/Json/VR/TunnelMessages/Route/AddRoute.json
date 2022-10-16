@@ -1,0 +1,8 @@
+{
+  "id": "route/add",
+  "serial": "_serial_",
+  "data": {
+    "name": "route",
+    "nodes": [ "_nodes_" ]
+  }
+}

@@ -13,14 +13,13 @@ public class DefaultClientConnection
     #region ClientConnection
     private TcpClient client;
     private NetworkStream stream;
-    private Dictionary<string, Action<JObject>> serialCallbacks = new();
+    public readonly Dictionary<string, Action<JObject>> SerialCallbacks = new();
     private Action<JObject, bool> commandHandlerMethod;
     
     public RSA Rsa = new RSACryptoServiceProvider();
     #endregion
     
-    
-
+    public bool Connected = false;
     public DefaultClientConnection(string hostname, int port, Action<JObject, bool> commandHandlerMethod)
     {
         Init(hostname, port, commandHandlerMethod);
@@ -41,31 +40,38 @@ public class DefaultClientConnection
     /// <param name="port">The port to connect to.</param>
     /// <param name="commandHandlerMethod">This is the method that will be called when a command is received from the
     /// server.</param>
-    public void Init(string hostname, int port, Action<JObject, bool> commandHandlerMethod)
+    public void Init(string hostname, int port, Action<JObject, bool> commandHandlerMethod, bool setup = true)
     {
         OnMessage += (_, json) => HandleMessage(json);
 
         this.commandHandlerMethod = commandHandlerMethod;
-        
-        client = new(hostname, port);
-        stream = client.GetStream();
-        stream.BeginRead(_buffer, 0, 1024, OnRead, null);
-        SetupClient();
+        try
+        {
+            client = new(hostname, port);
+            stream = client.GetStream();
+            stream.BeginRead(_buffer, 0, 1024, OnRead, null);
+            SetupClient();
+            Connected = true;
+        }
+        catch (SocketException e)
+        {
+            Logger.LogMessage(LogImportance.Fatal, "Could not connect with server", e);
+        }
     }
 
     /// <summary>
     /// It sends a request to the server for the public key, and when the server responds, it sets the public key to the
     /// value it received
     /// </summary>
-    private void SetupClient()
+    public void SetupClient()
     {
         Thread.Sleep(100);
         var serial = Util.RandomString();
         AddSerialCallback(serial, ob =>
         {
-            PublicKey = ob["data"]!.Value<JArray>("key")!.Values<byte>().ToArray();
+            PublicKey = ob["data"]!["key"]!.ToObject<string>()!;
             Logger.LogMessage(LogImportance.Information, 
-                $"Received PublicKey from Server: {LogColor.Gray}\n{Util.ByteArrayToString(PublicKey)}");
+                $"Received PublicKey from Server: {LogColor.Gray}\n{(PublicKey)}");
         });
         
         SendData(JsonFileReader.GetObjectAsString("PublicRSAKey", new Dictionary<string, string>()
@@ -77,8 +83,8 @@ public class DefaultClientConnection
     #region Sending and retrieving data
     private byte[] _totalBuffer = Array.Empty<byte>();
     private readonly byte[] _buffer = new byte[1024];
-    public event EventHandler<JObject> OnMessage;
-    private byte[] PublicKey;
+    public event EventHandler<JObject> OnMessage; 
+    private string PublicKey;
 
     /// <summary>
     /// It checks if the message has a serial, if it does it checks if the client has a callback for that serial, if it does
@@ -102,10 +108,10 @@ public class DefaultClientConnection
         if (json.ContainsKey("serial"))
         {
             var serial = json["serial"]!.ToObject<string>();
-            if (serialCallbacks.ContainsKey(serial!))
+            if (SerialCallbacks.ContainsKey(serial!))
             {
-                serialCallbacks[serial!].Invoke(json);
-                serialCallbacks.Remove(serial!);
+                SerialCallbacks[serial!].Invoke(json);
+                SerialCallbacks.Remove(serial!);
                 return;
             }
         }
@@ -128,8 +134,9 @@ public class DefaultClientConnection
             var numberOfBytes = stream.EndRead(readResult);
             _totalBuffer = Concat(_totalBuffer, _buffer, numberOfBytes);
         }
-        catch
+        catch(Exception e)
         {
+            Logger.LogMessage(LogImportance.Error, "Error (Unknown Reason) ", e);
             return;
         }
 
@@ -159,7 +166,7 @@ public class DefaultClientConnection
     /// It sends a message to the server
     /// </summary>
     /// <param name="message">The message to send to the server.</param>
-    public void SendData(string message)
+    public void SendData(string message, bool hide = false)
     {
         try
         {
@@ -182,7 +189,7 @@ public class DefaultClientConnection
                 }
             }
 
-            if (!ob["id"]!.ToObject<string>()!.Equals("encryptedMessage"))
+            if (!ob["id"]!.ToObject<string>()!.Equals("encryptedMessage") && !hide)
             {
                 Logger.LogMessage(LogImportance.Information, 
                     $"Sending message: {LogColor.Gray}\n{ob.ToString(Formatting.None)}");
@@ -224,9 +231,9 @@ public class DefaultClientConnection
     /// <returns>
     /// The public key of the RSA object.
     /// </returns>
-    public byte[] GetRsaPublicKey()
+    public string GetRsaPublicKey()
     {
-        return Rsa.ExportRSAPublicKey();
+        return Rsa.ToXmlString(false);
     }
     
     /// <summary>
@@ -236,17 +243,17 @@ public class DefaultClientConnection
     /// <param name="action">The function to be called when the serial is received.</param>
     public void AddSerialCallback(string serial, Action<JObject> action)
     {
-        if (serialCallbacks.ContainsKey(serial))
+        if (SerialCallbacks.ContainsKey(serial))
         {
-            serialCallbacks.Remove(serial);
+            SerialCallbacks.Remove(serial);
         }
         
-        serialCallbacks.Add(serial, action);
+        SerialCallbacks.Add(serial, action);
     }
 
     public void RemoveSerialCallback(string serial)
     {
-        serialCallbacks.Remove(serial);
+        SerialCallbacks.Remove(serial);
     }
 
     public async Task AddSerialCallbackTimeout(string serial, Action<JObject> action, Action timeoutAction, int timeout)
@@ -278,11 +285,12 @@ public class DefaultClientConnection
     /// It encrypts the message with AES, encrypts the AES key and IV with RSA, and sends the encrypted message
     /// </summary>
     /// <param name="String">The message to send</param>
-    public void SendEncryptedData(String message)
+    public void SendEncryptedData(String message, bool hide = false)
     {
         
         try
         {
+            if(!hide)
             Logger.LogMessage(LogImportance.Information, 
                 $"Sending encrypted message: {LogColor.Gray}\n{JObject.Parse(message).ToString(Formatting.None)}");
         }
@@ -293,7 +301,7 @@ public class DefaultClientConnection
         }
         Aes aes = Aes.Create("AesManaged")!;
         RSA newRsa = new RSACryptoServiceProvider();
-        newRsa.ImportRSAPublicKey(PublicKey, out int a);
+        newRsa.FromXmlString(PublicKey);
 
         var keyCrypt = RsaHelper.EncryptMessage(aes.Key, newRsa.ExportParameters(false), false);
         var iVCrypt = RsaHelper.EncryptMessage(aes.IV, newRsa.ExportParameters(false), false);
@@ -306,7 +314,7 @@ public class DefaultClientConnection
                 {"\"_IV_\"", Util.ByteArrayToString(iVCrypt)},
                 {"\"_key_\"", Util.ByteArrayToString(keyCrypt)},
                 {"\"_data_\"", Util.ByteArrayToString(aesCrypt)},
-            }, JsonFolderShared.Json.Path));
+            }, JsonFolderShared.Json.Path), hide);
         }
         else
         {

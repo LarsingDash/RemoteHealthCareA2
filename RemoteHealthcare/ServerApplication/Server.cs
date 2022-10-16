@@ -43,9 +43,9 @@ namespace ServerApplication
         /// <returns>
         /// The public key of the RSA object.
         /// </returns>
-        public byte[] GetRsaPublicKey()
+        public string GetRsaPublicKey()
         {
-            return Rsa.ExportRSAPublicKey();
+            return Rsa.ToXmlString(false);
         }
 
         public void RemoveUser(ClientData clientData)

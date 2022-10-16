@@ -1,0 +1,21 @@
+{
+  "id": "scene/node/add",
+  "serial": "_serial_",
+  "data": {
+    "name": "bike",
+    "components": {
+      "transform" :
+      {
+        "position" : [ 0, 0, 0 ],
+        "scale" : 0.01,
+        "rotation" : [ 0, 0, 0 ]
+      },
+      "model" :
+      {
+        "file" : "data\\NetworkEngine\\models\\bike\\bike_anim.fbx",
+        "animated" : true,
+        "animation" : "Armature|Fietsen"
+      }
+    }
+  }
+}

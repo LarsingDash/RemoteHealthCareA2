@@ -26,39 +26,74 @@ public class ChatMessage : CommandHandler
             return;
         }
 
-        if (ob["data"]?["receiver"]?.ToObject<string>() == null)
+        if (ob["data"]?["type"]?.ToObject<string>() == null)
         {
-            //Sending error message(no Receiver)
-            SendEncryptedError(data, ob, "There is no receiver");
+            //Sending error message(no Type)
+            SendEncryptedError(data, ob, "There is no type");
             return;
         }
+        var type = ob["data"]!["type"]!.ToObject<string>()!.ToLower();
+        
 
-        var receiver = server.GetUser(ob["data"]!["receiver"]!.ToObject<string>()!);
-
-        if (receiver != null)
+        if (type.Equals("personal"))
         {
-            //Sending message to Receiver
-            receiver.SendEncryptedData(JsonFileReader.GetObjectAsString("ForwardChatMessage",
-                new Dictionary<string, string>()
-                {
-                    { "_message_", ob["data"]!["message"]!.ToObject<string>()! },
-                    { "_sender_", data.UserName},
-                    { "_time_", DateTime.Now.ToString(CultureInfo.InvariantCulture) }
-                }, JsonFolder.ClientMessages.Path));
+            if (ob["data"]?["receiver"]?.ToObject<string>() == null)
+            {
+                //Sending error message(no Receiver)
+                SendEncryptedError(data, ob, "There is no receiver");
+                return;
+            }
+            var receiver = server.GetUser(ob["data"]!["receiver"]!.ToObject<string>()!);
+            if (receiver != null)
+            {
+                //Sending message to Receiver
+                receiver.SendEncryptedData(JsonFileReader.GetObjectAsString("ForwardChatMessage",
+                    new Dictionary<string, string>()
+                    {
+                        { "_message_", ob["data"]!["message"]!.ToObject<string>()! },
+                        { "_sender_", data.UserName},
+                        { "_time_", DateTime.Now.ToString(CultureInfo.InvariantCulture) },
+                        { "_type_", ob["data"]!["type"]!.ToObject<string>()! }
+                    }, JsonFolder.ClientMessages.Path));
             
-            //Sending ok status
-            data.SendEncryptedData(JsonFileReader.GetObjectAsString("ChatMessageResponse",
-                new Dictionary<string, string>()
-                {
-                    { "_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_" },
-                    { "_status_", "ok"}
-                }, JsonFolder.ClientMessages.Path));
+                //Sending ok status
+                data.SendEncryptedData(JsonFileReader.GetObjectAsString("ChatMessageResponse",
+                    new Dictionary<string, string>()
+                    {
+                        { "_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_" },
+                        { "_status_", "ok"}
+                    }, JsonFolder.ClientMessages.Path));
+            }
+            else
+            {
+                //Sending error message
+                SendEncryptedError(data, ob, "There is a receiver name given, but it could not be found");
+                return;
+            }
         }
-        else
+        else if (type.Equals("broadcast"))
         {
-            //Sending error message
-            SendEncryptedError(data, ob, "There is a receiver name given, but it could not be found");
-            return;
+            foreach (var receiver in server.users)
+            {
+                if (receiver.DataHandler.GetType() != typeof(ClientHandler))
+                    return;
+                receiver.SendEncryptedData(JsonFileReader.GetObjectAsString("ForwardChatMessage",
+                    new Dictionary<string, string>()
+                    {
+                        { "_message_", ob["data"]!["message"]!.ToObject<string>()! },
+                        { "_sender_", data.UserName},
+                        { "_time_", DateTime.Now.ToString(CultureInfo.InvariantCulture) },
+                        { "_type_", ob["data"]!["type"]!.ToObject<string>()! }
+                    }, JsonFolder.ClientMessages.Path));
+            
+                //Sending ok status
+                data.SendEncryptedData(JsonFileReader.GetObjectAsString("ChatMessageResponse",
+                    new Dictionary<string, string>()
+                    {
+                        { "_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_" },
+                        { "_status_", "ok"}
+                    }, JsonFolder.ClientMessages.Path));
+            }
         }
 
     }

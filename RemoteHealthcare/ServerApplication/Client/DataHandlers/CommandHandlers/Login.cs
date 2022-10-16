@@ -26,7 +26,21 @@ namespace ServerApplication.Client.DataHandlers.CommandHandlers
             {
                 case "Client":
                 {
+                    string? checkUserName = ob["data"]?["username"]?.ToObject<string>();
+                    if (checkUserName == null)
+                    {
+                        SendEncryptedError(data,ob, "No Username entered");
+                        return;
+                    }
+
+                    ClientData? user = server.GetUser(checkUserName!);
+                    if (user != null)
+                    {
+                        SendEncryptedError(data, ob, "Username is already logged in.");
+                        return;
+                    }
                     data.UserName = ob["data"]?["username"]?.ToObject<string>() ?? "Unknown";
+                    
                     data.DataHandler = new ClientHandler(data);
                     data.SendEncryptedData(JsonFileReader.GetObjectAsString("LoginResponse", new Dictionary<string, string>()
                     {

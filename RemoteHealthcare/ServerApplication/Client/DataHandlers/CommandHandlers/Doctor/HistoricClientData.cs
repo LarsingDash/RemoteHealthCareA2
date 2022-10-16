@@ -25,13 +25,14 @@ public class HistoricClientData : CommandHandler
                 foreach (var file in files)
                 {
                     string fileName = Path.GetFileName(file);
-                    Console.WriteLine("path: " + file.Remove(file.Length - fileName.Length) + fileName);
-                    Console.WriteLine("File: " + JsonFileReader.GetEncryptedText(fileName, new Dictionary<string, string>(), file.Remove(file.Length - fileName.Length)));
+                    // Console.WriteLine("path: " + file.Remove(file.Length - fileName.Length) + fileName);
+                    // Console.WriteLine("File: " + JsonFileReader.GetEncryptedText(fileName, new Dictionary<string, string>(), file.Remove(file.Length - fileName.Length)));
                     sendFile.Add(JObject.Parse(JsonFileReader.GetEncryptedText(fileName, new Dictionary<string, string>(), file.Remove(file.Length - fileName.Length))));
                 }
                 data.SendEncryptedData(JsonFileReader.GetObjectAsString("HistoricClientDataResponse", new Dictionary<string, string>()
                 {
-                    {"_user_", userName},
+                    {"_name_", userName},
+                    {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
                     {"\"_session_\"", sendFile.ToString()} 
                 }, JsonFolder.ClientMessages.Path));
             }

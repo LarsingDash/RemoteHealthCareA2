@@ -9,13 +9,14 @@ internal class RsaKey : ICommandHandler
     /// <summary>
     /// It sends the client the public key of the server
     /// </summary>
-    /// <param name="DefaultClientConnection">The client that sent the command</param>
-    /// <param name="JObject">The Json object that was sent to the server.</param>
+    /// <param name="client">The client that sent the command</param>
+    /// <param name="ob">The Json object that was sent to the server.</param>
     public void HandleCommand(DefaultClientConnection client, JObject ob)
     {
+        var t = client.GetRsaPublicKey();
         var dict = new Dictionary<string, string>
         {
-            {"\"_key_\"", Util.ByteArrayToString(client.GetRsaPublicKey())},
+            {"_key_", client.GetRsaPublicKey()},
         };
         if(ob.ContainsKey("serial"))
             dict.Add("_serial_", ob["serial"]?.ToObject<string>() ??"_serial_");

@@ -1,72 +1,278 @@
 ﻿/* This is the model for the userdata. It contains all the data that is currently needed to be displayed. */
+using Caliburn.Micro;
 using DoctorApplication.Core;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ClientApplication.ServerConnection;
+using ClientApplication.ServerConnection.Communication;
+using DoctorApplication.Communication;
+using Newtonsoft.Json.Linq;
+using Shared;
+using Shared.Log;
+using System.Windows.Controls.Primitives;
 
 namespace DoctorApplication.MVVM.Model
 {
     public class UserDataModel : INotifyPropertyChanged
     {
-       
+
 
         //userdata
         private string userName;
-        private string phoneNumber;
-        private int bikeId;
 
-        //bikedata
-        private double currentSpeed;
+        //statistic data bike
+       
+
+        private ObservableCollection<SessionModel> sessions;
+
+        public ObservableCollection<SessionModel> Sessions
+        {
+            get { return sessions; }
+            set
+            {
+                sessions = value;
+                OnPropertyChanged(nameof(sessions));
+            }
+        }
+
+        private double distance;
+        public double Distance
+        {
+            get { return distance; }
+            set { distance = value; OnPropertyChanged(nameof(distance)); }
+        }
+
+
         private double topSpeed;
-        private double averageSpeed;
-        private TimeSpan timeElapsed;
+        public double TopSpeed
+        {
+            get
+            {
+                if (lastSession != null)
+                {
+                    double highest = 0;
+                    foreach (double value in LastSession.Speed)
+                    {
+                        if (value > highest)
+                        {
+                            highest = value;
+                        }
+                    }
+                    return highest;
+                }
+                return 0;
+            }
+            set
+            {
+                topSpeed = value;
+                OnPropertyChanged(nameof(topSpeed));
+            }
+        }
 
-        //heartdata
-        private int currentRate;
-        private int lowestRate;
-        private int averageRate;
-        private int highestRate;
+        private double averageSpeed;
+        public double AverageSpeed
+        {
+            get{
+                if (lastSession != null)
+                {
+                    double total = 0;
+                    foreach (double value in LastSession.Speed)
+                    {
+                        total += value;
+                    }
+                    return Math.Round((total / LastSession.Speed.Count), 1);
+                }
+                return 0;
+            }
+            set{
+                averageSpeed = value;
+                OnPropertyChanged(nameof(averageSpeed));
+            }
+        }
+        //statistic data heartmonitor
+
+        private double lowestRate;
+        public double LowestRate
+        {
+            get
+            {
+                if (lastSession != null)
+                {
+                    double lowest = 9999;
+                    foreach (double value in LastSession.HeartRate)
+                    {
+                        if (value < lowest)
+                        {
+                            lowest = value;
+                        }
+                    }
+                    return lowest;
+                }
+                return 0;
+            }
+            set
+            {
+                lowestRate = value;
+                OnPropertyChanged(nameof(lowestRate));
+            }
+        }
+ 
+
+        private double averageRate;
+        public double AverageRate
+        {
+            get
+            {
+                if (lastSession != null)
+                {
+                    double total = 0;
+                    foreach (double value in LastSession.HeartRate)
+                    {
+                        total += value;
+                    }
+                    return Math.Round((total / LastSession.HeartRate.Count), 1);
+                }
+                return 0;
+            }
+            set
+            {
+                averageRate = value;
+                OnPropertyChanged(nameof(averageRate));
+            }
+        }
+        private double highestRate;
+        public double HighestRate
+        {
+            get
+            {
+                if (lastSession != null)
+                {
+                    double highest = 0;
+                    foreach (double value in LastSession.HeartRate)
+                    {
+                        if (value > highest)
+                        {
+                            highest = value;
+                        }
+                    }
+                    return highest;
+                }
+                return 0;
+            }
+            set
+            {
+                highestRate = value;
+                OnPropertyChanged(nameof(highestRate));
+            }
+        }
+
+        public SessionModel lastSession;
+        public SessionModel LastSession
+        {
+            get { return sessions.LastOrDefault()!; }
+            set
+            {
+                lastSession = value;
+                OnPropertyChanged(nameof(lastSession));
+            }
+        }
+        private double lastSpeed;
+        public double LastSpeed
+        {
+            get { return LastSession.lastSpeed; }
+            set
+            {
+                lastSpeed = value;
+                OnPropertyChanged(nameof(lastSpeed));
+            }
+        }
+        private double lastDistance;
+
+        public double LastDistance
+        {
+            get { return LastSession.lastDistance; }
+            set
+            {
+                lastDistance = value;
+                OnPropertyChanged(nameof(lastDistance));
+            }
+        }
+        private double lastHeartRate;
+        public double LastHeartRate
+        {
+            get { return LastSession.lastHeartRate; }
+            set
+            {
+                lastHeartRate = value;
+                OnPropertyChanged(nameof(lastHeartRate));
+            }
+        }
+
+
+
 
         //chatdata
         public ObservableCollection<MessageModel> messages { get; set; }
-        public string lastMessage => messages.Last().message;
 
         //constructor currently with test values
         public UserDataModel()
         {
             this.UserName = "TestName";
-            this.phoneNumber = "06 12345678";
-            this.bikeId = 01249;
-
-            this.currentSpeed = 1;
-            this.topSpeed = 2;
-            this.averageRate = 3;
-            this.TimeElapsed = new TimeSpan(10000000);
-
-            this.currentRate = 68;
-            this.lowestRate = 69;
-            this.averageRate = 71;
-            this.highestRate = 72;
-
+            this.messages = new ObservableCollection<MessageModel>();
+            this.sessions = new BindableCollection<SessionModel>();
         }
 
-        public UserDataModel(string userName, string phoneNumber, int bikeId, double currentSpeed, int currentRate)
+        public UserDataModel(string userName)
         {
             UserName = userName;
-            PhoneNumber = phoneNumber;
-            BikeId = bikeId;
-            CurrentSpeed = currentSpeed;
-            CurrentRate = currentRate;
             this.messages = new ObservableCollection<MessageModel>();
+            this.sessions = new BindableCollection<SessionModel>();
+
+            Client client = App.GetClientInstance();
+            var serial = Util.RandomString();
+            client.SendEncryptedData(JsonFileReader.GetObjectAsString("HistoricClientData", new Dictionary<string, string>()
+            {
+                {"_serial_", serial},
+                {"_name_", userName}
+            }, JsonFolder.Json.Path));
+
+            client.AddSerialCallbackTimeout(serial, ob =>
+            {
+                foreach (JObject session in ob["data"]!.Value<JArray>("bike-sessions")!.Values<JObject>())
+                {
+                    if (session == null) return;
+                    SessionModel model = new SessionModel(session["session-name"]!.ToObject<string>()!);
+                    model.AddDataDistance(session);
+                    model.AddDataSpeed(session);
+                    model.AddDataHeartRate(session);
+                    try
+                    {
+                        model.startTime = CustomParseDate(session["start-time"]!.ToObject<string>()!);
+                        model.endTime = !session["end-time"]!.ToObject<string>()!.Equals("_endtime_") ? CustomParseDate(session["end-time"]!.ToObject<string>()!) : DateTime.MinValue;
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.LogMessage(LogImportance.Fatal, "Time could not be parsed", e);
+                    }
+
+                    sessions.Add(model);
+                }
+            }, () =>
+            {
+                // No Response from server
+            }, 1000);
         }
 
-        public void chatMessage(string phoneNumber, string message)
+        public void AddSession(SessionModel sessionModel)
         {
-            
+            sessions.Add(sessionModel);
         }
         public void AddMessage(string message)
         {
@@ -76,116 +282,27 @@ namespace DoctorApplication.MVVM.Model
         public string UserName
         {
             get { return userName; }
-            set { 
+            set
+            {
                 userName = value;
                 OnPropertyChanged(nameof(UserName));
             }
         }
-        public int BikeId
-        {
-            get { return bikeId; }
-            set
-            {
-                bikeId = value;
-                OnPropertyChanged(nameof(BikeId));
-            }
-        }
-        public string PhoneNumber
-        {
-            get { return phoneNumber; }
-            set
-            {
-                phoneNumber = value;
-                OnPropertyChanged(nameof(PhoneNumber));
-            }
-        }
-        public double CurrentSpeed
-        {
-            get { return currentSpeed; }
-            set
-            {
-                currentSpeed = value;
-                OnPropertyChanged(nameof(CurrentSpeed));
-            }
-        }
-        public double TopSpeed
-        {
-            get { return topSpeed; }
-            set
-            {
-                topSpeed = value;
-                OnPropertyChanged(nameof(TopSpeed));
-            }
-        }
-        public double AverageSpeed
-        {
-            get { return averageSpeed; }
-            set
-            {
-                averageSpeed = value;
-                OnPropertyChanged(nameof(AverageSpeed));
-            }
-        }
-        public TimeSpan TimeElapsed
-        {
-            get { return timeElapsed; }
-            set
-            {
-                timeElapsed = value;
-                OnPropertyChanged(nameof(TimeElapsed));
-            }
-        }
-        public int CurrentRate
-        {
-            get { return currentRate; }
-            set
-            {
-                currentRate = value;
-                OnPropertyChanged(nameof(CurrentRate));
-            }
-        }
-        public int LowestRate
-        {
-            get { return lowestRate; }
-            set
-            {
-                lowestRate = value;
-                OnPropertyChanged(nameof(LowestRate));
-            }
-        }
-        public int AverageRate
-        {
-            get { return averageRate; }
-            set
-            {
-                averageRate = value;
-                OnPropertyChanged(nameof(AverageRate));
-            }
-        }
-        public int HighestRate
-        {
-            get { return highestRate; }
-            set
-            {
-                highestRate = value;
-                OnPropertyChanged(nameof(HighestRate));
-            }
-        }
 
-
-       
-
-       
 
         /* This is a method that is used to update the view when the model changes. */
         public event PropertyChangedEventHandler? PropertyChanged;
         private void OnPropertyChanged(string propertyName)
         {
-            if(PropertyChanged != null)
+            if (PropertyChanged != null)
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
+        private DateTime CustomParseDate(string time)
+        {
+            return DateTime.ParseExact(time, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+        }
     }
+
 }

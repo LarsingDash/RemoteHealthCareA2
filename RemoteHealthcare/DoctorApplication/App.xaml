@@ -1,20 +1,27 @@
-﻿<Application x:Class="DoctorApplication.App"
+﻿<Application x:Class="ClientApplication.ServerConnection.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:DoctorApplication"
              xmlns:viewModel="clr-namespace:DoctorApplication.MVVM.ViewModel"
              xmlns:view="clr-namespace:DoctorApplication.MVVM.View"
              
-             StartupUri="MainWindow.xaml">
+             Startup="ApplicationStart">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-            <!--Add themes here-->
+                <ResourceDictionary Source="Styles/UIColors.xaml" />
+                <ResourceDictionary Source="Styles/ButtonStyles.xaml" />
+                <ResourceDictionary Source="Styles/UIResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <DataTemplate DataType="{x:Type viewModel:DataViewModel}">
+            <DataTemplate DataType="{x:Type viewModel:DataViewModel}" x:Key="DataViewModel">
                 <view:DataView/>
             </DataTemplate>
-            
+            <DataTemplate DataType="{x:Type viewModel:MultipleViewModel}" x:Key="MultipleViewModel">
+                <view:MultipleWindowView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModel:MainViewModel}" x:Key="MainViewModel">
+                <view:HistoryView/>
+            </DataTemplate>
             <!--<DataTemplate DataType="{x:Type viewModel:DataViewModel}">
                 <view:DataView/>
             </DataTemplate>-->

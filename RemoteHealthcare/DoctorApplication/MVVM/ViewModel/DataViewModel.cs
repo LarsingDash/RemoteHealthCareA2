@@ -153,9 +153,23 @@ namespace DoctorApplication.MVVM.ViewModel
         {
             if (selectedUser != null && Message!="")
             {
-                selectedUser.AddMessage(Message.ToString());
+                Client client = App.GetClientInstance();
+                var serial = Util.RandomString();
+                client.SendEncryptedData(JsonFileReader.GetObjectAsString("ChatMessage", new Dictionary<string, string>()
+                {
+                    {"_serial_", serial},
+                    {"_type_", "personal"},
+                    {"_message_", Message.ToString()!},
+                    {"_receiver_", selectedUser.UserName}
+                }, JsonFolder.Json.Path));
                 this.Message = string.Empty;
-                users.Add(new UserDataModel());
+                client.AddSerialCallbackTimeout(serial, ob =>
+                {
+                    selectedUser.AddMessage(Message.ToString());
+                }, () =>
+                {
+                    //No Response from server
+                }, 1000);
             }
         }
         public void GetUser(object user)

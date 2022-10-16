@@ -34,6 +34,7 @@ namespace ClientApplication
 				await bike.StartConnection();
 				client = new Client();
 				vrClient = new VRClient();
+				vrClient.Setup();
 			}).Start();
 			
 			var loginView = new LoginView();

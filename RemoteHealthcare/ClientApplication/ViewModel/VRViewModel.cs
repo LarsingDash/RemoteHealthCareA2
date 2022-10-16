@@ -16,7 +16,7 @@ public class VRViewModel:ViewModelBase
 
 	private static void startVRSessionExecute(object obj)
 	{
-		var vrClient = new VRClient();
+		App.GetVrClientInstance().Setup();
 	}
 
 	public ICommand startVRSession

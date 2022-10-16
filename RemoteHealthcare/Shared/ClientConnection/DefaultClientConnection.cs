@@ -18,8 +18,7 @@ public class DefaultClientConnection
     
     public RSA Rsa = new RSACryptoServiceProvider();
     #endregion
-
-
+    
     public bool Connected = false;
     public DefaultClientConnection(string hostname, int port, Action<JObject, bool> commandHandlerMethod)
     {
@@ -167,7 +166,7 @@ public class DefaultClientConnection
     /// It sends a message to the server
     /// </summary>
     /// <param name="message">The message to send to the server.</param>
-    public void SendData(string message)
+    public void SendData(string message, bool hide = false)
     {
         try
         {
@@ -190,7 +189,7 @@ public class DefaultClientConnection
                 }
             }
 
-            if (!ob["id"]!.ToObject<string>()!.Equals("encryptedMessage"))
+            if (!ob["id"]!.ToObject<string>()!.Equals("encryptedMessage") && !hide)
             {
                 Logger.LogMessage(LogImportance.Information, 
                     $"Sending message: {LogColor.Gray}\n{ob.ToString(Formatting.None)}");
@@ -286,11 +285,12 @@ public class DefaultClientConnection
     /// It encrypts the message with AES, encrypts the AES key and IV with RSA, and sends the encrypted message
     /// </summary>
     /// <param name="String">The message to send</param>
-    public void SendEncryptedData(String message)
+    public void SendEncryptedData(String message, bool hide = false)
     {
         
         try
         {
+            if(!hide)
             Logger.LogMessage(LogImportance.Information, 
                 $"Sending encrypted message: {LogColor.Gray}\n{JObject.Parse(message).ToString(Formatting.None)}");
         }
@@ -314,7 +314,7 @@ public class DefaultClientConnection
                 {"\"_IV_\"", Util.ByteArrayToString(iVCrypt)},
                 {"\"_key_\"", Util.ByteArrayToString(keyCrypt)},
                 {"\"_data_\"", Util.ByteArrayToString(aesCrypt)},
-            }, JsonFolderShared.Json.Path));
+            }, JsonFolderShared.Json.Path), hide);
         }
         else
         {

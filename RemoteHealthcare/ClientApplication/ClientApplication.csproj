@@ -23,7 +23,6 @@
         </Reference>
         <Reference Include="System.Net.Http" Condition="'$(TargetFramework)' == 'net472'" />
     </ItemGroup>
-
     <ItemGroup>
       <ProjectReference Include="..\Shared\Shared.csproj" />
     </ItemGroup>
@@ -33,5 +32,4 @@
       <None Remove="Assets\BikeWallpaper.jpg" />
       <Resource Include="Assets\BikeWallpaper.jpg" />
     </ItemGroup>
-
 </Project>

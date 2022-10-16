@@ -17,17 +17,38 @@ public class VRClient : DefaultClientConnection
 {
     private Dictionary<string, ICommandHandlerVR> commandHandler = new();
     public String TunnelID;
-    public readonly Tunnel tunnel;
+    public Tunnel tunnel;
     public WorldGen worldGen;
     public BikeController BikeController;
     public PanelController PanelController;
+
+    public List<string> hideMessages = new List<string>();
+
+    private bool started = false;
     public VRClient()
     {
+    }
+
+    public void Setup()
+    {
+        if (started)
+            return;
+        hideMessages = new List<string>()
+        {
+            "session/list",
+            "scene/node/update",
+            "route/follow/speed",
+            "callback",
+            "scene/panel/drawtext",
+            "scene/panel/swap",
+            "scene/panel/image"
+            
+        };
         Init("145.48.6.10", 6666, (json, encrypted) =>
         {
             if (commandHandler.ContainsKey(json["id"]!.ToObject<string>()!))
             {
-                if (!json["id"]!.ToObject<string>()!.Equals("tunnel/send"))
+                if (!json["id"]!.ToObject<string>()!.Equals("tunnel/send") && !hideMessages.Contains(json["id"]!.ToObject<string>()!))
                 {
                     Logger.LogMessage(LogImportance.Information, $"Got message from vr-server: {LogColor.Gray}\n{json.ToString(Formatting.None)}");
                 }
@@ -43,11 +64,6 @@ public class VRClient : DefaultClientConnection
         tunnel = new Tunnel(this);
         commandHandler.Add("tunnel/send", tunnel);
         Thread.Sleep(500);
-        Setup();
-    }
-
-    private void Setup()
-    {
         SendData(JsonFileReader.GetObjectAsString("SessionList", new Dictionary<string, string>()
         {
         }, JsonFolder.Vr.Path));
@@ -69,6 +85,13 @@ public class VRClient : DefaultClientConnection
     {
         TunnelID = id;
         var serial = Util.RandomString();
+        tunnel.SendTunnelMessage(new Dictionary<string, string>()
+        {
+            {"\"_data_\"", JsonFileReader.GetObjectAsString("Pause", new Dictionary<string, string>()
+            {
+            }, JsonFolder.TunnelMessages.Path)},
+        });
+        
         tunnel.SendTunnelMessage(new Dictionary<string, string>
         {
             {"\"_data_\"", JsonFileReader.GetObjectAsString("ResetScene", new Dictionary<string, string>()
@@ -91,7 +114,8 @@ public class VRClient : DefaultClientConnection
          //Start WorldGen
          worldGen = new WorldGen(this, tunnel);
          BikeController = new BikeController(this, tunnel);
-         //PanelController = new PanelController(this, tunnel);
+         PanelController = new PanelController(this, tunnel);
+         
          //
          // //Start HUDController
          // panelController = new PanelController(this, tunnel);

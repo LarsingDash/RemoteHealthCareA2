@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ClientApplication.ServerConnection;
 using ClientApplication.ServerConnection.Communication;
+using DoctorApplication.Communication;
 
 namespace DoctorApplication.Core
 {

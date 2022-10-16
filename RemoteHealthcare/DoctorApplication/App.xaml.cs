@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using DoctorApplication.View;
 using ClientApplication.ServerConnection.Communication;
+using DoctorApplication.Communication;
 
 namespace ClientApplication.ServerConnection
 {

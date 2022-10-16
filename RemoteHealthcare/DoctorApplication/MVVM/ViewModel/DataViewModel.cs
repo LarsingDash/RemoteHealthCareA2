@@ -34,6 +34,24 @@ namespace DoctorApplication.MVVM.ViewModel
             }
         }
 
+        private int sliderValue;
+
+        public int SliderValue
+        {
+            get { return sliderValue; }
+            set
+            {
+                sliderValue = value;
+                OnPropertyChanged();
+                ApplySliderValue();
+            }
+        }
+
+        private void ApplySliderValue()
+        {
+            Console.WriteLine("Slider value changed to: " + SliderValue);
+        }
+
         private string buttonText;
 
         public string ButtonText

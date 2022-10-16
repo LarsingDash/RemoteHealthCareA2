@@ -12,10 +12,9 @@ namespace DoctorApplication.MVVM.Model
 {
     public class SessionModel : INotifyPropertyChanged
     {
-        public string uuid { get; set; }
         public string sessionName { get; set; }
-        DateTime startTime { get; set; }
-        DateTime endTime { get; set; }
+        public DateTime startTime { get; set; }
+        public DateTime endTime { get; set; }
 
 
         TimeSpan timeElapsed;
@@ -38,7 +37,7 @@ namespace DoctorApplication.MVVM.Model
 
         List<double> distance = new List<double>();
         List<double> speed = new List<double>();
-        List<int> heartRate = new List<int>();
+        List<double> heartRate = new List<double>();
 
         public event PropertyChangedEventHandler? PropertyChanged;
         private void OnPropertyChanged(string propertyName)
@@ -48,21 +47,37 @@ namespace DoctorApplication.MVVM.Model
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-        public void AddData(JObject data)
+        public void AddDataDistance(JObject data)
         {
-                JArray distance = (JArray)data["data"]["distance"];
-            
-                foreach (JObject key in distance)
-                {
-                    this.distance.Add(double.Parse(key["value"]!.ToObject<string>()!));
-                }
-
-            
-
+            JArray distance = (JArray)data["distance"];
+        
+            foreach (JObject key in distance)
+            {
+                this.distance.Add(double.Parse(key["value"]!.ToObject<string>()!));
+            }
         }
-        public SessionModel(string uuid, string sessionName)
+        
+        public void AddDataSpeed(JObject data)
         {
-            this.uuid = uuid;
+            JArray val = (JArray)data["speed"];
+        
+            foreach (JObject key in val)
+            {
+                this.speed.Add(double.Parse(key["value"]!.ToObject<string>()!));
+            }
+        }
+        
+        public void AddDataHeartRate(JObject data)
+        {
+            JArray val = (JArray)data["heartrate"];
+        
+            foreach (JObject key in val)
+            {
+                this.heartRate.Add(double.Parse(key["value"]!.ToObject<string>()!));
+            }
+        }
+        public SessionModel(string sessionName)
+        {
             this.sessionName = sessionName;
         }
     }

@@ -135,7 +135,6 @@ namespace DoctorApplication.MVVM.ViewModel
             {
                 Task task1 = dataHandler.SubscribeToSessionAsync();
             }
-            dataHandler.ListClients();
         }
 
         public void StartBikeRecording()

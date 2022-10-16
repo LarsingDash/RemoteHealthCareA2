@@ -6,9 +6,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ClientApplication.ServerConnection;
+using ClientApplication.ServerConnection.Communication;
+using DoctorApplication.Communication;
+using Newtonsoft.Json.Linq;
+using Shared;
+using Shared.Log;
 
 namespace DoctorApplication.MVVM.Model
 {
@@ -185,6 +192,40 @@ namespace DoctorApplication.MVVM.Model
             this.messages = new ObservableCollection<MessageModel>();
             this.userDataList = new List<DataModel>();
             this.sessions = new BindableCollection<SessionModel>();
+
+            Client client = App.GetClientInstance();
+            var serial = Util.RandomString();
+            client.SendEncryptedData(JsonFileReader.GetObjectAsString("HistoricClientData", new Dictionary<string, string>()
+            {
+                {"_serial_", serial},
+                {"_name_", userName}
+            }, JsonFolder.Json.Path));
+
+            client.AddSerialCallbackTimeout(serial, ob =>
+            {
+                foreach (JObject session in ob["data"]!.Value<JArray>("bike-sessions")!.Values<JObject>())
+                {
+                    if (session == null) return;
+                    SessionModel model = new SessionModel(session["session-name"]!.ToObject<string>()!);
+                    model.AddDataDistance(session);
+                    model.AddDataSpeed(session);
+                    model.AddDataHeartRate(session);
+                    try
+                    {
+                        model.startTime = CustomParseDate(session["start-time"]!.ToObject<string>()!);
+                        model.endTime = !session["end-time"]!.ToObject<string>()!.Equals("_endtime_") ? CustomParseDate(session["end-time"]!.ToObject<string>()!) : DateTime.MinValue;
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.LogMessage(LogImportance.Fatal, "Time could not be parsed", e);
+                    }
+                    
+                    sessions.Add(model);
+                }
+            }, () =>
+            {
+                // No Response from server
+            }, 1000);
         }
 
         public void addData(DataModel dataModel)
@@ -242,6 +283,10 @@ namespace DoctorApplication.MVVM.Model
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
+        private DateTime CustomParseDate(string time)
+        {
+            return DateTime.ParseExact(time, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+        }
     }
+    
 }

@@ -98,7 +98,7 @@
                 <lvc:Axis LabelFormatter="{Binding YFormatter}" Title="Kilometer/Hour" />
             </lvc:CartesianChart.AxisY>
             <lvc:CartesianChart.AxisX>
-                <lvc:Axis Labels="{Binding Labels}" Title="Time" />
+                <lvc:Axis Labels="{Binding Labels}" Title="Time HH:MM" />
             </lvc:CartesianChart.AxisX>
         </lvc:CartesianChart>
         <Grid Grid.Row="2" Grid.Column="1">
@@ -176,10 +176,10 @@
         </Grid>
         <lvc:CartesianChart Grid.Row="1" Grid.Column="2" Series="{Binding SeriesCollection}" Zoom="X">
             <lvc:CartesianChart.AxisY>
-                <lvc:Axis LabelFormatter="{Binding YFormatter}" Title="Kilometer/Hour" />
+                <lvc:Axis LabelFormatter="{Binding YFormatter}" Title="Heartrate" />
             </lvc:CartesianChart.AxisY>
             <lvc:CartesianChart.AxisX>
-                <lvc:Axis Labels="{Binding Labels}" Title="Time" />
+                <lvc:Axis Labels="{Binding Labels}" Title="Time HH:MM" />
             </lvc:CartesianChart.AxisX>
         </lvc:CartesianChart>
         <Grid Grid.Row="2" Grid.Column="2">

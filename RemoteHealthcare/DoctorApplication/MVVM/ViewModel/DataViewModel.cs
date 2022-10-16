@@ -17,13 +17,14 @@ using ClientApplication.ServerConnection.Communication;
 using DoctorApplication.Communication;
 using Shared;
 using Shared.Log;
+using LiveCharts.Helpers;
 
 namespace DoctorApplication.MVVM.ViewModel
 {
     internal class DataViewModel : ObservableObject
     {
         private ConnectionHandler dataHandler;
-        
+
         //WPF Text change strings
         private string message;
         private string currentSessionUuid;
@@ -52,7 +53,7 @@ namespace DoctorApplication.MVVM.ViewModel
         private void ApplySliderValue()
         {
             Logger.LogMessage(LogImportance.Information, sliderValue.ToString());
-            Client client  = App.GetClientInstance();
+            Client client = App.GetClientInstance();
             var serial = Util.RandomString();
             client.SendEncryptedData(JsonFileReader.GetObjectAsString("SetResistance", new Dictionary<string, string>()
             {
@@ -74,12 +75,7 @@ namespace DoctorApplication.MVVM.ViewModel
             }
         }
 
-        //data for graph
-        public LineSeries lineSeries = new LineSeries
-        {
-            Title = "Series 1",
-            Values = new ChartValues<double> { 4, 6, 5, 2, 4 }
-        };
+
         //commands
         public RelayCommand SendCommand { get; set; }
         public RelayCommand GetUserCommand { get; set; }
@@ -126,16 +122,19 @@ namespace DoctorApplication.MVVM.ViewModel
             }
         }
 
-
+        //data for graph
+        public LineSeries lineSeries;
 
 
 
         public DataViewModel(BindableCollection<UserDataModel> users)
         {
 
+
+
             //creating users (test data)
             this.Users = users;
-           
+
 
             //initializing sendcommand 
             SendCommand = new RelayCommand(SendMessage);
@@ -147,11 +146,16 @@ namespace DoctorApplication.MVVM.ViewModel
             buttonText = "Start";
 
             //graph series initialisation
-            SeriesCollection = new SeriesCollection
-            {
-                lineSeries
-            };
-
+            //if (SelectedUser != null)
+            //{
+            //    SeriesCollection = new SeriesCollection
+            //{
+            //    new LineSeries{
+            //    Title = "KM/H",
+            //    Values = SelectedUser.LastSession.Speed.AsChartValues(),
+            //},
+            //};
+            //}
             dataHandler = new ConnectionHandler();
             Task task = dataHandler.StartRecordingAsync("Testing");
             if (task.IsCompleted)

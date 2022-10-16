@@ -142,9 +142,12 @@ namespace DoctorApplication.MVVM.ViewModel
 
         public void SendMessage(object Message)
         {
-            selectedUser.AddMessage(Message.ToString());
-            this.Message = string.Empty;
-            users.Add(new UserDataModel());
+            if (selectedUser != null && Message!="")
+            {
+                selectedUser.AddMessage(Message.ToString());
+                this.Message = string.Empty;
+                users.Add(new UserDataModel());
+            }
         }
         public void GetUser(object user)
         {

@@ -15,6 +15,7 @@ namespace DoctorApplication.MVVM.ViewModel
         private object currentView;
         public HistoryViewModel HistoryVM { get; }
         public DataViewModel DataVM { get; set; }
+        public MultipleViewModel MultipleVM { get; set; }
 
         public BindableCollection<UserDataModel> users { get; set; }
 
@@ -51,6 +52,7 @@ namespace DoctorApplication.MVVM.ViewModel
             ChangeView = new RelayCommand(ChangeViewToggled);
             DataVM = new DataViewModel(users);
             HistoryVM = new HistoryViewModel(users);
+            MultipleVM = new MultipleViewModel(users);
             CurrentView = DataVM;
             ToggleButtonText = "Switch to current data";
             UserDataModel test1 = new UserDataModel("user1", "0612345678", 12345);

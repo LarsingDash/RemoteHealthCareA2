@@ -40,10 +40,10 @@ namespace DoctorApplication.Core
         {
             var serial = Util.RandomString();
             client.SendEncryptedData(JsonFileReader.GetObjectAsString("SubscribeToSession", new Dictionary<string, string>()
-        {
-            {"_uuid_", uuid},
-            {"_serial_", serial}
-        }));
+            {
+                {"_uuid_", uuid},
+                {"_serial_", serial}
+            }));
             await client.AddSerialCallbackTimeout(serial, ob =>
             {
                 //Check status ok

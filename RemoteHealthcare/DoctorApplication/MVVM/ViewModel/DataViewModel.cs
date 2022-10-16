@@ -26,6 +26,7 @@ namespace DoctorApplication.MVVM.ViewModel
         
         //WPF Text change strings
         private string message;
+        private string currentSessionUuid;
 
         public string Message
         {
@@ -141,18 +142,45 @@ namespace DoctorApplication.MVVM.ViewModel
 
         private void EmergencyFunction(object obj)
         {
+            StopBikeRecording();
             Console.WriteLine("Emergency Pressed!");
         }
 
-        public void StartBikeRecording()
+        public async void StartBikeRecording()
         {
-            //todo start session
+            Client client = App.GetClientInstance();
+            var serial = Util.RandomString();
+            client.SendEncryptedData(JsonFileReader.GetObjectAsString("StartBikeRecording", new Dictionary<string, string>()
+            {
+                {"_serial_", serial},
+                {"_name_", selectedUser.UserName},
+            }, JsonFolder.Json.Path));
+            await client.AddSerialCallbackTimeout(serial, ob =>
+            {
+                currentSessionUuid = ob["data"]!["uuid"]!.ToObject<string>()!;
+                client.SendEncryptedData(JsonFileReader.GetObjectAsString("SubscribeToSession", new Dictionary<string, string>()
+                {
+                    {"_serial_", serial},
+                    {"_uuid_", currentSessionUuid},
+                }, JsonFolder.Json.Path));
+            }, () =>
+            {
+
+            }, 1000);
+            
 
 
         }
         public void StopBikeRecording()
         {
-            //todo stop session
+            Client client = App.GetClientInstance();
+            var serial = Util.RandomString();
+            client.SendEncryptedData(JsonFileReader.GetObjectAsString("StopBikeRecording", new Dictionary<string, string>()
+            {
+                {"_serial_", serial},
+                {"_uuid_", currentSessionUuid},
+                {"_name_", selectedUser.UserName}
+            }, JsonFolder.Json.Path));
         }
 
         public void SendMessage(object Message)

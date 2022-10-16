@@ -26,6 +26,8 @@
     <ItemGroup>
       <ProjectReference Include="..\Shared\Shared.csproj" />
     </ItemGroup>
+
+
     <ItemGroup>
       <None Remove="Assets\BikeWallpaper.jpg" />
       <Resource Include="Assets\BikeWallpaper.jpg" />

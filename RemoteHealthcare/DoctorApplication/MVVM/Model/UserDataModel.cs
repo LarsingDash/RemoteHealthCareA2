@@ -1,4 +1,5 @@
 ﻿/* This is the model for the userdata. It contains all the data that is currently needed to be displayed. */
+using Caliburn.Micro;
 using DoctorApplication.Core;
 using System;
 using System.Collections;
@@ -46,6 +47,8 @@ namespace DoctorApplication.MVVM.Model
                 OnPropertyChanged(nameof(lastEntry));
             }
         }
+
+        public ObservableCollection<SessionModel> sessions { get; set; }
 
         private double averageSpeed;
         public double AverageSpeed
@@ -169,7 +172,9 @@ namespace DoctorApplication.MVVM.Model
             this.UserName = "TestName";
             this.phoneNumber = "06 12345678";
             this.bikeId = 01249;
-
+            this.messages = new ObservableCollection<MessageModel>();
+            this.userDataList = new List<DataModel>();
+            this.sessions = new BindableCollection<SessionModel>();
         }
 
         public UserDataModel(string userName, string phoneNumber, int bikeId)
@@ -179,13 +184,17 @@ namespace DoctorApplication.MVVM.Model
             BikeId = bikeId;
             this.messages = new ObservableCollection<MessageModel>();
             this.userDataList = new List<DataModel>();
+            this.sessions = new BindableCollection<SessionModel>();
         }
 
         public void addData(DataModel dataModel)
         {
             userDataList.Add(dataModel);
         }
-        
+        public void AddSession(SessionModel sessionModel)
+        {
+            sessions.Add(sessionModel);
+        }
         public void AddMessage(string message)
         {
             messages.Add(new MessageModel(UserName, message));

@@ -16,6 +16,9 @@
             <DataTemplate DataType="{x:Type viewModel:DataViewModel}" x:Key="DataViewModel">
                 <view:DataView/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModel:MultipleViewModel}" x:Key="MultipleViewModel">
+                <view:MultipleWindowView/>
+            </DataTemplate>
             <DataTemplate DataType="{x:Type viewModel:MainViewModel}" x:Key="MainViewModel">
                 <view:HistoryView/>
             </DataTemplate>

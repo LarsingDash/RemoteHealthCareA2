@@ -442,7 +442,7 @@
                     <Label 
                     Style="{DynamicResource LabelStyleMain}" 
                         Content="Bike Resistance:" x:Name="BikeResistanceHeader" />
-                    <Slider Value="{Binding SliderValue}" Maximum="100" Margin="30,0,30,0" x:Name="ResistanceSlider" IsSnapToTickEnabled="True" TickFrequency="10" >
+                    <Slider Value="{Binding SliderValue}" Maximum="1000" Margin="30,0,30,0" x:Name="ResistanceSlider" IsSnapToTickEnabled="True" TickFrequency="50" >
                         
                     </Slider>
                     <StackPanel Orientation="Horizontal">

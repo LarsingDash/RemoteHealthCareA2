@@ -55,25 +55,9 @@
             <Grid HorizontalAlignment="Stretch" Background="Transparent">
                 <StackPanel Orientation="Horizontal">
                     <Label Content="Doctor Applicatie" Margin="10,0" Foreground="#FFD4ECDD" Width="110" HorizontalAlignment="Left" MouseDown="Label_MouseDown" />
-                    <ToggleButton
-                        Width="Auto"
-                        Command="{Binding ChangeView}"
-                        CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}"
-                        Content="{Binding ToggleButtonText}"
-                        Foreground="White" Background="{x:Null}" Padding="4,1,4,1"
-                        >
-                        <ToggleButton.BorderBrush>
-                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                <GradientStop Color="#FF7309F9"/>
-                                <GradientStop Color="#FFC417F9" Offset="1"/>
-                            </LinearGradientBrush>
-                        </ToggleButton.BorderBrush>
-                        <ToggleButton.Resources>
-                            <Style TargetType="Border">
-                                <Setter Property="CornerRadius" Value="4" />
-                            </Style>
-                        </ToggleButton.Resources>
-                    </ToggleButton>
+                    <Button Style="{StaticResource ButtonStyle2}" Content="Home" Command="{Binding ChangeViewHomeCommand}"/>
+                    <Button Style="{StaticResource ButtonStyle2}" Content="Multi View" Command="{Binding ChangeViewMultiCommand}"/>
+                    <Button Style="{StaticResource ButtonStyle2}" Content="History" Command="{Binding ChangeViewHistoryCommand}"/>
                 </StackPanel>
                     <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Margin="0,0,15,0">
                         <Button Width="20" Height="20" Content="⎯"  Background="Transparent" BorderThickness="0" Foreground="Gray" Click="ButtonMinimize_Click"/>

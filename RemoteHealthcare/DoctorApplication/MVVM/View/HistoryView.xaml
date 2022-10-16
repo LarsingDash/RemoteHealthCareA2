@@ -66,7 +66,6 @@
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="{Binding UserName}" />
-                            <TextBlock Padding="10,0" Text="{Binding BikeId}" />
                         </StackPanel>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
@@ -78,6 +77,8 @@
 
             <ComboBox
                 ItemsSource="{Binding SelectedUser.Sessions}"
+                SelectedItem="{Binding SelectedSession}"
+                
                 Height="20"
                 Width="150">
                 <!--SelectedItem="{Binding }"-->
@@ -143,7 +144,7 @@
                     />
             <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="Time Elapsed:"
+                    Content="Distance Travelled:"
                     Grid.Column="0"
                     Grid.Row="4"
                     HorizontalAlignment="Left"
@@ -151,16 +152,23 @@
 
             <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding SelectedUser.TopSpeed}"
-                    Grid.Column="2"
+                    Content="{Binding SelectedSession.TopSpeed}"
+                    Grid.Column="1"
                     Grid.Row="2"
                     HorizontalAlignment="Left"
                      />
             <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding SelectedUser.AverageSpeed}"
-                    Grid.Column="3"
+                    Content="{Binding SelectedSession.AverageSpeed}"
+                    Grid.Column="1"
                     Grid.Row="3"
+                    HorizontalAlignment="Left"
+                     />
+            <Label
+                    Style="{DynamicResource LabelStyleMain}" 
+                    Content="{Binding SelectedSession.LastDistance}"
+                    Grid.Column="1"
+                    Grid.Row="4"
                     HorizontalAlignment="Left"
                      />
 
@@ -225,19 +233,26 @@
 
             <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding SelectedUser.TopSpeed}"
-                    Grid.Column="2"
+                    Content="{Binding SelectedSession.HighestRate}"
+                    Grid.Column="1"
                     Grid.Row="2"
                     HorizontalAlignment="Left"
                      />
             <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding SelectedUser.AverageSpeed}"
-                    Grid.Column="3"
+                    Content="{Binding SelectedSession.AverageRate}"
+                    Grid.Column="1"
                     Grid.Row="3"
                     HorizontalAlignment="Left"
                      />
-           
+            <Label
+                    Style="{DynamicResource LabelStyleMain}" 
+                    Content="{Binding SelectedSession.LowestRate}"
+                    Grid.Column="1"
+                    Grid.Row="3"
+                    HorizontalAlignment="Left"
+                     />
+
 
         </Grid>
     </Grid>

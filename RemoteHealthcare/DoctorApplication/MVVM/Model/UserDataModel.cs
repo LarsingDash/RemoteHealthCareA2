@@ -16,6 +16,7 @@ using DoctorApplication.Communication;
 using Newtonsoft.Json.Linq;
 using Shared;
 using Shared.Log;
+using System.Windows.Controls.Primitives;
 
 namespace DoctorApplication.MVVM.Model
 {
@@ -27,32 +28,7 @@ namespace DoctorApplication.MVVM.Model
         private string userName;
 
         //statistic data bike
-        private double topSpeed;
-
-        public double TopSpeed
-        {
-            get
-            {
-                if (userDataList != null)
-                {
-                    double topValue = 0;
-                    foreach (DataModel dataModel in userDataList)
-                    {
-                        if (dataModel.CurrentSpeed > topValue)
-                        {
-                            topValue = dataModel.CurrentSpeed;
-                        }
-                    }
-                    return topValue;
-                }
-                return 0;
-            }
-            set
-            {
-                topSpeed = value;
-                OnPropertyChanged(nameof(lastEntry));
-            }
-        }
+       
 
         private ObservableCollection<SessionModel> sessions;
 
@@ -66,119 +42,137 @@ namespace DoctorApplication.MVVM.Model
             }
         }
 
-        private double averageSpeed;
-        public double AverageSpeed
+        private double distance;
+        public double Distance
+        {
+            get { return distance; }
+            set { distance = value; OnPropertyChanged(nameof(distance)); }
+        }
+
+
+        private double topSpeed;
+        public double TopSpeed
         {
             get
             {
-                if (userDataList != null)
+                if (lastSession != null)
                 {
-                    double total = 0;
-                    foreach (DataModel dataModel in userDataList)
+                    double highest = 0;
+                    foreach (double value in LastSession.Speed)
                     {
-                        total += dataModel.CurrentSpeed;
+                        if (value > highest)
+                        {
+                            highest = value;
+                        }
                     }
-                    return Math.Round((total / userDataList.Count), 1);
+                    return highest;
                 }
                 return 0;
             }
             set
             {
-                averageSpeed = value;
-                OnPropertyChanged(nameof(lastEntry));
+                topSpeed = value;
+                OnPropertyChanged(nameof(topSpeed));
             }
         }
 
+        private double averageSpeed;
+        public double AverageSpeed
+        {
+            get{
+                if (lastSession != null)
+                {
+                    double total = 0;
+                    foreach (double value in LastSession.Speed)
+                    {
+                        total += value;
+                    }
+                    return Math.Round((total / LastSession.Speed.Count), 1);
+                }
+                return 0;
+            }
+            set{
+                averageSpeed = value;
+                OnPropertyChanged(nameof(averageSpeed));
+            }
+        }
         //statistic data heartmonitor
-        private int lowestRate;
 
-        public int LowestRate
+        private double lowestRate;
+        public double LowestRate
         {
             get
             {
-                if (userDataList != null)
+                if (lastSession != null)
                 {
-                    int lowestValue = 999;
-                    foreach (DataModel dataModel in userDataList)
+                    double lowest = 9999;
+                    foreach (double value in LastSession.HeartRate)
                     {
-                        if (dataModel.CurrentRate < lowestValue)
+                        if (value < lowest)
                         {
-                            lowestValue = dataModel.CurrentRate;
+                            lowest = value;
                         }
                     }
-                    return lowestValue;
+                    return lowest;
                 }
                 return 0;
             }
             set
             {
                 lowestRate = value;
-                OnPropertyChanged(nameof(lastEntry));
+                OnPropertyChanged(nameof(lowestRate));
             }
         }
+ 
 
-
-        private int averageRate;
-
-        public int AverageRate
+        private double averageRate;
+        public double AverageRate
         {
             get
             {
-                if (userDataList != null)
+                if (lastSession != null)
                 {
-                    int total = 0;
-                    foreach (DataModel dataModel in userDataList)
+                    double total = 0;
+                    foreach (double value in LastSession.HeartRate)
                     {
-                        total += dataModel.CurrentRate;
+                        total += value;
                     }
-                    return (total / userDataList.Count);
+                    return Math.Round((total / LastSession.HeartRate.Count), 1);
                 }
                 return 0;
             }
             set
             {
                 averageRate = value;
-                OnPropertyChanged(nameof(lastEntry));
+                OnPropertyChanged(nameof(averageRate));
             }
         }
-        private int highestRate;
-        public int HighestRate
+        private double highestRate;
+        public double HighestRate
         {
             get
             {
-                if (userDataList != null)
+                if (lastSession != null)
                 {
-                    int topValue = 0;
-                    foreach (DataModel dataModel in userDataList)
+                    double highest = 0;
+                    foreach (double value in LastSession.HeartRate)
                     {
-                        if (dataModel.CurrentRate > topValue)
+                        if (value > highest)
                         {
-                            topValue = dataModel.CurrentRate;
+                            highest = value;
                         }
                     }
-                    return topValue;
+                    return highest;
                 }
                 return 0;
             }
             set
             {
                 highestRate = value;
-                OnPropertyChanged(nameof(lastEntry));
+                OnPropertyChanged(nameof(highestRate));
             }
         }
 
-        public List<DataModel> userDataList { get; set; }
-
-        public DataModel lastEntry;
-        public DataModel LastEntry
-        {
-            get { return userDataList.LastOrDefault()!; }
-            set
-            {
-                lastEntry = value;
-                OnPropertyChanged(nameof(lastEntry));
-            }
-        }
         public SessionModel lastSession;
         public SessionModel LastSession
         {
@@ -232,7 +226,6 @@ namespace DoctorApplication.MVVM.Model
         {
             this.UserName = "TestName";
             this.messages = new ObservableCollection<MessageModel>();
-            this.userDataList = new List<DataModel>();
             this.sessions = new BindableCollection<SessionModel>();
         }
 
@@ -240,7 +233,6 @@ namespace DoctorApplication.MVVM.Model
         {
             UserName = userName;
             this.messages = new ObservableCollection<MessageModel>();
-            this.userDataList = new List<DataModel>();
             this.sessions = new BindableCollection<SessionModel>();
 
             Client client = App.GetClientInstance();
@@ -278,10 +270,6 @@ namespace DoctorApplication.MVVM.Model
             }, 1000);
         }
 
-        public void addData(DataModel dataModel)
-        {
-            userDataList.Add(dataModel);
-        }
         public void AddSession(SessionModel sessionModel)
         {
             sessions.Add(sessionModel);

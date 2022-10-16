@@ -38,23 +38,19 @@
                                 <GradientStop Color="#FF8912D0" Offset="1"/>
                             </LinearGradientBrush>
                         </Border.Background>
-                        <StackPanel VerticalAlignment="Top" Orientation="Vertical" Background="MediumPurple">
+                        <StackPanel VerticalAlignment="Top" Orientation="Vertical" >
 
                             <!--User info-->
-                            <Label Content="User info" Style="{StaticResource HeaderStyle1}"/>
+                            <Label Content="User info" Style="{StaticResource HeaderStyle1}" Foreground="White" FontWeight="Bold"/>
                             <StackPanel Orientation="Horizontal">
                                 <Label Content="Username: " Style="{StaticResource LabelStyleMain}" FontWeight="Bold"/>
                                 <Label Style="{StaticResource LabelStyleMain}" Content="{Binding UserName}"/>
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <Label Content="Bike ID: " Style="{StaticResource LabelStyleMain}" FontWeight="Bold"/>
-                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding BikeId}"/>
-                            </StackPanel>
                             <!--Bike info-->
-                            <Label Content="Bike info" Style="{StaticResource HeaderStyle1}"/>
+                            <Label Content="Bike info" Style="{StaticResource HeaderStyle1}" Foreground="White" FontWeight="Bold"/>
                             <StackPanel Orientation="Horizontal">
                                 <Label Content="Current speed: " Style="{StaticResource LabelStyleMain}" FontWeight="Bold"/>
-                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding LastEntry.CurrentSpeed}"/>
+                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding LastSpeed}"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <Label Content="Average Speed: " Style="{StaticResource LabelStyleMain}" FontWeight="Bold"/>
@@ -66,7 +62,11 @@
                             </StackPanel>
 
                             <!--Heart info-->
-                            <Label Content="Heart info" Style="{StaticResource HeaderStyle1}"/>
+                            <Label Content="Heart info" Style="{StaticResource HeaderStyle1}" Foreground="White" FontWeight="Bold"/>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Current heartrate: " Style="{StaticResource LabelStyleMain}" FontWeight="Bold"/>
+                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding LastHeartRate}"/>
+                            </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <Label Content="Average heartrate: " Style="{StaticResource LabelStyleMain}" FontWeight="Bold"/>
                                 <Label Style="{StaticResource LabelStyleMain}" Content="{Binding AverageRate}"/>

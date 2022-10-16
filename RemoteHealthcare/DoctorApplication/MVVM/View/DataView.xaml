@@ -269,10 +269,16 @@
                     Grid.Row="4"
                     HorizontalAlignment="Left"
                     x:Name="TimeElapsedHeader" />
-
+<Label
+                    Style="{DynamicResource LabelStyleMain}" 
+                    Content="Distance Travelled:"
+                    Grid.Column="0"
+                    Grid.Row="5"
+                    HorizontalAlignment="Left"
+                    />
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding SelectedUser.sessions.}"
+                    Content="{Binding SelectedUser.LastSpeed}"
                     Grid.Column="1"
                     Grid.Row="1"
                     HorizontalAlignment="Left"
@@ -280,24 +286,31 @@
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
                     Content="{Binding SelectedUser.TopSpeed}"
-                    Grid.Column="2"
+                    Grid.Column="1"
                     Grid.Row="2"
                     HorizontalAlignment="Left"
                     x:Name="TopSpeedText" />
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
                     Content="{Binding SelectedUser.AverageSpeed}"
-                    Grid.Column="3"
+                    Grid.Column="1"
                     Grid.Row="3"
                     HorizontalAlignment="Left"
                     x:Name="AverageSpeedText" />
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding SelectedUser.TimeElapsed}"
-                    Grid.Column="4"
+                    Content="{Binding SelectedUser.LastSession.TimeElapsed}"
+                    Grid.Column="1"
                     Grid.Row="4"
                     HorizontalAlignment="Left"
                     x:Name="TimeElapsedText" />
+                <Label
+                    Style="{DynamicResource LabelStyleMain}" 
+                    Content="{Binding SelectedUser.LastDistance}"
+                    Grid.Column="1"
+                    Grid.Row="5"
+                    HorizontalAlignment="Left"
+                    x:Name="DistanceTravelledText" />
 
             </Grid>
         </Grid>
@@ -318,7 +331,7 @@
                     x:Name="HeartInformationHeader" />
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding SelectedUser.LastEntry.CurrentRate}"
+                    Content="{Binding SelectedUser.LastHeartRate}"
                     FontSize="48"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"

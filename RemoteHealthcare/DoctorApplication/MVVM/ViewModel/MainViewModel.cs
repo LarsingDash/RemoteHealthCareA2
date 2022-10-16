@@ -52,7 +52,15 @@ namespace DoctorApplication.MVVM.ViewModel
             HistoryVM = new HistoryViewModel(users);
             MultipleVM = new MultipleViewModel(users);
             CurrentView = DataVM;
-            // UserDataModel test1 = new UserDataModel("user1", "0612345678", 12345);
+
+            //UserDataModel test1 = new UserDataModel("user1");
+            //SessionModel testSession = new SessionModel("testSession");
+            //testSession.Distance.InsertRange(testSession.Distance.Count, new double[] {1,2,3,4,5,6,7,8,9,10 });
+            //testSession.Speed.InsertRange(testSession.Distance.Count, new double[] {1,2,3,4,5,6,7,8, 9,10 });
+            //testSession.HeartRate.InsertRange(testSession.Distance.Count, new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+
+            //test1.AddSession(testSession);
+            //users.Add(test1);
             // UserDataModel test2 = new UserDataModel("user2", "0698765432", 67890);
             // UserDataModel test3 = new UserDataModel("user3", "0698665232", 98765);
             //

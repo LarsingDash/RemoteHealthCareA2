@@ -115,9 +115,20 @@ namespace DoctorApplication.MVVM.ViewModel
             }
         }
 
-        
-       
-        
+        private SessionModel selectedSession;
+        public SessionModel SelectedSession
+        {
+            get { return selectedSession; }
+            set
+            {
+                selectedSession = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+
+
 
         public DataViewModel(BindableCollection<UserDataModel> users)
         {

@@ -87,7 +87,16 @@ namespace DoctorApplication.MVVM.ViewModel
         public RelayCommand EmergencyPressedCommand { get; set; }
 
         //Data collections
-        public BindableCollection<UserDataModel> users { get; set; }
+        private BindableCollection<UserDataModel> users;
+        public BindableCollection<UserDataModel> Users
+        {
+            get { return users; }
+            set
+            {
+                users = value;
+                OnPropertyChanged();
+            }
+        }
         public ObservableCollection<MessageModel> messages { get; set; }
         public SeriesCollection SeriesCollection { get; set; }
         public string[] Labels { get; set; }
@@ -114,7 +123,7 @@ namespace DoctorApplication.MVVM.ViewModel
         {
 
             //creating users (test data)
-            this.users = users;
+            this.Users = users;
            
 
             //initializing sendcommand 

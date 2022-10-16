@@ -59,7 +59,7 @@
             <ComboBox
                 Style="{StaticResource ComboBoxMainStyle}"
                 Height="20"
-                ItemsSource="{Binding users}"
+                ItemsSource="{Binding Users}"
                 SelectedItem="{Binding SelectedUser}"
                 Width="150">
                 <ComboBox.ItemTemplate>
@@ -77,7 +77,7 @@
                 Style="{StaticResource LabelStyleMain}" />
 
             <ComboBox
-                ItemsSource="{Binding SelectedUser.sessions}"
+                ItemsSource="{Binding SelectedUser.Sessions}"
                 Height="20"
                 Width="150">
                 <!--SelectedItem="{Binding }"-->

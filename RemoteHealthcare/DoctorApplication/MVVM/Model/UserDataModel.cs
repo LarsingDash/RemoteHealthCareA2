@@ -21,25 +21,24 @@ namespace DoctorApplication.MVVM.Model
 {
     public class UserDataModel : INotifyPropertyChanged
     {
-       
+
 
         //userdata
         private string userName;
-        private string phoneNumber;
-        private int bikeId;
 
         //statistic data bike
         private double topSpeed;
 
         public double TopSpeed
         {
-            get {
+            get
+            {
                 if (userDataList != null)
                 {
                     double topValue = 0;
                     foreach (DataModel dataModel in userDataList)
                     {
-                        if(dataModel.CurrentSpeed > topValue)
+                        if (dataModel.CurrentSpeed > topValue)
                         {
                             topValue = dataModel.CurrentSpeed;
                         }
@@ -55,7 +54,17 @@ namespace DoctorApplication.MVVM.Model
             }
         }
 
-        public ObservableCollection<SessionModel> sessions { get; set; }
+        private ObservableCollection<SessionModel> sessions;
+
+        public ObservableCollection<SessionModel> Sessions
+        {
+            get { return sessions; }
+            set
+            {
+                sessions = value;
+                OnPropertyChanged(nameof(sessions));
+            }
+        }
 
         private double averageSpeed;
         public double AverageSpeed
@@ -122,7 +131,7 @@ namespace DoctorApplication.MVVM.Model
                     {
                         total += dataModel.CurrentRate;
                     }
-                    return (total/userDataList.Count);
+                    return (total / userDataList.Count);
                 }
                 return 0;
             }
@@ -163,13 +172,58 @@ namespace DoctorApplication.MVVM.Model
         public DataModel lastEntry;
         public DataModel LastEntry
         {
-            get { return userDataList.LastOrDefault(); }
+            get { return userDataList.LastOrDefault()!; }
             set
             {
                 lastEntry = value;
                 OnPropertyChanged(nameof(lastEntry));
             }
         }
+        public SessionModel lastSession;
+        public SessionModel LastSession
+        {
+            get { return sessions.LastOrDefault()!; }
+            set
+            {
+                lastSession = value;
+                OnPropertyChanged(nameof(lastSession));
+            }
+        }
+        private double lastSpeed;
+        public double LastSpeed
+        {
+            get { return LastSession.lastSpeed; }
+            set
+            {
+                lastSpeed = value;
+                OnPropertyChanged(nameof(lastSpeed));
+            }
+        }
+        private double lastDistance;
+
+        public double LastDistance
+        {
+            get { return LastSession.lastDistance; }
+            set
+            {
+                lastDistance = value;
+                OnPropertyChanged(nameof(lastDistance));
+            }
+        }
+        private double lastHeartRate;
+        public double LastHeartRate
+        {
+            get { return LastSession.lastHeartRate; }
+            set
+            {
+                lastHeartRate = value;
+                OnPropertyChanged(nameof(lastHeartRate));
+            }
+        }
+
+
+
+
         //chatdata
         public ObservableCollection<MessageModel> messages { get; set; }
 
@@ -177,18 +231,14 @@ namespace DoctorApplication.MVVM.Model
         public UserDataModel()
         {
             this.UserName = "TestName";
-            this.phoneNumber = "06 12345678";
-            this.bikeId = 01249;
             this.messages = new ObservableCollection<MessageModel>();
             this.userDataList = new List<DataModel>();
             this.sessions = new BindableCollection<SessionModel>();
         }
 
-        public UserDataModel(string userName, string phoneNumber, int bikeId)
+        public UserDataModel(string userName)
         {
             UserName = userName;
-            PhoneNumber = phoneNumber;
-            BikeId = bikeId;
             this.messages = new ObservableCollection<MessageModel>();
             this.userDataList = new List<DataModel>();
             this.sessions = new BindableCollection<SessionModel>();
@@ -219,7 +269,7 @@ namespace DoctorApplication.MVVM.Model
                     {
                         Logger.LogMessage(LogImportance.Fatal, "Time could not be parsed", e);
                     }
-                    
+
                     sessions.Add(model);
                 }
             }, () =>
@@ -244,34 +294,12 @@ namespace DoctorApplication.MVVM.Model
         public string UserName
         {
             get { return userName; }
-            set { 
+            set
+            {
                 userName = value;
                 OnPropertyChanged(nameof(UserName));
             }
         }
-        public int BikeId
-        {
-            get { return bikeId; }
-            set
-            {
-                bikeId = value;
-                OnPropertyChanged(nameof(BikeId));
-            }
-        }
-        public string PhoneNumber
-        {
-            get { return phoneNumber; }
-            set
-            {
-                phoneNumber = value;
-                OnPropertyChanged(nameof(PhoneNumber));
-            }
-        }
-
-
-
-
-
 
 
         /* This is a method that is used to update the view when the model changes. */
@@ -288,5 +316,5 @@ namespace DoctorApplication.MVVM.Model
             return DateTime.ParseExact(time, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
         }
     }
-    
+
 }

@@ -24,18 +24,9 @@ namespace DoctorApplication.MVVM.ViewModel
 
         public BindableCollection<UserDataModel> users { get; set; }
 
-        private string toggleButtonText;
-
-        public string ToggleButtonText
-        {
-            get { return toggleButtonText; }
-            set
-            {
-                toggleButtonText = value;
-                OnPropertyChanged();
-            }
-        }
-        public RelayCommand ChangeView { get; set; }
+        public RelayCommand ChangeViewHomeCommand { get; set; }
+        public RelayCommand ChangeViewMultiCommand { get; set; }
+        public RelayCommand ChangeViewHistoryCommand { get; set; }
 
 
         /* A property that is used to set the current view. */
@@ -54,12 +45,13 @@ namespace DoctorApplication.MVVM.ViewModel
         public MainViewModel()
         {
             users = new BindableCollection<UserDataModel>();
-            ChangeView = new RelayCommand(ChangeViewToggled);
+            ChangeViewHomeCommand = new RelayCommand(SetViewToHome);
+            ChangeViewMultiCommand = new RelayCommand(setViewToMulti);
+            ChangeViewHistoryCommand = new RelayCommand(SetViewToHistory);
             DataVM = new DataViewModel(users);
             HistoryVM = new HistoryViewModel(users);
             MultipleVM = new MultipleViewModel(users);
             CurrentView = DataVM;
-            ToggleButtonText = "Switch to current data";
             // UserDataModel test1 = new UserDataModel("user1", "0612345678", 12345);
             // UserDataModel test2 = new UserDataModel("user2", "0698765432", 67890);
             // UserDataModel test3 = new UserDataModel("user3", "0698665232", 98765);
@@ -120,7 +112,7 @@ namespace DoctorApplication.MVVM.ViewModel
                     string[] userNames = ob["data"]!.Value<JArray>("users")!.Values<string>().ToArray()!;
                     foreach (var userName in userNames)
                     {
-                        users.Add(new UserDataModel(userName, "00000", 2));
+                        users.Add(new UserDataModel(userName));
                     }
                 }
                 else
@@ -133,23 +125,21 @@ namespace DoctorApplication.MVVM.ViewModel
             }, 1000);
         }
 
-        public void ChangeViewToggled(object state)
+        public void SetViewToHome(object state)
         {
-            if ((bool)state)
-            {
-                //checked
-                Console.WriteLine("Switch to history");
-                ToggleButtonText = "History View";
-                CurrentView = MultipleVM;
-            }
-            else
-            {
-                //unchecked
-                Console.WriteLine("Data View Unchecked");
-                ToggleButtonText = "Switch to current data";
-                CurrentView = DataVM;
+            CurrentView = DataVM;
 
-            }
         }
+        public void setViewToMulti(object state)
+        {
+            CurrentView = MultipleVM;
+
+        }
+        public void SetViewToHistory(object state)
+        {
+            CurrentView = HistoryVM;
+
+        }
+       
     }
 }

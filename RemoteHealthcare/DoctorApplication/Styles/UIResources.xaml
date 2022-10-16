@@ -68,4 +68,18 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <Style TargetType="{x:Type Button}" x:Key="ButtonStyle2">
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Background" Value="{x:Null}"/>
+        <Setter Property="Padding" Value="4,1,4,1"/>
+        <Setter Property="BorderBrush">
+            <Setter.Value>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF7309F9"/>
+                    <GradientStop Color="#FFC417F9" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

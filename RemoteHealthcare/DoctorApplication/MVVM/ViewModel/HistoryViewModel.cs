@@ -15,7 +15,17 @@ namespace DoctorApplication.MVVM.ViewModel
     internal class HistoryViewModel : ObservableObject
     {
         //combobox controls
-        public BindableCollection<UserDataModel> users { get; set; }
+        private BindableCollection<UserDataModel> users;
+        public BindableCollection<UserDataModel> Users
+        {
+            get { return users; }
+            set
+            {
+                users = value;
+                OnPropertyChanged();
+
+            }
+        }
         public BindableCollection<SessionModel> sessions { get; set; }
 
 

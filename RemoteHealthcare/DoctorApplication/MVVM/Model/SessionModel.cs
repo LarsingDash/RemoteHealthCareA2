@@ -21,12 +21,13 @@ namespace DoctorApplication.MVVM.Model
 
         public TimeSpan TimeElapsed
         {
-            get {
-                if(endTime != null)
+            get
+            {
+                if (endTime != null)
                 {
                     return DateTime.Now - startTime;
                 }
-                return endTime - startTime; 
+                return endTime - startTime;
             }
             set
             {
@@ -35,9 +36,25 @@ namespace DoctorApplication.MVVM.Model
             }
         }
 
-        List<double> distance = new List<double>();
-        List<double> speed = new List<double>();
-        List<double> heartRate = new List<double>();
+        private List<double> distance;
+        private List<double> speed;
+        private List<double> heartRate;
+
+        public double lastDistance;
+        public double LastDistance
+        {
+            get { return distance.LastOrDefault(); }
+        }
+        public double lastSpeed;
+        public double LastSpeed
+        {
+            get { return speed.LastOrDefault(); }
+        }
+        public double lastHeartRate;
+        public double LastHeartRate
+        {
+            get { return heartRate.LastOrDefault(); }
+        }
 
         public event PropertyChangedEventHandler? PropertyChanged;
         private void OnPropertyChanged(string propertyName)
@@ -50,27 +67,27 @@ namespace DoctorApplication.MVVM.Model
         public void AddDataDistance(JObject data)
         {
             JArray distance = (JArray)data["distance"];
-        
+
             foreach (JObject key in distance)
             {
                 this.distance.Add(double.Parse(key["value"]!.ToObject<string>()!));
             }
         }
-        
+
         public void AddDataSpeed(JObject data)
         {
             JArray val = (JArray)data["speed"];
-        
+
             foreach (JObject key in val)
             {
                 this.speed.Add(double.Parse(key["value"]!.ToObject<string>()!));
             }
         }
-        
+
         public void AddDataHeartRate(JObject data)
         {
             JArray val = (JArray)data["heartrate"];
-        
+
             foreach (JObject key in val)
             {
                 this.heartRate.Add(double.Parse(key["value"]!.ToObject<string>()!));
@@ -79,6 +96,9 @@ namespace DoctorApplication.MVVM.Model
         public SessionModel(string sessionName)
         {
             this.sessionName = sessionName;
+            distance = new List<double>();
+            speed = new List<double>();
+            heartRate = new List<double>();
         }
     }
 }

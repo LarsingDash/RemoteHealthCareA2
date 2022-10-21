@@ -1,6 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Security;
 using System.Windows.Input;
+using ClientApplication.ServerConnection;
+using ClientApplication.Util;
+using Shared;
 
 namespace ClientApplication.ViewModel;
 
@@ -70,14 +74,31 @@ public class LoginViewModel: ViewModelBase
 
 	private void ExecuteLoginCommand(object obj)
 	{
-		var canLogin = true;
-		if (canLogin)
+		Client client = App.GetClientConnectedToServerInstance();
+		var serial = Shared.Util.RandomString();
+		var pass = new System.Net.NetworkCredential(string.Empty, password).Password;
+		client.SendEncryptedData(JsonFileReader.GetObjectAsString("Login", new Dictionary<string, string>()
 		{
-			IsViewVisible = false;
-		}
-		else
+			{"_serial_", serial},
+			{"_username_", phoneNumber},
+			{"_type_", "Client"},
+			{"_password_", pass}
+		}, JsonFolder.ServerConnection.Path));
+
+		client.AddSerialCallbackTimeout(serial, ob =>
 		{
-			ErrorMessage = "Invalid phone number or password";
-		}
+			var canLogin = ob["data"]!["status"]!.ToObject<string>()!.Equals("ok");
+			if (canLogin)
+			{
+				IsViewVisible = false;
+			}
+			else
+			{
+				ErrorMessage = ob["data"]!["error"]!.ToObject<string>()!;
+			}
+		}, () =>
+		{
+			ErrorMessage = "No response from server";
+		}, 200);
 	}
 }

@@ -68,7 +68,31 @@
             </Setter.Value>
         </Setter>
     </Style>
-
+    <Style TargetType="{x:Type ToggleButton}" x:Key="ToggleStyle2">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Border
+                            Background="{x:Null}"
+                            BorderBrush="#FF46EA65"
+                            BorderThickness="2,2,2,2"
+                            CornerRadius="5,5,5,5"
+                            HorizontalAlignment="Center"
+                            Padding="5,3,3,5"
+                            SnapsToDevicePixels="True"
+                            VerticalAlignment="Center"
+                            x:Name="border">
+                        <ContentPresenter x:Name="contentPresenter" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="true">
+                            <Setter Property="BorderBrush" TargetName="border" Value="Blue" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
     <Style TargetType="{x:Type Button}" x:Key="ButtonStyle2">
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="Background" Value="{x:Null}"/>

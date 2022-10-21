@@ -9,6 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Caliburn.Micro.Core" Version="4.0.212" />
       <PackageReference Include="DotnetNoise" Version="1.0.0" />
       <PackageReference Include="FontAwesome.Sharp" Version="6.1.1" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta2" />

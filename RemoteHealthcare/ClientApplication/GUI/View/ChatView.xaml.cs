@@ -1,4 +1,6 @@
+using System.Windows;
 using System.Windows.Controls;
+using ClientApplication.Model;
 
 namespace ClientApplication.View;
 

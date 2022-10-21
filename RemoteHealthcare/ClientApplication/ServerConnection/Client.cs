@@ -37,6 +37,7 @@ public class Client : DefaultClientConnection
         {
             commandHandler.Add("encryptedMessage", new EncryptedMessage(Rsa));
             commandHandler.Add("forward-set-resistance", new SetResistance());
+            commandHandler.Add("forward-chat-message", new ChatMessage());
             Thread.Sleep(500);
             SendEncryptedData(JsonFileReader.GetObjectAsString("Login", new Dictionary<string, string>()
             {

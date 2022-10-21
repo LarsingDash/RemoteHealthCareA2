@@ -1,9 +1,11 @@
 using System.Windows.Input;
+using ClientApplication.ServerConnection;
 
 namespace ClientApplication.ViewModel;
 
 public class ChatViewModel:ViewModelBase
 {
+	
 	public ChatViewModel()
 	{
 		startChat = new ViewModelCommand(startChatExecute);

@@ -4,11 +4,51 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:ClientApplication.View"
+             xmlns:model="clr-namespace:ClientApplication.Model"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-        <TextBlock Text="Chat test">
-            
-        </TextBlock>
-    </Grid>
+             d:DesignHeight="550" d:DesignWidth="1000">
+    
+    <UserControl.DataContext>
+        <model:DataViewModel/>
+    </UserControl.DataContext>
+    
+    
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition MaxHeight="20" />
+            </Grid.RowDefinitions>
+            <ListView
+                Background="{x:Null}"
+                BorderBrush="{x:Null}"
+                ItemsSource="{Binding messages }">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            BorderThickness="5"
+                            CornerRadius="5"
+                            Padding="5,2">
+                            <Border.Background>
+                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                    <GradientStop Color="#FFB238D8"/>
+                                    <GradientStop Color="#FF8912D0" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+
+                            <StackPanel Orientation="Vertical">
+                                <Label Content="{Binding message}" Padding="3,3,3,3" Foreground="White" />
+                                <Label
+                                    Content="{Binding time}"
+                                    FontSize="11"
+                                    FontStyle="Italic"
+                                    HorizontalAlignment="Right"
+                                    Padding="10,0" Foreground="#FFF9F9F9" />
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+    
+    
 </UserControl>

@@ -14,8 +14,6 @@ namespace DoctorApplication.Core
         readonly Action<object> execute;
         readonly Predicate<object> canExecute;
 
-        
-        
         public RelayCommand(Action<object> execute, Predicate<object> canExecute)
         {
             if (execute == null)
@@ -32,6 +30,8 @@ namespace DoctorApplication.Core
         {
 
         }
+
+
         public event EventHandler CanExecuteChanged
         {
             add { CommandManager.RequerySuggested += value; }

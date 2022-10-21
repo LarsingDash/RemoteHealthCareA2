@@ -41,12 +41,30 @@ namespace ServerApplication.Client.DataHandlers.CommandHandlers
                     }
                     data.UserName = ob["data"]?["username"]?.ToObject<string>() ?? "Unknown";
                     
-                    data.DataHandler = new ClientHandler(data);
-                    data.SendEncryptedData(JsonFileReader.GetObjectAsString("LoginResponse", new Dictionary<string, string>()
+                    JArray creds = (JArray) JsonFileReader.GetObject("AccountClient.json", new Dictionary<string, string>(), JsonFolder.Data.Path)["clients"]!;
+                    JToken? foundToken = creds.FirstOrDefault(value => value["username"]!.ToObject<string>()!.Equals(data.UserName));
+
+                    if (foundToken != null)
                     {
-                        {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
-                        {"_status_", "ok"}
-                    }, JsonFolder.ClientMessages.Path));
+                        JObject foundCred = (JObject)foundToken;
+                        if (foundCred["password"]!.ToObject<string>()!
+                            .Equals(ob["data"]?["password"]?.ToObject<string>() ?? "Unknown"))
+                        {
+                            data.SendEncryptedData(JsonFileReader.GetObjectAsString("LoginResponse", new Dictionary<string, string>()
+                            {
+                                {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
+                                {"_status_", "ok"},
+                                {"_error_", "_error_"}
+                            }, JsonFolder.ClientMessages.Path));
+                            data.DataHandler = new ClientHandler(data);
+                        }
+                        else
+                        {
+                            //Sending error message(Username/password not correct)
+                            SendEncryptedError(data,ob, "Username and/or password not correct");
+                        }
+                        return;
+                    }
                     
                     var totalPath = JsonFolder.Data.Path + data.UserName + "\\";
                     if (!Directory.Exists(totalPath))

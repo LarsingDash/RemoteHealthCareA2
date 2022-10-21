@@ -84,7 +84,16 @@
                     Content="{Binding SelectedUser.UserName}" />
                 
             </StackPanel>
-            <Label HorizontalAlignment="Center" Style="{StaticResource HeaderStyle1}" FontWeight="Bold" Grid.Row="2" Content="Chat:"/>
+            <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <Label HorizontalAlignment="Center" Style="{StaticResource HeaderStyle1}" FontWeight="Bold"  Content="Chat:"/>
+                <ToggleButton
+                        Width="Auto"
+                        Command="{Binding ChatTypeCommand}"
+                        CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}"
+                        Content="{Binding ButtonText2}"
+                        Foreground="White"
+                        Style="{StaticResource ToggleStyle2}" />
+            </StackPanel>
             <Grid Grid.Row="3">
                 <Grid.RowDefinitions>
                     <RowDefinition />

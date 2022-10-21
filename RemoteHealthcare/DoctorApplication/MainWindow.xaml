@@ -54,7 +54,7 @@
             </ContentControl>
             <Grid HorizontalAlignment="Stretch" Background="Transparent">
                 <StackPanel Orientation="Horizontal">
-                    <Label Content="Doctor Applicatie" Margin="10,0" Foreground="#FFD4ECDD" Width="110" HorizontalAlignment="Left" MouseDown="Label_MouseDown" />
+                    <Label FontWeight="Bold" Content="Doctor Applicatie" Margin="16,0" Foreground="#FFD4ECDD" Width="110" HorizontalAlignment="Left" MouseDown="Label_MouseDown" />
                     <Button Style="{StaticResource ButtonStyle2}" Content="Home" Command="{Binding ChangeViewHomeCommand}"/>
                     <Button Style="{StaticResource ButtonStyle2}" Content="Multi View" Command="{Binding ChangeViewMultiCommand}"/>
                     <Button Style="{StaticResource ButtonStyle2}" Content="History" Command="{Binding ChangeViewHistoryCommand}"/>

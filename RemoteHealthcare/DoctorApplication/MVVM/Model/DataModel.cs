@@ -16,8 +16,7 @@ namespace DoctorApplication.MVVM.Model
 
         //heartdata
         private int currentRate;
-
-
+        
         private DateTime dataTime;
 
         public DataModel(double currentSpeed, TimeSpan timeElapsed, int currentRate)

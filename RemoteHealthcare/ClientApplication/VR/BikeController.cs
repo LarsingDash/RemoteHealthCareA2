@@ -87,7 +87,7 @@ public class BikeController
                         { "nodeid", bikeId }, {"\"_speed_\"", $"{animationSpeed.ToString(CultureInfo.InvariantCulture)}"}
                     }, JsonFolder.Route.Path)
                 }
-            });
+            }, true);
             
             //Modify the route follow speed based on bike speed
             var followSpeed = 0.0 + bikeSpeed / 2;
@@ -95,10 +95,11 @@ public class BikeController
             {
                 {"\"_data_\"", JsonFileReader.GetObjectAsString("FollowSpeed", new Dictionary<string, string>()
                     {
-                        { "nodeid", bikeId }, {"\"_speed_\"", $"{followSpeed.ToString(CultureInfo.InvariantCulture)}"}
+                        {"nodeid", bikeId}, 
+                        {"\"_speed_\"", $"{followSpeed.ToString(CultureInfo.InvariantCulture)}"},
                     }, JsonFolder.Route.Path)
                 }
-            });
+            }, true);
         });
     }
     

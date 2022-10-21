@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using DoctorApplication.View;
 using ClientApplication.ServerConnection.Communication;
+using DoctorApplication.Communication;
+using Shared.Log;
 
 namespace ClientApplication.ServerConnection
 {
@@ -22,6 +24,7 @@ namespace ClientApplication.ServerConnection
         }
         public App()
         {
+            Logger.PrintLevel = LogLevel.All;
              client = new Client();
         }
 

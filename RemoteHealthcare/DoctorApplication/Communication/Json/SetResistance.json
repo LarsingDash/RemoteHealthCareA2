@@ -1,0 +1,8 @@
+{
+  "id":"set-resistance",
+  "serial":"_serial_",
+  "data":{
+    "resistance":"_resistance_",
+    "user":"_user_"
+  }
+}

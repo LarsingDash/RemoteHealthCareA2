@@ -87,4 +87,9 @@ public class BikeSimulator : Bike
     {
         handler.ChangeData(DataType.ElapsedTime, (double) (time) / 1000);
     }
+
+    public override void SetResistanceAsync(int ressistance)
+    {
+        // Do nothing, is simulator
+    }
 }

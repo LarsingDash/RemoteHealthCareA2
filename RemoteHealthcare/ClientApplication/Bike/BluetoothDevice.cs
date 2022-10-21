@@ -10,7 +10,7 @@ public class BluetoothDevice
 {
     public bool Connected = false;
     
-    private BLE ble;
+    public BLE ble;
     private string deviceName;
     private string? service;
     private string? characteristic;

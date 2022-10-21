@@ -1,15 +1,20 @@
 using DoctorApplication.Core;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Security;
 using System.Windows.Input;
+using ClientApplication.ServerConnection;
+using ClientApplication.ServerConnection.Communication;
+using DoctorApplication.Communication;
+using Shared;
 
 namespace DoctorApplication.ViewModel;
 
 public class LoginViewModel: INotifyPropertyChanged
 {
 	//Fields
-	private string phoneNumber;
+	private string userName;
 	private SecureString password;
 	private string errorMessage;
 	private bool isViewVisible = true;
@@ -24,10 +29,10 @@ public class LoginViewModel: INotifyPropertyChanged
         }
     }
 
-    public string PhoneNumber
+    public string UserName
 	{
-		get { return phoneNumber; }
-		set { phoneNumber = value; OnPropertyChanged("PhoneNumber"); }
+		get { return userName; }
+		set { userName = value; OnPropertyChanged("UserName"); }
 	}
 
 	public SecureString Password
@@ -70,8 +75,8 @@ public class LoginViewModel: INotifyPropertyChanged
 	private bool CanExecuteLoginCommand(object obj)
 	{
 		bool validData;
-		if (string.IsNullOrWhiteSpace(PhoneNumber) || PhoneNumber.Length < 3 ||
-		    Password == null || Password.Length < 3) {
+		if (string.IsNullOrWhiteSpace(UserName) || UserName.Length < 1 ||
+		    Password == null || Password.Length < 1) {
 			validData = false;	
 		}
 		else {
@@ -82,14 +87,31 @@ public class LoginViewModel: INotifyPropertyChanged
 
 	private void ExecuteLoginCommand(object obj)
 	{
-		var canLogin = true;
-		if (canLogin)
+		Client client = App.GetClientInstance();
+		var serial = Util.RandomString();
+		var pass = new System.Net.NetworkCredential(string.Empty, password).Password;
+		client.SendEncryptedData(JsonFileReader.GetObjectAsString("Login", new Dictionary<string, string>()
 		{
-			IsViewVisible = false;
-		}
-		else
+			{"_serial_", serial},
+			{"_username_", userName},
+			{"_type_", "Doctor"},
+			{"_password_", pass}
+		}, JsonFolder.Json.Path));
+
+		client.AddSerialCallbackTimeout(serial, ob =>
 		{
-			ErrorMessage = "Invalid phone number or password";
-		}
+			var canLogin = ob["data"]!["status"]!.ToObject<string>()!.Equals("ok");
+			if (canLogin)
+			{
+				IsViewVisible = false;
+			}
+			else
+			{
+				ErrorMessage = ob["data"]!["error"]!.ToObject<string>()!;
+			}
+		}, () =>
+		{
+			ErrorMessage = "No response from server";
+		}, 200);
 	}
 }

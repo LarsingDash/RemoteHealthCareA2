@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading;
+using ClientApplication.ServerConnection.Bike;
 using ClientApplication.Util;
 using Newtonsoft.Json;
 using Shared;
@@ -10,7 +11,7 @@ namespace ClientApplication.ServerConnection;
 public class Client : DefaultClientConnection
 {
     private Dictionary<string, ICommandHandler> commandHandler = new();
-    
+    private string currentBikeRecording = "";
     public Client()
     {
         Logger.LogMessage(LogImportance.Information, "Connection with Server started");
@@ -35,6 +36,7 @@ public class Client : DefaultClientConnection
         if (Connected)
         {
             commandHandler.Add("encryptedMessage", new EncryptedMessage(Rsa));
+            commandHandler.Add("forward-set-resistance", new SetResistance());
             Thread.Sleep(500);
             SendEncryptedData(JsonFileReader.GetObjectAsString("Login", new Dictionary<string, string>()
             {
@@ -44,5 +46,16 @@ public class Client : DefaultClientConnection
                 {"_password_", "TestPassword"}
             }, JsonFolder.ServerConnection.Path)); 
         }
+
+        BikeHandler handler = App.GetBikeHandlerInstance();
+        handler.Subscribe(DataType.Distance, value =>
+        {
+            // SendEncryptedData();
+        });
+    }
+
+    public void SetCurrentBikeRecording(string uuid)
+    {
+        currentBikeRecording = uuid;
     }
 }

@@ -1,5 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Threading;
+using System.Threading.Tasks;
 using ClientApplication;
 using ClientApplication.ServerConnection.Bike;
 using ClientApplication.Util;
@@ -19,6 +22,8 @@ public class PanelController
     private string speedDisplayed;
     private string timeDisplayed;
     private string distanceDisplayed;
+
+    private bool update = false;
 
 
     public PanelController(VRClient client, Tunnel tunnel)
@@ -51,9 +56,10 @@ public class PanelController
         BikeHandler handler = App.GetBikeHandlerInstance();
         handler.Subscribe(DataType.Speed, speedRaw =>
         {
-            var speed = (speedRaw * 3.6).ToString(CultureInfo.InvariantCulture);
+            var speed = Math.Round(speedRaw * 3.6,1);
             // todo: format speed to 1 decimal
-           speedDisplayed = speed.Substring(0, speed.IndexOf('.') + 2) + " km/h";
+           speedDisplayed = speed + " km/h";
+           update = true;
         });
         
         handler.Subscribe(DataType.ElapsedTime, timeRaw =>
@@ -71,19 +77,33 @@ public class PanelController
             }
 
             timeDisplayed += time % 60;
-            
-            UpdatePanel();
+
+            update = true;
+
         });
         
         handler.Subscribe(DataType.Distance, distRaw =>
         {
-        var distance = distRaw.ToString(CultureInfo.InvariantCulture);
-        distanceDisplayed = distance.Substring(0, distance.IndexOf('.') + 2) + " Meters";
+            distanceDisplayed = Math.Round(distRaw,0) + " Meters";
+
+            update = true;
         });
+        Thread thread = new Thread(start =>
+        {
+            while (true)
+            {
+                Thread.Sleep(500);
+                if (!update) continue;
+                UpdatePanel();
+                update = !update;
+            }
+        });
+        thread.Start();
+        UpdatePanel();
     }
 
-    private void UpdatePanel()
-    {
+    private async void UpdatePanel()
+    { 
         ClearPanel();
         DrawPanelOutlines();
         DrawPanelText(speedDisplayed, 64, 140, 65);
@@ -107,8 +127,8 @@ public class PanelController
                         {"_serial_", serial}
                     }, JsonFolder.Panel.Path)
             }
-        });
-        await client.AddSerialCallbackTimeout(serial, ob => { }, () => { }, 1000);
+        }, true);
+        await client.AddSerialCallbackTimeout(serial, ob => { }, () => { }, 100);
 
     }
 
@@ -125,8 +145,8 @@ public class PanelController
                         {"_serial_", serial}
                     }, JsonFolder.Panel.Path)
             }
-        });
-        await client.AddSerialCallbackTimeout(serial, ob => { }, () => { }, 1000);
+        }, true);
+        await client.AddSerialCallbackTimeout(serial, ob => { }, () => { }, 100);
     }
 
     private async void ClearPanel()
@@ -142,8 +162,8 @@ public class PanelController
                         {"_serial_", serial}
                     }, JsonFolder.Panel.Path)
             }
-        });
-        await client.AddSerialCallbackTimeout(serial, ob => { }, () => { }, 1000);
+        }, true);
+        await client.AddSerialCallbackTimeout(serial, ob => { }, () => { }, 100);
     }
 
     private async void DrawPanelImage(string imagePath, double posX, double posY, double sizeX, double sizeY)
@@ -162,7 +182,7 @@ public class PanelController
                         {"_serial_", serial}
                     }, JsonFolder.Panel.Path)
             },
-        });
+        }, true);
         await client.AddSerialCallbackTimeout(serial, ob => { }, () => { }, 1000);
     }
     private async void DrawPanelText(string text, double size, double x, double y)
@@ -181,7 +201,7 @@ public class PanelController
                         {"_serial_", serial}
                     }, JsonFolder.Panel.Path)
             },
-        });
+        }, true);
         await client.AddSerialCallbackTimeout(serial, ob => { }, () => { }, 1000);
     }
 

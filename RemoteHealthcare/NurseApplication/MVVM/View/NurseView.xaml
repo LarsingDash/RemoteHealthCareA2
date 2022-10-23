@@ -6,10 +6,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:NurseApplication.MVVM.View" xmlns:viewmodel="clr-namespace:NurseApplication.MVVM.ViewModel"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="350">
-    <Grid>
-        <StackPanel>
-        <Label Content="Emergencies: " Style="{StaticResource HeaderStyle1}">
+            >
+    <Grid HorizontalAlignment="Center">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+            <Label Grid.Row="0" HorizontalAlignment="Center" Content="Emergencies: " Style="{StaticResource HeaderStyle1}">
                 <Label.Foreground>
                     <LinearGradientBrush>
                         <GradientStop Color="#FFF1325E" Offset="0.743"/>
@@ -19,6 +22,8 @@
                 </Label.Foreground>
             </Label>
             <ListView
+                Grid.Row="1"
+                HorizontalAlignment="Center"
                     Background="{x:Null}"
                     BorderBrush="{x:Null}"
                     ItemsSource="{Binding Alerts}" d:ItemsSource="{d:SampleData ItemCount=5}" Width="NaN">
@@ -38,21 +43,20 @@
                         <StackPanel Orientation="Vertical">
                                 <StackPanel Orientation="Horizontal">
                                     <Label Content="ALERT! User:" Style="{StaticResource LabelStyleMain}"/>
-                                    <Label Padding="0,5" Content="{Binding Alert.userName}"  Style="{StaticResource LabelStyleMain}" />
+                                    <Label Padding="0,5" Content="{Binding UserName}"  Style="{StaticResource LabelStyleMain}" />
                                     <Label Content="is dire in need of assistance!"  Style="{StaticResource LabelStyleMain}"/>
                                 </StackPanel>
                                 <DockPanel>
                                 <StackPanel Orientation="Horizontal">
                                         <Label Content="Bike ID:"  Style="{StaticResource LabelStyleMain}"/>
-                                        <Label Content="{Binding Alert.BikeId}"  Style="{StaticResource LabelStyleMain}"/>
+                                        <Label Content="{Binding BikeId}"  Style="{StaticResource LabelStyleMain}"/>
                                 </StackPanel>
-                                    <Label Content="{Binding Alert.time}" HorizontalAlignment="Right"  Style="{StaticResource LabelStyleMain}"/>
+                                    <Label Content="{Binding Time}" HorizontalAlignment="Right"  Style="{StaticResource LabelStyleMain}"/>
                             </DockPanel>
                         </StackPanel>
                     </Border>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        </StackPanel>
     </Grid>
 </UserControl>

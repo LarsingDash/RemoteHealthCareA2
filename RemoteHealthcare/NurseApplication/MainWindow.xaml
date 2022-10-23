@@ -32,7 +32,7 @@
                 <GradientStop Color="{StaticResource primaryBackColor2}" Offset="0.75"/>
             </LinearGradientBrush>
         </Border.Background>
-        <Grid HorizontalAlignment="Center">
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="25"></RowDefinition>
                 <RowDefinition></RowDefinition>

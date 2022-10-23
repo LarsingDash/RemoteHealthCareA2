@@ -85,16 +85,14 @@ public class VRClient : DefaultClientConnection
     {
         TunnelID = id;
         var serial = Util.RandomString();
-        tunnel.SendTunnelMessage(new Dictionary<string, string>()
+        tunnel.SendTunnelMessage(new Dictionary<string, string>
         {
-            {"\"_data_\"", JsonFileReader.GetObjectAsString("Pause", new Dictionary<string, string>()
-            {
-            }, JsonFolder.TunnelMessages.Path)},
+            {"\"_data_\"", JsonFileReader.GetObjectAsString("Pause", new Dictionary<string, string>(), JsonFolder.TunnelMessages.Path)},
         });
         
         tunnel.SendTunnelMessage(new Dictionary<string, string>
         {
-            {"\"_data_\"", JsonFileReader.GetObjectAsString("ResetScene", new Dictionary<string, string>()
+            {"\"_data_\"", JsonFileReader.GetObjectAsString("ResetScene", new Dictionary<string, string>
             {
                 {"_serial_", serial}
             }, JsonFolder.TunnelMessages.Path)},
@@ -110,8 +108,8 @@ public class VRClient : DefaultClientConnection
         await RemoveObject("GroundPlane");
         await RemoveObject("LeftHand");
         await RemoveObject("RightHand");
-        
-         //Start WorldGen
+
+        //Start WorldGen
          worldGen = new WorldGen(this, tunnel);
          BikeController = new BikeController(this, tunnel);
          PanelController = new PanelController(this, tunnel);
@@ -191,5 +189,4 @@ public class VRClient : DefaultClientConnection
             Logger.LogMessage(LogImportance.Error, "Error (Unknown Reason) ", e);
         }
     }
-    
 }

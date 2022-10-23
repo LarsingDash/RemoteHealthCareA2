@@ -22,7 +22,7 @@ namespace ClientSide.VR
         private readonly Tunnel tunnel;
 
         private const int mapSize = 256;
-        private double[,] heights = new double[256, 256];
+        private readonly float[,] heights = new float[mapSize, mapSize];
         public string routeId;
 
         private const string treePath = "data/NetworkEngine/models/trees/pine/Pine_Low-poly_1.obj";
@@ -46,13 +46,17 @@ namespace ClientSide.VR
                 var heightMap = new StringBuilder();
 
                 //Determines sensitivity of the terrain height. Higher values equal to higher height difference
-                var terrainSensitivity = 5;
+                const float terrainSensitivity = 7.5f;
+                // const float edgeSensitivity = 3;
 
                 for (var y = 0; y < mapSize; y++)
                 {
                     for (var x = 0; x < mapSize; x++)
                     {
+                        // var xDistance = x / (float) mapSize;
+                        // var value = noiseGen.GetPerlin(x, y) * terrainSensitivity + (edgeSensitivity * xDistance) * 3;
                         var value = noiseGen.GetPerlin(x, y) * terrainSensitivity;
+
                         heights[x, y] = value;
                         heightMap.Append(
                             $"{value.ToString(CultureInfo.InvariantCulture)},");
@@ -105,8 +109,6 @@ namespace ClientSide.VR
                 });
 
                 await PathGen();
-
-                //Add terrain
             }
             catch (Exception e)
             {
@@ -210,7 +212,7 @@ namespace ClientSide.VR
                 //Subdivide the route to get more sub-points
                 var treesList = new List<Vector2>(route);
                 var fullRoute = new List<Vector2>(route);
-                for (var subdivisionFactor = 0; subdivisionFactor < 2; subdivisionFactor++)
+                for (var subdivisionFactor = 0; subdivisionFactor < 3; subdivisionFactor++)
                 {
                     for (var i = 0; i < route.Count; i++)
                     {
@@ -224,7 +226,7 @@ namespace ClientSide.VR
                 }
 
                 //Start decorationGen
-                const int maxAmountOfObjects = 500;
+                const int maxAmountOfObjects = 5000;
                 const int maxFailedAttempts = 250;
                 var amountOfObjects = 0;
                 var failedAttempts = 0;
@@ -234,7 +236,7 @@ namespace ClientSide.VR
                 while (amountOfObjects < maxAmountOfObjects && failedAttempts < maxFailedAttempts)
                 {
                     var attemptFailed = false;
-                    var currentPoint = new Vector2(random.Next(0, 256) - 128, random.Next(0, 256) - 128);
+                    var currentPoint = new Vector2(random.Next(0, mapSize * 2) - mapSize, random.Next(0, mapSize * 2) - mapSize);
                     foreach (var comparingPoint in fullRoute)
                     {
                         if (Vector2.Distance(comparingPoint, currentPoint) < 10)
@@ -258,6 +260,17 @@ namespace ClientSide.VR
 
                     if (attemptFailed) continue;
 
+                    var currentHeight = 0f;
+                    try
+                    {
+                        currentHeight = heights[(int)currentPoint.X + mapSize / 2, (int)currentPoint.Y + mapSize / 2];
+                    }
+                    catch (Exception e)
+                    {
+                        // ignored
+                    }
+
+
                     tunnel.SendTunnelMessage(new Dictionary<string, string>()
                     {
                         {
@@ -268,8 +281,9 @@ namespace ClientSide.VR
                                     { "_guid_", treesId },
                                     {
                                         "\"_position_\"",
-                                        $"{currentPoint.X + 128 + ".0"} , {heights[(int)currentPoint.X + 128, (int)currentPoint.Y + 128].ToString(CultureInfo.InvariantCulture)}, {currentPoint.Y + 128  + ".0"}"
+                                        $"{currentPoint.X + mapSize / 2 + ".0"} , {currentHeight.ToString(CultureInfo.InvariantCulture)}, {currentPoint.Y + mapSize / 2 + ".0"}"
                                     },
+                                    {"\"_scale_\"", (random.NextDouble() + 4).ToString(CultureInfo.InvariantCulture)},
                                     { "_filename_", treePath }
                                 }, JsonFolder.TunnelMessages.Path)
                         },
@@ -279,7 +293,6 @@ namespace ClientSide.VR
                     amountOfObjects++;
                 }
 
-                return;
                 //Resume the simulation
                 tunnel.SendTunnelMessage(new Dictionary<string, string>()
                 {
@@ -322,7 +335,7 @@ namespace ClientSide.VR
         private string PointConverter(Vector2 point, Vector2 nextPoint)
         {
             var builder = new StringBuilder();
-
+            
             builder.Append("{");
             builder.Append($"\"pos\": [{point.X}, 0, {point.Y}],");
 

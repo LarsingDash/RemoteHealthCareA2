@@ -21,7 +21,6 @@ namespace NurseApplication.MVVM.ViewModel
         {
             NurseModel = this;
             Alerts = new BindableCollection<AlertModel>();
-            AddAlert("test", "123124");
             Console.WriteLine(Alerts.Count);
         }
 

@@ -5,17 +5,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
+using NurseApplication.MVVM.Model;
 
 namespace NurseApplication.MVVM.ViewModel
 {
-    internal class NurseViewModel
+    internal class NurseViewModel : ObservableObject
     {
-        private object currentView;
+        public ObservableCollection<AlertModel> Alerts;
 
-     
         public NurseViewModel()
         {
-           
+           Alerts = new ObservableCollection<AlertModel>();
+        }
+
+        public void AddAlert(string userName)
+        {
+            Alerts.Add(new AlertModel(userName));
         }
     }
 }

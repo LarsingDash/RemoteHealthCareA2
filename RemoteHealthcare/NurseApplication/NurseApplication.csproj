@@ -16,10 +16,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="MVVM\Model\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <Page Update="Styles\ButtonStyles.xaml">
         <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
         <SubType>Designer</SubType>

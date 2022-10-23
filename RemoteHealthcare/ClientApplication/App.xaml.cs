@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Configuration;
 using System.Data;
 using System.Linq;
@@ -63,6 +64,16 @@ namespace ClientApplication
 		public static VRClient GetVrClientInstance()
 		{
 			return vrClient;
+		}
+
+		private void App_OnExit(object sender, ExitEventArgs e)
+		{
+			Logger.LogMessage(LogImportance.DebugHighlight, "Closing Application");
+			if (handler.Bike.GetType() == typeof(BikePhysical))
+			{
+				BikePhysical bike = (BikePhysical) handler.Bike;
+				bike.Close();
+			}
 		}
 	}
 }

@@ -149,6 +149,12 @@ namespace ClientApplication.Bike
             // int[] dataPoints = Array.ConvertAll(dataPointsStrings, s => int.Parse(s, System.Globalization.NumberStyles.HexNumber));
             // handler.ChangeData(DataType.HeartRate, Convert.ToInt32(dataPoints[1]));
         }
+
+        public void Close()
+        {
+            bikeDevice.ble.CloseDevice();
+            heartRateDevice.ble.CloseDevice();
+        }
     }
 
 /* Creating an enum for the different types of messages that can be sent. */

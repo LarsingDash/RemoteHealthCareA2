@@ -7,6 +7,8 @@ namespace ClientApplication.ServerConnection.Bike;
 public abstract class Bike
 {
     public Dictionary<DataType, double> bikeData;
+
+    public string BikeId = "notFound";
     /* The constructor for the Bike class. */
     protected Bike()
     {

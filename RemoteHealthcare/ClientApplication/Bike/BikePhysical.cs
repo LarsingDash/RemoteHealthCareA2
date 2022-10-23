@@ -46,6 +46,7 @@ namespace ClientApplication.Bike
             }
             else
             {
+                BikeId = $"Tacx Flux {id}";
                 SetResistanceAsync(1);
                 Thread.Sleep(10000);
                 SetResistanceAsync(1000);
@@ -147,6 +148,12 @@ namespace ClientApplication.Bike
             // string[] dataPointsStrings = mes.Split(' ');
             // int[] dataPoints = Array.ConvertAll(dataPointsStrings, s => int.Parse(s, System.Globalization.NumberStyles.HexNumber));
             // handler.ChangeData(DataType.HeartRate, Convert.ToInt32(dataPoints[1]));
+        }
+
+        public void Close()
+        {
+            bikeDevice.ble.CloseDevice();
+            heartRateDevice.ble.CloseDevice();
         }
     }
 

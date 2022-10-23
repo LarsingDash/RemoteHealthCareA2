@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Configuration;
 using System.Data;
 using System.Linq;
@@ -26,6 +27,7 @@ namespace ClientApplication
 
 		private void ApplicationStart(object sender, StartupEventArgs e)
 		{
+			this.Dispatcher.UnhandledException += OnDispatcherUnhandledException;
 			Logger.LogMessage(LogImportance.Information, "ClientApplication Started");
 			new Thread(async start =>
 			{
@@ -36,7 +38,6 @@ namespace ClientApplication
 				vrClient = new VRClient();
 				// vrClient.Setup();
 			}).Start();
-			
 			var loginView = new LoginView();
 			loginView.Show();
 			loginView.IsVisibleChanged += (s, ev) =>
@@ -48,6 +49,11 @@ namespace ClientApplication
 					loginView.Close();
 				}
 			};
+		}
+		
+		void OnDispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e) {
+			Logger.LogMessage(LogImportance.Fatal, "Unknown", e.Exception);
+			App_OnExit(null, null);
 		}
 
 		public static BikeHandler GetBikeHandlerInstance()
@@ -63,6 +69,16 @@ namespace ClientApplication
 		public static VRClient GetVrClientInstance()
 		{
 			return vrClient;
+		}
+
+		private void App_OnExit(object sender, ExitEventArgs e)
+		{
+			Logger.LogMessage(LogImportance.DebugHighlight, "Closing Application");
+			if (handler.Bike.GetType() == typeof(BikePhysical))
+			{
+				BikePhysical bike = (BikePhysical) handler.Bike;
+				bike.Close();
+			}
 		}
 	}
 }

@@ -40,9 +40,8 @@ namespace ServerApplication.Client.DataHandlers.CommandHandlers
                         return;
                     }
                     data.UserName = ob["data"]?["username"]?.ToObject<string>() ?? "Unknown";
-                    
                     JArray creds = (JArray) JsonFileReader.GetObject("AccountClient.json", new Dictionary<string, string>(), JsonFolder.Data.Path)["clients"]!;
-                    JToken? foundToken = creds.FirstOrDefault(value => value["username"]!.ToObject<string>()!.Equals(data.UserName));
+                    JToken? foundToken = creds.FirstOrDefault(value => value["username"]!.ToObject<string>()!.Equals(data.UserName), null);
 
                     if (foundToken != null)
                     {
@@ -56,6 +55,7 @@ namespace ServerApplication.Client.DataHandlers.CommandHandlers
                                 {"_status_", "ok"},
                                 {"_error_", "_error_"}
                             }, JsonFolder.ClientMessages.Path));
+                            data.AddInfo("bikeId", ob["data"]?["bikeId"]?.ToObject<string>() != null ? ob["data"]!["bikeId"]!.ToObject<string>()! : "Not Found");
                             data.DataHandler = new ClientHandler(data);
                         }
                         else
@@ -64,6 +64,11 @@ namespace ServerApplication.Client.DataHandlers.CommandHandlers
                             SendEncryptedError(data,ob, "Username and/or password not correct");
                         }
                         return;
+                    }
+                    else
+                    {
+                        SendEncryptedError(data, ob, "Username and/or password not correct");
+                        data.UserName = "Unknown";
                     }
                     
                     var totalPath = JsonFolder.Data.Path + data.UserName + "\\";
@@ -76,13 +81,14 @@ namespace ServerApplication.Client.DataHandlers.CommandHandlers
                     {
                         Logger.LogMessage(LogImportance.Information, "User logged in: " + totalPath);
                     }
+
                     return;
                 }
                 case "Doctor":
                 {
                     data.UserName = ob["data"]?["username"]?.ToObject<string>() ?? "Unknown";
                     JArray creds = (JArray) JsonFileReader.GetObject("AccountDoctor.json", new Dictionary<string, string>(), JsonFolder.Data.Path)["doctors"]!;
-                    JToken? foundToken = creds.FirstOrDefault(value => value["username"]!.ToObject<string>()!.Equals(data.UserName));
+                    JToken? foundToken = creds.FirstOrDefault(value => value["username"]!.ToObject<string>()!.Equals(data.UserName), null);
 
                     if (foundToken != null)
                     {
@@ -114,9 +120,20 @@ namespace ServerApplication.Client.DataHandlers.CommandHandlers
                     //TODO Check login credentials
                     break;
                 }
+                case "Nurse":
+                {
+                    data.SendEncryptedData(JsonFileReader.GetObjectAsString("LoginResponse", new Dictionary<string, string>()
+                    {
+                        {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
+                        {"_status_", "ok"},
+                        {"_error_", "_error_"}
+                    }, JsonFolder.ClientMessages.Path));
+                    data.DataHandler = new NurseHandler(data);
+                    return;
+                }
             }
             //Sending error message(Type not recognized 1)
-            SendEncryptedError(data,ob,"Type not recognized. 1");
+            SendEncryptedError(data,ob,"Type not recognized.");
             return;
         }
     }

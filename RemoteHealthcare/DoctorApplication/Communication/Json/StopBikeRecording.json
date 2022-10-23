@@ -3,6 +3,7 @@
   "serial":"_serial_",
   "data":{
     "uuid":"_uuid_",
-    "username": "_name_"
+    "username": "_name_",
+    "emergency-stop": "_stopType_"
   }
 }

@@ -32,6 +32,7 @@ namespace ServerApplication.Client
         private string? PublicKey { set; get; }
         #endregion
 
+        private Dictionary<string, string> infoData = new Dictionary<string, string>();
 
         public ClientData(Server server, TcpClient client)
         {
@@ -226,6 +227,20 @@ namespace ServerApplication.Client
                 }
         
                 SerialCallbacks.Add(serial, action);
+            }
+
+            public string GetInfo(string infoId)
+            {
+                return infoData.ContainsKey(infoId) ? infoData[infoId] : "_NotFound_";
+            }
+
+            public void AddInfo(string infoId, string value)
+            {
+                if (infoData.ContainsKey(infoId))
+                {
+                    infoData.Remove(infoId);
+                }
+                infoData.Add(infoId, value);
             }
     }
     

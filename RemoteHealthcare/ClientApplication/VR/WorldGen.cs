@@ -119,7 +119,7 @@ namespace ClientSide.VR
         {
             try
             {
-                var poly = GenPoly(85, 86, 23, 25, new Random());
+                var poly = GenPoly(85,86,23,25, new Random());
                 route.AddRange(poly);
 
                 var polyBuilder = new StringBuilder();
@@ -354,7 +354,7 @@ namespace ClientSide.VR
             // builder.Append($"\"dir\": [{dir}]");
 
             // builder.Append($"\"dir\": [{nextPoint.X - point.X}, 0, {nextPoint.Y - point.Y}]");
-            builder.Append($"\"dir\": [0, 0, 0]");
+            //builder.Append($"\"dir\": [0, 0, 0]");
             builder.Append("}");
 
             return builder.ToString();

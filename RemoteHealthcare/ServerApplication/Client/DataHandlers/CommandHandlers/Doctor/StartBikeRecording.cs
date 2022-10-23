@@ -41,7 +41,8 @@ public class StartBikeRecording : CommandHandler
             string json = JsonFileReader.GetObjectAsString("BikeSessionFormat.json", new Dictionary<string, string>()
             {
                 {"_sessionname_", ob["data"]!["session-name"]!.ToObject<string>()!},
-                {"_starttime_", DateTime.Now.ToString(CultureInfo.InvariantCulture)}
+                {"_starttime_", DateTime.Now.ToString(CultureInfo.InvariantCulture)},
+                {"_bikeId_", patient.GetInfo("bikeId")}
             }, JsonFolder.Json.Path);
             string fileName = Util.RandomString();
             string exactFileName = fileName + ".txt";

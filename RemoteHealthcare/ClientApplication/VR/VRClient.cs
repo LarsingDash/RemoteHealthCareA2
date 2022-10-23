@@ -41,7 +41,9 @@ public class VRClient : DefaultClientConnection
             "callback",
             "scene/panel/drawtext",
             "scene/panel/swap",
-            "scene/panel/image"
+            "scene/panel/image",
+            "scene/panel/clear",
+            "scene/panel/drawlines"
             
         };
         Init("145.48.6.10", 6666, (json, encrypted) =>

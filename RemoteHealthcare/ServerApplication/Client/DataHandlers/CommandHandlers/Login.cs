@@ -1,3 +1,4 @@
+#nullable enable
 using Newtonsoft.Json.Linq;
 using Shared.Log;
 using Shared;
@@ -39,9 +40,8 @@ namespace ServerApplication.Client.DataHandlers.CommandHandlers
                         SendEncryptedError(data, ob, "Username is already logged in.");
                         return;
                     }
-                    data.UserName = ob["data"]?["username"]?.ToObject<string>() ?? "Unknown";
                     JArray creds = (JArray) JsonFileReader.GetObject("AccountClient.json", new Dictionary<string, string>(), JsonFolder.Data.Path)["clients"]!;
-                    JToken? foundToken = creds.FirstOrDefault(value => value["username"]!.ToObject<string>()!.Equals(data.UserName), null);
+                    JToken? foundToken = creds.FirstOrDefault(value => value["username"]!.ToObject<string>()!.Equals(checkUserName), null);
 
                     if (foundToken != null)
                     {
@@ -55,8 +55,10 @@ namespace ServerApplication.Client.DataHandlers.CommandHandlers
                                 {"_status_", "ok"},
                                 {"_error_", "_error_"}
                             }, JsonFolder.ClientMessages.Path));
+                            data.UserName = ob["data"]?["username"]?.ToObject<string>() ?? "Unknown";
                             data.AddInfo("bikeId", ob["data"]?["bikeId"]?.ToObject<string>() != null ? ob["data"]!["bikeId"]!.ToObject<string>()! : "Not Found");
                             data.DataHandler = new ClientHandler(data);
+                            PatientLoggedIn(server, checkUserName);
                         }
                         else
                         {
@@ -65,13 +67,8 @@ namespace ServerApplication.Client.DataHandlers.CommandHandlers
                         }
                         return;
                     }
-                    else
-                    {
-                        SendEncryptedError(data, ob, "Username and/or password not correct");
-                        data.UserName = "Unknown";
-                    }
-                    
-                    var totalPath = JsonFolder.Data.Path + data.UserName + "\\";
+
+                    var totalPath = JsonFolder.Data.Path + checkUserName + "\\";
                     if (!Directory.Exists(totalPath))
                     {
                         (new FileInfo(totalPath)).Directory!.Create();
@@ -82,6 +79,25 @@ namespace ServerApplication.Client.DataHandlers.CommandHandlers
                         Logger.LogMessage(LogImportance.Information, "User logged in: " + totalPath);
                     }
 
+                    JObject newUser = new JObject();
+                    newUser.Add("username", checkUserName);
+                    newUser.Add("password", ob["data"]?["password"]?.ToObject<string>() ?? "Unknown");
+                    creds.Add(newUser);
+
+                    JObject finalObject = new JObject();
+                    finalObject.Add("clients", creds);
+                    
+                    JsonFileWriter.WriteTextToFile("AccountClient.json", finalObject.ToString(), JsonFolder.Data.Path);
+                    data.UserName = ob["data"]?["username"]?.ToObject<string>() ?? "Unknown";
+                    data.AddInfo("bikeId", ob["data"]?["bikeId"]?.ToObject<string>() != null ? ob["data"]!["bikeId"]!.ToObject<string>()! : "Not Found");
+                    data.DataHandler = new ClientHandler(data);
+                    data.SendEncryptedData(JsonFileReader.GetObjectAsString("LoginResponse", new Dictionary<string, string>()
+                    {
+                        {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
+                        {"_status_", "ok"},
+                        {"_error_", "_error_"}
+                    }, JsonFolder.ClientMessages.Path));
+                    PatientLoggedIn(server, checkUserName);
                     return;
                 }
                 case "Doctor":
@@ -135,6 +151,22 @@ namespace ServerApplication.Client.DataHandlers.CommandHandlers
             //Sending error message(Type not recognized 1)
             SendEncryptedError(data,ob,"Type not recognized.");
             return;
+        }
+
+        public void PatientLoggedIn(Server server,string username)
+        {
+            string text = JsonFileReader.GetObjectAsString("UserStateChange", new Dictionary<string, string>()
+            {
+                {"_username_", username},
+                {"_type_", "login"}
+            }, JsonFolder.ClientMessages.Path);
+            foreach (var client in server.users)
+            {
+                if (client.DataHandler.GetType() == typeof(DoctorHandler))
+                {
+                    client.SendEncryptedData(text);
+                }
+            }
         }
     }
 }

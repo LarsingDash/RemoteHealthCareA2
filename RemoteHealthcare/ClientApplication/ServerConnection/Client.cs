@@ -39,13 +39,6 @@ public class Client : DefaultClientConnection
             commandHandler.Add("forward-set-resistance", new SetResistance());
             commandHandler.Add("forward-chat-message", new ChatMessage());
             Thread.Sleep(500);
-            SendEncryptedData(JsonFileReader.GetObjectAsString("Login", new Dictionary<string, string>()
-            {
-                {"_type_", "Client"},
-                {"_username_", "TestUsername"},
-                {"_serial_", "TestSerial"},
-                {"_password_", "TestPassword"}
-            }, JsonFolder.ServerConnection.Path)); 
         }
 
         BikeHandler handler = App.GetBikeHandlerInstance();

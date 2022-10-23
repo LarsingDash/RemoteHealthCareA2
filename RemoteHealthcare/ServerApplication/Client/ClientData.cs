@@ -79,6 +79,21 @@ namespace ServerApplication.Client
                 catch (Exception ex)
                 {
                     Logger.LogMessage(LogImportance.Warn, $"Disconnected user {UserName}", ex);
+                    if (DataHandler.GetType() == typeof(ClientHandler))
+                    {
+                        string text = JsonFileReader.GetObjectAsString("UserStateChange", new Dictionary<string, string>()
+                        {
+                            {"_username_", UserName},
+                            {"_type_", "logout"}
+                        }, JsonFolder.ClientMessages.Path);
+                        foreach (var client in Server.users)
+                        {
+                            if (client.DataHandler.GetType() == typeof(DoctorHandler))
+                            {
+                                client.SendEncryptedData(text);
+                            }
+                        }
+                    }
                     Server.RemoveUser(this);
                     return;
                 }
@@ -187,6 +202,12 @@ namespace ServerApplication.Client
                 {
                     Logger.LogMessage(LogImportance.Information,
                         $"Sending encrypted message: {LogColor.Gray}\n(_NonJsonObject_)");
+                }
+
+                if (PublicKey == null || PublicKey.Length < 3)
+                {
+                    Logger.LogMessage(LogImportance.Error, "Could not send encrypted data, no PublicKey UserName: " + UserName);
+                    return;
                 }
                 Aes aes = Aes.Create("AesManaged")!;
                 RSA rsa = new RSACryptoServiceProvider();

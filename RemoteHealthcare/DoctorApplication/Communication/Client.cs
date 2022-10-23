@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading;
 using ClientApplication.ServerConnection.Communication;
 using ClientApplication.ServerConnection.Communication.CommandHandlers;
+using DoctorApplication.Communication.CommandHandlers;
 using Shared;
 using Shared.Log;
 using Formatting = Newtonsoft.Json.Formatting;
@@ -38,6 +39,7 @@ public class Client : DefaultClientConnection
             });
         
         commandHandler.Add("encryptedMessage", new EncryptedMessage(Rsa));
+        commandHandler.Add("user-state-changed", new UserStateChange());
 
         Thread.Sleep(500);
     }

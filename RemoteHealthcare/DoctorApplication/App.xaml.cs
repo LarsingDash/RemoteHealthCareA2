@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using DoctorApplication.View;
@@ -18,12 +19,18 @@ namespace ClientApplication.ServerConnection
     public partial class App : Application
     {
         private static Client client;
+        private static Thread mainThread;
         public static Client GetClientInstance()
         {
             return client;
         }
+        public static Thread GetThreadInstance()
+        {
+            return mainThread;
+        }
         public App()
         {
+            mainThread = Thread.CurrentThread;
             Logger.PrintLevel = LogLevel.All;
              client = new Client();
         }

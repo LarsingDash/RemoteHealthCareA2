@@ -42,8 +42,10 @@ namespace DoctorApplication.MVVM.ViewModel
         
 
         /* Creating a new instance of the DataViewModel and setting the CurrentView to that instance. */
+        public static MainViewModel MainViewM;
         public MainViewModel()
         {
+            MainViewM = this;
             users = new BindableCollection<UserDataModel>();
             ChangeViewHomeCommand = new RelayCommand(SetViewToHome);
             ChangeViewMultiCommand = new RelayCommand(setViewToMulti);

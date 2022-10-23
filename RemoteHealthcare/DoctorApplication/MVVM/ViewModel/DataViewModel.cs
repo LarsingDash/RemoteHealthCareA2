@@ -169,8 +169,6 @@ namespace DoctorApplication.MVVM.ViewModel
         {
             StopBikeRecording("emergencyStop");
             Console.WriteLine("Emergency Pressed!");
-            em = true;
-            StartRecordingToggled(false);
         }
 
         public async void StartBikeRecording()
@@ -271,8 +269,6 @@ namespace DoctorApplication.MVVM.ViewModel
         {
             Console.WriteLine(user.ToString());
         }
-
-        private bool em = false;
         public void StartRecordingToggled(object state)
         {
             if ((bool)state)
@@ -287,12 +283,9 @@ namespace DoctorApplication.MVVM.ViewModel
                 //unchecked
                 Console.WriteLine("Unchecked");
                 ButtonText = "Start";
-                if(!em)
-                    StopBikeRecording("normal");
+                StopBikeRecording("normal");
 
             }
-
-            em = false;
         }
         public void ChatTypeToggled(object state)
         {

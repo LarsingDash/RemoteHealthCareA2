@@ -98,6 +98,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ToggleButton}">
                     <Border
+                        Margin="7"
                             Background="{x:Null}"
                             BorderBrush="purple"
                             BorderThickness="2,2,2,2"

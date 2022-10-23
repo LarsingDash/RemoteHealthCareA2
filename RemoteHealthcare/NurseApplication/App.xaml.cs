@@ -14,6 +14,23 @@ namespace NurseApplication
     /// </summary>
     public partial class App : Application
     {
-        private Client client = new();
+        private static Client client;
+        public static Client GetClientInstance()
+        {
+            return client;
+        }
+        public App()
+        {
+            Logger.PrintLevel = LogLevel.All;
+            client = new Client();
+        }
+
+        private void ApplicationStart(object sender, StartupEventArgs e)
+        {
+            var mainWindow = new MainWindow();
+            mainWindow.Show();
+        }
+
+
     }
 }

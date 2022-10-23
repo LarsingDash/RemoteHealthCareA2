@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using ClientApplication.Bike;
 
-namespace ClientApplication.ServerConnection.Bike;
+namespace ClientApplication.Bike;
 //TheBikeHandler class is used for the purpose of receiving data from the Bike.
 public class BikeHandler
 {
@@ -26,7 +25,7 @@ public class BikeHandler
     /// If the observer is not already subscribed to the data type, add it to the list of observers for that data type and
     /// invoke the observer with the current value of the data type
     /// </summary>
-    /// <param name="DataType">The type of data you want to subscribe to.</param>
+    /// <param name="type">The type of data you want to subscribe to.</param>
     /// <param name="ob">The observer that is subscribing to the data.</param>
     public void Subscribe(DataType type, Action<double> ob)
     {
@@ -39,7 +38,7 @@ public class BikeHandler
     /// <summary>
     /// > Unsubscribe an observer from a specific data type
     /// </summary>
-    /// <param name="DataType">The type of data you want to subscribe to.</param>
+    /// <param name="type">The type of data you want to subscribe to.</param>
     /// <param name="ob">The observer that is being unsubscribed.</param>
     public void UnSubscribe(DataType type, Action<double> ob)
     {
@@ -51,7 +50,7 @@ public class BikeHandler
     /// <summary>
     /// It changes the data type and value of the data.
     /// </summary>
-    /// <param name="DataType">The type of data you want to change.</param>
+    /// <param name="type">The type of data you want to change.</param>
     /// <param name="val">The value to change the data to.</param>
     public void ChangeData(DataType type, double val)
     {

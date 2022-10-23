@@ -1,10 +1,8 @@
-using System;
-using System.Threading;
 using System.Threading.Tasks;
 using Avans.TI.BLE;
 using Shared.Log;
 
-namespace ClientApplication.ServerConnection.Bike;
+namespace ClientApplication.Bike;
 
 public class BluetoothDevice
 {

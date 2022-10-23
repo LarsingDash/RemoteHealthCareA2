@@ -77,6 +77,10 @@ public class StopBikeRecording : CommandHandler
                 {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
                 {"_status_", "ok"},
             }, JsonFolder.ClientMessages.Path));
+            user.SendEncryptedData(JsonFileReader.GetObjectAsString("StopBikeRecordingResponse",new Dictionary<string, string>()
+            {
+                {"_status_", "ok"},
+            }, JsonFolder.ClientMessages.Path));
             server.ActiveSessions.Remove(ob["data"]!["uuid"]!.ToObject<string>()!);
         }
         else

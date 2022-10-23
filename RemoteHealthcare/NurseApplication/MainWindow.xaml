@@ -3,10 +3,58 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModel="clr-namespace:NurseApplication.MVVM.ViewModel"
+        xmlns:view="clr-namespace:NurseApplication.MVVM.View"
         xmlns:local="clr-namespace:NurseApplication"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="Doctor Application" Height="550" Width="850"
+        ResizeMode="NoResize"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent">
+    <Window.DataContext>
+        <viewModel:MainViewModel/>
+    </Window.DataContext>
+    <Border CornerRadius="25"
+            BorderThickness="5">
 
-    </Grid>
+        <Border.BorderBrush>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="{StaticResource winBorderColor1}" Offset="0.0"/>
+                <GradientStop Color="{StaticResource winBorderColor2}" Offset="0.75"/>
+                <GradientStop Color="{StaticResource winBorderColor3}" Offset="1.0"/>
+            </LinearGradientBrush>
+        </Border.BorderBrush>
+
+        <Border.Background>
+            <LinearGradientBrush StartPoint="0,1" EndPoint="1,0">
+                <GradientStop Color="{StaticResource primaryBackColor1}" Offset="0.0"/>
+                <GradientStop Color="{StaticResource primaryBackColor2}" Offset="0.75"/>
+            </LinearGradientBrush>
+        </Border.Background>
+        <Grid >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="25"></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <ContentControl Grid.Row="1" Content="{Binding CurrentView}">
+                <ContentControl.Resources>
+                    <DataTemplate DataType="{x:Type viewModel:NurseViewModel}" >
+                        <view:NurseView/>
+                    </DataTemplate>
+                </ContentControl.Resources>
+
+            </ContentControl>
+            <Grid HorizontalAlignment="Stretch" Background="Transparent">
+                <StackPanel Orientation="Horizontal">
+                    <Label FontWeight="Bold" Content="Nurse Application" Margin="16,0" Foreground="#FFD4ECDD" Width="110" HorizontalAlignment="Left" MouseDown="Label_MouseDown" />
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Margin="0,0,15,0">
+                    <Button Width="20" Height="20" Content="⎯"  Background="Transparent" BorderThickness="0" Foreground="Gray" Click="ButtonMinimize_Click"/>
+                    <Button Width="20" Height="20" Content="╳" Background="Transparent" BorderThickness="0" Foreground="Gray"  FontSize="10" Click="ButtonClose_Click"/>
+                </StackPanel>
+            </Grid>
+
+        </Grid>
+    </Border>
 </Window>

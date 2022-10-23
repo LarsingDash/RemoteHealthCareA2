@@ -19,7 +19,7 @@
             <DataTemplate DataType="{x:Type viewModel:MultipleViewModel}" x:Key="MultipleViewModel">
                 <view:MultipleWindowView/>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type viewModel:MainViewModel}" x:Key="MainViewModel">
+            <DataTemplate DataType="{x:Type viewModel:HistoryViewModel}" x:Key="HistoryViewModel">
                 <view:HistoryView/>
             </DataTemplate>
             <!--<DataTemplate DataType="{x:Type viewModel:DataViewModel}">

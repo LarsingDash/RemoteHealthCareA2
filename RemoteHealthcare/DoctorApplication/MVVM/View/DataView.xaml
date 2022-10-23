@@ -56,7 +56,7 @@
                         Content="{Binding ButtonText}"
                         
                         Foreground="White"
-                        Style="{StaticResource ToggleStyle1}" />
+                        Style="{StaticResource ToggleStyle3}" />
                 </StackPanel>
 
             </StackPanel>

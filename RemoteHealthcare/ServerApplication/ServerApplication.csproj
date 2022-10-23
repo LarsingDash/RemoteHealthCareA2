@@ -25,6 +25,7 @@
       <Content Include="Json\ClientMessages\ActiveClientsResponse.json" />
       <Content Include="Json\ClientMessages\AllClientsResponse.json" />
       <Content Include="Json\ClientMessages\ChatMessageResponse.json" />
+      <Content Include="Json\ClientMessages\EmergencyResponse.json" />
       <Content Include="Json\ClientMessages\ErrorResponse.json" />
       <Content Include="Json\ClientMessages\ForwardChatMessage.json" />
       <Content Include="Json\ClientMessages\ForwardSetResistance.json" />

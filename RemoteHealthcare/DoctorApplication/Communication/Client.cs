@@ -40,34 +40,5 @@ public class Client : DefaultClientConnection
         commandHandler.Add("encryptedMessage", new EncryptedMessage(Rsa));
 
         Thread.Sleep(500);
-        
-        //Testing...
-        // var serial = Util.RandomString();
-        // SendEncryptedData(JsonFileReader.GetObjectAsString("Login", new Dictionary<string, string>()
-        // {
-        //     {"_serial_", serial},
-        //     {"_type_", "Doctor"},
-        //     {"_username_", "Jasper"},
-        //     {"_password_", "Merijn"}
-        // }, JsonFolder.Json.Path));
-        //
-        // AddSerialCallback(serial, ob =>
-        // {
-        //     
-        //    // Logger.LogMessage();
-        // });
-        //
-        // SendEncryptedData(JsonFileReader.GetObjectAsString("ActiveClients", new Dictionary<string, string>()
-        // {
-        //     //{"_serial_", serial}
-        // }, JsonFolder.Json.Path));
-        //
-        // Thread.Sleep(500);
-        // SendEncryptedData(JsonFileReader.GetObjectAsString("HistoricClientData", new Dictionary<string, string>()
-        // {
-        //     {"_name_", "Tes123t1"}
-        // }, JsonFolder.Json.Path));
-        //
-        // SendEncryptedData(JsonFileReader.GetObjectAsString("AllClients", new Dictionary<string, string>(), JsonFolder.Json.Path));
     }
 }

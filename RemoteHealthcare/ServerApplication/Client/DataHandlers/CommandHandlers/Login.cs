@@ -114,6 +114,17 @@ namespace ServerApplication.Client.DataHandlers.CommandHandlers
                     //TODO Check login credentials
                     break;
                 }
+                case "Nurse":
+                {
+                    data.SendEncryptedData(JsonFileReader.GetObjectAsString("LoginResponse", new Dictionary<string, string>()
+                    {
+                        {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
+                        {"_status_", "ok"},
+                        {"_error_", "_error_"}
+                    }, JsonFolder.ClientMessages.Path));
+                    data.DataHandler = new NurseHandler(data);
+                    break;
+                }
             }
             //Sending error message(Type not recognized 1)
             SendEncryptedError(data,ob,"Type not recognized. 1");

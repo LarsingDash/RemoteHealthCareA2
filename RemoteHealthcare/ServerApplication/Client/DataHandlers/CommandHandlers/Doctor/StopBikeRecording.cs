@@ -56,6 +56,21 @@ public class StopBikeRecording : CommandHandler
              //JsonFileWriter.WriteTextToFile(fileName, file.ToString(), JsonFolder.Data.Path+data.UserName+"\\"); Debugging to see data
             
             //Sending ok response
+            if (ob["data"]?["emergency-stop"]?.ToObject<string>() != null && ob["data"]!["emergency-stop"]!.ToObject<string>()!.Equals("emergencyStop"))
+            {
+                foreach (var cD in server.users)
+                {
+                    if (cD.DataHandler.GetType() == typeof(NurseHandler))
+                    {
+                        data.SendEncryptedData(JsonFileReader.GetObjectAsString("EmergencyResponse",new Dictionary<string, string>()
+                        {
+                            {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
+                            {"_status_", "ok"},
+                        }, JsonFolder.ClientMessages.Path));
+                        server.ActiveSessions.Remove(ob["data"]!["uuid"]!.ToObject<string>()!);
+                    }
+                }
+            }
             data.SendEncryptedData(JsonFileReader.GetObjectAsString("StopBikeRecordingResponse",new Dictionary<string, string>()
             {
                 {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},

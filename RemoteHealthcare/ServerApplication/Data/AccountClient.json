@@ -7,6 +7,9 @@
     {
       "username": "0987654321",
       "password": "admin"
+    }, {
+      "username": "OnlyFolder",
+      "password": "OnlyFolder"
     }
   ]
 }

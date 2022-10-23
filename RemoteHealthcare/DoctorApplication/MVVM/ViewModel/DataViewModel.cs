@@ -167,7 +167,7 @@ namespace DoctorApplication.MVVM.ViewModel
 
         private void EmergencyFunction(object obj)
         {
-            StopBikeRecording();
+            StopBikeRecording("emergencyStop");
             Console.WriteLine("Emergency Pressed!");
         }
 
@@ -204,7 +204,7 @@ namespace DoctorApplication.MVVM.ViewModel
                 {"_user_", "TestUsername" }
             }, JsonFolder.Json.Path));
         }
-        public void StopBikeRecording()
+        public void StopBikeRecording(string type)
         {
             Client client = App.GetClientInstance();
             var serial = Util.RandomString();
@@ -212,7 +212,8 @@ namespace DoctorApplication.MVVM.ViewModel
             {
                 {"_serial_", serial},
                 {"_uuid_", currentSessionUuid},
-                {"_name_", selectedUser.UserName}
+                {"_name_", selectedUser.UserName},
+                {"_stopType_", type}
             }, JsonFolder.Json.Path));
         }
 
@@ -282,7 +283,7 @@ namespace DoctorApplication.MVVM.ViewModel
                 //unchecked
                 Console.WriteLine("Unchecked");
                 ButtonText = "Start";
-                StopBikeRecording();
+                StopBikeRecording("normal");
 
             }
         }

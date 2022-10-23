@@ -46,6 +46,7 @@ namespace ClientApplication.Bike
             }
             else
             {
+                BikeId = $"Tacx Flux {id}";
                 SetResistanceAsync(1);
                 Thread.Sleep(10000);
                 SetResistanceAsync(1000);

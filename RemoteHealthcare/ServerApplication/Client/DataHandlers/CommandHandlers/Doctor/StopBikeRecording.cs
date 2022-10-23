@@ -49,6 +49,8 @@ public class StopBikeRecording : CommandHandler
 
             //Adding end time
             file["end-time"] = DateTime.Now.ToString(CultureInfo.InvariantCulture);
+            file["stopType"] = ob["data"]?["emergency-stop"]?.ToObject<string>() != null
+                ? ob["data"]!["emergency-stop"]!.ToObject<string>()! : "Unknown";
             
             
             //Writing updated values
@@ -64,10 +66,9 @@ public class StopBikeRecording : CommandHandler
                     {
                         data.SendEncryptedData(JsonFileReader.GetObjectAsString("EmergencyResponse",new Dictionary<string, string>()
                         {
-                            {"_serial_", ob["serial"]?.ToObject<string>() ?? "_serial_"},
-                            {"_status_", "ok"},
+                            {"_bikeId_", user.GetInfo("bikeId")},
+                            {"_username_", user.UserName},
                         }, JsonFolder.ClientMessages.Path));
-                        server.ActiveSessions.Remove(ob["data"]!["uuid"]!.ToObject<string>()!);
                     }
                 }
             }

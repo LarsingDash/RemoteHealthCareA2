@@ -82,7 +82,8 @@ public class LoginViewModel: ViewModelBase
 			{"_serial_", serial},
 			{"_username_", phoneNumber},
 			{"_type_", "Client"},
-			{"_password_", pass}
+			{"_password_", pass},
+			{"_bikeId_", App.GetBikeHandlerInstance().Bike.BikeId}
 		}, JsonFolder.ServerConnection.Path));
 
 		client.AddSerialCallbackTimeout(serial, ob =>

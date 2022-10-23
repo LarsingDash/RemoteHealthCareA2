@@ -44,7 +44,7 @@
                                 <StackPanel Orientation="Horizontal">
                                     <Label Content="ALERT! User:" Style="{StaticResource LabelStyleMain}"/>
                                     <Label Padding="0,5" Content="{Binding UserName}"  Style="{StaticResource LabelStyleMain}" />
-                                    <Label Content="is dire in need of assistance!"  Style="{StaticResource LabelStyleMain}"/>
+                                    <Label Content="is in dire need of assistance!"  Style="{StaticResource LabelStyleMain}"/>
                                 </StackPanel>
                                 <DockPanel>
                                 <StackPanel Orientation="Horizontal">

@@ -54,6 +54,7 @@
                         Command="{Binding StartRecordingCommand}"
                         CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}"
                         Content="{Binding ButtonText}"
+                        
                         Foreground="White"
                         Style="{StaticResource ToggleStyle1}" />
                 </StackPanel>

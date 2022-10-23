@@ -17,7 +17,7 @@ public class Client : DefaultClientConnection
         Logger.LogMessage(LogImportance.Information, "Connection with Server started");
         commandHandler.Add("public-rsa-key", new RsaKey());
         
-        Init("127.0.0.1", 2460, (json, encrypted) =>
+        Init(Shared.ServerConnection.Hostname, Shared.ServerConnection.Port, (json, encrypted) =>
         {
             string extraText = encrypted ? "Encrypted " : "";
             if (commandHandler.ContainsKey(json["id"]!.ToObject<string>()!))

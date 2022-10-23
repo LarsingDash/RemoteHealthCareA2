@@ -20,7 +20,7 @@ public class Client : DefaultClientConnection
         {
         };
         
-        Init("127.0.0.1", 2460, (json, encrypted) =>
+        Init(ServerConnection.Hostname, ServerConnection.Port, (json, encrypted) =>
             {
                 string extraText = encrypted ? "Encrypted " : "";
                if (commandHandler.ContainsKey(json["id"]!.ToObject<string>()!))

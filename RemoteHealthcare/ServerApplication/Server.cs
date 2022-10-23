@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Security.Cryptography;
 using ServerApplication.Client;
+using Shared;
 using Shared.Log;
 
 namespace ServerApplication
@@ -21,6 +22,10 @@ namespace ServerApplication
 
         public Server(int port = 2460)
         {
+            if (port == 2460)
+            {
+                port = ServerConnection.Port;
+            }
             listener = new TcpListener(IPAddress.Any, port);
             listener.Start();
             requestThread = new Thread(start: () =>

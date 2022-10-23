@@ -15,4 +15,25 @@
       <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta2" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="MVVM\ViewModel\" />
+      <Folder Include="MVVM\Model\" />
+      <Folder Include="MVVM\View\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Page Update="Styles\ButtonStyles.xaml">
+        <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="Styles\UIColors.xaml">
+        <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="Styles\UIResources.xaml">
+        <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+    </ItemGroup>
+
 </Project>

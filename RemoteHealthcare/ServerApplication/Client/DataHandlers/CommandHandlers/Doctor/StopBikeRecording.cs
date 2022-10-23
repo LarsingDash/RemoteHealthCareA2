@@ -64,7 +64,7 @@ public class StopBikeRecording : CommandHandler
                 {
                     if (cD.DataHandler.GetType() == typeof(NurseHandler))
                     {
-                        data.SendEncryptedData(JsonFileReader.GetObjectAsString("EmergencyResponse",new Dictionary<string, string>()
+                        cD.SendEncryptedData(JsonFileReader.GetObjectAsString("EmergencyResponse",new Dictionary<string, string>()
                         {
                             {"_bikeId_", user.GetInfo("bikeId")},
                             {"_username_", user.UserName},

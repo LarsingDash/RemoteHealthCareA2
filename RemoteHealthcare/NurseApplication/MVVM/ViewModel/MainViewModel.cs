@@ -14,8 +14,7 @@ namespace NurseApplication.MVVM.ViewModel
         public object CurrentView
         {
             get { return currentView; }
-            set
-            {
+            set {
                 currentView = value;
                 OnPropertyChanged();
             }

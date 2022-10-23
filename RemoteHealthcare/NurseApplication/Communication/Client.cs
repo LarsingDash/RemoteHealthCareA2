@@ -3,6 +3,7 @@ using System.Threading;
 using ClientApplication.ServerConnection.Communication;
 using ClientApplication.ServerConnection.Communication.CommandHandlers;
 using Newtonsoft.Json;
+using NurseApplication.Communication.CommandHandlers;
 using Shared;
 using Shared.Log;
 
@@ -39,6 +40,7 @@ public class Client : DefaultClientConnection
         });
         
         commandHandler.Add("encryptedMessage", new EncryptedMessage(Rsa));
+        commandHandler.Add("emergency", new Emergency());
 
         Thread.Sleep(500);
         var serial = Util.RandomString();

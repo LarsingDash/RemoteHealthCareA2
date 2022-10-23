@@ -15,9 +15,12 @@ namespace NurseApplication.MVVM.ViewModel
     {
         public BindableCollection<AlertModel> Alerts { get; set; }
 
+        public static NurseViewModel NurseModel;
+
         public NurseViewModel()
         {
-           Alerts = new BindableCollection<AlertModel>();
+            NurseModel = this;
+            Alerts = new BindableCollection<AlertModel>();
             AddAlert("test", "123124");
             Console.WriteLine(Alerts.Count);
         }

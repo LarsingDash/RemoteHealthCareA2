@@ -25,7 +25,7 @@ namespace ClientSide.VR
         private double[,] heights = new double[256, 256];
         public string routeId;
 
-        private const string treePath = "data/NetworkEngine/models/trees/fantasy/tree6.obj";
+        private const string treePath = "data/NetworkEngine/models/trees/pine/Pine_Low-poly_1.obj";
         private readonly List<Vector2> route = new List<Vector2>();
 
         public WorldGen(VRClient vrClient, Tunnel tunnel)
@@ -119,7 +119,7 @@ namespace ClientSide.VR
         {
             try
             {
-                var poly = GenPoly(101, 100, 20, 25, new Random());
+                var poly = GenPoly(85,86,23,25, new Random());
                 route.AddRange(poly);
 
                 var polyBuilder = new StringBuilder();
@@ -353,7 +353,7 @@ namespace ClientSide.VR
 
             // builder.Append($"\"dir\": [{dir}]");
 
-            builder.Append($"\"dir\": [{nextPoint.X - point.X}, 0, {nextPoint.Y - point.Y}]");
+            // builder.Append($"\"dir\": [{nextPoint.X - point.X}, 0, {nextPoint.Y - point.Y}]");
             //builder.Append($"\"dir\": [0, 0, 0]");
             builder.Append("}");
 

@@ -41,12 +41,13 @@
                                     <Label Padding="0,5" Content="{Binding Alert.userName}"  Style="{StaticResource LabelStyleMain}" />
                                     <Label Content="is dire in need of assistance!"  Style="{StaticResource LabelStyleMain}"/>
                                 </StackPanel>
-                            <Label
-                                        Content="{Binding Alert.time}"
-                                        FontSize="11"
-                                        FontStyle="Italic"
-                                        HorizontalAlignment="Right"
-                                        Padding="10,0" Foreground="#FFF9F9F9" />
+                                <DockPanel>
+                                <StackPanel Orientation="Horizontal">
+                                        <Label Content="Bike ID:"  Style="{StaticResource LabelStyleMain}"/>
+                                        <Label Content="{Binding Alert.BikeId}"  Style="{StaticResource LabelStyleMain}"/>
+                                </StackPanel>
+                                    <Label Content="{Binding Alert.time}" HorizontalAlignment="Right"  Style="{StaticResource LabelStyleMain}"/>
+                            </DockPanel>
                         </StackPanel>
                     </Border>
                 </DataTemplate>

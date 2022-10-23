@@ -18,9 +18,9 @@ namespace NurseApplication.MVVM.ViewModel
            Alerts = new ObservableCollection<AlertModel>();
         }
 
-        public void AddAlert(string userName)
+        public void AddAlert(string userName, string bikeId)
         {
-            Alerts.Add(new AlertModel(userName));
+            Alerts.Add(new AlertModel(userName, bikeId));
         }
     }
 }

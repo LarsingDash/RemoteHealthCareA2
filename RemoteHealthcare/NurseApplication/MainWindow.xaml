@@ -7,7 +7,7 @@
         xmlns:view="clr-namespace:NurseApplication.MVVM.View"
         xmlns:local="clr-namespace:NurseApplication"
         mc:Ignorable="d"
-        Title="Doctor Application" Height="550" Width="850"
+        Title="Doctor Application" Height="550" Width="330"
         ResizeMode="NoResize"
         WindowStyle="None"
         AllowsTransparency="True"

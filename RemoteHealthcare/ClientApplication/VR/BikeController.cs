@@ -99,7 +99,7 @@ public class BikeController
                         {"\"_speed_\"", $"{followSpeed.ToString(CultureInfo.InvariantCulture)}"},
                     }, JsonFolder.Route.Path)
                 }
-            }, true);
+            }, true, true);
         });
     }
     

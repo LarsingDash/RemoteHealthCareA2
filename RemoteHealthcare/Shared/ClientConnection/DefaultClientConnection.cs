@@ -23,7 +23,7 @@ public class DefaultClientConnection
     public DefaultClientConnection(string hostname, int port, Action<JObject, bool> commandHandlerMethod)
     {
         Init(hostname, port, commandHandlerMethod);
-        
+
     }
     [Obsolete("Only use this when you call init manually")]
     public DefaultClientConnection()
@@ -163,46 +163,96 @@ public class DefaultClientConnection
 
         stream.BeginRead(_buffer, 0, 1024000000, OnRead, null);
     }
+
+    private Queue<Tuple<string, bool>> sendQueue = new Queue<Tuple<string, bool>>();
     
+
+    private bool sending = false;
+    private void Send()
+    {
+        new Thread(start =>
+        {
+            if (sending)
+                return;
+            sending = true;
+            while (sendQueue.Count > 0)
+            {
+                //new Thread(start => Logger.LogMessage(LogImportance.Error, sendQueue.Count.ToString())).Start();
+                try
+                {
+                    Tuple<string, bool> val = sendQueue.Dequeue();
+                    SendMessage(val.Item1, val.Item2);
+                    Thread.Sleep(2);
+                }
+                catch (Exception e)
+                {
+                    Logger.LogMessage(LogImportance.Error, "Could not send message", e);
+                }
+            }
+            sending = false;
+        }).Start();
+    }
     /// <summary>
     /// It sends a message to the server
     /// </summary>
     /// <param name="message">The message to send to the server.</param>
-    public void SendData(string message, bool hide = false)
+    public void SendData(string message, bool hide = false, bool priority = false)
     {
-        try
+        if (priority)
         {
-            var ob = JObject.Parse(message);
-            if (ob.ContainsKey("serial"))
+            var items = sendQueue.ToArray();
+            sendQueue.Clear();
+            sendQueue.Enqueue(Tuple.Create(message, hide));
+            foreach (var tuple in items)
             {
-                if (ob["serial"]!.ToObject<string>()!.Equals("_serial_"))
+                sendQueue.Enqueue(tuple);
+            }
+        }
+        else
+        {
+            sendQueue.Enqueue(Tuple.Create(message, hide));
+        }
+        Send();
+        
+    }
+
+    private void SendMessage(string message, bool hide)
+    {
+        new Thread(start =>
+        {
+            try
+            {
+                var ob = JObject.Parse(message);
+                if (ob.ContainsKey("serial"))
                 {
-                    ob.Remove("serial");
-                    message = ob.ToString();
+                    if (ob["serial"]!.ToObject<string>()!.Equals("_serial_"))
+                    {
+                        ob.Remove("serial");
+                        message = ob.ToString();
+                    }
+                }
+
+                if (ob["data"]?["error"]?.ToObject<string>() != null)
+                {
+                    if (ob["data"]!["error"]!.ToObject<string>()!.Equals("_error_"))
+                    {
+                        ob["data"]!["error"]!.Remove();
+                        message = ob.ToString();
+                    }
+                }
+
+                if (!ob["id"]!.ToObject<string>()!.Equals("encryptedMessage") && !hide)
+                {
+                    Logger.LogMessage(LogImportance.Information, 
+                        $"Sending message: {LogColor.Gray}\n{ob.ToString(Formatting.None)}");
                 }
             }
-
-            if (ob["data"]?["error"]?.ToObject<string>() != null)
-            {
-                if (ob["data"]!["error"]!.ToObject<string>()!.Equals("_error_"))
-                {
-                    ob["data"]!["error"]!.Remove();
-                    message = ob.ToString();
-                }
-            }
-
-            if (!ob["id"]!.ToObject<string>()!.Equals("encryptedMessage") && !hide)
+            catch(JsonReaderException)
             {
                 Logger.LogMessage(LogImportance.Information, 
-                    $"Sending message: {LogColor.Gray}\n{ob.ToString(Formatting.None)}");
+                    $"Sending message: {LogColor.Gray}\n(_NonJsonObject_)");
             }
-        }
-        catch(JsonReaderException)
-        {
-            Logger.LogMessage(LogImportance.Information, 
-                $"Sending message: {LogColor.Gray}\n(_NonJsonObject_)");
-        }
-                
+        }).Start();
         Byte[] data = BitConverter.GetBytes(message.Length);
         Byte[] comman = System.Text.Encoding.ASCII.GetBytes(message);
         stream.Write(data, 0, data.Length);

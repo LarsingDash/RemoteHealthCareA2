@@ -25,7 +25,7 @@ namespace ClientSide.VR
         private readonly float[,] heights = new float[mapSize, mapSize];
         public string routeId;
 
-        private const string treePath = "data/NetworkEngine/models/trees/pine/Pine_Low-poly_1.obj";
+        private const string treePath = "data/NetworkEngine/models/trees/Fantasy/tree6.obj";
         private readonly List<Vector2> route = new List<Vector2>();
 
         public WorldGen(VRClient vrClient, Tunnel tunnel)
@@ -248,14 +248,11 @@ namespace ClientSide.VR
                     }
 
                     fullRoute = currentList;
-                    foreach (var point in fullRoute)
-                    {
-                        Console.WriteLine(point);
-                    }
+                    // foreach (var point in fullRoute)
+                    // {
+                    //     Console.WriteLine(point);
+                    // }
                 }
-
-                Logger.PrintLevel = LogLevel.Off;
-
                 //Start decorationGen
                 const int maxAmountOfObjects = 5000;
                 const int maxFailedAttempts = 250;
@@ -336,7 +333,7 @@ namespace ClientSide.VR
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.LogMessage(LogImportance.Error, "Error Unknown Reason", e);
             }
         }
 

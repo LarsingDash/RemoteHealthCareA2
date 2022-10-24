@@ -158,11 +158,6 @@ namespace DoctorApplication.MVVM.ViewModel
             buttonText2 = "Single User";
 
             dataHandler = new ConnectionHandler();
-            Task task = dataHandler.StartRecordingAsync("Testing");
-            if (task.IsCompleted)
-            {
-                Task task1 = dataHandler.SubscribeToSessionAsync();
-            }
         }
 
         private void EmergencyFunction(object obj)

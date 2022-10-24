@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using ClientApplication;
-using ClientApplication.ServerConnection.Bike;
+using ClientApplication.Bike;
 using ClientApplication.Util;
 using ClientSide.VR2.CommandHandler;
 using Shared;

@@ -1,8 +1,11 @@
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading;
-using ClientApplication.ServerConnection.Bike;
+using ClientApplication.Bike;
 using ClientApplication.Util;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Shared;
 using Shared.Log;
 
@@ -38,18 +41,54 @@ public class Client : DefaultClientConnection
             commandHandler.Add("encryptedMessage", new EncryptedMessage(Rsa));
             commandHandler.Add("forward-set-resistance", new SetResistance());
             commandHandler.Add("forward-chat-message", new ChatMessage());
+            commandHandler.Add("start-bike-recording", new StartBikeRecording());
             Thread.Sleep(500);
         }
 
         BikeHandler handler = App.GetBikeHandlerInstance();
         handler.Subscribe(DataType.Distance, value =>
         {
-            // SendEncryptedData();
+            SendValue("distance", value);
         });
+        handler.Subscribe(DataType.Speed, value =>
+        {
+            SendValue("speed", value);
+        });
+        handler.Subscribe(DataType.HeartRate, value =>
+        {
+            SendValue("heartrate", value);
+        });
+        
     }
 
     public void SetCurrentBikeRecording(string uuid)
     {
         currentBikeRecording = uuid;
+    }
+
+    public void SendValue(string type, double val)
+    {
+        if (currentBikeRecording.Length <= 3)
+            return;
+        var serial = Shared.Util.RandomString();
+        JObject ob = JsonFileReader.GetObject("ChangeData", new Dictionary<string, string>()
+        {
+            {"_uuid_", currentBikeRecording},
+            {"_serial_", serial}
+        }, JsonFolder.ServerConnection.Path);
+        JObject newData = new JObject();
+        newData.Add("time", DateTime.Now.ToString(CultureInfo.InvariantCulture));
+        newData.Add("value", val.ToString());
+        JArray value = (JArray) ob["data"]![type]!;
+        value.Add(newData);
+        ob["data"]![type] = value;
+        SendEncryptedData(ob.ToString());
+        AddSerialCallback(serial, ob =>
+        {
+            if (!ob["data"]!["status"]!.ToObject<string>()!.Equals("ok"))
+            {
+                currentBikeRecording = "";
+            }
+        });
     }
 }

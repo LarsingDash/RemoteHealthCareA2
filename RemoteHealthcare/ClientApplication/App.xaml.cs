@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using ClientApplication.Bike;
 using ClientApplication.ServerConnection;
-using ClientApplication.ServerConnection.Bike;
 using ClientApplication.View;
 using ClientSide.VR2;
 using Shared.Log;

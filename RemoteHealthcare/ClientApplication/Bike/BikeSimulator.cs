@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 
-namespace ClientApplication.ServerConnection.Bike;
+namespace ClientApplication.Bike;
 //The BikeSimulator class has the purpose to simulate the bike.
 public class BikeSimulator : Bike
 {

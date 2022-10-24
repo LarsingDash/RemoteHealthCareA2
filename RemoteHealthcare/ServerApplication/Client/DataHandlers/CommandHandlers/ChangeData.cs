@@ -18,6 +18,11 @@ public class ChangeData : CommandHandler
         {
             string uuid = ob["data"]!["uuid"]!.ToObject<string>()!;
             string fileName = uuid + ".txt";
+            if (!server.ActiveSessions.Contains(ob["data"]!["uuid"]!.ToObject<string>()!))
+            {
+                SendEncryptedError(data,ob, "Session is not found or active");
+                return;
+            }
             
             //Getting current Values
             JObject file = JsonFileReader.GetEncryptedObject(fileName,
@@ -56,7 +61,7 @@ public class ChangeData : CommandHandler
         else
         {
             //Sending error message(no uuid)
-            SendEncryptedError(data,ob,"There is no uuid(Session name");
+            SendEncryptedError(data,ob,"There is no uuid (Session name)");
         }
     }
 

@@ -1,4 +1,4 @@
-namespace ClientApplication.ServerConnection.Bike.DataPages;
+namespace ClientApplication.Bike.DataPages;
 
 public class DataPage19
 {

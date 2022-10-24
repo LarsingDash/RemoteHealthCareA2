@@ -21,7 +21,7 @@ namespace ServerApplication.Client
         
         #region Sending and retrieving data
 
-        private TcpClient Client { get; }
+        public TcpClient Client { get; }
         private NetworkStream Stream { get; }
         public Dictionary<string, Action<JObject>> SerialCallbacks = new();
         public DataHandler DataHandler;

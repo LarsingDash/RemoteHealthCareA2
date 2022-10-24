@@ -321,7 +321,7 @@ namespace DoctorApplication.MVVM.Model
         }
         private DateTime CustomParseDate(string time)
         {
-            return DateTime.ParseExact(time, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+            return DateTime.ParseExact(time, "yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
         }
     }
 

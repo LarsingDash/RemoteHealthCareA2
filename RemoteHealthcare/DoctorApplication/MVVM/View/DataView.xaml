@@ -273,21 +273,21 @@
                     />
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding SelectedUser.LastSpeed}"
+                    Content="{Binding SelectedUser.LastSession.LastSpeed}"
                     Grid.Column="1"
                     Grid.Row="1"
                     HorizontalAlignment="Left"
                     x:Name="CurrentSpeedText" />
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding SelectedUser.TopSpeed}"
+                    Content="{Binding SelectedUser.LastSession.TopSpeed}"
                     Grid.Column="1"
                     Grid.Row="2"
                     HorizontalAlignment="Left"
                     x:Name="TopSpeedText" />
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding SelectedUser.AverageSpeed}"
+                    Content="{Binding SelectedUser.LastSession.AverageSpeed}"
                     Grid.Column="1"
                     Grid.Row="3"
                     HorizontalAlignment="Left"
@@ -301,7 +301,7 @@
                     x:Name="TimeElapsedText" />
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding SelectedUser.LastDistance}"
+                    Content="{Binding SelectedUser.LastSession.LastDistance}"
                     Grid.Column="1"
                     Grid.Row="5"
                     HorizontalAlignment="Left"
@@ -326,7 +326,7 @@
                     x:Name="HeartInformationHeader" />
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding SelectedUser.LastHeartRate}"
+                    Content="{Binding SelectedUser.LastSession.LastHeartRate}"
                     FontSize="48"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"

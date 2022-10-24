@@ -18,17 +18,17 @@ namespace DoctorApplication.MVVM.Model
 
         public int sessionint = 0;
 
-        TimeSpan timeElapsed;
+        string timeElapsed;
 
-        public TimeSpan TimeElapsed
+        public string TimeElapsed
         {
             get
             {
                 if (endTime != null)
                 {
-                    return DateTime.Now - startTime;
+                    return (DateTime.Now - startTime).TotalSeconds.ToString() + " Seconds";
                 }
-                return endTime - startTime;
+                return (endTime - startTime).TotalSeconds.ToString() + " Seconds";
             }
             set
             {

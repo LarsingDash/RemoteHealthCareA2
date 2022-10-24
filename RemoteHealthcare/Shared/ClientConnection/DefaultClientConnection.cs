@@ -165,6 +165,7 @@ public class DefaultClientConnection
     }
 
     private Queue<Tuple<string, bool>> sendQueue = new Queue<Tuple<string, bool>>();
+    private Queue<Tuple<string, bool>> sendQueuePrio = new Queue<Tuple<string, bool>>();
     
 
     private bool sending = false;
@@ -175,13 +176,21 @@ public class DefaultClientConnection
             if (sending)
                 return;
             sending = true;
-            while (sendQueue.Count > 0)
+            while (sendQueue.Count > 0 || sendQueuePrio.Count > 0)
             {
                 //new Thread(start => Logger.LogMessage(LogImportance.Error, sendQueue.Count.ToString())).Start();
                 try
                 {
-                    Tuple<string, bool> val = sendQueue.Dequeue();
-                    SendMessage(val.Item1, val.Item2);
+                    if (sendQueuePrio.Count > 0)
+                    {
+                        Tuple<string, bool> val = sendQueuePrio.Dequeue();
+                        SendMessage(val.Item1, val.Item2);
+                    }
+                    else
+                    {
+                        Tuple<string, bool> val = sendQueue.Dequeue();
+                        SendMessage(val.Item1, val.Item2);
+                    }
                     Thread.Sleep(2);
                 }
                 catch (Exception e)
@@ -200,13 +209,7 @@ public class DefaultClientConnection
     {
         if (priority)
         {
-            var items = sendQueue.ToArray();
-            sendQueue.Clear();
-            sendQueue.Enqueue(Tuple.Create(message, hide));
-            foreach (var tuple in items)
-            {
-                sendQueue.Enqueue(tuple);
-            }
+            sendQueuePrio.Enqueue(Tuple.Create(message, hide));
         }
         else
         {

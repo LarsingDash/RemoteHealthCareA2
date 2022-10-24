@@ -2,8 +2,9 @@
   "id": "login",
   "serial": "_serial_",
   "data": {
-    "type": "_type_",
+    "type": "Client",
     "username": "_username_",
-    "password": "_password_"
+    "password": "_password_",
+    "bikeId": "_bikeId_"
   }
 }

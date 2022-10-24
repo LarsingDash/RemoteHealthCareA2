@@ -1,0 +1,24 @@
+{
+  "clients": [
+    {
+      "username": "1234567890",
+      "password": "wachtwoord"
+    },
+    {
+      "username": "0987654321",
+      "password": "admin"
+    },
+    {
+      "username": "OnlyFolder",
+      "password": "OnlyFolder"
+    },
+    {
+      "username": "TestUsername",
+      "password": "TestPassword"
+    },
+    {
+      "username": "0987645321",
+      "password": "test"
+    }
+  ]
+}

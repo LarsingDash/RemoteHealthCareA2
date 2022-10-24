@@ -1,0 +1,7 @@
+{
+  "id":"user-state-changed",
+  "data":{
+    "username":"_username_",
+    "type": "_type_"
+  }
+}

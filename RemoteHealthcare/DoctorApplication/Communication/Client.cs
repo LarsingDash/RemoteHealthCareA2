@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading;
 using ClientApplication.ServerConnection.Communication;
 using ClientApplication.ServerConnection.Communication.CommandHandlers;
+using DoctorApplication.Communication.CommandHandlers;
 using Shared;
 using Shared.Log;
 using Formatting = Newtonsoft.Json.Formatting;
@@ -20,7 +21,7 @@ public class Client : DefaultClientConnection
         {
         };
         
-        Init("127.0.0.1", 2460, (json, encrypted) =>
+        Init(ServerConnection.Hostname, ServerConnection.Port, (json, encrypted) =>
             {
                 string extraText = encrypted ? "Encrypted " : "";
                if (commandHandler.ContainsKey(json["id"]!.ToObject<string>()!))
@@ -38,36 +39,8 @@ public class Client : DefaultClientConnection
             });
         
         commandHandler.Add("encryptedMessage", new EncryptedMessage(Rsa));
+        commandHandler.Add("user-state-changed", new UserStateChange());
 
         Thread.Sleep(500);
-        
-        //Testing...
-        // var serial = Util.RandomString();
-        // SendEncryptedData(JsonFileReader.GetObjectAsString("Login", new Dictionary<string, string>()
-        // {
-        //     {"_serial_", serial},
-        //     {"_type_", "Doctor"},
-        //     {"_username_", "Jasper"},
-        //     {"_password_", "Merijn"}
-        // }, JsonFolder.Json.Path));
-        //
-        // AddSerialCallback(serial, ob =>
-        // {
-        //     
-        //    // Logger.LogMessage();
-        // });
-        //
-        // SendEncryptedData(JsonFileReader.GetObjectAsString("ActiveClients", new Dictionary<string, string>()
-        // {
-        //     //{"_serial_", serial}
-        // }, JsonFolder.Json.Path));
-        //
-        // Thread.Sleep(500);
-        // SendEncryptedData(JsonFileReader.GetObjectAsString("HistoricClientData", new Dictionary<string, string>()
-        // {
-        //     {"_name_", "Tes123t1"}
-        // }, JsonFolder.Json.Path));
-        //
-        // SendEncryptedData(JsonFileReader.GetObjectAsString("AllClients", new Dictionary<string, string>(), JsonFolder.Json.Path));
     }
 }

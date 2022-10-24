@@ -12,6 +12,7 @@ using System.Windows;
 using LiveCharts.Wpf;
 using LiveCharts;
 using System.DirectoryServices;
+using System.Globalization;
 using ClientApplication.ServerConnection;
 using ClientApplication.ServerConnection.Communication;
 using DoctorApplication.Communication;
@@ -27,12 +28,23 @@ namespace DoctorApplication.MVVM.ViewModel
 
         //WPF Text change strings
         private string message;
-        private string currentSessionUuid;
 
         public string Message
         {
             get { return message; }
             set { message = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool chatTypeState;
+
+        public bool ChatTypeState
+        {
+            get { return chatTypeState; }
+            set
+            {
+                chatTypeState = value;
                 OnPropertyChanged();
             }
         }
@@ -50,18 +62,8 @@ namespace DoctorApplication.MVVM.ViewModel
             }
         }
 
-        private void ApplySliderValue()
-        {
-            Logger.LogMessage(LogImportance.Information, sliderValue.ToString());
-            Client client = App.GetClientInstance();
-            var serial = Util.RandomString();
-            client.SendEncryptedData(JsonFileReader.GetObjectAsString("SetResistance", new Dictionary<string, string>()
-            {
-                {"_serial_" , serial},
-                {"_resistance_" , SliderValue.ToString()},
-                {"_user_", "TestUsername" }
-            }, JsonFolder.Json.Path));
-        }
+        
+        private string currentSessionUuid;
 
         private string buttonText;
 
@@ -74,6 +76,17 @@ namespace DoctorApplication.MVVM.ViewModel
                 OnPropertyChanged();
             }
         }
+        private string buttonText2;
+
+        public string ButtonText2
+        {
+            get { return buttonText2; }
+            set
+            {
+                buttonText2 = value;
+                OnPropertyChanged();
+            }
+        }
 
 
         //commands
@@ -81,6 +94,7 @@ namespace DoctorApplication.MVVM.ViewModel
         public RelayCommand GetUserCommand { get; set; }
         public RelayCommand StartRecordingCommand { get; set; }
         public RelayCommand EmergencyPressedCommand { get; set; }
+        public RelayCommand ChatTypeCommand { get; set; }
 
         //Data collections
         private BindableCollection<UserDataModel> users;
@@ -129,44 +143,27 @@ namespace DoctorApplication.MVVM.ViewModel
 
         public DataViewModel(BindableCollection<UserDataModel> users)
         {
-
-
-
             //creating users (test data)
             this.Users = users;
-
+            this.ChatTypeState = false;
 
             //initializing sendcommand 
             SendCommand = new RelayCommand(SendMessage);
             GetUserCommand = new RelayCommand(GetUser);
             StartRecordingCommand = new RelayCommand(StartRecordingToggled);
+            ChatTypeCommand = new RelayCommand(ChatTypeToggled);
             EmergencyPressedCommand = new RelayCommand(EmergencyFunction);
 
             //predetermined text in button
             buttonText = "Start";
+            buttonText2 = "Single User";
 
-            //graph series initialisation
-            //if (SelectedUser != null)
-            //{
-            //    SeriesCollection = new SeriesCollection
-            //{
-            //    new LineSeries{
-            //    Title = "KM/H",
-            //    Values = SelectedUser.LastSession.Speed.AsChartValues(),
-            //},
-            //};
-            //}
             dataHandler = new ConnectionHandler();
-            Task task = dataHandler.StartRecordingAsync("Testing");
-            if (task.IsCompleted)
-            {
-                Task task1 = dataHandler.SubscribeToSessionAsync();
-            }
         }
 
         private void EmergencyFunction(object obj)
         {
-            StopBikeRecording();
+            StopBikeRecording("emergencyStop");
             Console.WriteLine("Emergency Pressed!");
         }
 
@@ -178,6 +175,7 @@ namespace DoctorApplication.MVVM.ViewModel
             {
                 {"_serial_", serial},
                 {"_name_", selectedUser.UserName},
+                {"_session_", DateTime.Now.ToString(CultureInfo.InvariantCulture)}
             }, JsonFolder.Json.Path));
             await client.AddSerialCallbackTimeout(serial, ob =>
             {
@@ -189,13 +187,21 @@ namespace DoctorApplication.MVVM.ViewModel
                 }, JsonFolder.Json.Path));
             }, () =>
             {
-
-            }, 1000);
-            
-
-
+          }, 1000);
         }
-        public void StopBikeRecording()
+        private void ApplySliderValue()
+        {
+            Logger.LogMessage(LogImportance.Information, sliderValue.ToString());
+            Client client = App.GetClientInstance();
+            var serial = Util.RandomString();
+            client.SendEncryptedData(JsonFileReader.GetObjectAsString("SetResistance", new Dictionary<string, string>()
+            {
+                {"_serial_" , serial},
+                {"_resistance_" , SliderValue.ToString()},
+                {"_user_", "TestUsername" }
+            }, JsonFolder.Json.Path));
+        }
+        public void StopBikeRecording(string type)
         {
             Client client = App.GetClientInstance();
             var serial = Util.RandomString();
@@ -203,7 +209,8 @@ namespace DoctorApplication.MVVM.ViewModel
             {
                 {"_serial_", serial},
                 {"_uuid_", currentSessionUuid},
-                {"_name_", selectedUser.UserName}
+                {"_name_", selectedUser.UserName},
+                {"_stopType_", type}
             }, JsonFolder.Json.Path));
         }
 
@@ -211,6 +218,9 @@ namespace DoctorApplication.MVVM.ViewModel
         {
             if (selectedUser != null && Message!="")
             {
+                if (chatTypeState && Users != null) {
+                    foreach (UserDataModel user in Users)
+                    {
                 Client client = App.GetClientInstance();
                 var serial = Util.RandomString();
                 client.SendEncryptedData(JsonFileReader.GetObjectAsString("ChatMessage", new Dictionary<string, string>()
@@ -218,7 +228,7 @@ namespace DoctorApplication.MVVM.ViewModel
                     {"_serial_", serial},
                     {"_type_", "personal"},
                     {"_message_", Message.ToString()!},
-                    {"_receiver_", selectedUser.UserName}
+                    {"_receiver_", user.UserName}
                 }, JsonFolder.Json.Path));
                 this.Message = string.Empty;
                 client.AddSerialCallbackTimeout(serial, ob =>
@@ -228,6 +238,28 @@ namespace DoctorApplication.MVVM.ViewModel
                 {
                     //No Response from server
                 }, 1000);
+
+                    }
+                } else
+                {
+                    Client client = App.GetClientInstance();
+                    var serial = Util.RandomString();
+                    client.SendEncryptedData(JsonFileReader.GetObjectAsString("ChatMessage", new Dictionary<string, string>()
+                {
+                    {"_serial_", serial},
+                    {"_type_", "personal"},
+                    {"_message_", Message.ToString()!},
+                    {"_receiver_", selectedUser.UserName}
+                }, JsonFolder.Json.Path));
+                    this.Message = string.Empty;
+                    client.AddSerialCallbackTimeout(serial, ob =>
+                    {
+                        selectedUser.AddMessage(Message.ToString());
+                    }, () =>
+                    {
+                        //No Response from server
+                    }, 1000);
+                }
             }
         }
         public void GetUser(object user)
@@ -248,10 +280,26 @@ namespace DoctorApplication.MVVM.ViewModel
                 //unchecked
                 Console.WriteLine("Unchecked");
                 ButtonText = "Start";
-                StopBikeRecording();
+                StopBikeRecording("normal");
 
             }
         }
-       
+        public void ChatTypeToggled(object state)
+        {
+            if ((bool)state)
+            {
+                //checked
+                Console.WriteLine("Type Checked");
+                ButtonText2 = "Broadcast";
+            }
+            else
+            {
+                //unchecked
+                Console.WriteLine("Type Unchecked");
+                ButtonText2 = "Single User";
+
+            }
+        }
+
     }
 }

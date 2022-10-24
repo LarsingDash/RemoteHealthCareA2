@@ -1,0 +1,8 @@
+{
+  "id":"emergency",
+  "serial":"_serial_",
+  "data":{
+    "bikeId": "_bikeId_",
+    "username": "_username_"
+  }
+}

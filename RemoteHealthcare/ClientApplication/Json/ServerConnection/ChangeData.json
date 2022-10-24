@@ -1,0 +1,10 @@
+{
+  "id":"change-data",
+  "serial":"_serial_",
+  "data":{
+    "uuid":"_uuid_",
+    "distance":[],
+    "speed":[],
+    "heartrate":[]
+  }
+}

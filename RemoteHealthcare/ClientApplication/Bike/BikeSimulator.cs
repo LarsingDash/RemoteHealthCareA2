@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 
-namespace ClientApplication.ServerConnection.Bike;
+namespace ClientApplication.Bike;
 //The BikeSimulator class has the purpose to simulate the bike.
 public class BikeSimulator : Bike
 {
@@ -13,6 +13,7 @@ public class BikeSimulator : Bike
     public BikeSimulator(BikeHandler handler)
     {
         lastTicks = Environment.TickCount;
+        BikeId = $"SIM {new Random().Next(5000)}";
         ticker = 0;
         var thread = new Thread(Run);
         thread.Start();

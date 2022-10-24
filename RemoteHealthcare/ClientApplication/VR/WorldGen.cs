@@ -25,15 +25,8 @@ namespace ClientSide.VR
         private double[,] heights = new double[256, 256];
         public string routeId;
 
-        private List<string> treePath = new()
-        {
-            "data/NetworkEngine/models/trees/fantasy/tree7.obj",
-            "data/NetworkEngine/models/trees/fantasy/tree6.obj",
-        };
-            
-        // private const string treePath = "data/NetworkEngine/models/houses/set1/house1.obj";
-
-        private List<Vector2> route = new();
+        private const string treePath = "data/NetworkEngine/models/trees/pine/Pine_Low-poly_1.obj";
+        private readonly List<Vector2> route = new List<Vector2>();
 
         public WorldGen(VRClient vrClient, Tunnel tunnel)
         {
@@ -53,15 +46,16 @@ namespace ClientSide.VR
                 var heightMap = new StringBuilder();
 
                 //Determines sensitivity of the terrain height. Higher values equal to higher height difference
-                var terrainSensitivity = 10;
+                var terrainSensitivity = 5;
 
-                for (var x = 0; x < mapSize; x++)
+                for (var y = 0; y < mapSize; y++)
                 {
-                    for (var y = 0; y < mapSize; y++)
+                    for (var x = 0; x < mapSize; x++)
                     {
-                        heights[x, y] = (noiseGen.GetPerlin(x, y) * terrainSensitivity);
+                        var value = noiseGen.GetPerlin(x, y) * terrainSensitivity;
+                        heights[x, y] = value;
                         heightMap.Append(
-                            $"{(noiseGen.GetPerlin(x, y) * terrainSensitivity).ToString(CultureInfo.InvariantCulture)},");
+                            $"{value.ToString(CultureInfo.InvariantCulture)},");
                     }
                 }
 
@@ -74,13 +68,13 @@ namespace ClientSide.VR
                     {
                         "\"_data_\"", JsonFileReader.GetObjectAsString("AddTerrain", new Dictionary<string, string>
                         {
-                            {"\"_size1_\"", $"{mapSize}"},
-                            {"\"_size2_\"", $"{mapSize}"},
-                            {"\"_heights_\"", heightMap.ToString()}
+                            { "\"_size1_\"", $"{mapSize}" },
+                            { "\"_size2_\"", $"{mapSize}" },
+                            { "\"_heights_\"", heightMap.ToString() }
                         }, JsonFolder.Terrain.Path)
                     },
-                    {"_serial_", serial}
-                },true);
+                    { "_serial_", serial }
+                }, true);
                 //TODO Check status etc?
                 await vrClient.AddSerialCallbackTimeout(serial, ob => { }, () => { }, 1000);
 
@@ -92,7 +86,7 @@ namespace ClientSide.VR
                         JsonFileReader.GetObjectAsString("AddNodeTerrain", new Dictionary<string, string>(),
                             JsonFolder.Terrain.Path)
                     },
-                    {"_serial_", serial}
+                    { "_serial_", serial }
                 });
                 //TODO Check status etc?
                 await vrClient.AddSerialCallbackTimeout(serial, ob => { }, () => { }, 1000);
@@ -103,9 +97,9 @@ namespace ClientSide.VR
                     {
                         "\"_data_\"", JsonFileReader.GetObjectAsString("AddLayer", new Dictionary<string, string>
                         {
-                            {"_uuid_", terrainId},
-                            {"_diffuse_", "data/NetworkEngine/textures/terrain/grass_green2y_d.jpg"},
-                            {"_normal_", "data/NetworkEngine/textures/terrain/grass_green2y_n.jpg"}
+                            { "_uuid_", terrainId },
+                            { "_diffuse_", "data/NetworkEngine/textures/terrain/grass_green2y_d.jpg" },
+                            { "_normal_", "data/NetworkEngine/textures/terrain/grass_green2y_n.jpg" }
                         }, JsonFolder.Terrain.Path)
                     },
                 });
@@ -118,7 +112,6 @@ namespace ClientSide.VR
             {
                 Logger.LogMessage(LogImportance.Error, "No response from VR server when requesting scene/get", e);
             }
-
         }
 
         //Prepare road and send route
@@ -126,7 +119,7 @@ namespace ClientSide.VR
         {
             try
             {
-                var poly = GenPoly(101, 100, 20, 25, new Random());
+                var poly = GenPoly(85,86,23,25, new Random());
                 route.AddRange(poly);
 
                 var polyBuilder = new StringBuilder();
@@ -146,10 +139,10 @@ namespace ClientSide.VR
                         JsonFileReader.GetObjectAsString("AddRoute",
                             new Dictionary<string, string>
                             {
-                                {"\"_nodes_\"", polyBuilder.ToString()}
+                                { "\"_nodes_\"", polyBuilder.ToString() }
                             }, JsonFolder.Route.Path)
                     },
-                    {"_serial_", serial}
+                    { "_serial_", serial }
                 });
                 routeId = "";
                 vrClient.BikeController.Setup();
@@ -170,7 +163,7 @@ namespace ClientSide.VR
                         "\"_data_\"", JsonFileReader.GetObjectAsString("AddRoad",
                             new Dictionary<string, string>()
                             {
-                                {"_uuid_", routeId}
+                                { "_uuid_", routeId }
                             }, JsonFolder.Route.Path)
                     },
                 });
@@ -188,6 +181,7 @@ namespace ClientSide.VR
         {
             try
             {
+                //Generate TreeContainerNode
                 var serial = Util.RandomString();
                 tunnel.SendTunnelMessage(new Dictionary<string, string>()
                 {
@@ -196,12 +190,13 @@ namespace ClientSide.VR
                         JsonFileReader.GetObjectAsString("AddNodeScene",
                             new Dictionary<string, string>
                             {
-                                {"_name_", "trees"}
+                                { "_name_", "trees" }
                             }, JsonFolder.TunnelMessages.Path)
                     },
-                    {"_serial_", serial}
+                    { "_serial_", serial }
                 });
 
+                //Await creation of treesId
                 string treesId = "";
                 await vrClient.AddSerialCallbackTimeout(serial, ob =>
                 {
@@ -213,79 +208,91 @@ namespace ClientSide.VR
 
                 Logger.LogMessage(LogImportance.Debug, $"Treesid: {treesId}");
                 //Subdivide the route to get more sub-points
-                var fullRoute = new List<Vector2>();
-                for (var i = 0; i < route.Count; i++)
+                var treesList = new List<Vector2>(route);
+                var fullRoute = new List<Vector2>(route);
+                for (var subdivisionFactor = 0; subdivisionFactor < 2; subdivisionFactor++)
                 {
-                    var currentPoint = route[i];
-                    var nextPoint = route[(i + 1) % route.Count];
+                    for (var i = 0; i < route.Count; i++)
+                    {
+                        var currentPoint = route[i];
+                        var nextPoint = route[(i + 1) % route.Count];
 
-                    var subPoint = (currentPoint + nextPoint) / 2;
-                    fullRoute.Add(subPoint);
+                        var difference = currentPoint - nextPoint;
+                        var subPoint = currentPoint + difference * 0.5f;
+                        fullRoute.Add(subPoint);
+                    }
                 }
-                
 
-                const int maxAmountOfObjects = 50;
-                //const int maxFailedAttempts = 10;
+                //Start decorationGen
+                const int maxAmountOfObjects = 500;
+                const int maxFailedAttempts = 250;
                 var amountOfObjects = 0;
                 var failedAttempts = 0;
-                Random random = new Random();
-                Console.WriteLine("Trees sent:");
-                for (int i = 0; i < maxAmountOfObjects; i++)
+                var random = new Random();
+                
+                //Keep attempting to spawn trees till the max amount of trees or max amount of fails have been reached
+                while (amountOfObjects < maxAmountOfObjects && failedAttempts < maxFailedAttempts)
                 {
-                    await Task.Delay(10);
-                    new Thread(async start =>
+                    var attemptFailed = false;
+                    var currentPoint = new Vector2(random.Next(0, 256) - 128, random.Next(0, 256) - 128);
+                    foreach (var comparingPoint in fullRoute)
                     {
-
-                        var currentPoint = new Vector2(random.Next(0, 256), random.Next(0, 256));
-                        serial = Util.RandomString();
-                        // tunnel.SendTunnelMessage(new Dictionary<string, string>()
-                        // {
-                        //     {
-                        //         "\"_data_\"", JsonFileReader.GetObjectAsString("GetHeight",
-                        //             new Dictionary<string, string>()
-                        //             {
-                        //                 {"_serial_", serial},
-                        //                 {"\"_pos_\"", $"{currentPoint.X}, {currentPoint.Y}"}
-                        //             }, JsonFolder.Terrain.Path)
-                        //     }
-                        // });
-                        string height = "0";
-                        // await vrClient.AddSerialCallbackTimeout(serial,
-                        //     ob => { height = ob["data"]!["height"]!.ToObject<string>()!; },
-                        //     () => { Logger.LogMessage(LogImportance.Fatal, "No response"); }, 1000);
-
-                        tunnel.SendTunnelMessage(new Dictionary<string, string>()
+                        if (Vector2.Distance(comparingPoint, currentPoint) < 10)
                         {
-                            {
-                                "\"_data_\"", JsonFileReader.GetObjectAsString("AddModel",
-                                    new Dictionary<string, string>
-                                    {
-                                        {"_name_", $"tree{amountOfObjects}"},
-                                        {"_guid_", treesId},
-                                        {
-                                            "\"_position_\"",
-                                            $"{currentPoint.X + ".0"} , {height}, {currentPoint.Y + ".0"}"
-                                        },
+                            failedAttempts++;
+                            attemptFailed = true;
+                            
+                            break;
+                        }
+                    }
+                    foreach (var comparingPoint in treesList)
+                    {
+                        if (Vector2.Distance(comparingPoint, currentPoint) < 3)
+                        {
+                            failedAttempts++;
+                            attemptFailed = true;
+                            
+                            break;
+                        }
+                    }
 
-                                        // { "\"_position_\"", "0, 0, 0" },
-                                        {"_filename_", treePath[random.Next(treePath.Count)]}
-                                    }, JsonFolder.TunnelMessages.Path)
-                            },
-                        });
-                        amountOfObjects++;
-                        Logger.LogMessage(LogImportance.Debug, $"Amount of Trees placed: {amountOfObjects}");
-                    }).Start();
-                    
-                    Thread.Sleep(1500);
+                    if (attemptFailed) continue;
+
                     tunnel.SendTunnelMessage(new Dictionary<string, string>()
                     {
-                        {"\"_data_\"", JsonFileReader.GetObjectAsString("Play", new Dictionary<string, string>(), JsonFolder.TunnelMessages.Path)},
+                        {
+                            "\"_data_\"", JsonFileReader.GetObjectAsString("AddModel",
+                                new Dictionary<string, string>
+                                {
+                                    { "_name_", $"tree{amountOfObjects}" },
+                                    { "_guid_", treesId },
+                                    {
+                                        "\"_position_\"",
+                                        $"{currentPoint.X + 128 + ".0"} , {heights[(int)currentPoint.X + 128, (int)currentPoint.Y + 128].ToString(CultureInfo.InvariantCulture)}, {currentPoint.Y + 128  + ".0"}"
+                                    },
+                                    { "_filename_", treePath }
+                                }, JsonFolder.TunnelMessages.Path)
+                        },
                     });
+                    
+                    treesList.Add(currentPoint);
+                    amountOfObjects++;
                 }
+
+                return;
+                //Resume the simulation
+                tunnel.SendTunnelMessage(new Dictionary<string, string>()
+                {
+                    {
+                        "\"_data_\"",
+                        JsonFileReader.GetObjectAsString("Play", new Dictionary<string, string>(),
+                            JsonFolder.TunnelMessages.Path)
+                    },
+                });
             }
             catch (Exception e)
             {
-                Logger.LogMessage(LogImportance.Warn, "No response from VR server when requesting scene/get");
+                Console.WriteLine(e.StackTrace);
             }
         }
 
@@ -346,9 +353,9 @@ namespace ClientSide.VR
 
             // builder.Append($"\"dir\": [{dir}]");
 
-            builder.Append($"\"dir\": [{nextPoint.X - point.X}, 0, {nextPoint.Y - point.Y}]");
+            // builder.Append($"\"dir\": [{nextPoint.X - point.X}, 0, {nextPoint.Y - point.Y}]");
+            //builder.Append($"\"dir\": [0, 0, 0]");
             builder.Append("}");
-
 
             return builder.ToString();
         }

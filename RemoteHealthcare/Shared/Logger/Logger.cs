@@ -79,6 +79,7 @@ namespace Shared.Log
             }
 
             builder.Append(LogColor.White.Color);
+            // return;
             Console.WriteLine(builder);
 
         }

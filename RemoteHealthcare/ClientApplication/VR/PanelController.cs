@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using ClientApplication;
-using ClientApplication.ServerConnection.Bike;
+using ClientApplication.Bike;
 using ClientApplication.Util;
 using ClientSide.VR2.CommandHandler;
 using Shared;

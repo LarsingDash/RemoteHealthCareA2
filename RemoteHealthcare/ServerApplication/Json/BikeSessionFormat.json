@@ -2,6 +2,8 @@
   "session-name":"_sessionname_",
   "start-time":"_starttime_",
   "end-time":"_endtime_",
+  "stopType": "_stoptype_",
+  "bikeId": "_bikeId_",
   "distance":[
 
   ],

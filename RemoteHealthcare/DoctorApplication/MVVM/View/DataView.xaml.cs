@@ -23,16 +23,15 @@ namespace DoctorApplication.MVVM.View
     /// </summary>
     public partial class DataView : UserControl
     {
-        
         public DataView()
         {
             InitializeComponent();
-
-
         }
 
-        
-    }
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
 
+        }
+    }
 }
 

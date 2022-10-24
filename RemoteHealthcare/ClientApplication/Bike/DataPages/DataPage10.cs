@@ -1,6 +1,6 @@
 using System;
 
-namespace ClientApplication.ServerConnection.Bike.DataPages;
+namespace ClientApplication.Bike.DataPages;
 
 public class DataPage10 : DataPage
 {

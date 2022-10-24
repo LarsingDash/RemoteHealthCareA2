@@ -12,6 +12,7 @@ using System.Windows;
 using LiveCharts.Wpf;
 using LiveCharts;
 using System.DirectoryServices;
+using System.Globalization;
 using ClientApplication.ServerConnection;
 using ClientApplication.ServerConnection.Communication;
 using DoctorApplication.Communication;
@@ -113,8 +114,8 @@ namespace DoctorApplication.MVVM.ViewModel
 
         //currently selected user in combobox
 
-        private UserDataModel selectedUser;
-        public UserDataModel SelectedUser
+        private UserDataModel? selectedUser;
+        public UserDataModel? SelectedUser
         {
             get { return selectedUser; }
             set
@@ -158,16 +159,11 @@ namespace DoctorApplication.MVVM.ViewModel
             buttonText2 = "Single User";
 
             dataHandler = new ConnectionHandler();
-            Task task = dataHandler.StartRecordingAsync("Testing");
-            if (task.IsCompleted)
-            {
-                Task task1 = dataHandler.SubscribeToSessionAsync();
-            }
         }
 
         private void EmergencyFunction(object obj)
         {
-            StopBikeRecording();
+            StopBikeRecording("emergencyStop");
             Console.WriteLine("Emergency Pressed!");
         }
 
@@ -175,10 +171,15 @@ namespace DoctorApplication.MVVM.ViewModel
         {
             Client client = App.GetClientInstance();
             var serial = Util.RandomString();
+            if (selectedUser == null)
+            {
+                return;
+            }
             client.SendEncryptedData(JsonFileReader.GetObjectAsString("StartBikeRecording", new Dictionary<string, string>()
             {
                 {"_serial_", serial},
                 {"_name_", selectedUser.UserName},
+                {"_session_", DateTime.Now.ToString(CultureInfo.InvariantCulture)}
             }, JsonFolder.Json.Path));
             await client.AddSerialCallbackTimeout(serial, ob =>
             {
@@ -188,12 +189,17 @@ namespace DoctorApplication.MVVM.ViewModel
                     {"_serial_", serial},
                     {"_uuid_", currentSessionUuid},
                 }, JsonFolder.Json.Path));
+                selectedUser.AddSession(new SessionModel(DateTime.Now.ToString(CultureInfo.InvariantCulture), currentSessionUuid));
             }, () =>
             {
           }, 1000);
         }
         private void ApplySliderValue()
         {
+            if (selectedUser == null)
+            {
+                return;
+            }
             Logger.LogMessage(LogImportance.Information, sliderValue.ToString());
             Client client = App.GetClientInstance();
             var serial = Util.RandomString();
@@ -201,18 +207,23 @@ namespace DoctorApplication.MVVM.ViewModel
             {
                 {"_serial_" , serial},
                 {"_resistance_" , SliderValue.ToString()},
-                {"_user_", "TestUsername" }
+                {"_user_", selectedUser.UserName }
             }, JsonFolder.Json.Path));
         }
-        public void StopBikeRecording()
+        public void StopBikeRecording(string type)
         {
+            if (selectedUser == null)
+            {
+                return;
+            }
             Client client = App.GetClientInstance();
             var serial = Util.RandomString();
             client.SendEncryptedData(JsonFileReader.GetObjectAsString("StopBikeRecording", new Dictionary<string, string>()
             {
                 {"_serial_", serial},
                 {"_uuid_", currentSessionUuid},
-                {"_name_", selectedUser.UserName}
+                {"_name_", selectedUser.UserName},
+                {"_stopType_", type}
             }, JsonFolder.Json.Path));
         }
 
@@ -282,7 +293,7 @@ namespace DoctorApplication.MVVM.ViewModel
                 //unchecked
                 Console.WriteLine("Unchecked");
                 ButtonText = "Start";
-                StopBikeRecording();
+                StopBikeRecording("normal");
 
             }
         }

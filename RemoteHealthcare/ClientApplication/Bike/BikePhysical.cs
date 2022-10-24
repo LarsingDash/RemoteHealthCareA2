@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Avans.TI.BLE;
-using ClientApplication.ServerConnection.Bike;
-using ClientApplication.ServerConnection.Bike.DataPages;
+using ClientApplication.Bike.DataPages;
 using Shared.Log;
 
 namespace ClientApplication.Bike
 {
-    public class BikePhysical : ServerConnection.Bike.Bike
+    public class BikePhysical : Bike
     {
         // Change this to the last 5 digits of the serial number of the bike.
         private string id = "24517";
@@ -46,6 +45,7 @@ namespace ClientApplication.Bike
             }
             else
             {
+                BikeId = $"Tacx Flux {id}";
                 SetResistanceAsync(1);
                 Thread.Sleep(10000);
                 SetResistanceAsync(1000);
@@ -147,6 +147,12 @@ namespace ClientApplication.Bike
             // string[] dataPointsStrings = mes.Split(' ');
             // int[] dataPoints = Array.ConvertAll(dataPointsStrings, s => int.Parse(s, System.Globalization.NumberStyles.HexNumber));
             // handler.ChangeData(DataType.HeartRate, Convert.ToInt32(dataPoints[1]));
+        }
+
+        public void Close()
+        {
+            bikeDevice.ble.CloseDevice();
+            heartRateDevice.ble.CloseDevice();
         }
     }
 

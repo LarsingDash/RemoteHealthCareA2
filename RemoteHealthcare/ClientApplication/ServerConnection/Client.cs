@@ -1,8 +1,11 @@
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading;
-using ClientApplication.ServerConnection.Bike;
+using ClientApplication.Bike;
 using ClientApplication.Util;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Shared;
 using Shared.Log;
 
@@ -17,7 +20,7 @@ public class Client : DefaultClientConnection
         Logger.LogMessage(LogImportance.Information, "Connection with Server started");
         commandHandler.Add("public-rsa-key", new RsaKey());
         
-        Init("127.0.0.1", 2460, (json, encrypted) =>
+        Init(Shared.ServerConnection.Hostname, Shared.ServerConnection.Port, (json, encrypted) =>
         {
             string extraText = encrypted ? "Encrypted " : "";
             if (commandHandler.ContainsKey(json["id"]!.ToObject<string>()!))
@@ -38,25 +41,54 @@ public class Client : DefaultClientConnection
             commandHandler.Add("encryptedMessage", new EncryptedMessage(Rsa));
             commandHandler.Add("forward-set-resistance", new SetResistance());
             commandHandler.Add("forward-chat-message", new ChatMessage());
+            commandHandler.Add("start-bike-recording", new StartBikeRecording());
             Thread.Sleep(500);
-            SendEncryptedData(JsonFileReader.GetObjectAsString("Login", new Dictionary<string, string>()
-            {
-                {"_type_", "Client"},
-                {"_username_", "TestUsername"},
-                {"_serial_", "TestSerial"},
-                {"_password_", "TestPassword"}
-            }, JsonFolder.ServerConnection.Path)); 
         }
 
         BikeHandler handler = App.GetBikeHandlerInstance();
         handler.Subscribe(DataType.Distance, value =>
         {
-            // SendEncryptedData();
+            SendValue("distance", Math.Round(value,2));
         });
+        handler.Subscribe(DataType.Speed, value =>
+        {
+            SendValue("speed", Math.Round(value,2));
+        });
+        handler.Subscribe(DataType.HeartRate, value =>
+        {
+            SendValue("heartrate", Math.Round(value,2));
+        });
+        
     }
 
     public void SetCurrentBikeRecording(string uuid)
     {
         currentBikeRecording = uuid;
+    }
+
+    public void SendValue(string type, double val)
+    {
+        if (currentBikeRecording.Length <= 3)
+            return;
+        var serial = Shared.Util.RandomString();
+        JObject ob = JsonFileReader.GetObject("ChangeData", new Dictionary<string, string>()
+        {
+            {"_uuid_", currentBikeRecording},
+            {"_serial_", serial}
+        }, JsonFolder.ServerConnection.Path);
+        JObject newData = new JObject();
+        newData.Add("time", DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture));
+        newData.Add("value", val.ToString());
+        JArray value = (JArray) ob["data"]![type]!;
+        value.Add(newData);
+        ob["data"]![type] = value;
+        SendEncryptedData(ob.ToString());
+        AddSerialCallback(serial, ob =>
+        {
+            if (!ob["data"]!["status"]!.ToObject<string>()!.Equals("ok"))
+            {
+                currentBikeRecording = "";
+            }
+        });
     }
 }

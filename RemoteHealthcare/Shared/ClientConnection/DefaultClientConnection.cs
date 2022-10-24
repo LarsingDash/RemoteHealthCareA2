@@ -82,7 +82,7 @@ public class DefaultClientConnection
 
     #region Sending and retrieving data
     private byte[] _totalBuffer = Array.Empty<byte>();
-    private readonly byte[] _buffer = new byte[1024];
+    private readonly byte[] _buffer = new byte[1024000000];
     public event EventHandler<JObject> OnMessage; 
     private string PublicKey;
 
@@ -100,6 +100,8 @@ public class DefaultClientConnection
     public void HandleMessage(JObject json, bool encrypted = false)
     {
         string extraText = encrypted ? "Encrypted " : "";
+        // Logger.LogMessage(LogImportance.Debug, "Received " + json["id"].ToObject<string>());
+        // Logger.LogMessage(LogImportance.DebugHighlight, json.ToString(Formatting.None));
         if (!json.ContainsKey("id"))
         {
             Logger.LogMessage(LogImportance.Warn, $"Got {extraText}message with no id from server: {LogColor.Gray}\n{json.ToString(Formatting.None)}");
@@ -159,7 +161,7 @@ public class DefaultClientConnection
                 break;
         }
 
-        stream.BeginRead(_buffer, 0, 1024, OnRead, null);
+        stream.BeginRead(_buffer, 0, 1024000000, OnRead, null);
     }
     
     /// <summary>

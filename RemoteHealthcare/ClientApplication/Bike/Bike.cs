@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace ClientApplication.ServerConnection.Bike;
+namespace ClientApplication.Bike;
 
 public abstract class Bike
 {
     public Dictionary<DataType, double> bikeData;
+
+    public string BikeId = "notFound";
     /* The constructor for the Bike class. */
     protected Bike()
     {

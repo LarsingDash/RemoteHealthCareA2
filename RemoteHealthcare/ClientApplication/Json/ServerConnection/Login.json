@@ -4,6 +4,7 @@
   "data": {
     "type": "Client",
     "username": "_username_",
-    "password": "_password_"
+    "password": "_password_",
+    "bikeId": "_bikeId_"
   }
 }

@@ -25,10 +25,12 @@
       <Content Include="Json\ClientMessages\ActiveClientsResponse.json" />
       <Content Include="Json\ClientMessages\AllClientsResponse.json" />
       <Content Include="Json\ClientMessages\ChatMessageResponse.json" />
+      <Content Include="Json\ClientMessages\EmergencyResponse.json" />
       <Content Include="Json\ClientMessages\ErrorResponse.json" />
       <Content Include="Json\ClientMessages\ForwardChatMessage.json" />
       <Content Include="Json\ClientMessages\ForwardSetResistance.json" />
       <Content Include="Json\ClientMessages\HistoricClientDataResponse.json" />
+      <Content Include="Json\ClientMessages\HistoricClientDataSessionResponse.json" />
       <Content Include="Json\ClientMessages\LoginResponse.json" />
       <Content Include="Json\ClientMessages\PublicRSAKey.json" />
       <Content Include="Json\ClientMessages\RandomMessage.json" />

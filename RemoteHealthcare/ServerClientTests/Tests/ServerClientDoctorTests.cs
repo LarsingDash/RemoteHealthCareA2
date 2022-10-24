@@ -100,6 +100,7 @@ public class ServerClientDoctorTests
         {
             {"_type_", "Client"},
             {"_username_", patientUserName},
+            {"_password_", "OnlyFolder"},
             {"_serial_", serial}
         }, JsonFolder.Json.Path));
         await patient.AddSerialCallbackTimeout(serial, ob =>
@@ -270,12 +271,14 @@ public class ServerClientDoctorTests
         }
         var serial = Util.RandomString();
 
-        patient.SendData(JsonFileReader.GetObjectAsString("StopBikeRecording", new Dictionary<string, string>()
+        doctor.SendData(JsonFileReader.GetObjectAsString("StopBikeRecording", new Dictionary<string, string>()
         {
             {"_serial_", serial},
-            {"_uuid_", uuid}
+            {"_uuid_", uuid},
+            {"_name_", patientUserName},
+            {"_stopType_", "normal"}
         }, JsonFolder.Json.Path));
-        await patient.AddSerialCallbackTimeout(serial, ob =>
+        await doctor.AddSerialCallbackTimeout(serial, ob =>
         {
             Assert.That(ob["data"]!["status"]!.ToObject<string>()!, Is.EqualTo("ok"), "Could not stop bike recording: " + ob["data"]!["error"]!.ToObject<string>()!);
         }, () =>

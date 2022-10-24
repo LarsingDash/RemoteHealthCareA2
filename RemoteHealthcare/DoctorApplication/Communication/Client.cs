@@ -40,6 +40,7 @@ public class Client : DefaultClientConnection
         
         commandHandler.Add("encryptedMessage", new EncryptedMessage(Rsa));
         commandHandler.Add("user-state-changed", new UserStateChange());
+        commandHandler.Add("update-values", new UpdateValues());
 
         Thread.Sleep(500);
     }

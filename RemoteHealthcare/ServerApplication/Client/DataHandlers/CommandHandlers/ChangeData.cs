@@ -1,6 +1,8 @@
+using System.Globalization;
 using Newtonsoft.Json.Linq;
 using ServerApplication.UtilData;
 using Shared;
+using Shared.Log;
 
 namespace ServerApplication.Client.DataHandlers.CommandHandlers;
 
@@ -43,9 +45,11 @@ public class ChangeData : CommandHandler
                 {
                     {"_uuid_", uuid},
                 }, JsonFolder.ClientMessages.Path);
-                CheckValueInData(ob, message, "distance");
-                CheckValueInData(ob, message, "speed");
-                CheckValueInData(ob, message, "heartrate");
+                DateTime startTime = DateTime.ParseExact(file["start-time"]!.ToObject<string>()!, "yyyy-MM-dd HH:mm:ss.fff",
+                    CultureInfo.InvariantCulture);
+                CheckValueInData(ob, message, "distance", startTime);
+                CheckValueInData(ob, message, "speed", startTime);
+                CheckValueInData(ob, message, "heartrate", startTime);
                 foreach (var clientData in server.SubscribedSessions[uuid])
                 {
                     clientData.SendEncryptedData(message.ToString());
@@ -68,16 +72,29 @@ public class ChangeData : CommandHandler
     /// <summary>
     /// If the value exists in the object, merge the arrays and add it to the file
     /// </summary>
-    /// <param name="JObject">The object that is being checked for the value</param>
-    /// <param name="JObject">The object that is being checked for the value</param>
+    /// <param name="ob">The object that is being checked for the value</param>
+    /// <param name="file">The object that is being checked for the value</param>
     /// <param name="value">the name of the value you want to merge</param>
     private void CheckValue(JObject ob, JObject file, string value)
     {
+        DateTime startTime = DateTime.ParseExact(file["start-time"]!.ToObject<string>()!, "yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
         if (ob["data"]?[value]?.ToObject<JArray>() != null)
         {
-            JArray distance = (JArray) file[value]!;
-            distance.Merge((JArray) ob["data"]![value]!);
-            file[value] = distance;
+            JArray oldValues = (JArray) file[value]!;
+            JArray newData = new JArray();
+            foreach (JObject dataSet in ob["data"]![value]!.ToObject<JArray>()!)
+            {
+                DateTime time = DateTime.ParseExact(dataSet["time"]!.ToObject<string>()!, "yyyy-MM-dd HH:mm:ss.fff",
+                    CultureInfo.InvariantCulture);
+                string milis = (time - startTime).TotalMilliseconds.ToString();
+                JObject newOb = new JObject();
+                newOb.Add("time", milis);
+                newOb.Add("value", dataSet["value"].ToObject<string>());
+                newData.Add(newOb);
+
+            }
+            oldValues.Merge(newData);
+            file[value] = oldValues;
         }
     }
     
@@ -87,13 +104,25 @@ public class ChangeData : CommandHandler
     /// <param name="ob">The JObject that is being merged into the file.</param>
     /// <param name="file">The JObject that is being merged into the file.</param>
     /// <param name="value">The value to check for in the data object.</param>
-    private void CheckValueInData(JObject ob, JObject file, string value)
+    private void CheckValueInData(JObject ob, JObject file, string value,  DateTime startTime)
     {
         if (ob["data"]?[value]?.ToObject<JArray>() != null)
         {
-            JArray distance = (JArray) file["data"]![value]!;
-            distance.Merge((JArray) ob["data"]![value]!);
-            file["data"]![value] = distance;
+            JArray oldValues = (JArray) file["data"]![value]!;
+            JArray newData = new JArray();
+            foreach (JObject dataSet in ob["data"]![value]!.ToObject<JArray>()!)
+            {
+                DateTime time = DateTime.ParseExact(dataSet["time"]!.ToObject<string>()!, "yyyy-MM-dd HH:mm:ss.fff",
+                    CultureInfo.InvariantCulture);
+                string milis = (time - startTime).TotalMilliseconds.ToString();
+                JObject newOb = new JObject();
+                newOb.Add("time", milis);
+                newOb.Add("value", dataSet["value"].ToObject<string>());
+                newData.Add(newOb);
+
+            }
+            oldValues.Merge(newData);
+            file["data"]![value] = oldValues;
         }
     }
 }

@@ -185,6 +185,7 @@ namespace DoctorApplication.MVVM.ViewModel
                     {"_serial_", serial},
                     {"_uuid_", currentSessionUuid},
                 }, JsonFolder.Json.Path));
+                selectedUser.AddSession(new SessionModel(DateTime.Now.ToString(CultureInfo.InvariantCulture), currentSessionUuid));
             }, () =>
             {
           }, 1000);

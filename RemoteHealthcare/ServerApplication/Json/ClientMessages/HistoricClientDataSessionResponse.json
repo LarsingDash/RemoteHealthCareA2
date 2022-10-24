@@ -1,0 +1,10 @@
+{
+  "id": "historic-client-data-session",
+  "serial": "_serial_",
+  "data": {
+    "username": "_name_",
+    "session": "_session_",
+    "status": "_status_",
+    "error": "_error_"
+  }
+}

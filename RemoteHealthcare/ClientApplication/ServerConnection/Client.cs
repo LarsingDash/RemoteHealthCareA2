@@ -48,15 +48,15 @@ public class Client : DefaultClientConnection
         BikeHandler handler = App.GetBikeHandlerInstance();
         handler.Subscribe(DataType.Distance, value =>
         {
-            SendValue("distance", value);
+            SendValue("distance", Math.Round(value,2));
         });
         handler.Subscribe(DataType.Speed, value =>
         {
-            SendValue("speed", value);
+            SendValue("speed", Math.Round(value,2));
         });
         handler.Subscribe(DataType.HeartRate, value =>
         {
-            SendValue("heartrate", value);
+            SendValue("heartrate", Math.Round(value,2));
         });
         
     }
@@ -77,7 +77,7 @@ public class Client : DefaultClientConnection
             {"_serial_", serial}
         }, JsonFolder.ServerConnection.Path);
         JObject newData = new JObject();
-        newData.Add("time", DateTime.Now.ToString(CultureInfo.InvariantCulture));
+        newData.Add("time", DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture));
         newData.Add("value", val.ToString());
         JArray value = (JArray) ob["data"]![type]!;
         value.Add(newData);

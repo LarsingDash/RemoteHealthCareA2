@@ -138,17 +138,17 @@ namespace ClientSide.VR
         }
 
         //Prepare road and send route
-        public async Task PathGen()
+        private async Task PathGen()
         {
             try
             {
-                var poly = GenPoly(85, 86, 23, 25, new Random());
-                route.AddRange(poly);
+                var chosenPath = ChoosePath();
 
                 var polyBuilder = new StringBuilder();
-                for (int i = 0; i < poly.Length; i++)
+                foreach (var point in chosenPath)
                 {
-                    polyBuilder.Append(PointConverter(poly[i], poly[(i + 1) % poly.Length]));
+                    route.Add(new Vector2(point.X, point.Y));
+                    polyBuilder.Append(PointConverter(point));
                     polyBuilder.Append(",");
                 }
 
@@ -231,20 +231,30 @@ namespace ClientSide.VR
 
                 Logger.LogMessage(LogImportance.Debug, $"Treesid: {treesId}");
                 //Subdivide the route to get more sub-points
-                var treesList = new List<Vector2>(route);
+                var treesList = new List<Vector2>();
                 var fullRoute = new List<Vector2>(route);
-                for (var subdivisionFactor = 0; subdivisionFactor < 3; subdivisionFactor++)
-                {
-                    for (var i = 0; i < route.Count; i++)
-                    {
-                        var currentPoint = route[i];
-                        var nextPoint = route[(i + 1) % route.Count];
 
-                        var difference = currentPoint - nextPoint;
-                        var subPoint = currentPoint + difference * 0.5f;
-                        fullRoute.Add(subPoint);
+                for (var subdivisionFactor = 0; subdivisionFactor < 4; subdivisionFactor++)
+                {
+                    var currentList = new List<Vector2>(fullRoute);
+
+                    for (var i = 0; i < fullRoute.Count; i++)
+                    {
+                        var currentPoint = fullRoute[i];
+                        var nextPoint = fullRoute[(i + 1) % fullRoute.Count];
+
+                        var subPoint = (currentPoint + nextPoint) / 2;
+                        currentList.Insert(fullRoute.IndexOf(currentPoint) + 1 + i, subPoint);
+                    }
+
+                    fullRoute = currentList;
+                    foreach (var point in fullRoute)
+                    {
+                        Console.WriteLine(point);
                     }
                 }
+
+                Logger.PrintLevel = LogLevel.Off;
 
                 //Start decorationGen
                 const int maxAmountOfObjects = 5000;
@@ -326,69 +336,42 @@ namespace ClientSide.VR
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.StackTrace);
+                Console.WriteLine(e);
             }
         }
 
-        private Vector2[] GenPoly(double RadiusMin, double RadiusMax, int minPoints, int maxPoints, Random random)
+        private List<Vector4> ChoosePath()
         {
-            //Choose the amount of points
-            var amountOfPoints = random.Next(minPoints, maxPoints);
-            var points = new Vector2[amountOfPoints];
+            var random = new Random();
 
-            //Determine the angle between the points
-            var angle = (float)(Math.PI * 2) / amountOfPoints;
-            for (var i = 0; i < amountOfPoints; i++)
+            // var chosenPathID = random.Next(0, 1);
+            var chosenPathID = 0;
+            List<Vector4> chosenPath;
+                
+            switch (chosenPathID)
             {
-                //Generate each point using some variety between each points
-                var RadiusUse = (float)(random.NextDouble() / 10 * (RadiusMax - RadiusMin) + RadiusMin);
-                var currentAngle = angle * i;
-                var currentPoint = new Vector2(
-                    (int)(Math.Sin(currentAngle) * RadiusUse),
-                    (int)(Math.Cos(currentAngle) * RadiusUse));
-
-                points[i] = currentPoint;
+                default:
+                case 0:
+                    chosenPath = new List<Vector4>
+                    {
+                        new Vector4(0,0,5,-5),
+                        new Vector4(50,0,5,5),
+                        new Vector4(50,50,-5,5),
+                        new Vector4(0,50,-5,-5)
+                    };
+                    break;
             }
 
-            return points;
+            return chosenPath;
         }
 
-        private string PointConverter(Vector2 point, Vector2 nextPoint)
+        private string PointConverter(Vector4 point)
         {
             var builder = new StringBuilder();
             
             builder.Append("{");
             builder.Append($"\"pos\": [{point.X}, 0, {point.Y}],");
-
-            // string dir;
-            // var horNegative = nextPoint.X < point.X;
-            // var verNegative = nextPoint.Y < point.Y;
-            //
-            // var scaleRaw = Math.Sqrt(Math.Pow(point.X - nextPoint.X, 2) + Math.Pow(point.Y - nextPoint.Y, 2));
-            // var scaleString = scaleRaw.ToString(CultureInfo.InvariantCulture);
-            // var scale = scaleString.Substring(0, scaleString.IndexOf('.') + 2);
-            //
-            // switch (horNegative)
-            // {
-            //     default:
-            //     case true when verNegative:
-            //         dir = $"-{scale}, 0, -{scale}";
-            //         break;
-            //     case false when verNegative:
-            //         dir = $"{scale}, 0, -{scale}";
-            //         break;
-            //     case false when !verNegative:
-            //         dir = $"{scale}, 0, {scale}";
-            //         break;
-            //     case true when !verNegative:
-            //         dir = $"-{scale}, 0, {scale}";
-            //         break;
-            // }
-
-            // builder.Append($"\"dir\": [{dir}]");
-
-            // builder.Append($"\"dir\": [{nextPoint.X - point.X}, 0, {nextPoint.Y - point.Y}]");
-            builder.Append($"\"dir\": [0, 0, 0]");
+            builder.Append($"\"dir\": [{point.Z}, 0, {point.W}]");
             builder.Append("}");
 
             return builder.ToString();

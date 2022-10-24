@@ -12,6 +12,7 @@ using System.Windows;
 using LiveCharts.Wpf;
 using LiveCharts;
 using System.DirectoryServices;
+using System.Globalization;
 using ClientApplication.ServerConnection;
 using ClientApplication.ServerConnection.Communication;
 using DoctorApplication.Communication;
@@ -174,6 +175,7 @@ namespace DoctorApplication.MVVM.ViewModel
             {
                 {"_serial_", serial},
                 {"_name_", selectedUser.UserName},
+                {"_session_", DateTime.Now.ToString(CultureInfo.InvariantCulture)}
             }, JsonFolder.Json.Path));
             await client.AddSerialCallbackTimeout(serial, ob =>
             {

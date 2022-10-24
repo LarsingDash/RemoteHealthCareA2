@@ -47,15 +47,23 @@ namespace ClientSide.VR
 
                 //Determines sensitivity of the terrain height. Higher values equal to higher height difference
                 const float terrainSensitivity = 7.5f;
-                // const float edgeSensitivity = 3;
 
                 for (var y = 0; y < mapSize; y++)
                 {
                     for (var x = 0; x < mapSize; x++)
                     {
-                        // var xDistance = x / (float) mapSize;
-                        // var value = noiseGen.GetPerlin(x, y) * terrainSensitivity + (edgeSensitivity * xDistance) * 3;
-                        var value = noiseGen.GetPerlin(x, y) * terrainSensitivity;
+                        const float edgeMargin = mapSize / 15f;
+                        var xEdgeOffset = 0f;
+                        if (x < edgeMargin)
+                        {
+                            xEdgeOffset = edgeMargin - x;
+                        }
+                        else if (x - (mapSize - edgeMargin) > 0)
+                        {
+                            xEdgeOffset = x - (mapSize - edgeMargin);
+                        }
+
+                        var value = noiseGen.GetPerlin(x, y) * terrainSensitivity + (float)(Math.Pow(xEdgeOffset, 2) / (edgeMargin * 2));
 
                         heights[x, y] = value;
                         heightMap.Append(

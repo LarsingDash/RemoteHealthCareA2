@@ -52,7 +52,8 @@ namespace ClientSide.VR
                 {
                     for (var x = 0; x < mapSize; x++)
                     {
-                        const float edgeMargin = mapSize / 15f;
+                        const float edgeMargin = mapSize / 10f;
+
                         var xEdgeOffset = 0f;
                         if (x < edgeMargin)
                         {
@@ -62,8 +63,20 @@ namespace ClientSide.VR
                         {
                             xEdgeOffset = x - (mapSize - edgeMargin);
                         }
+                        
+                        var yEdgeOffset = 0f;
+                        if (y < edgeMargin)
+                        {
+                            yEdgeOffset = edgeMargin - y;
+                        }
+                        else if (y - (mapSize - edgeMargin) > 0)
+                        {
+                            yEdgeOffset = y - (mapSize - edgeMargin);
+                        }
 
-                        var value = noiseGen.GetPerlin(x, y) * terrainSensitivity + (float)(Math.Pow(xEdgeOffset, 2) / (edgeMargin * 2));
+                        var value = noiseGen.GetPerlin(x, y) * terrainSensitivity + 
+                                    (float)(Math.Pow(xEdgeOffset, 2) / (edgeMargin * 2)) +
+                                    (float)(Math.Pow(yEdgeOffset, 2) / (edgeMargin * 2));
 
                         heights[x, y] = value;
                         heightMap.Append(

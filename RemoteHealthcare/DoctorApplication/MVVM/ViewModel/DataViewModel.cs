@@ -199,7 +199,7 @@ namespace DoctorApplication.MVVM.ViewModel
             {
                 {"_serial_" , serial},
                 {"_resistance_" , SliderValue.ToString()},
-                {"_user_", "TestUsername" }
+                {"_user_", selectedUser.UserName }
             }, JsonFolder.Json.Path));
         }
         public void StopBikeRecording(string type)

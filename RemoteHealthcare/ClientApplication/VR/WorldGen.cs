@@ -26,7 +26,7 @@ namespace ClientSide.VR
         public string routeId;
 
         private const string treePath = "data/NetworkEngine/models/trees/pine/Pine_Low-poly_1.obj";
-        private readonly List<Vector2> route = new List<Vector2>();
+        public List<Vector2> route = new List<Vector2>();
 
         public WorldGen(VRClient vrClient, Tunnel tunnel)
         {
@@ -63,7 +63,7 @@ namespace ClientSide.VR
                         {
                             xEdgeOffset = x - (mapSize - edgeMargin);
                         }
-                        
+
                         var yEdgeOffset = 0f;
                         if (y < edgeMargin)
                         {
@@ -74,7 +74,7 @@ namespace ClientSide.VR
                             yEdgeOffset = y - (mapSize - edgeMargin);
                         }
 
-                        var value = noiseGen.GetPerlin(x, y) * terrainSensitivity + 
+                        var value = noiseGen.GetPerlin(x * 2, y * 2) * terrainSensitivity +
                                     (float)(Math.Pow(xEdgeOffset, 2) / (edgeMargin * 2)) +
                                     (float)(Math.Pow(yEdgeOffset, 2) / (edgeMargin * 2));
 
@@ -167,6 +167,7 @@ namespace ClientSide.VR
                     },
                     { "_serial_", serial }
                 });
+
                 routeId = "";
                 vrClient.BikeController.Setup();
                 vrClient.PanelController.Setup();
@@ -190,9 +191,6 @@ namespace ClientSide.VR
                             }, JsonFolder.Route.Path)
                     },
                 });
-
-
-                new Thread((o) => { GenerateDecoration(); }).Start();
             }
             catch (Exception e)
             {
@@ -200,7 +198,7 @@ namespace ClientSide.VR
             }
         }
 
-        private async Task GenerateDecoration()
+        public async Task GenerateDecoration()
         {
             try
             {
@@ -249,36 +247,38 @@ namespace ClientSide.VR
 
                     fullRoute = currentList;
                 }
-                
+
                 //Start decorationGen
                 const int maxAmountOfObjects = 5000;
                 const int maxFailedAttempts = 250;
                 var amountOfObjects = 0;
                 var failedAttempts = 0;
                 var random = new Random();
-                
+
                 //Keep attempting to spawn trees till the max amount of trees or max amount of fails have been reached
                 while (amountOfObjects < maxAmountOfObjects && failedAttempts < maxFailedAttempts)
                 {
                     var attemptFailed = false;
-                    var currentPoint = new Vector2(random.Next(0, mapSize * 2) - mapSize, random.Next(0, mapSize * 2) - mapSize);
+                    var currentPoint = new Vector2(random.Next(0, mapSize * 2) - mapSize,
+                        random.Next(0, mapSize * 2) - mapSize);
                     foreach (var comparingPoint in fullRoute)
                     {
                         if (Vector2.Distance(comparingPoint, currentPoint) < 10)
                         {
                             failedAttempts++;
                             attemptFailed = true;
-                            
+
                             break;
                         }
                     }
+
                     foreach (var comparingPoint in treesList)
                     {
                         if (Vector2.Distance(comparingPoint, currentPoint) < 3)
                         {
                             failedAttempts++;
                             attemptFailed = true;
-                            
+
                             break;
                         }
                     }
@@ -295,7 +295,6 @@ namespace ClientSide.VR
                         // ignored
                     }
 
-
                     tunnel.SendTunnelMessage(new Dictionary<string, string>()
                     {
                         {
@@ -308,25 +307,15 @@ namespace ClientSide.VR
                                         "\"_position_\"",
                                         $"{currentPoint.X + mapSize / 2 + ".0"} , {currentHeight.ToString(CultureInfo.InvariantCulture)}, {currentPoint.Y + mapSize / 2 + ".0"}"
                                     },
-                                    {"\"_scale_\"", (random.NextDouble() + 4).ToString(CultureInfo.InvariantCulture)},
+                                    { "\"_scale_\"", (random.NextDouble() + 4).ToString(CultureInfo.InvariantCulture) },
                                     { "_filename_", treePath }
                                 }, JsonFolder.TunnelMessages.Path)
                         },
-                    });
-                    
+                    }, true);
+
                     treesList.Add(currentPoint);
                     amountOfObjects++;
                 }
-
-                //Resume the simulation
-                tunnel.SendTunnelMessage(new Dictionary<string, string>()
-                {
-                    {
-                        "\"_data_\"",
-                        JsonFileReader.GetObjectAsString("Play", new Dictionary<string, string>(),
-                            JsonFolder.TunnelMessages.Path)
-                    },
-                });
             }
             catch (Exception e)
             {
@@ -338,11 +327,11 @@ namespace ClientSide.VR
         {
             var random = new Random();
 
-            // var chosenPathID = random.Next(0, 1);
-            var chosenPathID = 1;
+            // var chosenPathID = random.Next(0, 2);
+            var chosenPathID = 2;
             List<Vector4> chosenPath;
             float scale;
-                
+
             switch (chosenPathID)
             {
                 default:
@@ -350,25 +339,34 @@ namespace ClientSide.VR
                     scale = 4;
                     chosenPath = new List<Vector4>
                     {
-                        new Vector4(4,0,1,1),
-                        new Vector4(3,2,-1,1),
-                        new Vector4(-1,1,-1,1),
-                        new Vector4(-3,1,-1,-1),
-                        new Vector4(-2,-2,1,-1),
-                        new Vector4(2,-2,1,1)
+                        new Vector4(3, 2, -1, 1),
+                        new Vector4(-1, 1, -1, -1),
+                        new Vector4(-3, 1, -1, -1),
+                        new Vector4(-2, -2, 1, 1),
+                        new Vector4(2, -2, 2, 2)
                     };
                     break;
-                
+
                 case 1:
                     scale = 5;
                     chosenPath = new List<Vector4>
                     {
-                        new Vector4(3,  0,  0.5f,  -0.5f),
-                        new Vector4(3,  -3, -1,  -1),
-                        new Vector4(-4, -3, -1,  1),
-                        new Vector4(-4, 4,  1,  1),
-                        new Vector4(1,  4,  1,  -1),
-                        new Vector4(1,  0,  0.5f,  -0.5f),
+                        new Vector4(3, 0, 0.5f, -0.5f),
+                        new Vector4(3, -3, -1, -1),
+                        new Vector4(-4, -3, -1, 1),
+                        new Vector4(-4, 4, 1, 1),
+                        new Vector4(1, 4, 1, -1),
+                        new Vector4(1, 0, 0.5f, -0.5f),
+                    };
+                    break;
+                
+                case 2:
+                    scale = 2;
+                    chosenPath = new List<Vector4>
+                    {
+                        new Vector4(0, -2, -1, 0),
+                        new Vector4(-2, 2, 1, -1),
+                        new Vector4(2, 2, 1, 1),
                     };
                     break;
             }
@@ -389,10 +387,12 @@ namespace ClientSide.VR
         private string PointConverter(Vector4 point)
         {
             var builder = new StringBuilder();
-            
+
             builder.Append("{");
-            builder.Append($"\"pos\": [{point.X.ToString(CultureInfo.InvariantCulture)}, 0, {point.Y.ToString(CultureInfo.InvariantCulture)}],");
-            builder.Append($"\"dir\": [{point.Z.ToString(CultureInfo.InvariantCulture)}, 0, {point.W.ToString(CultureInfo.InvariantCulture)}]");
+            builder.Append(
+                $"\"pos\": [{point.X.ToString(CultureInfo.InvariantCulture)}, 0, {point.Y.ToString(CultureInfo.InvariantCulture)}],");
+            builder.Append(
+                $"\"dir\": [{point.Z.ToString(CultureInfo.InvariantCulture)}, 0, {point.W.ToString(CultureInfo.InvariantCulture)}]");
             builder.Append("}");
 
             return builder.ToString();

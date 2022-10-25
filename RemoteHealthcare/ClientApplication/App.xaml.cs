@@ -26,6 +26,7 @@ namespace ClientApplication
 
 		private void ApplicationStart(object sender, StartupEventArgs e)
 		{
+			Logger.PrintLevel = LogLevel.Warning;
 			this.Dispatcher.UnhandledException += OnDispatcherUnhandledException;
 			Logger.LogMessage(LogImportance.Information, "ClientApplication Started");
 			new Thread(async start =>

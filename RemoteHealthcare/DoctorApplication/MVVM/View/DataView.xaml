@@ -294,7 +294,7 @@
                     x:Name="AverageSpeedText" />
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding SelectedUser.LastSession.TimeElapsed}"
+                    Content="{Binding LastSession.TimeElapsed}"
                     Grid.Column="1"
                     Grid.Row="4"
                     HorizontalAlignment="Left"

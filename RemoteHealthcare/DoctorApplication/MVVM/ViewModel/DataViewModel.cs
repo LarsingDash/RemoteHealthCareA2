@@ -123,6 +123,8 @@ namespace DoctorApplication.MVVM.ViewModel
             {
                 selectedUser = value;
                 OnPropertyChanged("SelectedUser");
+                LastSession.Init();
+                Console.WriteLine("Selected User changed");
             }
         }
 
@@ -144,7 +146,7 @@ namespace DoctorApplication.MVVM.ViewModel
             set
             {
                 selectedSession = value;
-                OnPropertyChanged("LastSession");
+                OnPropertyChanged();
             }
         }
 
@@ -159,6 +161,7 @@ namespace DoctorApplication.MVVM.ViewModel
             this.Users = users;
             this.ChatTypeState = false;
 
+            SelectedSession = new SessionModel("0000");
             //initializing sendcommand 
             SendCommand = new RelayCommand(SendMessage);
             GetUserCommand = new RelayCommand(GetUser);
@@ -211,6 +214,7 @@ namespace DoctorApplication.MVVM.ViewModel
             }, () =>
             {
           }, 1000);
+            LastSession.Init();
         }
         private void ApplySliderValue()
         {

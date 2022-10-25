@@ -50,34 +50,37 @@
                             <Label Content="Bike info" Style="{StaticResource HeaderStyle1}" Foreground="White" FontWeight="Bold"/>
                             <StackPanel Orientation="Horizontal">
                                 <Label Content="Current speed: " Style="{StaticResource LabelStyleMain}" FontWeight="Bold"/>
-                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding LastSpeed}"/>
+                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding LastSession.CurrentSpeed}"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <Label Content="Average Speed: " Style="{StaticResource LabelStyleMain}" FontWeight="Bold"/>
-                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding AverageSpeed}"/>
+                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding LastSession.AverageSpeed}"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <Label Content="Top Speed: " Style="{StaticResource LabelStyleMain}" FontWeight="Bold"/>
-                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding TopSpeed}"/>
+                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding LastSession.TopSpeed}"/>
                             </StackPanel>
-
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Distance Travelled: " Style="{StaticResource LabelStyleMain}" FontWeight="Bold"/>
+                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding LastSession.CurrentDistance}"/>
+                            </StackPanel>
                             <!--Heart info-->
                             <Label Content="Heart info" Style="{StaticResource HeaderStyle1}" Foreground="White" FontWeight="Bold"/>
                             <StackPanel Orientation="Horizontal">
                                 <Label Content="Current heartrate: " Style="{StaticResource LabelStyleMain}" FontWeight="Bold"/>
-                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding LastHeartRate}"/>
+                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding LastSession.CurrentRate}"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <Label Content="Average heartrate: " Style="{StaticResource LabelStyleMain}" FontWeight="Bold"/>
-                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding AverageRate}"/>
+                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding LastSession.AverageRate}"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <Label Content="Peak heartrate: " Style="{StaticResource LabelStyleMain}" FontWeight="Bold"/>
-                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding HighestRate}"/>
+                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding LastSession.HighestRate}"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <Label Content="Lowest heartrate: " Style="{StaticResource LabelStyleMain}" FontWeight="Bold"/>
-                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding LowestRate}"/>
+                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding LastSession.LowestRate}"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>

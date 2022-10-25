@@ -150,6 +150,15 @@ namespace DoctorApplication.MVVM.Model
             HighestRate = Math.Round(heartValues.Max());
             LowestRate = Math.Round(heartValues.Min());
         }
+
+        public void Init()
+        {
+            AverageSpeed = 0;
+            TopSpeed = 0;
+            AverageRate = 0;
+            HighestRate = 0;
+            LowestRate = 0;
+        }
         //statistic data heartmonitor
 
         private double lowestRate;
@@ -157,20 +166,13 @@ namespace DoctorApplication.MVVM.Model
         {
             get
             {
-                    double lowest = 9999;
-                    foreach (double value in HeartRate)
-                    {
-                        if (value < lowest)
-                        {
-                            lowest = value;
-                        }
-                    }
-                    return lowest;
+                if (lowestRate != 0) { return lowestRate; }
+                else return 0;
             }
             set
             {
                 lowestRate = value;
-                OnPropertyChanged(nameof(lowestRate));
+                OnPropertyChanged(nameof(LowestRate));
             }
         }
 
@@ -180,17 +182,13 @@ namespace DoctorApplication.MVVM.Model
         {
             get
             {
-                    double total = 0;
-                    foreach (double value in HeartRate)
-                    {
-                        total += value;
-                    }
-                    return Math.Round((total / HeartRate.Count), 1);
+                if (averageRate != 0) { return averageRate; }
+                else return 0;
             }
             set
             {
                 averageRate = value;
-                OnPropertyChanged(nameof(averageRate));
+                OnPropertyChanged(nameof(AverageRate));
             }
         }
         private double highestRate;
@@ -293,6 +291,24 @@ namespace DoctorApplication.MVVM.Model
             distance = new List<double>();
             speed = new List<double>();
             heartRate = new List<double>();
+
+            CurrentRate = 0;
+            CurrentSpeed = 0;
+            AverageRate = 0;
+            AverageSpeed = 0;
+            LowestRate = 0;
+            CurrentDistance = 0;
+            HighestRate = 0;
+        }
+        public SessionModel()
+        {
+            CurrentRate = 0;
+            CurrentSpeed = 0;
+            AverageRate = 0;
+            AverageSpeed = 0;
+            LowestRate = 0;
+            CurrentDistance = 0;
+            HighestRate = 0;
         }
 
         public bool realTimeData = false;

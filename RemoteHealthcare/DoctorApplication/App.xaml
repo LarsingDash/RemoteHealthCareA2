@@ -13,7 +13,7 @@
                 <ResourceDictionary Source="Styles/ButtonStyles.xaml" />
                 <ResourceDictionary Source="Styles/UIResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <DataTemplate DataType="{x:Type viewModel:DataViewModel}" x:Key="DataViewModel">
+            <!--<DataTemplate DataType="{x:Type viewModel:DataViewModel}" x:Key="DataViewModel">
                 <view:DataView/>
             </DataTemplate>
             <DataTemplate DataType="{x:Type viewModel:MultipleViewModel}" x:Key="MultipleViewModel">
@@ -21,7 +21,7 @@
             </DataTemplate>
             <DataTemplate DataType="{x:Type viewModel:HistoryViewModel}" x:Key="HistoryViewModel">
                 <view:HistoryView/>
-            </DataTemplate>
+            </DataTemplate>-->
             <!--<DataTemplate DataType="{x:Type viewModel:DataViewModel}">
                 <view:DataView/>
             </DataTemplate>-->

@@ -179,7 +179,18 @@ namespace DoctorApplication.MVVM.Model
         public double lastSpeed;
         public double LastSpeed
         {
-            get { return speed.LastOrDefault(); }
+
+            get {
+                if (lastSpeed == null)
+                {
+                    return 99;
+                }
+                return speed.LastOrDefault(); }
+            set
+            {
+                lastSpeed = value;
+                OnPropertyChanged(nameof(LastSpeed));
+            }
         }
         public double lastHeartRate;
         public double LastHeartRate

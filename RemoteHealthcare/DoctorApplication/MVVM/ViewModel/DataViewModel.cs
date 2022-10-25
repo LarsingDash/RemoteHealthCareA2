@@ -133,7 +133,7 @@ namespace DoctorApplication.MVVM.ViewModel
             set
             {
                 lastSession = value;
-                OnPropertyChanged("LastSession");
+                OnPropertyChanged();
             }
         }
 
@@ -176,7 +176,7 @@ namespace DoctorApplication.MVVM.ViewModel
         private void DebugFunction(object obj)
         {
             Console.WriteLine(SelectedUser.UserName + " " + SelectedUser.Sessions.Count + " = " + LastSession.LastSpeed) ;
-
+            OnPropertyChanged("LastSession");
             //Console.WriteLine(SelectedUser.UserName + " " + SelectedUser.Sessions.Count + " ' " + SelectedUser.LastSession.LastSpeed + " | " + string.Join(",", SelectedUser.LastSession.Speed.ToArray())) ;
         }
         private void EmergencyFunction(object obj)

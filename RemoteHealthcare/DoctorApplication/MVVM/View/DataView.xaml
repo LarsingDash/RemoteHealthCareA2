@@ -209,7 +209,7 @@
 
                 </Grid>
             </Grid>
-            <Grid Grid.Row="1">
+            <Grid  Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*" />
                     <ColumnDefinition Width="1*" />
@@ -273,21 +273,21 @@
                     />
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding LastSession.LastSpeed}"
+                    Content="{Binding SelectedUser.LastSession.LastSpeed, NotifyOnSourceUpdated=True}"
                     Grid.Column="1"
                     Grid.Row="1"
                     HorizontalAlignment="Left"
                     x:Name="CurrentSpeedText" />
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding SelectedUser.TopSpeed}"
+                    Content="{Binding LastSession.TopSpeed}"
                     Grid.Column="1"
                     Grid.Row="2"
                     HorizontalAlignment="Left"
                     x:Name="TopSpeedText" />
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding SelectedUser.AverageSpeed}"
+                    Content="{Binding LastSession.AverageSpeed}"
                     Grid.Column="1"
                     Grid.Row="3"
                     HorizontalAlignment="Left"

@@ -94,6 +94,7 @@ namespace DoctorApplication.MVVM.ViewModel
         public RelayCommand GetUserCommand { get; set; }
         public RelayCommand StartRecordingCommand { get; set; }
         public RelayCommand EmergencyPressedCommand { get; set; }
+        public RelayCommand DebugCommand { get; set; }
         public RelayCommand ChatTypeCommand { get; set; }
 
         //Data collections
@@ -121,7 +122,18 @@ namespace DoctorApplication.MVVM.ViewModel
             set
             {
                 selectedUser = value;
-                OnPropertyChanged();
+                OnPropertyChanged("SelectedUser");
+            }
+        }
+
+        private SessionModel lastSession;
+        public SessionModel LastSession
+        {
+            get { return SelectedUser.LastSession; }
+            set
+            {
+                lastSession = value;
+                OnPropertyChanged("LastSession");
             }
         }
 
@@ -132,7 +144,7 @@ namespace DoctorApplication.MVVM.ViewModel
             set
             {
                 selectedSession = value;
-                OnPropertyChanged();
+                OnPropertyChanged("LastSession");
             }
         }
 
@@ -153,6 +165,7 @@ namespace DoctorApplication.MVVM.ViewModel
             StartRecordingCommand = new RelayCommand(StartRecordingToggled);
             ChatTypeCommand = new RelayCommand(ChatTypeToggled);
             EmergencyPressedCommand = new RelayCommand(EmergencyFunction);
+            DebugCommand = new RelayCommand(DebugFunction);
 
             //predetermined text in button
             buttonText = "Start";
@@ -160,7 +173,12 @@ namespace DoctorApplication.MVVM.ViewModel
 
             dataHandler = new ConnectionHandler();
         }
+        private void DebugFunction(object obj)
+        {
+            Console.WriteLine(SelectedUser.UserName + " " + SelectedUser.Sessions.Count + " = " + LastSession.LastSpeed) ;
 
+            //Console.WriteLine(SelectedUser.UserName + " " + SelectedUser.Sessions.Count + " ' " + SelectedUser.LastSession.LastSpeed + " | " + string.Join(",", SelectedUser.LastSession.Speed.ToArray())) ;
+        }
         private void EmergencyFunction(object obj)
         {
             StopBikeRecording("emergencyStop");

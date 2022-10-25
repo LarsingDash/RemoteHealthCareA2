@@ -273,7 +273,7 @@
                     />
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding SelectedUser.LastSpeed}"
+                    Content="{Binding LastSession.LastSpeed}"
                     Grid.Column="1"
                     Grid.Row="1"
                     HorizontalAlignment="Left"
@@ -306,6 +306,20 @@
                     Grid.Row="5"
                     HorizontalAlignment="Left"
                     x:Name="DistanceTravelledText" />
+                <Button
+                        Style="{StaticResource ButtonGradientStyle}"
+                        Command="{Binding DebugCommand}"
+                        CommandParameter="{Binding Text, ElementName=ChatTextBox}"
+                        Content="Debug"
+                        FontSize="8"
+                        Visibility="Visible"
+                        Grid.Column="1" Grid.Row="7" BorderBrush="{x:Null}" >
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="5" />
+                        </Style>
+                    </Button.Resources>
+                </Button>
 
             </Grid>
         </Grid>

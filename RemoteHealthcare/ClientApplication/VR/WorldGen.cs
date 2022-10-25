@@ -25,7 +25,7 @@ namespace ClientSide.VR
         private readonly float[,] heights = new float[mapSize, mapSize];
         public string routeId;
 
-        private const string treePath = "data/NetworkEngine/models/trees/Fantasy/tree6.obj";
+        private const string treePath = "data/NetworkEngine/models/trees/pine/Pine_Low-poly_1.obj";
         private readonly List<Vector2> route = new List<Vector2>();
 
         public WorldGen(VRClient vrClient, Tunnel tunnel)
@@ -234,7 +234,7 @@ namespace ClientSide.VR
                 var treesList = new List<Vector2>();
                 var fullRoute = new List<Vector2>(route);
 
-                for (var subdivisionFactor = 0; subdivisionFactor < 4; subdivisionFactor++)
+                for (var subdivisionFactor = 0; subdivisionFactor < 7; subdivisionFactor++)
                 {
                     var currentList = new List<Vector2>(fullRoute);
 
@@ -248,11 +248,8 @@ namespace ClientSide.VR
                     }
 
                     fullRoute = currentList;
-                    // foreach (var point in fullRoute)
-                    // {
-                    //     Console.WriteLine(point);
-                    // }
                 }
+                
                 //Start decorationGen
                 const int maxAmountOfObjects = 5000;
                 const int maxFailedAttempts = 250;
@@ -342,24 +339,51 @@ namespace ClientSide.VR
             var random = new Random();
 
             // var chosenPathID = random.Next(0, 1);
-            var chosenPathID = 0;
+            var chosenPathID = 1;
             List<Vector4> chosenPath;
+            float scale;
                 
             switch (chosenPathID)
             {
                 default:
                 case 0:
+                    scale = 4;
                     chosenPath = new List<Vector4>
                     {
-                        new Vector4(0,0,5,-5),
-                        new Vector4(50,0,5,5),
-                        new Vector4(50,50,-5,5),
-                        new Vector4(0,50,-5,-5)
+                        new Vector4(4,0,1,1),
+                        new Vector4(3,2,-1,1),
+                        new Vector4(-1,1,-1,1),
+                        new Vector4(-3,1,-1,-1),
+                        new Vector4(-2,-2,1,-1),
+                        new Vector4(2,-2,1,1)
+                    };
+                    break;
+                
+                case 1:
+                    scale = 5;
+                    chosenPath = new List<Vector4>
+                    {
+                        new Vector4(3,  0,  0.5f,  -0.5f),
+                        new Vector4(3,  -3, -1,  -1),
+                        new Vector4(-4, -3, -1,  1),
+                        new Vector4(-4, 4,  1,  1),
+                        new Vector4(1,  4,  1,  -1),
+                        new Vector4(1,  0,  0.5f,  -0.5f),
                     };
                     break;
             }
 
-            return chosenPath;
+            var finalPath = new List<Vector4>();
+            const float curveFactor = 5;
+            foreach (var point in chosenPath)
+            {
+                var currentPoint = point;
+                currentPoint.Z *= curveFactor;
+                currentPoint.W *= curveFactor;
+                finalPath.Add(currentPoint / scale * (mapSize / 2 - 45));
+            }
+
+            return finalPath;
         }
 
         private string PointConverter(Vector4 point)
@@ -367,8 +391,8 @@ namespace ClientSide.VR
             var builder = new StringBuilder();
             
             builder.Append("{");
-            builder.Append($"\"pos\": [{point.X}, 0, {point.Y}],");
-            builder.Append($"\"dir\": [{point.Z}, 0, {point.W}]");
+            builder.Append($"\"pos\": [{point.X.ToString(CultureInfo.InvariantCulture)}, 0, {point.Y.ToString(CultureInfo.InvariantCulture)}],");
+            builder.Append($"\"dir\": [{point.Z.ToString(CultureInfo.InvariantCulture)}, 0, {point.W.ToString(CultureInfo.InvariantCulture)}]");
             builder.Append("}");
 
             return builder.ToString();

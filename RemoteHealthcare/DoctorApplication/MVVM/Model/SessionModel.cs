@@ -1,10 +1,13 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Linq;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization.Metadata;
 using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
 
@@ -67,6 +70,39 @@ namespace DoctorApplication.MVVM.Model
                 OnPropertyChanged(nameof(HeartRate));
             }
         }
+
+        private double currentDistance;
+        public double CurrentDistance
+        {
+            get { return currentDistance; }
+            set
+            {
+                currentDistance = value;
+                OnPropertyChanged(nameof(CurrentDistance));
+            }
+        }
+
+        private double currentSpeed;
+        public double CurrentSpeed
+        {
+            get { return currentSpeed; }
+            set
+            {
+                currentSpeed = value;
+                OnPropertyChanged(nameof(CurrentSpeed));
+            }
+        }
+        private double currentRate;
+        public double CurrentRate
+        {
+            get { return currentRate; }
+            set
+            {
+                currentRate = value;
+                OnPropertyChanged(nameof(CurrentRate));
+            }
+        }
+
         private double topSpeed;
         public double TopSpeed
         {
@@ -92,20 +128,23 @@ namespace DoctorApplication.MVVM.Model
         private double averageSpeed;
         public double AverageSpeed
         {
-            get
-            {
-                    double total = 0;
-                    foreach (double value in Speed)
-                    {
-                        total += value;
-                    }
-                    return Math.Round((total / Speed.Count), 1);
-            }
+            get { return averageSpeed; }
             set
             {
                 averageSpeed = value;
-                OnPropertyChanged(nameof(averageSpeed));
+                OnPropertyChanged(nameof(AverageSpeed));
             }
+        }
+        public void UpdateSpeedValues(List<double> speedValues)
+        {
+            AverageSpeed = Math.Round(speedValues.Average());
+            TopSpeed = Math.Round(speedValues.Max());
+        }
+        public void UpdateHeartValues(List<double> heartValues)
+        {
+            AverageRate = Math.Round(heartValues.Average());
+            HighestRate = Math.Round(heartValues.Max());
+            LowestRate = Math.Round(heartValues.Min());
         }
         //statistic data heartmonitor
 
@@ -214,6 +253,9 @@ namespace DoctorApplication.MVVM.Model
             {
                 this.distance.Add(double.Parse(key["value"]!.ToObject<string>()!));
             }
+            CurrentDistance = this.distance.LastOrDefault();
+            //TestLastSpeed = double.Parse(distance.LastOrDefault()!.ToObject<string>()!);
+
         }
 
         public void AddDataSpeed(JObject data)
@@ -224,6 +266,9 @@ namespace DoctorApplication.MVVM.Model
             {
                 this.speed.Add(double.Parse(key["value"]!.ToObject<string>()!));
             }
+            CurrentSpeed = this.speed.LastOrDefault();
+            UpdateSpeedValues(this.speed);
+
         }
 
         public void AddDataHeartRate(JObject data)
@@ -234,6 +279,8 @@ namespace DoctorApplication.MVVM.Model
             {
                 this.heartRate.Add(double.Parse(key["value"]!.ToObject<string>()!));
             }
+            CurrentRate = this.heartRate.LastOrDefault();
+            UpdateHeartValues(this.heartRate);
         }
         public SessionModel(string sessionName)
         {

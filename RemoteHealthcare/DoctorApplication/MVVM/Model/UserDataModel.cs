@@ -289,7 +289,8 @@ namespace DoctorApplication.MVVM.Model
                 // No Response from server
             }, 1000);
         }
-
+       
+        
         public void AddSession(SessionModel sessionModel)
         {
             sessions.Add(sessionModel);

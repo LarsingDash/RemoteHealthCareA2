@@ -273,7 +273,7 @@
                     />
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding SelectedUser.LastSession.LastSpeed, NotifyOnSourceUpdated=True}"
+                    Content="{Binding LastSession.CurrentSpeed}"
                     Grid.Column="1"
                     Grid.Row="1"
                     HorizontalAlignment="Left"
@@ -301,7 +301,7 @@
                     x:Name="TimeElapsedText" />
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding SelectedUser.LastDistance}"
+                    Content="{Binding LastSession.CurrentDistance}"
                     Grid.Column="1"
                     Grid.Row="5"
                     HorizontalAlignment="Left"
@@ -340,7 +340,7 @@
                     x:Name="HeartInformationHeader" />
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding SelectedUser.LastHeartRate}"
+                    Content="{Binding LastSession.CurrentRate}"
                     FontSize="48"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
@@ -400,7 +400,7 @@
                     x:Name="HeartPeakHeader" />
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding SelectedUser.LowestRate}"
+                    Content="{Binding LastSession.LowestRate}"
                     FontSize="16"
                     Grid.Column="0"
                     Grid.Row="1"
@@ -409,7 +409,7 @@
                     x:Name="HeartLowestText" />
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding SelectedUser.AverageRate}"
+                    Content="{Binding LastSession.AverageRate}"
                     FontSize="16"
                     Grid.Column="1"
                     Grid.Row="1"
@@ -418,7 +418,7 @@
                     x:Name="HeartAverageText" />
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding SelectedUser.HighestRate}"
+                    Content="{Binding LastSession.HighestRate}"
                     FontSize="16"
                     Grid.Column="2"
                     Grid.Row="1"

@@ -1,6 +1,8 @@
 using ClientApplication.ServerConnection.Communication.CommandHandlers;
 using DoctorApplication.MVVM.ViewModel;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Linq;
 
 namespace DoctorApplication.Communication.CommandHandlers;
 
@@ -18,11 +20,13 @@ public class UpdateValues : ICommandHandler
                 if (session.realTimeData && session.sessionUuid == uuid)
                 {
                     session.AddDataDistance(ob["data"]!.ToObject<JObject>()!);
+                    //JArray speedJArray = (JArray)(ob["data"]!.ToObject<JObject>()!)["heartrate"];
+                    //session.TestLastSpeed = double.Parse(speedJArray.Last().ToObject<string>()!);
+                    //Console.WriteLine(double.Parse(speedJArray.Last().ToObject<string>()!));
                     session.AddDataSpeed(ob["data"]!.ToObject<JObject>()!);
                     session.AddDataHeartRate(ob["data"]!.ToObject<JObject>()!);
                 }
             }
         }
-        
     }
 }

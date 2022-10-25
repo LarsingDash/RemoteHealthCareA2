@@ -43,7 +43,8 @@ namespace DoctorApplication.MVVM.Model
         private List<double> distance;
         public List<double> Distance
         {
-            get { return distance; }
+            get {
+                return distance; }
             set
             {
                 distance = value;
@@ -74,7 +75,9 @@ namespace DoctorApplication.MVVM.Model
         private double currentDistance;
         public double CurrentDistance
         {
-            get { return currentDistance; }
+            get {if (currentDistance != 0) {return currentDistance;}
+                else return 0;
+            }
             set
             {
                 currentDistance = value;
@@ -85,7 +88,11 @@ namespace DoctorApplication.MVVM.Model
         private double currentSpeed;
         public double CurrentSpeed
         {
-            get { return currentSpeed; }
+            get
+            {
+                if (currentSpeed != 0) { return currentSpeed; }
+                else return 0;
+            }
             set
             {
                 currentSpeed = value;
@@ -95,7 +102,11 @@ namespace DoctorApplication.MVVM.Model
         private double currentRate;
         public double CurrentRate
         {
-            get { return currentRate; }
+            get
+            {
+                if (currentRate != 0) { return currentRate; }
+                else return 0;
+            }
             set
             {
                 currentRate = value;
@@ -108,20 +119,13 @@ namespace DoctorApplication.MVVM.Model
         {
             get
             {
-                    double highest = 0;
-                    foreach (double value in Speed)
-                    {
-                        if (value > highest)
-                        {
-                            highest = value;
-                        }
-                    }
-                    return highest;
+                if (topSpeed != 0) { return topSpeed; }
+                else return 0;
             }
             set
             {
                 topSpeed = value;
-                OnPropertyChanged(nameof(topSpeed));
+                OnPropertyChanged(nameof(TopSpeed));
             }
         }
 
@@ -137,8 +141,8 @@ namespace DoctorApplication.MVVM.Model
         }
         public void UpdateSpeedValues(List<double> speedValues)
         {
-            AverageSpeed = Math.Round(speedValues.Average());
-            TopSpeed = Math.Round(speedValues.Max());
+            AverageSpeed = Math.Round(speedValues.Average(), 2);
+            TopSpeed = Math.Round(speedValues.Max(), 2);
         }
         public void UpdateHeartValues(List<double> heartValues)
         {

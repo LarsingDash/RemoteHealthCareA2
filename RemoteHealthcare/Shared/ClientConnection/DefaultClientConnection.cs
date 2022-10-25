@@ -49,7 +49,7 @@ public class DefaultClientConnection
         {
             client = new(hostname, port);
             stream = client.GetStream();
-            stream.BeginRead(buffer, 0, 1024, OnRead, null);
+            stream.BeginRead(buffer, 0, 40960000, OnRead, null);
             SetupClient();
             Connected = true;
         }
@@ -82,7 +82,7 @@ public class DefaultClientConnection
 
     #region Sending and retrieving data
     private byte[] totalBuffer = Array.Empty<byte>();
-    private readonly byte[] buffer = new byte[20480000];
+    private readonly byte[] buffer = new byte[40960000];
     public event EventHandler<JObject> OnMessage; 
     private string publicKey;
 
@@ -161,7 +161,7 @@ public class DefaultClientConnection
                 break;
         }
 
-        stream.BeginRead(buffer, 0, 20480000, OnRead, null);
+        stream.BeginRead(buffer, 0, 40960000, OnRead, null);
     }
 
     private Queue<Tuple<string, bool>> sendQueue = new();

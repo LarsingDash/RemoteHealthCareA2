@@ -249,7 +249,7 @@
                     Style="{DynamicResource LabelStyleMain}" 
                     Content="{Binding SelectedSession.LowestRate}"
                     Grid.Column="1"
-                    Grid.Row="3"
+                    Grid.Row="4"
                     HorizontalAlignment="Left"
                      />
 

@@ -149,7 +149,12 @@ public class DefaultClientConnection
             if (totalBuffer.Length >= packetSize + 4) 
             {
                 var json = Encoding.UTF8.GetString(totalBuffer, 4, packetSize);
-                //Logger.LogMessage(LogImportance.DebugHighlight, "Received: '" + json.ToString() + "'");
+                // Logger.LogMessage(LogImportance.DebugHighlight, "Received: '" + json.ToString() + "'");
+                if (json.Length == 0)
+                {
+                    Logger.LogMessage(LogImportance.Error, "Incoming message length was 0");
+                    return;
+                }
                 OnMessage?.Invoke(this, JObject.Parse(json));
 
                 var newBuffer = new byte[totalBuffer.Length - packetSize - 4];

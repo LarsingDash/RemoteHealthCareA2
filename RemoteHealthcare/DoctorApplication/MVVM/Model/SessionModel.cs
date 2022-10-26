@@ -146,9 +146,18 @@ namespace DoctorApplication.MVVM.Model
         }
         public void UpdateHeartValues(List<double> heartValues)
         {
-            AverageRate = Math.Round(heartValues.Average());
-            HighestRate = Math.Round(heartValues.Max());
-            LowestRate = Math.Round(heartValues.Min());
+            if (heartValues != null && heartValues.Count > 0)
+            {
+                AverageRate = Math.Round(heartValues.Average());
+                HighestRate = Math.Round(heartValues.Max());
+                LowestRate = Math.Round(heartValues.Min());
+            }
+            else
+            {
+                AverageRate = double.NaN;
+                HighestRate = double.NaN;
+                LowestRate = double.NaN;
+            }
         }
 
         public void Init()

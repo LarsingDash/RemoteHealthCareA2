@@ -122,14 +122,14 @@ public class PanelController
         DrawPanelText(timeDisplayed, 64, 140, 125, hudPanelId);
         DrawPanelText(distanceDisplayed, 60, 140, 195, hudPanelId);
 
-        DrawPanelImage("data/custom/images/Icons.png", 30, 102, 64, -192, hudPanelId);
+        DrawPanelImage("data/NetworkEngine/custom/images/Icons.png", 30, 102, 64, -192, hudPanelId);
         SwapPanel(hudPanelId);
     }
     
     public void UpdateChat(string message)
     {
         ClearPanel(chatPanelId);
-        DrawPanelImage("data/custom/images/ChatBox.png", 0, 100, 481, -194, chatPanelId);
+        DrawPanelImage("data/NetworkEngine/custom/images/ChatBox.png", 0, 100, 481, -194, chatPanelId);
 
         if (!String.IsNullOrEmpty(message))
         {

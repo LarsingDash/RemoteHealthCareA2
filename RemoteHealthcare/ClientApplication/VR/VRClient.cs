@@ -26,7 +26,7 @@ public class VRClient : DefaultClientConnection
     public List<string> hideMessages = new List<string>();
     
     //Vr settings
-    public string skyboxFolder = "data/custom/skyboxes/yellow";
+    public string skyboxFolder = "data/NetworkEngine/custom/skyboxes/yellow";
 
     public void Setup()
     {

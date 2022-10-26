@@ -239,16 +239,16 @@ public class PanelController
     public void UpdateChat(string message)
     {
         messageHistory.Enqueue(message);
-        
         ClearPanel(chatPanelId);
         DrawPanelOutlines(chatPanelId);
         
         int i = 0;
         foreach (var m in messageHistory)
         {
-            DrawPanelText($"Dokter: {message}", 12, 10, 10 + i * 10, chatPanelId);
+            DrawPanelText($"Dokter: {m}", 12, 10, 10 + i * 10, chatPanelId);
             i++;
         }
         SwapPanel(chatPanelId);
+        Logger.LogMessage(LogImportance.Debug, $"Added message to VR: {message}");
     }
 }

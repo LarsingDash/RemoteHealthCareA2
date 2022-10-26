@@ -123,8 +123,8 @@ namespace ClientSide.VR
                         "\"_data_\"", JsonFileReader.GetObjectAsString("AddLayer", new Dictionary<string, string>
                         {
                             { "_uuid_", terrainId },
-                            { "_diffuse_", "data/NetworkEngine/textures/terrain/grass_green2y_d.jpg" },
-                            { "_normal_", "data/NetworkEngine/textures/terrain/grass_green2y_n.jpg" }
+                            { "_diffuse_", "data/NetworkEngine/textures/custom/Ground_d.jpg" },
+                            { "_normal_", "data/NetworkEngine/textures/custom/Ground_n.jpg" }
                         }, JsonFolder.Terrain.Path)
                     },
                 });
@@ -326,9 +326,8 @@ namespace ClientSide.VR
         private List<Vector4> ChoosePath()
         {
             var random = new Random();
+            var chosenPathID = random.Next(0, 5);
 
-            // var chosenPathID = random.Next(0, 2);
-            var chosenPathID = 2;
             List<Vector4> chosenPath;
             float scale;
 
@@ -367,6 +366,44 @@ namespace ClientSide.VR
                         new Vector4(0, -2, -1, 0),
                         new Vector4(-2, 2, 1, -1),
                         new Vector4(2, 2, 1, 1),
+                    };
+                    break;
+                
+                case 3:
+                    scale = 4.5f;
+                    chosenPath = new List<Vector4>
+                    {
+                        new Vector4(4, 2, 1, -1),
+                        new Vector4(3, -2, -1, -1),
+                        new Vector4(-1, -4, -1, 1),
+                        new Vector4(-4, -1, 0, 1),
+                        new Vector4(-1, 3, 1, 1),
+                    };
+                    break;
+                
+                case 4:
+                    scale = 5;
+                    chosenPath = new List<Vector4>
+                    {
+                        new Vector4(1, -4, -1, 1),
+                        new Vector4(-2, -1, -1, 1),
+                        new Vector4(-4, 2, 0, 1),
+                        new Vector4(-2, 4, 1, 1),
+                        new Vector4(2, 4, 1, -1),
+                        new Vector4(4, 0, 1, -1),
+                        new Vector4(3, -3, 1, -1),
+                    };
+                    break;
+                
+                case 5:
+                    scale = 4;
+                    chosenPath = new List<Vector4>
+                    {
+                        new Vector4(3, 4, 1, -1),
+                        new Vector4(3, 0, -1, -1),
+                        new Vector4(-1, -2, -1, 0),
+                        new Vector4(-4, 0, -1, 1),
+                        new Vector4(-3, 3, 1, 1),
                     };
                     break;
             }

@@ -25,10 +25,7 @@ public class VRClient : DefaultClientConnection
     public List<string> hideMessages = new List<string>();
 
     private bool started = false;
-    public VRClient()
-    {
-    }
-
+    
     public void Setup()
     {
         if (started)
@@ -107,6 +104,25 @@ public class VRClient : DefaultClientConnection
         await RemoveObject("LeftHand");
         await RemoveObject("RightHand");
 
+        tunnel.SendTunnelMessage(new Dictionary<string, string>
+        {
+            {"\"_data_\"", JsonFileReader.GetObjectAsString("SetTimeScene", new Dictionary<string, string>
+            {
+                {"\"_time_\"", "8"}
+            }, JsonFolder.TunnelMessages.Path)},
+        });
+        
+        tunnel.SendTunnelMessage(new Dictionary<string, string>
+        {
+            {"\"_data_\"", JsonFileReader.GetObjectAsString("SetSkybox", new Dictionary<string, string>(), JsonFolder.TunnelMessages.Path)},
+        });
+
+        tunnel.SendTunnelMessage(new Dictionary<string, string>
+        {
+            {"\"_data_\"", JsonFileReader.GetObjectAsString("Show", new Dictionary<string, string>()
+                , JsonFolder.Route.Path)},
+        });
+        
         //Start WorldGen
          worldGen = new WorldGen(this, tunnel);
          BikeController = new BikeController(this, tunnel, worldGen);

@@ -170,6 +170,7 @@ namespace DoctorApplication.MVVM.Model
         {
             AverageSpeed = Math.Round(speedValues.Average(), 2);
             TopSpeed = Math.Round(speedValues.Max(), 2);
+            CurrentDistance = this.distance.LastOrDefault();
         }
         public void UpdateHeartValues(List<double> heartValues)
         {
@@ -291,9 +292,6 @@ namespace DoctorApplication.MVVM.Model
             {
                 this.distance.Add(double.Parse(key["value"]!.ToObject<string>()!));
             }
-            CurrentDistance = this.distance.LastOrDefault();
-            //TestLastSpeed = double.Parse(distance.LastOrDefault()!.ToObject<string>()!);
-
         }
 
         public void AddDataSpeed(JObject data)
@@ -304,7 +302,6 @@ namespace DoctorApplication.MVVM.Model
             {
                 this.speed.Add(double.Parse(key["value"]!.ToObject<string>()!));
                 CalculateTimeElapsed(key["time"].ToObject<string>()!);
-                Console.WriteLine("Time: " + TimeElapsed + " " + CurrentDistance + " -- " + StartTime + ":" + EndTime);
             }
             CurrentSpeed = this.speed.LastOrDefault();
             UpdateSpeedValues(this.speed);

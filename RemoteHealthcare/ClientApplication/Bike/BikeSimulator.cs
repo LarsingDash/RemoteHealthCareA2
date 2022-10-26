@@ -87,7 +87,6 @@ public class BikeSimulator : Bike
     {
         bikeData.TryGetValue(DataType.Distance, out var distance);
         bikeData.TryGetValue(DataType.Speed, out var speed);
-        
         handler.ChangeData(DataType.Distance, distance + speed * deltaTime / 1000);
     }
 

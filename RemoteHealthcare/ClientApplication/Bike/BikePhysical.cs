@@ -42,9 +42,14 @@ namespace ClientApplication.Bike
             await heartRateDevice.StartConnection();
             if (!bikeDevice.Connected || !heartRateDevice.Connected)
             {
-                
+                if(!bikeDevice.Connected && !heartRateDevice.Connected)
+                {
+                   handler.Bike = new BikeSimulator(handler, !bikeDevice.Connected, !heartRateDevice.Connected);
+                } else
+                {
+                    new BikeSimulator(handler, !bikeDevice.Connected, !heartRateDevice.Connected);
+                }
                 Logger.LogMessage(LogImportance.Information, $"Switching to Bike Simulator for Bike: {!bikeDevice.Connected}, Heart: {!heartRateDevice.Connected} ");
-                new BikeSimulator(handler, !bikeDevice.Connected, !heartRateDevice.Connected);
             }
             else
             {

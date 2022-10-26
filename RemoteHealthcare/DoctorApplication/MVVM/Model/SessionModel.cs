@@ -1,4 +1,7 @@
-﻿using Newtonsoft.Json.Converters;
+﻿using LiveCharts;
+using LiveCharts.Configurations;
+using LiveCharts.Defaults;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using System;
 using System.CodeDom;
@@ -10,6 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization.Metadata;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using System.Windows.Media.Media3D;
 
 namespace DoctorApplication.MVVM.Model
@@ -19,7 +23,8 @@ namespace DoctorApplication.MVVM.Model
         public string sessionName { get; set; }
 
         private DateTime startTime;
-        public DateTime StartTime {
+        public DateTime StartTime
+        {
             get
             {
                 return startTime;
@@ -48,12 +53,12 @@ namespace DoctorApplication.MVVM.Model
         public int sessionint = 0;
 
         string timeElapsed;
-        
-                //if (endTime == null)
-                //{
-                //    return (DateTime.Now - startTime).TotalSeconds + "Seconds";
-                //}
-                //return (endTime - startTime).TotalSeconds + "Seconds";
+
+        //if (endTime == null)
+        //{
+        //    return (DateTime.Now - startTime).TotalSeconds + "Seconds";
+        //}
+        //return (endTime - startTime).TotalSeconds + "Seconds";
         public string TimeElapsed
         {
             get
@@ -70,8 +75,10 @@ namespace DoctorApplication.MVVM.Model
         private List<double> distance;
         public List<double> Distance
         {
-            get {
-                return distance; }
+            get
+            {
+                return distance;
+            }
             set
             {
                 distance = value;
@@ -102,7 +109,9 @@ namespace DoctorApplication.MVVM.Model
         private double currentDistance;
         public double CurrentDistance
         {
-            get {if (currentDistance != 0) {return currentDistance;}
+            get
+            {
+                if (currentDistance != 0) { return currentDistance; }
                 else return 0;
             }
             set
@@ -233,15 +242,15 @@ namespace DoctorApplication.MVVM.Model
         {
             get
             {
-                    double highest = 0;
-                    foreach (double value in HeartRate)
+                double highest = 0;
+                foreach (double value in HeartRate)
+                {
+                    if (value > highest)
                     {
-                        if (value > highest)
-                        {
-                            highest = value;
-                        }
+                        highest = value;
                     }
-                    return highest;
+                }
+                return highest;
             }
             set
             {
@@ -258,12 +267,14 @@ namespace DoctorApplication.MVVM.Model
         public double LastSpeed
         {
 
-            get {
+            get
+            {
                 if (lastSpeed == null)
                 {
                     return 99;
                 }
-                return speed.LastOrDefault(); }
+                return speed.LastOrDefault();
+            }
             set
             {
                 lastSpeed = value;
@@ -314,7 +325,8 @@ namespace DoctorApplication.MVVM.Model
             try
             {
                 TimeElapsed = Math.Round(double.Parse(val) / 1000, 0) + " Seconds";
-            } catch(Exception e)
+            }
+            catch (Exception e)
             {
                 TimeElapsed = "? Seconds";
             }
@@ -331,6 +343,18 @@ namespace DoctorApplication.MVVM.Model
             CurrentRate = this.heartRate.LastOrDefault();
             UpdateHeartValues(this.heartRate);
         }
+        private object dataMapper;
+        public object DataMapper
+        {
+            get => this.dataMapper;
+            set
+            {
+                this.dataMapper = value;
+                OnPropertyChanged(nameof(DataMapper));
+            }
+        }
+        public ChartValues<ObservablePoint> SineGraphValues { get; }
+
         public SessionModel(string sessionName)
         {
             sessionint++;
@@ -346,6 +370,27 @@ namespace DoctorApplication.MVVM.Model
             LowestRate = 0;
             CurrentDistance = 0;
             HighestRate = 0;
+
+            this.SineGraphValues = new ChartValues<ObservablePoint>();
+
+            // Plot a sine graph
+            for (double x = 0; x <= 360; x++)
+            {
+                var point = new ObservablePoint()
+                {
+                    X = x,
+                    Y = Math.Sin(x * Math.PI / 180)
+                };
+
+                this.SineGraphValues.Add(point);
+            }
+
+            // Setup the data mapper
+            this.DataMapper = new CartesianMapper<ObservablePoint>()
+              .X(point => point.X)
+              .Y(point => point.Y)
+              .Stroke(point => point.Y > 0.3 ? Brushes.Red : Brushes.LightGreen)
+              .Fill(point => point.Y > 0.3 ? Brushes.Red : Brushes.LightGreen);
         }
         public SessionModel()
         {
@@ -356,6 +401,27 @@ namespace DoctorApplication.MVVM.Model
             LowestRate = 0;
             CurrentDistance = 0;
             HighestRate = 0;
+
+            this.SineGraphValues = new ChartValues<ObservablePoint>();
+
+            // Plot a sine graph
+            for (double x = 0; x <= 360; x++)
+            {
+                var point = new ObservablePoint()
+                {
+                    X = x,
+                    Y = Math.Sin(x * Math.PI / 180)
+                };
+
+                this.SineGraphValues.Add(point);
+            }
+
+            // Setup the data mapper
+            this.DataMapper = new CartesianMapper<ObservablePoint>()
+              .X(point => point.X)
+              .Y(point => point.Y)
+              .Stroke(point => point.Y > 0.3 ? Brushes.Red : Brushes.LightGreen)
+              .Fill(point => point.Y > 0.3 ? Brushes.Red : Brushes.LightGreen);
         }
 
         public bool realTimeData = false;
@@ -369,6 +435,27 @@ namespace DoctorApplication.MVVM.Model
             distance = new List<double>();
             speed = new List<double>();
             heartRate = new List<double>();
+
+            this.SineGraphValues = new ChartValues<ObservablePoint>();
+
+            // Plot a sine graph
+            for (double x = 0; x <= 360; x++)
+            {
+                var point = new ObservablePoint()
+                {
+                    X = x,
+                    Y = Math.Sin(x * Math.PI / 180)
+                };
+
+                this.SineGraphValues.Add(point);
+            }
+
+            // Setup the data mapper
+            this.DataMapper = new CartesianMapper<ObservablePoint>()
+              .X(point => point.X)
+              .Y(point => point.Y)
+              .Stroke(point => point.Y > 0.3 ? Brushes.Red : Brushes.LightGreen)
+              .Fill(point => point.Y > 0.3 ? Brushes.Red : Brushes.LightGreen);
         }
         private DateTime CustomParseDate(string time)
         {

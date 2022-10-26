@@ -187,12 +187,10 @@ namespace DoctorApplication.MVVM.ViewModel
                 IsRecordingActive = true;
                 RecordingText = "Stop Recording";
                 StartBikeRecording();
-
+                Thread.Sleep(1000);
+                OnPropertyChanged("LastSession");
                 //Test to see if triggering on property changed helps.
-                Users = Users;
-                SelectedUser = SelectedUser;
-                SelectedUser.LastSession = SelectedUser.LastSession;
-                LastSession = LastSession;
+
 
             }
             else
@@ -237,6 +235,7 @@ namespace DoctorApplication.MVVM.ViewModel
                     {"_uuid_", currentSessionUuid},
                 }, JsonFolder.Json.Path));
                 selectedUser.AddSession(new SessionModel(DateTime.Now.ToString(CultureInfo.InvariantCulture), currentSessionUuid));
+                OnPropertyChanged("LastSession");
             }, () =>
             {
           }, 1000);

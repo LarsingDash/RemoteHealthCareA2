@@ -21,17 +21,17 @@ namespace DoctorApplication.MVVM.Model
 
         public int sessionint = 0;
 
-        TimeSpan timeElapsed;
+        string timeElapsed;
 
-        public TimeSpan TimeElapsed
+        public string TimeElapsed
         {
             get
             {
-                if (endTime != null)
+                if (endTime == null)
                 {
-                    return DateTime.Now - startTime;
+                    return (DateTime.Now - startTime).TotalSeconds + "Seconds";
                 }
-                return endTime - startTime;
+                return (endTime - startTime).TotalSeconds + "Seconds";
             }
             set
             {

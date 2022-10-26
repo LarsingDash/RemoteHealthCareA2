@@ -51,7 +51,7 @@ public class PanelController
                     { "_serial_", serial}
                 }, JsonFolder.Panel.Path)
             },
-        });
+        }, false, true);
 
         // waiting for VR response before searching for chatPanel id
         await client.AddSerialCallbackTimeout(serial, ob =>

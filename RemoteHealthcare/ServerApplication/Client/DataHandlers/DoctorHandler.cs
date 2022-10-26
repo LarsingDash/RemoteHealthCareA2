@@ -19,7 +19,8 @@ namespace ServerApplication.Client.DataHandlers
                 {"chat-message", new ChatMessage()}, 
                 {"subscribe-to-session", new SubscribeToSession()}, 
                 {"unsubscribe-to-session", new UnSubscribeToSession()},  
-                {"set-resistance", new SetResistance()}
+                {"set-resistance", new SetResistance()},
+                {"historic-client-data-session", new HistoricClientDataSession()}
             };
         }
     }

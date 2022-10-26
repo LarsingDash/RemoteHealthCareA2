@@ -10,7 +10,7 @@
       {
         "position" : [ "_position_" ],
         "parent" : "_guid_",
-        "scale" : 3,
+        "scale" : "_scale_",
         "rotation" : [ 0, 0, 0 ]
       },
       "model" :

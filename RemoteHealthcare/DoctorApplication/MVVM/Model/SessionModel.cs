@@ -232,5 +232,18 @@ namespace DoctorApplication.MVVM.Model
             speed = new List<double>();
             heartRate = new List<double>();
         }
+
+        public bool realTimeData = false;
+        public string sessionUuid;
+        public SessionModel(string sessionName, string uuid)
+        {
+            realTimeData = true;
+            this.sessionUuid = uuid;
+            sessionint++;
+            this.sessionName = sessionName + sessionint;
+            distance = new List<double>();
+            speed = new List<double>();
+            heartRate = new List<double>();
+        }
     }
 }

@@ -114,8 +114,8 @@ namespace DoctorApplication.MVVM.ViewModel
 
         //currently selected user in combobox
 
-        private UserDataModel selectedUser;
-        public UserDataModel SelectedUser
+        private UserDataModel? selectedUser;
+        public UserDataModel? SelectedUser
         {
             get { return selectedUser; }
             set
@@ -171,6 +171,10 @@ namespace DoctorApplication.MVVM.ViewModel
         {
             Client client = App.GetClientInstance();
             var serial = Util.RandomString();
+            if (selectedUser == null)
+            {
+                return;
+            }
             client.SendEncryptedData(JsonFileReader.GetObjectAsString("StartBikeRecording", new Dictionary<string, string>()
             {
                 {"_serial_", serial},
@@ -185,12 +189,17 @@ namespace DoctorApplication.MVVM.ViewModel
                     {"_serial_", serial},
                     {"_uuid_", currentSessionUuid},
                 }, JsonFolder.Json.Path));
+                selectedUser.AddSession(new SessionModel(DateTime.Now.ToString(CultureInfo.InvariantCulture), currentSessionUuid));
             }, () =>
             {
           }, 1000);
         }
         private void ApplySliderValue()
         {
+            if (selectedUser == null)
+            {
+                return;
+            }
             Logger.LogMessage(LogImportance.Information, sliderValue.ToString());
             Client client = App.GetClientInstance();
             var serial = Util.RandomString();
@@ -198,11 +207,15 @@ namespace DoctorApplication.MVVM.ViewModel
             {
                 {"_serial_" , serial},
                 {"_resistance_" , SliderValue.ToString()},
-                {"_user_", "TestUsername" }
+                {"_user_", selectedUser.UserName }
             }, JsonFolder.Json.Path));
         }
         public void StopBikeRecording(string type)
         {
+            if (selectedUser == null)
+            {
+                return;
+            }
             Client client = App.GetClientInstance();
             var serial = Util.RandomString();
             client.SendEncryptedData(JsonFileReader.GetObjectAsString("StopBikeRecording", new Dictionary<string, string>()

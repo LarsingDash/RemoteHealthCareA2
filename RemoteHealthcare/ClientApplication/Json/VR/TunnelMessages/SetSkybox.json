@@ -1,0 +1,16 @@
+{
+  "id" : "scene/skybox/update",
+  "data" :
+  {
+    "type" : "static",
+    "files" :
+    {
+      "xpos" : "data/NetworkEngine/textures/SkyBoxes/clouds/yellowcloud_rt.jpg",
+      "xneg" : "data/NetworkEngine/textures/SkyBoxes/clouds/yellowcloud_lf.jpg",
+      "ypos" : "data/NetworkEngine/textures/SkyBoxes/clouds/yellowcloud_up.jpg",
+      "yneg" : "data/NetworkEngine/textures/SkyBoxes/clouds/yellowcloud_dn.jpg",
+      "zpos" : "data/NetworkEngine/textures/SkyBoxes/clouds/yellowcloud_bk.jpg",
+      "zneg" : "data/NetworkEngine/textures/SkyBoxes/clouds/yellowcloud_ft.jpg"
+    }
+  }
+}

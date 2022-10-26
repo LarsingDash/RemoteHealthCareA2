@@ -46,7 +46,7 @@ public class PanelController
                     { "_serial_", serial}
                 }, JsonFolder.Panel.Path)
             },
-        });
+        }, false, true);
 
         await client.AddSerialCallbackTimeout(serial, ob =>
         { }, () => { }, 1000);

@@ -15,9 +15,9 @@ public class BikeSimulator : Bike
         lastTicks = Environment.TickCount;
         BikeId = $"SIM {new Random().Next(5000)}";
         ticker = 0;
+        this.handler = handler;
         var thread = new Thread(Run);
         thread.Start();
-        this.handler = handler;
     }
 
     /// <summary>

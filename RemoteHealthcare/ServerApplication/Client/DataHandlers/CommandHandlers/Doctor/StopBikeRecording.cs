@@ -48,7 +48,7 @@ public class StopBikeRecording : CommandHandler
                 JsonFolder.Data.Path + user.UserName + "\\");
 
             //Adding end time
-            file["end-time"] = DateTime.Now.ToString(CultureInfo.InvariantCulture);
+            file["end-time"] = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
             file["stopType"] = ob["data"]?["emergency-stop"]?.ToObject<string>() != null
                 ? ob["data"]!["emergency-stop"]!.ToObject<string>()! : "Unknown";
             

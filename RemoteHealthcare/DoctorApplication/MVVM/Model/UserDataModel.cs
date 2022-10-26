@@ -17,6 +17,7 @@ using Newtonsoft.Json.Linq;
 using Shared;
 using Shared.Log;
 using System.Windows.Controls.Primitives;
+using Newtonsoft.Json;
 
 namespace DoctorApplication.MVVM.Model
 {
@@ -245,24 +246,43 @@ namespace DoctorApplication.MVVM.Model
 
             client.AddSerialCallbackTimeout(serial, ob =>
             {
-                foreach (JObject session in ob["data"]!.Value<JArray>("bike-sessions")!.Values<JObject>())
+                foreach (string name in ob["data"]!.Value<JArray>("bike-sessions")!.Values<string>())
                 {
-                    if (session == null) return;
-                    SessionModel model = new SessionModel(session["session-name"]!.ToObject<string>()!);
-                    model.AddDataDistance(session);
-                    model.AddDataSpeed(session);
-                    model.AddDataHeartRate(session);
-                    try
+                    if(name == null)
+                        continue;
+                    serial = Util.RandomString();
+                    client.SendEncryptedData(JsonFileReader.GetObjectAsString("HistoricClientDataSession", new Dictionary<string, string>()
                     {
-                        model.startTime = CustomParseDate(session["start-time"]!.ToObject<string>()!);
-                        model.endTime = !session["end-time"]!.ToObject<string>()!.Equals("_endtime_") ? CustomParseDate(session["end-time"]!.ToObject<string>()!) : DateTime.MinValue;
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.LogMessage(LogImportance.Fatal, "Time could not be parsed", e);
-                    }
+                        {"_serial_", serial},
+                        {"_username_", userName},
+                        {"_session_", name}
+                    }, JsonFolder.Json.Path));
 
-                    sessions.Add(model);
+                    client.AddSerialCallback(serial, sessionOb =>
+                    {
+                        if (!sessionOb["data"]!["status"]!.ToObject<string>()!.Equals("ok"))
+                        {
+                            return;
+                        }
+                        JObject session = sessionOb["data"]!["session"]!.ToObject<JObject>()!;
+                        SessionModel model = new SessionModel(session["session-name"]!.ToObject<string>()!);
+                        model.AddDataDistance(session);
+                        model.AddDataSpeed(session);
+                        model.AddDataHeartRate(session);
+                        try
+                        {
+                            model.startTime = CustomParseDate(session["start-time"]!.ToObject<string>()!);
+                            model.endTime = !session["end-time"]!.ToObject<string>()!.Equals("_endtime_")
+                                ? CustomParseDate(session["end-time"]!.ToObject<string>()!)
+                                : DateTime.MinValue;
+                        }
+                        catch (Exception e)
+                        {
+                            Logger.LogMessage(LogImportance.Fatal, "Time could not be parsed", e);
+                        }
+
+                        sessions.Add(model);
+                    });
                 }
             }, () =>
             {

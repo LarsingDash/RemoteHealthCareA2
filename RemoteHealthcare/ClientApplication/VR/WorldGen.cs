@@ -22,11 +22,11 @@ namespace ClientSide.VR
         private readonly Tunnel tunnel;
 
         private const int mapSize = 256;
-        private double[,] heights = new double[256, 256];
+        private readonly float[,] heights = new float[mapSize, mapSize];
         public string routeId;
 
         private const string treePath = "data/NetworkEngine/models/trees/pine/Pine_Low-poly_1.obj";
-        private readonly List<Vector2> route = new List<Vector2>();
+        public List<Vector2> route = new List<Vector2>();
 
         public WorldGen(VRClient vrClient, Tunnel tunnel)
         {
@@ -46,13 +46,38 @@ namespace ClientSide.VR
                 var heightMap = new StringBuilder();
 
                 //Determines sensitivity of the terrain height. Higher values equal to higher height difference
-                var terrainSensitivity = 5;
+                const float terrainSensitivity = 7.5f;
 
                 for (var y = 0; y < mapSize; y++)
                 {
                     for (var x = 0; x < mapSize; x++)
                     {
-                        var value = noiseGen.GetPerlin(x, y) * terrainSensitivity;
+                        const float edgeMargin = mapSize / 10f;
+
+                        var xEdgeOffset = 0f;
+                        if (x < edgeMargin)
+                        {
+                            xEdgeOffset = edgeMargin - x;
+                        }
+                        else if (x - (mapSize - edgeMargin) > 0)
+                        {
+                            xEdgeOffset = x - (mapSize - edgeMargin);
+                        }
+
+                        var yEdgeOffset = 0f;
+                        if (y < edgeMargin)
+                        {
+                            yEdgeOffset = edgeMargin - y;
+                        }
+                        else if (y - (mapSize - edgeMargin) > 0)
+                        {
+                            yEdgeOffset = y - (mapSize - edgeMargin);
+                        }
+
+                        var value = noiseGen.GetPerlin(x * 2, y * 2) * terrainSensitivity +
+                                    (float)(Math.Pow(xEdgeOffset, 2) / (edgeMargin * 2)) +
+                                    (float)(Math.Pow(yEdgeOffset, 2) / (edgeMargin * 2));
+
                         heights[x, y] = value;
                         heightMap.Append(
                             $"{value.ToString(CultureInfo.InvariantCulture)},");
@@ -98,15 +123,13 @@ namespace ClientSide.VR
                         "\"_data_\"", JsonFileReader.GetObjectAsString("AddLayer", new Dictionary<string, string>
                         {
                             { "_uuid_", terrainId },
-                            { "_diffuse_", "data/NetworkEngine/textures/terrain/grass_green2y_d.jpg" },
-                            { "_normal_", "data/NetworkEngine/textures/terrain/grass_green2y_n.jpg" }
+                            { "_diffuse_", "data/NetworkEngine/textures/custom/Ground_d.jpg" },
+                            { "_normal_", "data/NetworkEngine/textures/custom/Ground_n.jpg" }
                         }, JsonFolder.Terrain.Path)
                     },
                 });
 
                 await PathGen();
-
-                //Add terrain
             }
             catch (Exception e)
             {
@@ -115,17 +138,17 @@ namespace ClientSide.VR
         }
 
         //Prepare road and send route
-        public async Task PathGen()
+        private async Task PathGen()
         {
             try
             {
-                var poly = GenPoly(85,86,23,25, new Random());
-                route.AddRange(poly);
+                var chosenPath = ChoosePath();
 
                 var polyBuilder = new StringBuilder();
-                for (int i = 0; i < poly.Length; i++)
+                foreach (var point in chosenPath)
                 {
-                    polyBuilder.Append(PointConverter(poly[i], poly[(i + 1) % poly.Length]));
+                    route.Add(new Vector2(point.X, point.Y));
+                    polyBuilder.Append(PointConverter(point));
                     polyBuilder.Append(",");
                 }
 
@@ -144,6 +167,7 @@ namespace ClientSide.VR
                     },
                     { "_serial_", serial }
                 });
+
                 routeId = "";
                 vrClient.BikeController.Setup();
                 vrClient.PanelController.Setup();
@@ -167,9 +191,6 @@ namespace ClientSide.VR
                             }, JsonFolder.Route.Path)
                     },
                 });
-
-
-                new Thread((o) => { GenerateDecoration(); }).Start();
             }
             catch (Exception e)
             {
@@ -177,7 +198,7 @@ namespace ClientSide.VR
             }
         }
 
-        private async Task GenerateDecoration()
+        public async Task GenerateDecoration()
         {
             try
             {
@@ -208,55 +229,71 @@ namespace ClientSide.VR
 
                 Logger.LogMessage(LogImportance.Debug, $"Treesid: {treesId}");
                 //Subdivide the route to get more sub-points
-                var treesList = new List<Vector2>(route);
+                var treesList = new List<Vector2>();
                 var fullRoute = new List<Vector2>(route);
-                for (var subdivisionFactor = 0; subdivisionFactor < 2; subdivisionFactor++)
-                {
-                    for (var i = 0; i < route.Count; i++)
-                    {
-                        var currentPoint = route[i];
-                        var nextPoint = route[(i + 1) % route.Count];
 
-                        var difference = currentPoint - nextPoint;
-                        var subPoint = currentPoint + difference * 0.5f;
-                        fullRoute.Add(subPoint);
+                for (var subdivisionFactor = 0; subdivisionFactor < 7; subdivisionFactor++)
+                {
+                    var currentList = new List<Vector2>(fullRoute);
+
+                    for (var i = 0; i < fullRoute.Count; i++)
+                    {
+                        var currentPoint = fullRoute[i];
+                        var nextPoint = fullRoute[(i + 1) % fullRoute.Count];
+
+                        var subPoint = (currentPoint + nextPoint) / 2;
+                        currentList.Insert(fullRoute.IndexOf(currentPoint) + 1 + i, subPoint);
                     }
+
+                    fullRoute = currentList;
                 }
 
                 //Start decorationGen
-                const int maxAmountOfObjects = 500;
+                const int maxAmountOfObjects = 5000;
                 const int maxFailedAttempts = 250;
                 var amountOfObjects = 0;
                 var failedAttempts = 0;
                 var random = new Random();
-                
+
                 //Keep attempting to spawn trees till the max amount of trees or max amount of fails have been reached
                 while (amountOfObjects < maxAmountOfObjects && failedAttempts < maxFailedAttempts)
                 {
                     var attemptFailed = false;
-                    var currentPoint = new Vector2(random.Next(0, 256) - 128, random.Next(0, 256) - 128);
+                    var currentPoint = new Vector2(random.Next(0, mapSize * 2) - mapSize,
+                        random.Next(0, mapSize * 2) - mapSize);
                     foreach (var comparingPoint in fullRoute)
                     {
                         if (Vector2.Distance(comparingPoint, currentPoint) < 10)
                         {
                             failedAttempts++;
                             attemptFailed = true;
-                            
+
                             break;
                         }
                     }
+
                     foreach (var comparingPoint in treesList)
                     {
                         if (Vector2.Distance(comparingPoint, currentPoint) < 3)
                         {
                             failedAttempts++;
                             attemptFailed = true;
-                            
+
                             break;
                         }
                     }
 
                     if (attemptFailed) continue;
+
+                    var currentHeight = 0f;
+                    try
+                    {
+                        currentHeight = heights[(int)currentPoint.X + mapSize / 2, (int)currentPoint.Y + mapSize / 2];
+                    }
+                    catch (Exception e)
+                    {
+                        // ignored
+                    }
 
                     tunnel.SendTunnelMessage(new Dictionary<string, string>()
                     {
@@ -268,93 +305,131 @@ namespace ClientSide.VR
                                     { "_guid_", treesId },
                                     {
                                         "\"_position_\"",
-                                        $"{currentPoint.X + 128 + ".0"} , {heights[(int)currentPoint.X + 128, (int)currentPoint.Y + 128].ToString(CultureInfo.InvariantCulture)}, {currentPoint.Y + 128  + ".0"}"
+                                        $"{currentPoint.X + mapSize / 2 + ".0"} , {currentHeight.ToString(CultureInfo.InvariantCulture)}, {currentPoint.Y + mapSize / 2 + ".0"}"
                                     },
+                                    { "\"_scale_\"", (random.NextDouble() + 4).ToString(CultureInfo.InvariantCulture) },
                                     { "_filename_", treePath }
                                 }, JsonFolder.TunnelMessages.Path)
                         },
-                    });
-                    
+                    }, true);
+
                     treesList.Add(currentPoint);
                     amountOfObjects++;
                 }
-
-                return;
-                //Resume the simulation
-                tunnel.SendTunnelMessage(new Dictionary<string, string>()
-                {
-                    {
-                        "\"_data_\"",
-                        JsonFileReader.GetObjectAsString("Play", new Dictionary<string, string>(),
-                            JsonFolder.TunnelMessages.Path)
-                    },
-                });
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.StackTrace);
+                Logger.LogMessage(LogImportance.Error, "Error Unknown Reason", e);
             }
         }
 
-        private Vector2[] GenPoly(double RadiusMin, double RadiusMax, int minPoints, int maxPoints, Random random)
+        private List<Vector4> ChoosePath()
         {
-            //Choose the amount of points
-            var amountOfPoints = random.Next(minPoints, maxPoints);
-            var points = new Vector2[amountOfPoints];
+            var random = new Random();
+            var chosenPathID = random.Next(0, 5);
 
-            //Determine the angle between the points
-            var angle = (float)(Math.PI * 2) / amountOfPoints;
-            for (var i = 0; i < amountOfPoints; i++)
+            List<Vector4> chosenPath;
+            float scale;
+
+            switch (chosenPathID)
             {
-                //Generate each point using some variety between each points
-                var RadiusUse = (float)(random.NextDouble() / 10 * (RadiusMax - RadiusMin) + RadiusMin);
-                var currentAngle = angle * i;
-                var currentPoint = new Vector2(
-                    (int)(Math.Sin(currentAngle) * RadiusUse),
-                    (int)(Math.Cos(currentAngle) * RadiusUse));
+                default:
+                case 0:
+                    scale = 4;
+                    chosenPath = new List<Vector4>
+                    {
+                        new Vector4(3, 2, -1, 1),
+                        new Vector4(-1, 1, -1, -1),
+                        new Vector4(-3, 1, -1, -1),
+                        new Vector4(-2, -2, 1, 1),
+                        new Vector4(2, -2, 2, 2)
+                    };
+                    break;
 
-                points[i] = currentPoint;
+                case 1:
+                    scale = 5;
+                    chosenPath = new List<Vector4>
+                    {
+                        new Vector4(3, 0, 0.5f, -0.5f),
+                        new Vector4(3, -3, -1, -1),
+                        new Vector4(-4, -3, -1, 1),
+                        new Vector4(-4, 4, 1, 1),
+                        new Vector4(1, 4, 1, -1),
+                        new Vector4(1, 0, 0.5f, -0.5f),
+                    };
+                    break;
+                
+                case 2:
+                    scale = 2;
+                    chosenPath = new List<Vector4>
+                    {
+                        new Vector4(0, -2, -1, 0),
+                        new Vector4(-2, 2, 1, -1),
+                        new Vector4(2, 2, 1, 1),
+                    };
+                    break;
+                
+                case 3:
+                    scale = 4.5f;
+                    chosenPath = new List<Vector4>
+                    {
+                        new Vector4(4, 2, 1, -1),
+                        new Vector4(3, -2, -1, -1),
+                        new Vector4(-1, -4, -1, 1),
+                        new Vector4(-4, -1, 0, 1),
+                        new Vector4(-1, 3, 1, 1),
+                    };
+                    break;
+                
+                case 4:
+                    scale = 5;
+                    chosenPath = new List<Vector4>
+                    {
+                        new Vector4(1, -4, -1, 1),
+                        new Vector4(-2, -1, -1, 1),
+                        new Vector4(-4, 2, 0, 1),
+                        new Vector4(-2, 4, 1, 1),
+                        new Vector4(2, 4, 1, -1),
+                        new Vector4(4, 0, 1, -1),
+                        new Vector4(3, -3, 1, -1),
+                    };
+                    break;
+                
+                case 5:
+                    scale = 4;
+                    chosenPath = new List<Vector4>
+                    {
+                        new Vector4(3, 4, 1, -1),
+                        new Vector4(3, 0, -1, -1),
+                        new Vector4(-1, -2, -1, 0),
+                        new Vector4(-4, 0, -1, 1),
+                        new Vector4(-3, 3, 1, 1),
+                    };
+                    break;
             }
 
-            return points;
+            var finalPath = new List<Vector4>();
+            const float curveFactor = 5;
+            foreach (var point in chosenPath)
+            {
+                var currentPoint = point;
+                currentPoint.Z *= curveFactor;
+                currentPoint.W *= curveFactor;
+                finalPath.Add(currentPoint / scale * (mapSize / 2 - 45));
+            }
+
+            return finalPath;
         }
 
-        private string PointConverter(Vector2 point, Vector2 nextPoint)
+        private string PointConverter(Vector4 point)
         {
             var builder = new StringBuilder();
 
             builder.Append("{");
-            builder.Append($"\"pos\": [{point.X}, 0, {point.Y}],");
-
-            // string dir;
-            // var horNegative = nextPoint.X < point.X;
-            // var verNegative = nextPoint.Y < point.Y;
-            //
-            // var scaleRaw = Math.Sqrt(Math.Pow(point.X - nextPoint.X, 2) + Math.Pow(point.Y - nextPoint.Y, 2));
-            // var scaleString = scaleRaw.ToString(CultureInfo.InvariantCulture);
-            // var scale = scaleString.Substring(0, scaleString.IndexOf('.') + 2);
-            //
-            // switch (horNegative)
-            // {
-            //     default:
-            //     case true when verNegative:
-            //         dir = $"-{scale}, 0, -{scale}";
-            //         break;
-            //     case false when verNegative:
-            //         dir = $"{scale}, 0, -{scale}";
-            //         break;
-            //     case false when !verNegative:
-            //         dir = $"{scale}, 0, {scale}";
-            //         break;
-            //     case true when !verNegative:
-            //         dir = $"-{scale}, 0, {scale}";
-            //         break;
-            // }
-
-            // builder.Append($"\"dir\": [{dir}]");
-
-            // builder.Append($"\"dir\": [{nextPoint.X - point.X}, 0, {nextPoint.Y - point.Y}]");
-            //builder.Append($"\"dir\": [0, 0, 0]");
+            builder.Append(
+                $"\"pos\": [{point.X.ToString(CultureInfo.InvariantCulture)}, 0, {point.Y.ToString(CultureInfo.InvariantCulture)}],");
+            builder.Append(
+                $"\"dir\": [{point.Z.ToString(CultureInfo.InvariantCulture)}, 0, {point.W.ToString(CultureInfo.InvariantCulture)}]");
             builder.Append("}");
 
             return builder.ToString();

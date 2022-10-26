@@ -23,10 +23,10 @@ public class Tunnel : ICommandHandlerVR
     }
 
     //Helper method to send tunnelMessages without having to add the tunnelID
-    public void SendTunnelMessage(Dictionary<string, string> values, bool hide = false)
+    public void SendTunnelMessage(Dictionary<string, string> values, bool hide = false, bool prio = false)
     {
         values.Add("_tunnelID_", vrClient.TunnelID);
-        vrClient.SendData(JsonFileReader.GetObjectAsString("SendTunnel", values, JsonFolder.Vr.Path), hide);
+        vrClient.SendData(JsonFileReader.GetObjectAsString("SendTunnel", values, JsonFolder.Vr.Path), hide, prio);
     }
     
     

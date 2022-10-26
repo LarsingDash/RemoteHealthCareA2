@@ -8,6 +8,6 @@
     "position" : [ "_position_" ],
     "size" : "_size_",
     "color" : [ 1, 1, 1, 1],
-    "font" : "segoeui"
+    "font" : "arial"
   }
 }

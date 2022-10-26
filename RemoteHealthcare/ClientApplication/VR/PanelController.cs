@@ -47,7 +47,7 @@ public class PanelController
         // creates VR Panel
         var hudSerial = Util.RandomString();
         var hudPanelName = "hudPanel";
-        AddPanel(hudPanelName, -1, 0, -3, hudSerial);
+        AddPanel(hudPanelName, -1, 0, -3, hudSerial, 512, 512);
 
         // waiting for VR response before searching for chatPanel id
         await client.AddSerialCallbackTimeout(hudSerial,
@@ -60,7 +60,7 @@ public class PanelController
         // creates Chat Panel
         var chatSerial = Util.RandomString();
         var chatPanelName = "chatPanel";
-        AddPanel(chatPanelName, 1, 0, 1, chatSerial);
+        AddPanel(chatPanelName, -1, -0.65, -2.9, chatSerial, 512, 512);
 
         // waiting for VR response before searching for chatPanel id
         await client.AddSerialCallbackTimeout(chatSerial,
@@ -120,7 +120,7 @@ public class PanelController
         DrawPanelText(timeDisplayed, 64, 140, 125, hudPanelId);
         DrawPanelText(distanceDisplayed, 64, 140, 195, hudPanelId);
 
-        DrawPanelImage("data/NetworkEngine/images/Icons.png", 30, 102, 64, -192);
+        DrawPanelImage("data/NetworkEngine/images/Icons.png", 30, 102, 64, -192, hudPanelId);
         SwapPanel(hudPanelId);
     }
 
@@ -141,7 +141,7 @@ public class PanelController
         await client.AddSerialCallbackTimeout(serial, ob => { }, () => { }, 100);
     }
 
-    private void AddPanel(string panelName, double x, double y, double z, string serial)
+    private void AddPanel(string panelName, double x, double y, double z, string serial, int height, int width)
     {
         tunnel.SendTunnelMessage(new Dictionary<string, string>()
         {
@@ -151,6 +151,8 @@ public class PanelController
                     { "_name_", panelName },
                     { "_parent_", headId },
                     { "\"_position_\"", $"{x}, {y}, {z}" },
+                    {"\"_height_\"", $"{height}"},
+                    {"\"_width_\"", $"{width}"},
                     { "_serial_", serial }
                 }, JsonFolder.Panel.Path)
             }
@@ -191,7 +193,7 @@ public class PanelController
         await client.AddSerialCallbackTimeout(serial, ob => { }, () => { }, 100);
     }
 
-    private async void DrawPanelImage(string imagePath, double posX, double posY, double sizeX, double sizeY)
+    private async void DrawPanelImage(string imagePath, double posX, double posY, double sizeX, double sizeY, string panelId)
     {
         var serial = Util.RandomString();
         tunnel.SendTunnelMessage(new Dictionary<string, string>
@@ -200,7 +202,7 @@ public class PanelController
                 "\"_data_\"", JsonFileReader.GetObjectAsString("PanelDrawImage",
                     new Dictionary<string, string>
                     {
-                        { "uuid", hudPanelId },
+                        { "uuid", panelId },
                         { "_image_", imagePath },
                         { "\"_position_\"", $"{posX}, {posY}" },
                         { "\"_size_\"", $"{sizeX}, {sizeY}" },
@@ -236,11 +238,11 @@ public class PanelController
         if (!String.IsNullOrEmpty(message)) messageHistory.Enqueue(message);
         
         ClearPanel(chatPanelId);
-        DrawPanelImage("data/NetworkEngine/images/ChatBox.png", 30,12,480, -194);
+        DrawPanelImage("data/NetworkEngine/images/ChatBox.png", 0, 100, 481, -194, chatPanelId);
         var i = 0;
-        foreach (var m in messageHistory)
+        for (int j = 0; j < 5; j++)
         {
-            DrawPanelText($"Dokter: {m}", 24, 100, 100 + i * 10, chatPanelId);
+            DrawPanelText($"Dokter:", 24, 30, 100 + i * 20, chatPanelId);
             i++;
         }
 

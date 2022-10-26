@@ -13,7 +13,7 @@
       },
       "panel" : {
         "size" : [ 1.5, 1.5],
-        "resolution" : [ 512, 512 ],
+        "resolution" : [ "_height_", "_width_" ],
         "background" : [ 0, 0, 0, 0],
         "castShadow" : false
       }

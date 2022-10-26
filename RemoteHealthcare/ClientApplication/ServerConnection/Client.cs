@@ -64,6 +64,7 @@ public class Client : DefaultClientConnection
     public void SetCurrentBikeRecording(string uuid)
     {
         currentBikeRecording = uuid;
+        App.GetBikeHandlerInstance().Bike.Reset();
     }
 
     public void SendValue(string type, double val)

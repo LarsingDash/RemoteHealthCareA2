@@ -242,7 +242,7 @@ public class PanelController
         
         if (!String.IsNullOrEmpty(message))
         {
-            message = String.Concat("Dokter: ", message);
+            message = "Dokter: " + message;
             var output = Regex.Split(message, @"(.{1,32})(?:\s|$)|(.{32})")
                 .Where(x => x.Length > 0)
                 .ToList();

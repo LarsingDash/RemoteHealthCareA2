@@ -55,15 +55,15 @@
                             <Label Content="Bike info" Style="{StaticResource HeaderStyle1}" Foreground="White" FontWeight="Bold"/>
                             <StackPanel Orientation="Horizontal">
                                 <Label Content="Current speed: " Style="{StaticResource LabelStyleMain}" FontWeight="Bold"/>
-                                <Label ContentStringFormat=" {0} m/s" Style="{StaticResource LabelStyleMain}" Content="{Binding LastSession.CurrentSpeed, FallbackValue='0'}"/>
+                                <Label ContentStringFormat=" {0} km/h" Style="{StaticResource LabelStyleMain}" Content="{Binding LastSession.CurrentSpeed, FallbackValue='0'}"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <Label Content="Average Speed: " Style="{StaticResource LabelStyleMain}" FontWeight="Bold"/>
-                                <Label ContentStringFormat=" {0} m/s" Style="{StaticResource LabelStyleMain}" Content="{Binding LastSession.AverageSpeed, FallbackValue='0'}"/>
+                                <Label ContentStringFormat=" {0} km/h" Style="{StaticResource LabelStyleMain}" Content="{Binding LastSession.AverageSpeed, FallbackValue='0'}"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <Label Content="Top Speed: " Style="{StaticResource LabelStyleMain}" FontWeight="Bold"/>
-                                <Label ContentStringFormat=" {0} m/s" Style="{StaticResource LabelStyleMain}" Content="{Binding LastSession.TopSpeed, FallbackValue='0'}"/>
+                                <Label ContentStringFormat=" {0} km/h" Style="{StaticResource LabelStyleMain}" Content="{Binding LastSession.TopSpeed, FallbackValue='0'}"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <Label Content="Distance Travelled: " Style="{StaticResource LabelStyleMain}" FontWeight="Bold"/>

@@ -13,6 +13,7 @@ using LiveCharts.Wpf;
 using LiveCharts;
 using System.DirectoryServices;
 using System.Globalization;
+using System.Threading;
 using ClientApplication.ServerConnection;
 using ClientApplication.ServerConnection.Communication;
 using DoctorApplication.Communication;
@@ -241,21 +242,42 @@ namespace DoctorApplication.MVVM.ViewModel
           }, 1000);
             LastSession.Init();
         }
+
+        private int currentValue = 0;
+        private int waitTimer = 0;
+        private bool waiting = false;
         private void ApplySliderValue()
         {
             if (selectedUser == null)
             {
                 return;
             }
-            Logger.LogMessage(LogImportance.Information, sliderValue.ToString());
-            Client client = App.GetClientInstance();
-            var serial = Util.RandomString();
-            client.SendEncryptedData(JsonFileReader.GetObjectAsString("SetResistance", new Dictionary<string, string>()
+
+            waitTimer = 1000;
+            currentValue = sliderValue;
+            if (waiting)
             {
-                {"_serial_" , serial},
-                {"_resistance_" , SliderValue.ToString()},
-                {"_user_", selectedUser.UserName }
-            }, JsonFolder.Json.Path));
+                return;
+            }
+            new Thread(start =>
+            {
+                waiting = true;
+                while (waitTimer > 0)
+                {
+                    Thread.Sleep(1);
+                    waitTimer--;
+                }
+                Logger.LogMessage(LogImportance.Information, sliderValue.ToString());
+                Client client = App.GetClientInstance();
+                var serial = Util.RandomString();
+                client.SendEncryptedData(JsonFileReader.GetObjectAsString("SetResistance", new Dictionary<string, string>()
+                {
+                    {"_serial_" , serial},
+                    {"_resistance_" , SliderValue.ToString()},
+                    {"_user_", selectedUser.UserName }
+                }, JsonFolder.Json.Path));
+                waiting = false;
+            }).Start();
         }
         public void StopBikeRecording(string type)
         {

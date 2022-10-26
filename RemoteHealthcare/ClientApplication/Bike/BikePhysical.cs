@@ -15,11 +15,14 @@ namespace ClientApplication.Bike
         
         private BikeHandler handler;
         private Dictionary<int, DataPage> pages;
-        private BluetoothDevice bikeDevice;
+        private BluetoothDevice? bikeDevice;
         private BluetoothDevice heartRateDevice;
+
+       
 
         public BikePhysical(BikeHandler handler)
         {
+
             this.handler = handler;
             pages = new Dictionary<int, DataPage>()
             {
@@ -34,26 +37,28 @@ namespace ClientApplication.Bike
         {
             bikeDevice = new BluetoothDevice($"Tacx Flux {id}", "6e40fec1-b5a3-f393-e0a9-e50e24dcca9e", "6e40fec2-b5a3-f393-e0a9-e50e24dcca9e", ValueChangedBike);
             await bikeDevice.StartConnection();
-            // heartRateDevice = new BluetoothDevice("Decathlon Dual HR","HeartRate", "HeartRateMeasurement", ValueChangedHeartRate);
-            // await heartRateDevice.StartConnection();
-
-            // if (!bikeDevice.Connected || heartRateDevice.Connected)
-            if (!bikeDevice.Connected)
+            await Task.Delay(5000);
+            heartRateDevice = new BluetoothDevice("Decathlon Dual HR","HeartRate", "HeartRateMeasurement", ValueChangedHeartRate);
+            await heartRateDevice.StartConnection();
+            if (!bikeDevice.Connected || !heartRateDevice.Connected)
             {
-                Logger.LogMessage(LogImportance.Information, "Switching to Bike Simulator");
-                handler.Bike = new BikeSimulator(handler);
+                
+                Logger.LogMessage(LogImportance.Information, $"Switching to Bike Simulator for Bike: {!bikeDevice.Connected}, Heart: {!heartRateDevice.Connected} ");
+                new BikeSimulator(handler, !bikeDevice.Connected, !heartRateDevice.Connected);
             }
             else
             {
                 BikeId = $"Tacx Flux {id}";
                 SetResistanceAsync(1);
                 Thread.Sleep(10000);
-                SetResistanceAsync(1000);
+                SetResistanceAsync(0);
             }
         }
 
         public override void SetResistanceAsync(int resistance)
         {
+            if (bikeDevice == null)
+                return;
             byte[] output = new byte[13];
             output[0] = 0x4A; //sync byte
             output[1] = 0x09; //Message Lenght

@@ -10,8 +10,14 @@ public class BikeSimulator : Bike
     private int startedTime;
 
     private readonly BikeHandler handler;
-    public BikeSimulator(BikeHandler handler)
+    
+    private bool bike;
+    private bool heart;
+    public BikeSimulator(BikeHandler handler, bool bike = true, bool heart = true)
     {
+        
+        this.bike = bike;
+        this.heart = heart;
         lastTicks = Environment.TickCount;
         BikeId = $"SIM {new Random().Next(5000)}";
         ticker = 0;
@@ -36,11 +42,16 @@ public class BikeSimulator : Bike
             ticker++;
 
             bikeData[DataType.ElapsedTime] = currentTicks - startedTime;
-            
-            UpdateHeartRate();
-            UpdateSpeed();
-            UpdateDistance(currentTicks - lastTicks);
-            UpdateElapsedTime(currentTicks - startedTime);
+            if (heart)
+            {
+                UpdateHeartRate();
+            }
+            if (bike)
+            {
+                UpdateSpeed();
+                UpdateDistance(currentTicks - lastTicks);
+                UpdateElapsedTime(currentTicks - startedTime);
+            }
 
             lastTicks = currentTicks;
             

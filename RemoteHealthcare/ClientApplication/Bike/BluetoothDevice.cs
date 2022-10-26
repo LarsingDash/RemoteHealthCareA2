@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Avans.TI.BLE;
 using Shared.Log;
@@ -34,6 +35,8 @@ public class BluetoothDevice
         Logger.LogMessage(LogImportance.Debug, $"Starting connection of device {deviceName}");
         //Thread.Sleep(500);
         int errorCode = 0;
+        List<string> devices = ble.ListDevices();
+        await Task.Delay(500);
         errorCode = await ble.OpenDevice(deviceName);
         CheckErrorCode(errorCode, "OpenDevice");
         if (service != null)

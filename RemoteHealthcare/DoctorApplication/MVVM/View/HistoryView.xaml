@@ -99,8 +99,8 @@
 
             <lvc:CartesianChart.Series>
                 <lvc:LineSeries Title="speed values"
-                    Values="{Binding LastSession.SpeedGraphValues}"
-                    Configuration="{Binding LastSession.SpeedDataMapper}"/>
+                    Values="{Binding SelectedSession.SpeedGraphValues}"
+                    Configuration="{Binding SelectedSession.SpeedDataMapper}"/>
             </lvc:CartesianChart.Series>
         </lvc:CartesianChart>
         <Grid Grid.Row="2" Grid.Column="1">
@@ -194,13 +194,15 @@
 
 
         </Grid>
-        <lvc:CartesianChart Grid.Row="1" Grid.Column="2" Series="{Binding SeriesCollection}" Zoom="X">
-            <lvc:CartesianChart.AxisY>
-                <lvc:Axis LabelFormatter="{Binding YFormatter}" Title="Heartrate" />
-            </lvc:CartesianChart.AxisY>
-            <lvc:CartesianChart.AxisX>
-                <lvc:Axis Labels="{Binding Labels}" Title="Time HH:MM" />
-            </lvc:CartesianChart.AxisX>
+        <lvc:CartesianChart Grid.Row="1" Grid.Column="2"  Zoom="Xy">
+
+
+
+            <lvc:CartesianChart.Series>
+                <lvc:LineSeries Title="speed values"
+                    Values="{Binding SelectedSession.SpeedGraphValues}"
+                    Configuration="{Binding SelectedSession.SpeedDataMapper}"/>
+            </lvc:CartesianChart.Series>
         </lvc:CartesianChart>
         <Grid Grid.Row="2" Grid.Column="2">
             <Grid.ColumnDefinitions>

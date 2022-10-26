@@ -200,8 +200,8 @@
 
             <lvc:CartesianChart.Series>
                 <lvc:LineSeries Title="speed values"
-                    Values="{Binding SelectedSession.SpeedGraphValues}"
-                    Configuration="{Binding SelectedSession.SpeedDataMapper}"/>
+                    Values="{Binding SelectedSession.HeartGraphValues}"
+                    Configuration="{Binding SelectedSession.HeartDataMapper}"/>
             </lvc:CartesianChart.Series>
         </lvc:CartesianChart>
         <Grid Grid.Row="2" Grid.Column="2">

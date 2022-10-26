@@ -315,7 +315,7 @@ namespace DoctorApplication.MVVM.Model
                 speedcounter++;
                 double speedValue = double.Parse(key["value"]!.ToObject<string>()!);
                 this.speed.Add(speedValue);
-                AddPoint(speedValue, speedcounter);
+                AddSpeedPoint(speedValue, speedcounter);
                 CalculateTimeElapsed(key["time"].ToObject<string>()!);
             }
             CurrentSpeed = this.speed.LastOrDefault();
@@ -336,14 +336,17 @@ namespace DoctorApplication.MVVM.Model
                 TimeElapsed = "? Seconds";
             }
         }
-
+        double heartcounter = 0;
         public void AddDataHeartRate(JObject data)
         {
             JArray val = (JArray)data["heartrate"];
 
             foreach (JObject key in val)
             {
-                this.heartRate.Add(double.Parse(key["value"]!.ToObject<string>()!));
+                heartcounter++;
+                double heartRateValue = double.Parse(key["value"]!.ToObject<string>()!);
+                this.heartRate.Add(heartRateValue);
+                AddHeartPoint(heartRateValue, heartcounter);
             }
             CurrentRate = this.heartRate.LastOrDefault();
             UpdateHeartValues(this.heartRate);
@@ -358,7 +361,18 @@ namespace DoctorApplication.MVVM.Model
                 OnPropertyChanged(nameof(SpeedDataMapper));
             }
         }
+        private object heartDataMapper;
+        public object HeartDataMapper
+        {
+            get => this.heartDataMapper;
+            set
+            {
+                this.heartDataMapper = value;
+                OnPropertyChanged(nameof(HeartDataMapper));
+            }
+        }
         public ChartValues<ObservablePoint> SpeedGraphValues { get; }
+        public ChartValues<ObservablePoint> HeartGraphValues { get; }
 
         public SessionModel(string sessionName)
         {
@@ -377,13 +391,19 @@ namespace DoctorApplication.MVVM.Model
             HighestRate = 0;
 
             this.SpeedGraphValues = new ChartValues<ObservablePoint>();
+            this.HeartGraphValues = new ChartValues<ObservablePoint>();
 
             // Plot a sine graph
 
-
-
+            // Setup the data mapper
+            //this.SpeedDataMapper = new CartesianMapper<ObservablePoint>()
+            //  .X(point => point.X)
+            //  .Y(point => point.Y)
+            //  .Stroke(point => point.Y > 0.3 ? Brushes.Red : Brushes.LightGreen)
+            //  .Fill(point => point.Y > 0.3 ? Brushes.Red : Brushes.LightGreen);
             this.SpeedDataMapper = new CartesianMapper<ObservablePoint>().X(point => point.X).Y(point => point.Y);
-              
+            this.HeartDataMapper = new CartesianMapper<ObservablePoint>().X(point => point.X).Y(point => point.Y);
+
         }
         public SessionModel()
         {
@@ -396,9 +416,9 @@ namespace DoctorApplication.MVVM.Model
             HighestRate = 0;
 
             this.SpeedGraphValues = new ChartValues<ObservablePoint>();
+            this.HeartGraphValues = new ChartValues<ObservablePoint>();
 
             // Plot a sine graph
-
 
             // Setup the data mapper
             //this.SpeedDataMapper = new CartesianMapper<ObservablePoint>()
@@ -407,6 +427,7 @@ namespace DoctorApplication.MVVM.Model
             //  .Stroke(point => point.Y > 0.3 ? Brushes.Red : Brushes.LightGreen)
             //  .Fill(point => point.Y > 0.3 ? Brushes.Red : Brushes.LightGreen);
             this.SpeedDataMapper = new CartesianMapper<ObservablePoint>().X(point => point.X).Y(point => point.Y);
+            this.HeartDataMapper = new CartesianMapper<ObservablePoint>().X(point => point.X).Y(point => point.Y);
 
         }
 
@@ -423,6 +444,7 @@ namespace DoctorApplication.MVVM.Model
             heartRate = new List<double>();
 
             this.SpeedGraphValues = new ChartValues<ObservablePoint>();
+            this.HeartGraphValues = new ChartValues<ObservablePoint>();
 
             // Plot a sine graph
 
@@ -433,6 +455,7 @@ namespace DoctorApplication.MVVM.Model
             //  .Stroke(point => point.Y > 0.3 ? Brushes.Red : Brushes.LightGreen)
             //  .Fill(point => point.Y > 0.3 ? Brushes.Red : Brushes.LightGreen);
             this.SpeedDataMapper = new CartesianMapper<ObservablePoint>().X(point => point.X).Y(point => point.Y);
+            this.HeartDataMapper = new CartesianMapper<ObservablePoint>().X(point => point.X).Y(point => point.Y);
 
         }
         public void PlotExample()
@@ -453,7 +476,7 @@ namespace DoctorApplication.MVVM.Model
                 this.SpeedGraphValues.Add(point);
             }
         }
-        public void AddPoint(double speed, double time)
+        public void AddSpeedPoint(double speed, double time)
         {
             
                 var point = new ObservablePoint()
@@ -464,6 +487,18 @@ namespace DoctorApplication.MVVM.Model
 
                 this.SpeedGraphValues.Add(point);
             
+        }
+        public void AddHeartPoint(double heartRate, double time)
+        {
+
+            var point = new ObservablePoint()
+            {
+                X = Math.Round(time, 2),
+                Y = Math.Round(heartRate, 2)
+            };
+
+            this.HeartGraphValues.Add(point);
+
         }
         private DateTime CustomParseDate(string time)
         {

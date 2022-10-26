@@ -2,9 +2,7 @@
   "id": "scene/road/add",
   "data": {
     "route": "_uuid_",
-    "diffuse": "data/NetworkEngine/textures/custom/Path.jpg",
-    "normal": "data/NetworkEngine/textures/tarmac_normal.png",
-    "specular": "data/NetworkEngine/textures/tarmac_specular.png",
+    "diffuse": "data/custom/terrain/Path.jpg",
     "heightoffset": 0.01
   }
 }

@@ -25,7 +25,7 @@ namespace ClientSide.VR
         private readonly float[,] heights = new float[mapSize, mapSize];
         public string routeId;
 
-        private const string treePath = "data/NetworkEngine/models/trees/pine/Pine_Low-poly_1.obj";
+        private const string treePath = "data/custom/trees/pine/object.obj";
         public List<Vector2> route = new List<Vector2>();
 
         public WorldGen(VRClient vrClient, Tunnel tunnel)
@@ -123,8 +123,8 @@ namespace ClientSide.VR
                         "\"_data_\"", JsonFileReader.GetObjectAsString("AddLayer", new Dictionary<string, string>
                         {
                             { "_uuid_", terrainId },
-                            { "_diffuse_", "data/NetworkEngine/textures/custom/Ground_d.jpg" },
-                            { "_normal_", "data/NetworkEngine/textures/custom/Ground_n.jpg" }
+                            { "_diffuse_", "data/custom/terrain/Ground_d.jpg" },
+                            { "_normal_", "data/custom/terrain/Ground_n.jpg" }
                         }, JsonFolder.Terrain.Path)
                     },
                 });

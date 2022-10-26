@@ -21,15 +21,18 @@ public class VRClient : DefaultClientConnection
     public WorldGen worldGen;
     public BikeController BikeController;
     public PanelController PanelController;
+    private bool hasStarted;
 
     public List<string> hideMessages = new List<string>();
-
-    private bool started = false;
     
+    //Vr settings
+    public string skyboxFolder = "data/custom/skyboxes/yellow";
+
     public void Setup()
     {
-        if (started)
-            return;
+        if (hasStarted) return;
+        hasStarted = true;
+        
         hideMessages = new List<string>()
         {
             "session/list",
@@ -114,7 +117,15 @@ public class VRClient : DefaultClientConnection
         
         tunnel.SendTunnelMessage(new Dictionary<string, string>
         {
-            {"\"_data_\"", JsonFileReader.GetObjectAsString("SetSkybox", new Dictionary<string, string>(), JsonFolder.TunnelMessages.Path)},
+            {"\"_data_\"", JsonFileReader.GetObjectAsString("SetSkybox", new Dictionary<string, string>
+            {
+                {"_xpos_", $"{skyboxFolder}/right"},
+                {"_xneg_", $"{skyboxFolder}/left"},
+                {"_ypos_", $"{skyboxFolder}/up"},
+                {"_yneg_", $"{skyboxFolder}/down"},
+                {"_zpos_", $"{skyboxFolder}/back"},
+                {"_zneg_", $"{skyboxFolder}/front"},
+            }, JsonFolder.TunnelMessages.Path)},
         });
 
         tunnel.SendTunnelMessage(new Dictionary<string, string>
@@ -127,17 +138,6 @@ public class VRClient : DefaultClientConnection
          worldGen = new WorldGen(this, tunnel);
          BikeController = new BikeController(this, tunnel, worldGen);
          PanelController = new PanelController(this, tunnel);
-         
-         //
-         // //Start HUDController
-         // panelController = new PanelController(this, tunnel);
-         // var HUDThread = new Thread(panelController.RunController);
-         //
-         // bikeController = new BikeController(this, tunnel);
-         // var bikeAnimationThread = new Thread(bikeController.RunController);
-         //
-         // HUDThread.Start();
-         // bikeAnimationThread.Start();
     }
 
     public async Task<string> FindObjectUuid(string name)

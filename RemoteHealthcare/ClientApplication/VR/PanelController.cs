@@ -122,27 +122,36 @@ public class PanelController
         DrawPanelText(timeDisplayed, 64, 140, 125, hudPanelId);
         DrawPanelText(distanceDisplayed, 60, 140, 195, hudPanelId);
 
-        DrawPanelImage("data/NetworkEngine/images/Icons.png", 30, 102, 64, -192, hudPanelId);
+        DrawPanelImage("data/custom/images/Icons.png", 30, 102, 64, -192, hudPanelId);
         SwapPanel(hudPanelId);
     }
-
-    private async void SwapPanel(string panelId)
+    
+    public void UpdateChat(string message)
     {
-        var serial = Util.RandomString();
-        tunnel.SendTunnelMessage(new Dictionary<string, string>
-        {
-            {
-                "\"_data_\"", JsonFileReader.GetObjectAsString("SwapPanel",
-                    new Dictionary<string, string>
-                    {
-                        { "uuid", panelId },
-                        { "_serial_", serial }
-                    }, JsonFolder.Panel.Path)
-            }
-        }, true);
-        await client.AddSerialCallbackTimeout(serial, ob => { }, () => { }, 100);
-    }
+        ClearPanel(chatPanelId);
+        DrawPanelImage("data/custom/images/ChatBox.png", 0, 100, 481, -194, chatPanelId);
 
+        if (!String.IsNullOrEmpty(message))
+        {
+            message = "Dokter: " + message;
+            var output = Regex.Split(message, @"(.{1,32})(?:\s|$)|(.{32})")
+                .Where(x => x.Length > 0)
+                .ToList();
+            output.ForEach(s => messageHistory.Enqueue(s));
+
+            int i = 0;
+            foreach (var m in messageHistory)
+            {
+                DrawPanelText(m, 30, 10, 60 + i * 30, chatPanelId);
+                i++;
+            }
+            
+            Logger.LogMessage(LogImportance.Debug, $"Added message to VR: {message}");
+        }
+        
+        SwapPanel(chatPanelId);
+    }
+    
     private void AddPanel(string panelName, double x, double y, double z, string serial, int height, int width)
     {
         tunnel.SendTunnelMessage(new Dictionary<string, string>()
@@ -161,13 +170,13 @@ public class PanelController
         });
     }
 
-    private async void DrawPanelOutlines(string panelId)
+    private async void ClearPanel(string panelId)
     {
         var serial = Util.RandomString();
         tunnel.SendTunnelMessage(new Dictionary<string, string>
         {
             {
-                "\"_data_\"", JsonFileReader.GetObjectAsString("DrawPanelLines",
+                "\"_data_\"", JsonFileReader.GetObjectAsString("ClearPanel",
                     new Dictionary<string, string>
                     {
                         { "uuid", panelId },
@@ -177,14 +186,31 @@ public class PanelController
         }, true);
         await client.AddSerialCallbackTimeout(serial, ob => { }, () => { }, 100);
     }
-
-    private async void ClearPanel(string panelId)
+    
+    private async void SwapPanel(string panelId)
     {
         var serial = Util.RandomString();
         tunnel.SendTunnelMessage(new Dictionary<string, string>
         {
             {
-                "\"_data_\"", JsonFileReader.GetObjectAsString("ClearPanel",
+                "\"_data_\"", JsonFileReader.GetObjectAsString("SwapPanel",
+                    new Dictionary<string, string>
+                    {
+                        { "uuid", panelId },
+                        { "_serial_", serial }
+                    }, JsonFolder.Panel.Path)
+            }
+        }, true);
+        await client.AddSerialCallbackTimeout(serial, ob => { }, () => { }, 100);
+    }
+    
+    private async void DrawPanelOutlines(string panelId)
+    {
+        var serial = Util.RandomString();
+        tunnel.SendTunnelMessage(new Dictionary<string, string>
+        {
+            {
+                "\"_data_\"", JsonFileReader.GetObjectAsString("DrawPanelLines",
                     new Dictionary<string, string>
                     {
                         { "uuid", panelId },
@@ -233,31 +259,5 @@ public class PanelController
             }
         }, true);
         await client.AddSerialCallbackTimeout(serial, ob => { }, () => { }, 1000);
-    }
-
-    public void UpdateChat(string message)
-    {
-        ClearPanel(chatPanelId);
-        DrawPanelImage("data/NetworkEngine/images/ChatBox.png", 0, 100, 481, -194, chatPanelId);
-        
-        if (!String.IsNullOrEmpty(message))
-        {
-            message = "Dokter: " + message;
-            var output = Regex.Split(message, @"(.{1,32})(?:\s|$)|(.{32})")
-                .Where(x => x.Length > 0)
-                .ToList();
-            output.ForEach(s => messageHistory.Enqueue(s));
-
-            int i = 0;
-            foreach (var m in messageHistory)
-            {
-                DrawPanelText(m, 30, 10, 60 + i * 30, chatPanelId);
-                i++;
-            }
-            
-            Logger.LogMessage(LogImportance.Debug, $"Added message to VR: {message}");
-        }
-        SwapPanel(chatPanelId);
-
     }
 }

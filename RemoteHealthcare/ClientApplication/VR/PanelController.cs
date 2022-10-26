@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using ClientApplication;
@@ -118,7 +120,7 @@ public class PanelController
         DrawPanelOutlines(hudPanelId);
         DrawPanelText(speedDisplayed, 64, 140, 65, hudPanelId);
         DrawPanelText(timeDisplayed, 64, 140, 125, hudPanelId);
-        DrawPanelText(distanceDisplayed, 64, 140, 195, hudPanelId);
+        DrawPanelText(distanceDisplayed, 60, 140, 195, hudPanelId);
 
         DrawPanelImage("data/NetworkEngine/images/Icons.png", 30, 102, 64, -192, hudPanelId);
         SwapPanel(hudPanelId);
@@ -235,18 +237,27 @@ public class PanelController
 
     public void UpdateChat(string message)
     {
-        if (!String.IsNullOrEmpty(message)) messageHistory.Enqueue(message);
-        
         ClearPanel(chatPanelId);
         DrawPanelImage("data/NetworkEngine/images/ChatBox.png", 0, 100, 481, -194, chatPanelId);
-        var i = 0;
-        for (int j = 0; j < 5; j++)
+        
+        if (!String.IsNullOrEmpty(message))
         {
-            DrawPanelText($"Dokter:", 24, 30, 100 + i * 20, chatPanelId);
-            i++;
-        }
+            message = String.Concat("Dokter: ", message);
+            var output = Regex.Split(message, @"(.{1,32})(?:\s|$)|(.{32})")
+                .Where(x => x.Length > 0)
+                .ToList();
+            output.ForEach(s => messageHistory.Enqueue(s));
 
+            int i = 0;
+            foreach (var m in messageHistory)
+            {
+                DrawPanelText(m, 30, 10, 60 + i * 30, chatPanelId);
+                i++;
+            }
+            
+            Logger.LogMessage(LogImportance.Debug, $"Added message to VR: {message}");
+        }
         SwapPanel(chatPanelId);
-        Logger.LogMessage(LogImportance.Debug, $"Added message to VR: {message}");
+
     }
 }

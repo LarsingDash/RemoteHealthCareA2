@@ -271,8 +271,8 @@ namespace DoctorApplication.MVVM.Model
                         model.AddDataHeartRate(session);
                         try
                         {
-                            model.startTime = CustomParseDate(session["start-time"]!.ToObject<string>()!);
-                            model.endTime = !session["end-time"]!.ToObject<string>()!.Equals("_endtime_")
+                            model.StartTime = CustomParseDate(session["start-time"]!.ToObject<string>()!);
+                            model.EndTime = !session["end-time"]!.ToObject<string>()!.Equals("_endtime_")
                                 ? CustomParseDate(session["end-time"]!.ToObject<string>()!)
                                 : DateTime.MinValue;
                         }

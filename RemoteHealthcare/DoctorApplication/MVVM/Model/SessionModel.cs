@@ -5,6 +5,7 @@ using System.CodeDom;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.SqlTypes;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization.Metadata;
@@ -16,22 +17,48 @@ namespace DoctorApplication.MVVM.Model
     public class SessionModel : INotifyPropertyChanged
     {
         public string sessionName { get; set; }
-        public DateTime startTime { get; set; }
-        public DateTime endTime { get; set; }
+
+        private DateTime startTime;
+        public DateTime StartTime {
+            get
+            {
+                return startTime;
+            }
+            set
+            {
+                startTime = value;
+                OnPropertyChanged(nameof(StartTime));
+            }
+        }
+
+        private DateTime endTime;
+        public DateTime EndTime
+        {
+            get
+            {
+                return endTime;
+            }
+            set
+            {
+                endTime = value;
+                OnPropertyChanged(nameof(EndTime));
+            }
+        }
 
         public int sessionint = 0;
 
         string timeElapsed;
-
+        
+                //if (endTime == null)
+                //{
+                //    return (DateTime.Now - startTime).TotalSeconds + "Seconds";
+                //}
+                //return (endTime - startTime).TotalSeconds + "Seconds";
         public string TimeElapsed
         {
             get
             {
-                if (endTime == null)
-                {
-                    return (DateTime.Now - startTime).TotalSeconds + "Seconds";
-                }
-                return (endTime - startTime).TotalSeconds + "Seconds";
+                return timeElapsed;
             }
             set
             {
@@ -276,10 +303,24 @@ namespace DoctorApplication.MVVM.Model
             foreach (JObject key in val)
             {
                 this.speed.Add(double.Parse(key["value"]!.ToObject<string>()!));
+                CalculateTimeElapsed(key["time"].ToObject<string>()!);
+                Console.WriteLine("Time: " + TimeElapsed + " " + CurrentDistance + " -- " + StartTime + ":" + EndTime);
             }
             CurrentSpeed = this.speed.LastOrDefault();
             UpdateSpeedValues(this.speed);
 
+
+        }
+
+        private void CalculateTimeElapsed(string val)
+        {
+            try
+            {
+                TimeElapsed = Math.Round(double.Parse(val) / 1000, 0) + " Seconds";
+            } catch(Exception e)
+            {
+                TimeElapsed = "? Seconds";
+            }
         }
 
         public void AddDataHeartRate(JObject data)
@@ -332,5 +373,11 @@ namespace DoctorApplication.MVVM.Model
             speed = new List<double>();
             heartRate = new List<double>();
         }
+        private DateTime CustomParseDate(string time)
+        {
+            return DateTime.ParseExact(time, "yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
+        }
     }
+
+
 }

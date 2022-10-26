@@ -19,24 +19,29 @@ public class PanelController
 
     private string headId;
     private string hudPanelId;
+    private string chatPanelId;
     private string speedDisplayed;
     private string timeDisplayed;
     private string distanceDisplayed;
 
     private bool update = false;
-
+    private FixedSizedQueue<string> messageHistory;
 
     public PanelController(VRClient client, Tunnel tunnel)
     {
         this.client = client;
         this.tunnel = tunnel;
+        this.messageHistory = new FixedSizedQueue<string>(5);
     }
 
     public async void Setup()
     {
+        // finds Head Id 
         headId = await client.FindObjectUuid("Head");
         Logger.LogMessage(LogImportance.DebugHighlight, $"HeadId: {headId}");
         
+        // creates VR Panel
+        // todo: make the fields in AddPanel overrideable?
         var serial = Util.RandomString();
         tunnel.SendTunnelMessage(new Dictionary<string, string>()
         {
@@ -48,16 +53,42 @@ public class PanelController
             },
         });
 
+        // waiting for VR response before searching for chatPanel id
         await client.AddSerialCallbackTimeout(serial, ob =>
-        { }, () => { }, 1000);
+        {
+            Logger.LogMessage(LogImportance.DebugHighlight, "HUD panel is added in VR scene");
+                
+        }, () => { }, 1000);
         hudPanelId = await client.FindObjectUuid("hudPanel");
-        Logger.LogMessage(LogImportance.DebugHighlight, $"HudPanelId: {hudPanelId}");
+        Logger.LogMessage(LogImportance.Information, $"HudPanelId: {hudPanelId}");
+        
+        
+        // creates Chat Panel
+        serial = Util.RandomString();
+        tunnel.SendTunnelMessage(new Dictionary<string, string>()
+        {
+            {"\"_data_\"", JsonFileReader.GetObjectAsString("AddPanel", new Dictionary<string, string>()
+                {
+                    {"_name_", "chatPanel"}, {"_parent_", headId},
+                    { "_serial_", serial}
+                }, JsonFolder.Panel.Path)
+            },
+        });
+
+        // waiting for VR response before searching for chatPanel id
+        await client.AddSerialCallbackTimeout(serial, ob =>
+        {
+            Logger.LogMessage(LogImportance.DebugHighlight, "Chat panel is added in VR scene");
+
+        }, () => { }, 1000);
+        chatPanelId = await client.FindObjectUuid("chatPanel");
+        Logger.LogMessage(LogImportance.Information, $"ChatPanelId: {chatPanelId}");
+
         
         BikeHandler handler = App.GetBikeHandlerInstance();
         handler.Subscribe(DataType.Speed, speedRaw =>
         {
             var speed = Math.Round(speedRaw * 3.6,1);
-            // todo: format speed to 1 decimal
            speedDisplayed = speed + " km/h";
            update = true;
         });
@@ -94,27 +125,27 @@ public class PanelController
             {
                 Thread.Sleep(500);
                 if (!update) continue;
-                UpdatePanel();
+                UpdateHudPanel();
                 update = !update;
             }
         });
         thread.Start();
-        UpdatePanel();
+        UpdateHudPanel();
     }
 
-    private async void UpdatePanel()
+    private void UpdateHudPanel()
     { 
-        ClearPanel();
-        DrawPanelOutlines();
-        DrawPanelText(speedDisplayed, 64, 140, 65);
-        DrawPanelText(timeDisplayed, 64, 140, 125);
-        DrawPanelText(distanceDisplayed, 64, 140, 195);    
+        ClearPanel(hudPanelId);
+        DrawPanelOutlines(hudPanelId);
+        DrawPanelText(speedDisplayed, 64, 140, 65, hudPanelId);
+        DrawPanelText(timeDisplayed, 64, 140, 125, hudPanelId);
+        DrawPanelText(distanceDisplayed, 64, 140, 195, hudPanelId);    
         
         DrawPanelImage("data/NetworkEngine/images/Icons.png", 30, 102, 64, -192);
-        SwapPanel();
+        SwapPanel(hudPanelId);
     }
 
-    private async void SwapPanel()
+    private async void SwapPanel(string panelId)
     {
         var serial = Util.RandomString();
         tunnel.SendTunnelMessage(new Dictionary<string, string>
@@ -123,7 +154,7 @@ public class PanelController
                 "\"_data_\"", JsonFileReader.GetObjectAsString("SwapPanel",
                     new Dictionary<string, string>
                     {
-                        { "uuid", hudPanelId },
+                        { "uuid", panelId},
                         {"_serial_", serial}
                     }, JsonFolder.Panel.Path)
             }
@@ -132,7 +163,7 @@ public class PanelController
 
     }
 
-    private async void DrawPanelOutlines()
+    private async void DrawPanelOutlines(string panelId)
     {
         var serial = Util.RandomString();
         tunnel.SendTunnelMessage(new Dictionary<string, string>
@@ -141,7 +172,7 @@ public class PanelController
                 "\"_data_\"", JsonFileReader.GetObjectAsString("DrawPanelLines",
                     new Dictionary<string, string>
                     {
-                        { "uuid", hudPanelId },
+                        { "uuid", panelId },
                         {"_serial_", serial}
                     }, JsonFolder.Panel.Path)
             }
@@ -149,7 +180,7 @@ public class PanelController
         await client.AddSerialCallbackTimeout(serial, ob => { }, () => { }, 100);
     }
 
-    private async void ClearPanel()
+    private async void ClearPanel(string panelId)
     {
         var serial = Util.RandomString();
         tunnel.SendTunnelMessage(new Dictionary<string, string>
@@ -158,7 +189,7 @@ public class PanelController
                 "\"_data_\"", JsonFileReader.GetObjectAsString("ClearPanel",
                     new Dictionary<string, string>
                     {
-                        { "uuid", hudPanelId },
+                        {"uuid", panelId},
                         {"_serial_", serial}
                     }, JsonFolder.Panel.Path)
             }
@@ -185,7 +216,7 @@ public class PanelController
         }, true);
         await client.AddSerialCallbackTimeout(serial, ob => { }, () => { }, 1000);
     }
-    private async void DrawPanelText(string text, double size, double x, double y)
+    private async void DrawPanelText(string text, double size, double x, double y, string panelId)
     {
         var serial = Util.RandomString();
         tunnel.SendTunnelMessage(new Dictionary<string, string>
@@ -194,7 +225,7 @@ public class PanelController
                 "\"_data_\"", JsonFileReader.GetObjectAsString("PanelDrawText",
                     new Dictionary<string, string>
                     {
-                        { "uuid", hudPanelId },
+                        { "uuid", panelId },
                         { "_text_", text },
                         {"\"_size_\"", $"{size}"},
                         { "\"_position_\"", $"{x}, {y}"},
@@ -205,4 +236,19 @@ public class PanelController
         await client.AddSerialCallbackTimeout(serial, ob => { }, () => { }, 1000);
     }
 
+    public void UpdateChat(string message)
+    {
+        messageHistory.Enqueue(message);
+        
+        ClearPanel(chatPanelId);
+        DrawPanelOutlines(chatPanelId);
+        
+        int i = 0;
+        foreach (var m in messageHistory)
+        {
+            DrawPanelText($"Dokter: {message}", 12, 10, 10 + i * 10, chatPanelId);
+            i++;
+        }
+        SwapPanel(chatPanelId);
+    }
 }

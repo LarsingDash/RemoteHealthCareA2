@@ -66,17 +66,6 @@ namespace DoctorApplication.MVVM.ViewModel
         
         private string currentSessionUuid;
 
-        private string buttonText;
-
-        public string ButtonText
-        {
-            get { return buttonText; }
-            set
-            {
-                buttonText = value;
-                OnPropertyChanged();
-            }
-        }
         private string buttonText2;
 
         public string ButtonText2
@@ -88,14 +77,24 @@ namespace DoctorApplication.MVVM.ViewModel
                 OnPropertyChanged();
             }
         }
+        private string recordingText;
+
+        public string RecordingText
+        {
+            get { return recordingText; }
+            set
+            {
+                recordingText = value;
+                OnPropertyChanged();
+            }
+        }
 
 
         //commands
         public RelayCommand SendCommand { get; set; }
         public RelayCommand GetUserCommand { get; set; }
-        public RelayCommand StartRecordingCommand { get; set; }
         public RelayCommand EmergencyPressedCommand { get; set; }
-        public RelayCommand DebugCommand { get; set; }
+        public RelayCommand StartSTopRecordingCommand { get; set; }
         public RelayCommand ChatTypeCommand { get; set; }
 
         //Data collections
@@ -166,26 +165,45 @@ namespace DoctorApplication.MVVM.ViewModel
             //initializing sendcommand 
             SendCommand = new RelayCommand(SendMessage);
             GetUserCommand = new RelayCommand(GetUser);
-            StartRecordingCommand = new RelayCommand(StartRecordingToggled);
             ChatTypeCommand = new RelayCommand(ChatTypeToggled);
             EmergencyPressedCommand = new RelayCommand(EmergencyFunction);
-            DebugCommand = new RelayCommand(DebugFunction);
+            StartSTopRecordingCommand = new RelayCommand(StartStopRecordingFunction);
 
             //predetermined text in button
-            buttonText = "Start";
             buttonText2 = "Single User";
+            RecordingText = "Start Recording";
 
             dataHandler = new ConnectionHandler();
         }
-        private void DebugFunction(object obj)
+        public bool IsRecordingActive = false;
+        private void StartStopRecordingFunction(object obj)
         {
-            Console.WriteLine(SelectedUser.UserName + " " + SelectedUser.Sessions.Count + " = " + LastSession.LastSpeed) ;
-            OnPropertyChanged("LastSession");
-            //Console.WriteLine(SelectedUser.UserName + " " + SelectedUser.Sessions.Count + " ' " + SelectedUser.LastSession.LastSpeed + " | " + string.Join(",", SelectedUser.LastSession.Speed.ToArray())) ;
+            if (SelectedUser == null)
+            {
+                return;
+            }
+            if (!IsRecordingActive)
+            {
+                IsRecordingActive = true;
+                RecordingText = "Stop Recording";
+                StartBikeRecording();
+            }
+            else
+            {
+                IsRecordingActive = false;
+                RecordingText = "Start Recording";
+                StopBikeRecording("normal");
+            }
         }
         private void EmergencyFunction(object obj)
         {
+            if(SelectedUser == null)
+            {
+                return;
+            }
             StopBikeRecording("emergencyStop");
+            IsRecordingActive=false;
+            RecordingText = "Start Recording";
             Console.WriteLine("Emergency Pressed!");
         }
 
@@ -323,24 +341,7 @@ namespace DoctorApplication.MVVM.ViewModel
         {
             Console.WriteLine(user.ToString());
         }
-        public void StartRecordingToggled(object state)
-        {
-            if ((bool)state)
-            {
-                //checked
-                Console.WriteLine("Checked");
-                ButtonText = "Stop";
-                StartBikeRecording();
-            }
-            else
-            {
-                //unchecked
-                Console.WriteLine("Unchecked");
-                ButtonText = "Start";
-                StopBikeRecording("normal");
 
-            }
-        }
         public void ChatTypeToggled(object state)
         {
             if ((bool)state)

@@ -161,7 +161,7 @@
 
             <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    ContentStringFormat=" {0} m/s"
+                    ContentStringFormat=" {0} km/h"
                     Content="{Binding SelectedSession.TopSpeed}"
                     Grid.Column="1"
                     Grid.Row="2"
@@ -169,7 +169,7 @@
                      />
             <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    ContentStringFormat=" {0} m/s"
+                    ContentStringFormat=" {0} km/h"
                     Content="{Binding SelectedSession.AverageSpeed}"
                     Grid.Column="1"
                     Grid.Row="3"

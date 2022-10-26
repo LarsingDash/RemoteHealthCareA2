@@ -168,8 +168,9 @@ namespace DoctorApplication.MVVM.Model
         }
         public void UpdateSpeedValues(List<double> speedValues)
         {
-            AverageSpeed = Math.Round(speedValues.Average(), 2);
-            TopSpeed = Math.Round(speedValues.Max(), 2);
+            AverageSpeed = Math.Round(speedValues.Average() * 3.6, 2);
+            TopSpeed = Math.Round(speedValues.Max() * 3.6, 2);
+            CurrentSpeed = Math.Round(CurrentSpeed * 3.6, 2);
             CurrentDistance = this.distance.LastOrDefault();
         }
         public void UpdateHeartValues(List<double> heartValues)
@@ -304,6 +305,7 @@ namespace DoctorApplication.MVVM.Model
                 CalculateTimeElapsed(key["time"].ToObject<string>()!);
             }
             CurrentSpeed = this.speed.LastOrDefault();
+            // CurrentSpeed = CurrentSpeed * 3.6;
             UpdateSpeedValues(this.speed);
 
 

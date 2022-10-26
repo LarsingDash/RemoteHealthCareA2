@@ -282,14 +282,14 @@
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
                     Content="{Binding LastSession.CurrentSpeed, FallbackValue='0' }"
-                    ContentStringFormat=" {0} m/s"
+                    ContentStringFormat=" {0} km/h"
                     Grid.Column="1"
                     Grid.Row="1"
                     HorizontalAlignment="Left"
                     x:Name="CurrentSpeedText" />
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    ContentStringFormat=" {0} m/s"
+                    ContentStringFormat=" {0} km/h"
                     Content="{Binding LastSession.TopSpeed, FallbackValue='0'}"
                     Grid.Column="1"
                     Grid.Row="2"
@@ -297,7 +297,7 @@
                     x:Name="TopSpeedText" />
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    ContentStringFormat=" {0} m/s"
+                    ContentStringFormat=" {0} km/h"
                     Content="{Binding LastSession.AverageSpeed, FallbackValue='0'}"
                     Grid.Column="1"
                     Grid.Row="3"

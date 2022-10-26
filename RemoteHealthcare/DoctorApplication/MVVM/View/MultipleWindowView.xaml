@@ -46,6 +46,7 @@
                                 <Label Content="Username: " Style="{StaticResource LabelStyleMain}" FontWeight="Bold"/>
                                 <Label Style="{StaticResource LabelStyleMain}" Content="{Binding UserName}"/>
                             </StackPanel>
+                            
                             <!--Bike info-->
                             <Label Content="Bike info" Style="{StaticResource HeaderStyle1}" Foreground="White" FontWeight="Bold"/>
                             <StackPanel Orientation="Horizontal">

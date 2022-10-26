@@ -348,17 +348,17 @@ namespace DoctorApplication.MVVM.Model
             CurrentRate = this.heartRate.LastOrDefault();
             UpdateHeartValues(this.heartRate);
         }
-        private object dataMapper;
-        public object DataMapper
+        private object speedDataMapper;
+        public object SpeedDataMapper
         {
-            get => this.dataMapper;
+            get => this.speedDataMapper;
             set
             {
-                this.dataMapper = value;
-                OnPropertyChanged(nameof(DataMapper));
+                this.speedDataMapper = value;
+                OnPropertyChanged(nameof(SpeedDataMapper));
             }
         }
-        public ChartValues<ObservablePoint> SineGraphValues { get; }
+        public ChartValues<ObservablePoint> SpeedGraphValues { get; }
 
         public SessionModel(string sessionName)
         {
@@ -376,17 +376,14 @@ namespace DoctorApplication.MVVM.Model
             CurrentDistance = 0;
             HighestRate = 0;
 
-            this.SineGraphValues = new ChartValues<ObservablePoint>();
+            this.SpeedGraphValues = new ChartValues<ObservablePoint>();
 
             // Plot a sine graph
-            
 
-            // Setup the data mapper
-            this.DataMapper = new CartesianMapper<ObservablePoint>()
-              .X(point => point.X)
-              .Y(point => point.Y)
-              .Stroke(point => point.Y > 0.3 ? Brushes.Red : Brushes.LightGreen)
-              .Fill(point => point.Y > 0.3 ? Brushes.Red : Brushes.LightGreen);
+
+
+            this.SpeedDataMapper = new CartesianMapper<ObservablePoint>().X(point => point.X).Y(point => point.Y);
+              
         }
         public SessionModel()
         {
@@ -398,17 +395,19 @@ namespace DoctorApplication.MVVM.Model
             CurrentDistance = 0;
             HighestRate = 0;
 
-            this.SineGraphValues = new ChartValues<ObservablePoint>();
+            this.SpeedGraphValues = new ChartValues<ObservablePoint>();
 
             // Plot a sine graph
-            
+
 
             // Setup the data mapper
-            this.DataMapper = new CartesianMapper<ObservablePoint>()
-              .X(point => point.X)
-              .Y(point => point.Y)
-              .Stroke(point => point.Y > 0.3 ? Brushes.Red : Brushes.LightGreen)
-              .Fill(point => point.Y > 0.3 ? Brushes.Red : Brushes.LightGreen);
+            //this.SpeedDataMapper = new CartesianMapper<ObservablePoint>()
+            //  .X(point => point.X)
+            //  .Y(point => point.Y)
+            //  .Stroke(point => point.Y > 0.3 ? Brushes.Red : Brushes.LightGreen)
+            //  .Fill(point => point.Y > 0.3 ? Brushes.Red : Brushes.LightGreen);
+            this.SpeedDataMapper = new CartesianMapper<ObservablePoint>().X(point => point.X).Y(point => point.Y);
+
         }
 
         public bool realTimeData = false;
@@ -423,16 +422,18 @@ namespace DoctorApplication.MVVM.Model
             speed = new List<double>();
             heartRate = new List<double>();
 
-            this.SineGraphValues = new ChartValues<ObservablePoint>();
+            this.SpeedGraphValues = new ChartValues<ObservablePoint>();
 
             // Plot a sine graph
 
             // Setup the data mapper
-            this.DataMapper = new CartesianMapper<ObservablePoint>()
-              .X(point => point.X)
-              .Y(point => point.Y)
-              .Stroke(point => point.Y > 0.3 ? Brushes.Red : Brushes.LightGreen)
-              .Fill(point => point.Y > 0.3 ? Brushes.Red : Brushes.LightGreen);
+            //this.SpeedDataMapper = new CartesianMapper<ObservablePoint>()
+            //  .X(point => point.X)
+            //  .Y(point => point.Y)
+            //  .Stroke(point => point.Y > 0.3 ? Brushes.Red : Brushes.LightGreen)
+            //  .Fill(point => point.Y > 0.3 ? Brushes.Red : Brushes.LightGreen);
+            this.SpeedDataMapper = new CartesianMapper<ObservablePoint>().X(point => point.X).Y(point => point.Y);
+
         }
         public void PlotExample()
         {
@@ -449,7 +450,7 @@ namespace DoctorApplication.MVVM.Model
                     Y = Math.Sin(x * Math.PI / 180)
                 };
 
-                this.SineGraphValues.Add(point);
+                this.SpeedGraphValues.Add(point);
             }
         }
         public void AddPoint(double speed, double time)
@@ -461,7 +462,7 @@ namespace DoctorApplication.MVVM.Model
                     Y = Math.Round(speed,2)
                 };
 
-                this.SineGraphValues.Add(point);
+                this.SpeedGraphValues.Add(point);
             
         }
         private DateTime CustomParseDate(string time)

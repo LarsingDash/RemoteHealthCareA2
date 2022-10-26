@@ -99,8 +99,8 @@
 
             <lvc:CartesianChart.Series>
                 <lvc:LineSeries Title="speed values"
-                    Values="{Binding SelectedSession.SineGraphValues}"
-                    Configuration="{Binding SelectedSession.DataMapper}"/>
+                    Values="{Binding LastSession.SpeedGraphValues}"
+                    Configuration="{Binding LastSession.SpeedDataMapper}"/>
             </lvc:CartesianChart.Series>
         </lvc:CartesianChart>
         <Grid Grid.Row="2" Grid.Column="1">

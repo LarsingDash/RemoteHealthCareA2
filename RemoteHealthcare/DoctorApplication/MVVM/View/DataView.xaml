@@ -206,14 +206,14 @@
                         x:Name="BikeGraphHeaderLabel" Style="{DynamicResource LabelStyleMain}" />
                 </StackPanel>
                 <Grid Grid.Row="1">
-                    <lvc:CartesianChart Grid.Row="1" Grid.Column="1"  Zoom="Xy">
+                    <lvc:CartesianChart Grid.Row="1" Grid.Column="1"  >
 
 
 
                         <lvc:CartesianChart.Series>
                             <lvc:LineSeries Title="speed values"
-                    Values="{Binding LastSession.SineGraphValues}"
-                    Configuration="{Binding LastSession.DataMapper}"/>
+                    Values="{Binding LastSession.SpeedGraphValues}"
+                    Configuration="{Binding LastSession.SpeedDataMapper}"/>
                         </lvc:CartesianChart.Series>
                     </lvc:CartesianChart>
 

@@ -114,6 +114,9 @@ public class PanelController
         UpdateHudPanel();
     }
 
+    /// <summary>
+    /// Update all elements of HUD panel in VR
+    /// </summary>
     private void UpdateHudPanel()
     {
         ClearPanel(hudPanelId);
@@ -126,6 +129,13 @@ public class PanelController
         SwapPanel(hudPanelId);
     }
     
+    /// <summary>
+    /// Updates the chat when adding a new message
+    /// Message is added to a Queue with a fixed size of 5 messages. Older messages get dequeued.
+    /// If the message is longer than 32 characters, splits the message in parts
+    /// and draws them seperately in VR
+    /// </summary>
+    /// <param name="message">Message to be displayed in VR chat panel</param>
     public void UpdateChat(string message)
     {
         ClearPanel(chatPanelId);
@@ -152,6 +162,16 @@ public class PanelController
         SwapPanel(chatPanelId);
     }
     
+    /// <summary>
+    /// Adds a new panel in VR
+    /// </summary>
+    /// <param name="panelName">panel name used as identifier</param>
+    /// <param name="x">x-position of the panel</param>
+    /// <param name="y">y-position</param>
+    /// <param name="z">z-position</param>
+    /// <param name="serial">serial used as callback identifier</param>
+    /// <param name="height">height in pixels</param>
+    /// <param name="width">width in pixels</param>
     private void AddPanel(string panelName, double x, double y, double z, string serial, int height, int width)
     {
         tunnel.SendTunnelMessage(new Dictionary<string, string>()
@@ -170,6 +190,10 @@ public class PanelController
         });
     }
 
+    /// <summary>
+    /// Clears the panel with the given id
+    /// </summary>
+    /// <param name="panelId">id of the panel</param>
     private async void ClearPanel(string panelId)
     {
         var serial = Util.RandomString();
@@ -187,6 +211,10 @@ public class PanelController
         await client.AddSerialCallbackTimeout(serial, ob => { }, () => { }, 100);
     }
     
+    /// <summary>
+    /// Swaps the panel with the given id
+    /// </summary>
+    /// <param name="panelId">id of the panel</param>
     private async void SwapPanel(string panelId)
     {
         var serial = Util.RandomString();
@@ -204,6 +232,10 @@ public class PanelController
         await client.AddSerialCallbackTimeout(serial, ob => { }, () => { }, 100);
     }
     
+    /// <summary>
+    /// Draws a rectangle with the given panel id
+    /// </summary>
+    /// <param name="panelId">id of the panel</param>
     private async void DrawPanelOutlines(string panelId)
     {
         var serial = Util.RandomString();
@@ -221,6 +253,15 @@ public class PanelController
         await client.AddSerialCallbackTimeout(serial, ob => { }, () => { }, 100);
     }
 
+    /// <summary>
+    /// Draws an image on the panel with the given id
+    /// </summary>
+    /// <param name="imagePath">path of the image in the networkengine</param>
+    /// <param name="posX">x-position of the image</param>
+    /// <param name="posY">y-position of the image</param>
+    /// <param name="sizeX">width in pixels</param>
+    /// <param name="sizeY">height in pixels</param>
+    /// <param name="panelId">id of the panel</param>
     private async void DrawPanelImage(string imagePath, double posX, double posY, double sizeX, double sizeY, string panelId)
     {
         var serial = Util.RandomString();
@@ -241,6 +282,14 @@ public class PanelController
         await client.AddSerialCallbackTimeout(serial, ob => { }, () => { }, 1000);
     }
 
+    /// <summary>
+    /// Draws text on the panel with the given id
+    /// </summary>
+    /// <param name="text">the text to be displayed on the panel</param>
+    /// <param name="size">font size of the text</param>
+    /// <param name="x">x-position of the text</param>
+    /// <param name="y">y-position of the text</param>
+    /// <param name="panelId">id of the panel</param>
     private async void DrawPanelText(string text, double size, double x, double y, string panelId)
     {
         var serial = Util.RandomString();

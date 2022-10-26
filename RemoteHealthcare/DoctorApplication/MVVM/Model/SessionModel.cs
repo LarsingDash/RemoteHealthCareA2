@@ -304,14 +304,17 @@ namespace DoctorApplication.MVVM.Model
                 this.distance.Add(double.Parse(key["value"]!.ToObject<string>()!));
             }
         }
-
+        double speedcounter = 0;
         public void AddDataSpeed(JObject data)
         {
             JArray val = (JArray)data["speed"];
-
+            
             foreach (JObject key in val)
             {
-                this.speed.Add(double.Parse(key["value"]!.ToObject<string>()!));
+                speedcounter++;
+                double speedValue = double.Parse(key["value"]!.ToObject<string>()!);
+                this.speed.Add(speedValue);
+                AddPoint(speedValue, speedcounter);
                 CalculateTimeElapsed(key["time"].ToObject<string>()!);
             }
             CurrentSpeed = this.speed.LastOrDefault();
@@ -374,16 +377,7 @@ namespace DoctorApplication.MVVM.Model
             this.SineGraphValues = new ChartValues<ObservablePoint>();
 
             // Plot a sine graph
-            for (double x = 0; x <= 360; x++)
-            {
-                var point = new ObservablePoint()
-                {
-                    X = x,
-                    Y = Math.Sin(x * Math.PI / 180)
-                };
-
-                this.SineGraphValues.Add(point);
-            }
+            
 
             // Setup the data mapper
             this.DataMapper = new CartesianMapper<ObservablePoint>()
@@ -405,16 +399,7 @@ namespace DoctorApplication.MVVM.Model
             this.SineGraphValues = new ChartValues<ObservablePoint>();
 
             // Plot a sine graph
-            for (double x = 0; x <= 360; x++)
-            {
-                var point = new ObservablePoint()
-                {
-                    X = x,
-                    Y = Math.Sin(x * Math.PI / 180)
-                };
-
-                this.SineGraphValues.Add(point);
-            }
+            
 
             // Setup the data mapper
             this.DataMapper = new CartesianMapper<ObservablePoint>()
@@ -439,6 +424,21 @@ namespace DoctorApplication.MVVM.Model
             this.SineGraphValues = new ChartValues<ObservablePoint>();
 
             // Plot a sine graph
+
+            // Setup the data mapper
+            this.DataMapper = new CartesianMapper<ObservablePoint>()
+              .X(point => point.X)
+              .Y(point => point.Y)
+              .Stroke(point => point.Y > 0.3 ? Brushes.Red : Brushes.LightGreen)
+              .Fill(point => point.Y > 0.3 ? Brushes.Red : Brushes.LightGreen);
+        }
+        public void PlotExample()
+        {
+            Console.WriteLine(Speed.Count);
+            for (int i = 0; i < Speed.Count; i++)
+            {
+
+            }
             for (double x = 0; x <= 360; x++)
             {
                 var point = new ObservablePoint()
@@ -449,13 +449,18 @@ namespace DoctorApplication.MVVM.Model
 
                 this.SineGraphValues.Add(point);
             }
+        }
+        public void AddPoint(double speed, double time)
+        {
+            
+                var point = new ObservablePoint()
+                {
+                    X = Math.Round(time, 2),
+                    Y = Math.Round(speed,2)
+                };
 
-            // Setup the data mapper
-            this.DataMapper = new CartesianMapper<ObservablePoint>()
-              .X(point => point.X)
-              .Y(point => point.Y)
-              .Stroke(point => point.Y > 0.3 ? Brushes.Red : Brushes.LightGreen)
-              .Fill(point => point.Y > 0.3 ? Brushes.Red : Brushes.LightGreen);
+                this.SineGraphValues.Add(point);
+            
         }
         private DateTime CustomParseDate(string time)
         {

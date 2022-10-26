@@ -206,13 +206,15 @@
                         x:Name="BikeGraphHeaderLabel" Style="{DynamicResource LabelStyleMain}" />
                 </StackPanel>
                 <Grid Grid.Row="1">
-                    <lvc:CartesianChart Series="{Binding SeriesCollection}" Zoom="X">
-                        <lvc:CartesianChart.AxisY>
-                            <lvc:Axis LabelFormatter="{Binding YFormatter}" Title="Kilometer/Hour" />
-                        </lvc:CartesianChart.AxisY>
-                        <lvc:CartesianChart.AxisX>
-                            <lvc:Axis Labels="{Binding Labels}" Title="Time HH:MM" />
-                        </lvc:CartesianChart.AxisX>
+                    <lvc:CartesianChart Grid.Row="1" Grid.Column="1"  Zoom="Xy">
+
+
+
+                        <lvc:CartesianChart.Series>
+                            <lvc:LineSeries Title="speed values"
+                    Values="{Binding LastSession.SineGraphValues}"
+                    Configuration="{Binding LastSession.DataMapper}"/>
+                        </lvc:CartesianChart.Series>
                     </lvc:CartesianChart>
 
                 </Grid>

@@ -7,7 +7,7 @@
     "text" : "_text_",
     "position" : [ "_position_" ],
     "size" : "_size_",
-    "color" : [ 0,0,0,1 ],
+    "color" : [ 1, 1, 1, 1],
     "font" : "segoeui"
   }
 }

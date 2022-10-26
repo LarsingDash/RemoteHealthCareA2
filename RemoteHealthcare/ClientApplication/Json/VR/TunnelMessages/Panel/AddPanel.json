@@ -7,9 +7,9 @@
     "components" : {
       "transform" :
       {
-        "position" : [ -1, 0, -3],
+        "position" : ["_position_"],
         "scale" : 1,
-        "rotation" : [ 0, 0, 0 ]
+        "rotation" : [0, 0 ,0]
       },
       "panel" : {
         "size" : [ 1.5, 1.5],

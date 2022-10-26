@@ -11,13 +11,13 @@ public class BikeSimulator : Bike
 
     private readonly BikeHandler handler;
     
-    private bool bike;
-    private bool heart;
+    public readonly bool Bike;
+    public readonly bool Heart;
     public BikeSimulator(BikeHandler handler, bool bike = true, bool heart = true)
     {
         
-        this.bike = bike;
-        this.heart = heart;
+        this.Bike = bike;
+        this.Heart = heart;
         lastTicks = Environment.TickCount;
         BikeId = $"SIM {new Random().Next(5000)}";
         ticker = 0;
@@ -26,6 +26,7 @@ public class BikeSimulator : Bike
         this.handler = handler;
     }
 
+    private bool running = false;
     /// <summary>
     /// The Run function is a while loop that runs forever. Every time it updates the values:
     /// - HeartRate
@@ -36,17 +37,18 @@ public class BikeSimulator : Bike
     private void Run()
     {
         startedTime = Environment.TickCount;
-        while (true)
+        running = true;
+        while (running)
         {
             var currentTicks = Environment.TickCount;
             ticker++;
 
             bikeData[DataType.ElapsedTime] = currentTicks - startedTime;
-            if (heart)
+            if (Heart)
             {
                 UpdateHeartRate();
             }
-            if (bike)
+            if (Bike)
             {
                 UpdateSpeed();
                 UpdateDistance(currentTicks - lastTicks);
@@ -102,5 +104,11 @@ public class BikeSimulator : Bike
     public override void SetResistanceAsync(int ressistance)
     {
         // Do nothing, is simulator
+    }
+
+    public override void Reset()
+    {
+        running = false;
+        App.GetBikeHandlerInstance().Bike = new BikeSimulator(handler, Bike, Heart);
     }
 }

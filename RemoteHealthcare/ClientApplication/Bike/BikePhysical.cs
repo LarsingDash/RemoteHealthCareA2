@@ -79,7 +79,12 @@ namespace ClientApplication.Bike
             output[12] = checksum;
             bikeDevice.ble.WriteCharacteristic("6e40fec3-b5a3-f393-e0a9-e50e24dcca9e", output);
         }
-        
+
+        public override void Reset()
+        {
+            
+        }
+
 
         /// <summary>
         /// The function takes in a message and a protocol, and then parses the message based on the protocol

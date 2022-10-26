@@ -35,7 +35,7 @@ namespace ClientApplication.Bike
 
         public async Task StartConnection()
         {
-            bikeDevice = new BluetoothDevice($"Tacx Flux 0{id}", "6e40fec1-b5a3-f393-e0a9-e50e24dcca9e", "6e40fec2-b5a3-f393-e0a9-e50e24dcca9e", ValueChangedBike);
+            bikeDevice = new BluetoothDevice($"Tacx Flux {id}", "6e40fec1-b5a3-f393-e0a9-e50e24dcca9e", "6e40fec2-b5a3-f393-e0a9-e50e24dcca9e", ValueChangedBike);
             await bikeDevice.StartConnection();
             await Task.Delay(5000);
             heartRateDevice = new BluetoothDevice("Decathlon Dual HR","HeartRate", "HeartRateMeasurement", ValueChangedHeartRate);

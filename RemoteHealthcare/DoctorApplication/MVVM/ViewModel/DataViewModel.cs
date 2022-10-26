@@ -108,7 +108,7 @@ namespace DoctorApplication.MVVM.ViewModel
                 OnPropertyChanged();
             }
         }
-        public ObservableCollection<MessageModel> messages { get; set; }
+        public ObservableCollection<MessageModel> Messages { get; set; }
         public SeriesCollection SeriesCollection { get; set; }
         public string[] Labels { get; set; }
         public Func<double, string> YFormatter { get; set; }
@@ -151,7 +151,7 @@ namespace DoctorApplication.MVVM.ViewModel
         }
 
         //data for graph
-        public LineSeries lineSeries;
+        public LineSeries LineSeries;
 
 
 
@@ -175,16 +175,17 @@ namespace DoctorApplication.MVVM.ViewModel
 
             dataHandler = new ConnectionHandler();
         }
-        public bool IsRecordingActive = false;
+
+        private bool isRecordingActive = false;
         private void StartStopRecordingFunction(object obj)
         {
             if (SelectedUser == null)
             {
                 return;
             }
-            if (!IsRecordingActive)
+            if (!isRecordingActive)
             {
-                IsRecordingActive = true;
+                isRecordingActive = true;
                 RecordingText = "Stop Recording";
                 StartBikeRecording();
                 Thread.Sleep(1000);
@@ -195,7 +196,7 @@ namespace DoctorApplication.MVVM.ViewModel
             }
             else
             {
-                IsRecordingActive = false;
+                isRecordingActive = false;
                 RecordingText = "Start Recording";
                 StopBikeRecording("normal");
             }
@@ -207,7 +208,7 @@ namespace DoctorApplication.MVVM.ViewModel
                 return;
             }
             StopBikeRecording("emergencyStop");
-            IsRecordingActive=false;
+            isRecordingActive=false;
             RecordingText = "Start Recording";
             Console.WriteLine("Emergency Pressed!");
         }

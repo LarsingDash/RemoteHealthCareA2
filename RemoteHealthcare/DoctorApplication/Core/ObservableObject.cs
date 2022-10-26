@@ -17,6 +17,7 @@ namespace DoctorApplication.Core
         protected void OnPropertyChanged([CallerMemberName] string name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            Console.WriteLine("Property: " + name + " changed.");
         }
     }
 }

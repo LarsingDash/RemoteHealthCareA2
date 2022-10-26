@@ -51,7 +51,7 @@
                 <StackPanel Orientation="Horizontal"/>
                 
                 <Button
-                        Command="{Binding StartSTopRecordingCommand}"
+                        Command="{Binding StartSTopRecordingCommand, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         CommandParameter="{Binding Text, ElementName=ChatTextBox}"
                         FontSize="15"
                     Content="{Binding RecordingText}"
@@ -281,35 +281,35 @@
                     />
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding LastSession.CurrentSpeed}"
+                    Content="{Binding LastSession.CurrentSpeed, FallbackValue='0' }"
                     Grid.Column="1"
                     Grid.Row="1"
                     HorizontalAlignment="Left"
                     x:Name="CurrentSpeedText" />
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding LastSession.TopSpeed}"
+                    Content="{Binding LastSession.TopSpeed, FallbackValue='0'}"
                     Grid.Column="1"
                     Grid.Row="2"
                     HorizontalAlignment="Left"
                     x:Name="TopSpeedText" />
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding LastSession.AverageSpeed}"
+                    Content="{Binding LastSession.AverageSpeed, FallbackValue='0'}"
                     Grid.Column="1"
                     Grid.Row="3"
                     HorizontalAlignment="Left"
                     x:Name="AverageSpeedText" />
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding LastSession.TimeElapsed}"
+                    Content="{Binding LastSession.TimeElapsed, FallbackValue='0'}"
                     Grid.Column="1"
                     Grid.Row="4"
                     HorizontalAlignment="Left"
                     x:Name="TimeElapsedText" />
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding LastSession.CurrentDistance}"
+                    Content="{Binding LastSession.CurrentDistance, FallbackValue='0'}"
                     Grid.Column="1"
                     Grid.Row="5"
                     HorizontalAlignment="Left"
@@ -334,7 +334,7 @@
                     x:Name="HeartInformationHeader" />
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding LastSession.CurrentRate}"
+                    Content="{Binding LastSession.CurrentRate, FallbackValue='0'}"
                     FontSize="48"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
@@ -394,7 +394,7 @@
                     x:Name="HeartPeakHeader" />
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding LastSession.LowestRate}"
+                    Content="{Binding LastSession.LowestRate, FallbackValue='0'}"
                     FontSize="16"
                     Grid.Column="0"
                     Grid.Row="1"
@@ -403,7 +403,7 @@
                     x:Name="HeartLowestText" />
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding LastSession.AverageRate}"
+                    Content="{Binding LastSession.AverageRate, FallbackValue='0'}"
                     FontSize="16"
                     Grid.Column="1"
                     Grid.Row="1"
@@ -412,7 +412,7 @@
                     x:Name="HeartAverageText" />
                 <Label
                     Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding LastSession.HighestRate}"
+                    Content="{Binding LastSession.HighestRate, FallbackValue='0'}"
                     FontSize="16"
                     Grid.Column="2"
                     Grid.Row="1"

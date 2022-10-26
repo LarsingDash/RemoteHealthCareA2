@@ -51,37 +51,37 @@
                             <Label Content="Bike info" Style="{StaticResource HeaderStyle1}" Foreground="White" FontWeight="Bold"/>
                             <StackPanel Orientation="Horizontal">
                                 <Label Content="Current speed: " Style="{StaticResource LabelStyleMain}" FontWeight="Bold"/>
-                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding LastSession.CurrentSpeed}"/>
+                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding LastSession.CurrentSpeed, FallbackValue='0'}"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <Label Content="Average Speed: " Style="{StaticResource LabelStyleMain}" FontWeight="Bold"/>
-                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding LastSession.AverageSpeed}"/>
+                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding LastSession.AverageSpeed, FallbackValue='0'}"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <Label Content="Top Speed: " Style="{StaticResource LabelStyleMain}" FontWeight="Bold"/>
-                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding LastSession.TopSpeed}"/>
+                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding LastSession.TopSpeed, FallbackValue='0'}"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <Label Content="Distance Travelled: " Style="{StaticResource LabelStyleMain}" FontWeight="Bold"/>
-                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding LastSession.CurrentDistance}"/>
+                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding LastSession.CurrentDistance, FallbackValue='0'}"/>
                             </StackPanel>
                             <!--Heart info-->
                             <Label Content="Heart info" Style="{StaticResource HeaderStyle1}" Foreground="White" FontWeight="Bold"/>
                             <StackPanel Orientation="Horizontal">
                                 <Label Content="Current heartrate: " Style="{StaticResource LabelStyleMain}" FontWeight="Bold"/>
-                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding LastSession.CurrentRate}"/>
+                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding LastSession.CurrentRate, FallbackValue='0'}"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <Label Content="Average heartrate: " Style="{StaticResource LabelStyleMain}" FontWeight="Bold"/>
-                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding LastSession.AverageRate}"/>
+                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding LastSession.AverageRate, FallbackValue='0'}"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <Label Content="Peak heartrate: " Style="{StaticResource LabelStyleMain}" FontWeight="Bold"/>
-                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding LastSession.HighestRate}"/>
+                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding LastSession.HighestRate, FallbackValue='0'}"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <Label Content="Lowest heartrate: " Style="{StaticResource LabelStyleMain}" FontWeight="Bold"/>
-                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding LastSession.LowestRate}"/>
+                                <Label Style="{StaticResource LabelStyleMain}" Content="{Binding LastSession.LowestRate, FallbackValue='0'}"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>

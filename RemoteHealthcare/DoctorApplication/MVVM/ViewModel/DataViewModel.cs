@@ -186,6 +186,13 @@ namespace DoctorApplication.MVVM.ViewModel
                 IsRecordingActive = true;
                 RecordingText = "Stop Recording";
                 StartBikeRecording();
+
+                //Test to see if triggering on property changed helps.
+                Users = Users;
+                SelectedUser = SelectedUser;
+                SelectedUser.LastSession = SelectedUser.LastSession;
+                LastSession = LastSession;
+
             }
             else
             {

@@ -7,13 +7,13 @@
     "components" : {
       "transform" :
       {
-        "position" : [ -1, 0, -3],
+        "position" : ["_position_"],
         "scale" : 1,
-        "rotation" : [ 0, 0, 0 ]
+        "rotation" : [0, 0 ,0]
       },
       "panel" : {
         "size" : [ 1.5, 1.5],
-        "resolution" : [ 512, 512 ],
+        "resolution" : [ "_height_", "_width_" ],
         "background" : [ 0, 0, 0, 0],
         "castShadow" : false
       }

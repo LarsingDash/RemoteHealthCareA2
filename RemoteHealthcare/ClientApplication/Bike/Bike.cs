@@ -21,6 +21,9 @@ public abstract class Bike
     public abstract void SetResistanceAsync(int ressistance);
 
     public abstract void Reset();
+
+    public bool State = false;
+    public abstract void OnStateChange(bool state);
 }
 
 /* Creating an enumeration of the different types of data that can be sent from the bike. */

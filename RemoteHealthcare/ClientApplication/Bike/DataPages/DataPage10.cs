@@ -25,6 +25,8 @@ public class DataPage10 : DataPage
     /// <param name="data">The data received from the device.</param>
     public override void ProcessData(int[] data)
     {
+        if (App.GetBikeHandlerInstance().Bike.State == false)
+            return;
         if (prevData == null)
         {
             Handler.ChangeData(DataType.Distance, Convert.ToInt32(data[4]));

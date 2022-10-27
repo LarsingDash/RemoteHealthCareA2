@@ -15,6 +15,7 @@ public class StartBikeRecording : ICommandHandler
         if (uuid != null)
         {
             client.SetCurrentBikeRecording(uuid);
+            App.GetBikeHandlerInstance().Bike.OnStateChange(true);
         }
     }
 }

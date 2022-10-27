@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using Shared.Log;
 
 namespace ClientApplication.Bike;
 //The BikeSimulator class has the purpose to simulate the bike.
@@ -13,9 +14,9 @@ public class BikeSimulator : Bike
     
     public readonly bool Bike;
     public readonly bool Heart;
-    public BikeSimulator(BikeHandler handler, bool bike = true, bool heart = true)
+    public BikeSimulator(BikeHandler handler, bool bike = true, bool heart = true, bool state = false)
     {
-        
+        this.State = state;
         this.Bike = bike;
         this.Heart = heart;
         lastTicks = Environment.TickCount;
@@ -41,6 +42,9 @@ public class BikeSimulator : Bike
         running = true;
         while (running)
         {
+            Thread.Sleep(500);
+            if(!State)
+                continue;
             var currentTicks = Environment.TickCount;
             ticker++;
 
@@ -58,7 +62,6 @@ public class BikeSimulator : Bike
 
             lastTicks = currentTicks;
             
-            Thread.Sleep(500);
         }
     }
 
@@ -113,7 +116,14 @@ public class BikeSimulator : Bike
     /// </summary>
     public override void Reset()
     {
+        Logger.LogMessage(LogImportance.Fatal, "Resetting");
         running = false;
-        App.GetBikeHandlerInstance().Bike = new BikeSimulator(handler, Bike, Heart);
+        App.GetBikeHandlerInstance().Bike = new BikeSimulator(handler, Bike, Heart, State);
+    }
+
+    public override void OnStateChange(bool state)
+    {
+        this.State = state;
+        Reset();
     }
 }

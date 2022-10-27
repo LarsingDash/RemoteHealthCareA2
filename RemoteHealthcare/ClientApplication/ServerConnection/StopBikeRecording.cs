@@ -13,5 +13,6 @@ public class StopBikeRecording : ICommandHandler
     public void HandleCommand(Client client, JObject ob)
     {
         client.SetCurrentBikeRecording("");
+        App.GetBikeHandlerInstance().Bike.OnStateChange(false);
     }
 }

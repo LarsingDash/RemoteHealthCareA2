@@ -105,7 +105,7 @@ public class BikeController
                         { "\"_speed_\"", $"{followSpeed.ToString(CultureInfo.InvariantCulture)}" },
                     }, JsonFolder.Route.Path)
                 }
-            }, true, true);
+            }, false);
         });
 
         await worldGen.GenerateDecoration();
@@ -177,6 +177,32 @@ public class BikeController
                 break;
             }
         }
+        //
+        // tunnel.SendTunnelMessage(new Dictionary<string, string>()
+        // {
+        //     {
+        //         "\"_data_\"",
+        //         JsonFileReader.GetObjectAsString("FollowRoute",
+        //             new Dictionary<string, string>
+        //             {
+        //                 { "routeid", worldGen.routeId },
+        //                 { "nodeid", bikeId },
+        //                 { "\"_speed_\"", "0" },
+        //             }, JsonFolder.Route.Path)
+        //     },
+        //     { "_serial_", serial }
+        // }, true);
+        // //
+        // tunnel.SendTunnelMessage(new Dictionary<string, string>()
+        // {
+        //     {
+        //         "\"_data_\"", JsonFileReader.GetObjectAsString("AnimationSpeed", new Dictionary<string, string>()
+        //         {
+        //             { "nodeid", bikeId },
+        //             { "\"_speed_\"", "0" }
+        //         }, JsonFolder.Route.Path)
+        //     }
+        // }, true);
 
         return fullRoute;
     }

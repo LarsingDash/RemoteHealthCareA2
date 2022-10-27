@@ -54,13 +54,15 @@ public class VRClient : DefaultClientConnection
         {
             "session/list",
             "scene/node/update",
-            "route/follow/speed",
+            //"route/follow/speed",
             "callback",
             "scene/panel/drawtext",
             "scene/panel/swap",
             "scene/panel/image",
             "scene/panel/clear",
-            "scene/panel/drawlines"
+            "scene/panel/drawlines",
+            "scene/node/find",
+            "scene/node/add"
             
         };
         Init("145.48.6.10", 6666, (json, encrypted) =>

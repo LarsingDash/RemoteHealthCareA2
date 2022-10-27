@@ -178,7 +178,7 @@
             <Label
                     Style="{DynamicResource LabelStyleMain}" 
                     ContentStringFormat=" {0} m"
-                    Content="{Binding SelectedSession.LastDistance}"
+                    Content="{Binding SelectedSession.CurrentDistance}"
                     Grid.Column="1"
                     Grid.Row="4"
                     HorizontalAlignment="Left"

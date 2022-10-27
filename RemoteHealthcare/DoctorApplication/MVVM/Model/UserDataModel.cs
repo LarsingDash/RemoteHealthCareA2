@@ -26,7 +26,6 @@ namespace DoctorApplication.MVVM.Model
     {
         public bool isRecordingActive = false;
 
-
         private string recordingText;
 
         public string RecordingText
@@ -50,37 +49,8 @@ namespace DoctorApplication.MVVM.Model
                 ApplySliderValue();
             }
         }
-        private int currentValue = 0;
-        private int waitTimer = 0;
-        private bool waiting = false;
-        private void ApplySliderValue()
-        {
-            waitTimer = 1000;
-            currentValue = sliderValue;
-            if (waiting)
-            {
-                return;
-            }
-            new Thread(start =>
-            {
-                waiting = true;
-                while (waitTimer > 0)
-                {
-                    Thread.Sleep(1);
-                    waitTimer--;
-                }
-                Logger.LogMessage(LogImportance.Information, sliderValue.ToString());
-                Client client = App.GetClientInstance();
-                var serial = Util.RandomString();
-                client.SendEncryptedData(JsonFileReader.GetObjectAsString("SetResistance", new Dictionary<string, string>()
-                {
-                    {"_serial_" , serial},
-                    {"_resistance_" , SliderValue.ToString()},
-                    {"_user_", UserName }
-                }, JsonFolder.Json.Path));
-                waiting = false;
-            }).Start();
-        }
+
+
 
 
         //userdata
@@ -242,43 +212,41 @@ namespace DoctorApplication.MVVM.Model
                 OnPropertyChanged(nameof(lastSession));
             }
         }
-        private double lastSpeed;
-        public double LastSpeed
-        {
-            get { return LastSession.lastSpeed; }
-            set
-            {
-                lastSpeed = value;
-                OnPropertyChanged(nameof(lastSpeed));
-            }
-        }
-        private double lastDistance;
-
-        public double LastDistance
-        {
-            get { return LastSession.lastDistance; }
-            set
-            {
-                lastDistance = value;
-                OnPropertyChanged(nameof(lastDistance));
-            }
-        }
-        private double lastHeartRate;
-        public double LastHeartRate
-        {
-            get { return LastSession.lastHeartRate; }
-            set
-            {
-                lastHeartRate = value;
-                OnPropertyChanged(nameof(lastHeartRate));
-            }
-        }
-
-
-
 
         //chatdata
         public ObservableCollection<MessageModel> messages { get; set; }
+
+        private int currentValue = 0;
+        private int waitTimer = 0;
+        private bool waiting = false;
+        private void ApplySliderValue()
+        {
+            waitTimer = 1000;
+            currentValue = sliderValue;
+            if (waiting)
+            {
+                return;
+            }
+            new Thread(start =>
+            {
+                waiting = true;
+                while (waitTimer > 0)
+                {
+                    Thread.Sleep(1);
+                    waitTimer--;
+                }
+                Logger.LogMessage(LogImportance.Information, sliderValue.ToString());
+                Client client = App.GetClientInstance();
+                var serial = Util.RandomString();
+                client.SendEncryptedData(JsonFileReader.GetObjectAsString("SetResistance", new Dictionary<string, string>()
+                {
+                    {"_serial_" , serial},
+                    {"_resistance_" , SliderValue.ToString()},
+                    {"_user_", UserName }
+                }, JsonFolder.Json.Path));
+                waiting = false;
+            }).Start();
+        }
 
         //constructor currently with test values
         public UserDataModel()
@@ -355,6 +323,7 @@ namespace DoctorApplication.MVVM.Model
         {
             sessions.Add(sessionModel);
         }
+
         public void AddMessage(string message)
         {
             messages.Add(new MessageModel(UserName, message));

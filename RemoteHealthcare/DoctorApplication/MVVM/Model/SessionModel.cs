@@ -55,11 +55,6 @@ namespace DoctorApplication.MVVM.Model
 
         string timeElapsed;
 
-        //if (endTime == null)
-        //{
-        //    return (DateTime.Now - startTime).TotalSeconds + "Seconds";
-        //}
-        //return (endTime - startTime).TotalSeconds + "Seconds";
         public string TimeElapsed
         {
             get
@@ -176,40 +171,9 @@ namespace DoctorApplication.MVVM.Model
                 OnPropertyChanged(nameof(AverageSpeed));
             }
         }
-        public void UpdateSpeedValues(List<double> speedValues)
-        {
-            if (speedValues.Count > 0)
-            {
-                AverageSpeed = Math.Round(speedValues.Average() * 3.6, 2);
-                TopSpeed = Math.Round(speedValues.Max() * 3.6, 2);
-                CurrentSpeed = Math.Round(CurrentSpeed * 3.6, 2);
-                CurrentDistance = this.distance.LastOrDefault();
-            }
-        }
-        public void UpdateHeartValues(List<double> heartValues)
-        {
-            if (heartValues != null && heartValues.Count > 0)
-            {
-                AverageRate = Math.Round(heartValues.Average());
-                HighestRate = Math.Round(heartValues.Max());
-                LowestRate = Math.Round(heartValues.Min());
-            }
-            else
-            {
-                AverageRate = double.NaN;
-                HighestRate = double.NaN;
-                LowestRate = double.NaN;
-            }
-        }
 
-        public void Init()
-        {
-            AverageSpeed = 0;
-            TopSpeed = 0;
-            AverageRate = 0;
-            HighestRate = 0;
-            LowestRate = 0;
-        }
+
+       
         //statistic data heartmonitor
 
         private double lowestRate;
@@ -263,43 +227,32 @@ namespace DoctorApplication.MVVM.Model
                 OnPropertyChanged(nameof(highestRate));
             }
         }
-        public double lastDistance;
-        public double LastDistance
+        public void UpdateSpeedValues(List<double> speedValues)
         {
-            get { return distance.LastOrDefault(); }
-        }
-        public double lastSpeed;
-        public double LastSpeed
-        {
-
-            get
+            if (speedValues.Count > 0)
             {
-                if (lastSpeed == null)
-                {
-                    return 99;
-                }
-                return speed.LastOrDefault();
-            }
-            set
-            {
-                lastSpeed = value;
-                OnPropertyChanged(nameof(LastSpeed));
+                AverageSpeed = Math.Round(speedValues.Average() * 3.6, 2);
+                TopSpeed = Math.Round(speedValues.Max() * 3.6, 2);
+                CurrentSpeed = Math.Round(CurrentSpeed * 3.6, 2);
+                CurrentDistance = this.distance.LastOrDefault();
             }
         }
-        public double lastHeartRate;
-        public double LastHeartRate
+        public void UpdateHeartValues(List<double> heartValues)
         {
-            get { return heartRate.LastOrDefault(); }
+            if (heartValues != null && heartValues.Count > 0)
+            {
+                AverageRate = Math.Round(heartValues.Average());
+                HighestRate = Math.Round(heartValues.Max());
+                LowestRate = Math.Round(heartValues.Min());
+            }
+            else
+            {
+                AverageRate = double.NaN;
+                HighestRate = double.NaN;
+                LowestRate = double.NaN;
+            }
         }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
-        private void OnPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
         public void AddDataDistance(JObject data)
         {
             JArray distance = (JArray)data["distance"];
@@ -309,6 +262,18 @@ namespace DoctorApplication.MVVM.Model
                 this.distance.Add(double.Parse(key["value"]!.ToObject<string>()!, CultureInfo.InvariantCulture));
             }
         }
+        private void CalculateTimeElapsed(string val)
+        {
+            try
+            {
+                TimeElapsed = Math.Round(double.Parse(val) / 1000, 0) + " Seconds";
+            }
+            catch (Exception e)
+            {
+                TimeElapsed = "? Seconds";
+            }
+        }
+
         double speedcounter = 0;
         public void AddDataSpeed(JObject data)
         {
@@ -329,17 +294,6 @@ namespace DoctorApplication.MVVM.Model
 
         }
 
-        private void CalculateTimeElapsed(string val)
-        {
-            try
-            {
-                TimeElapsed = Math.Round(double.Parse(val) / 1000, 0) + " Seconds";
-            }
-            catch (Exception e)
-            {
-                TimeElapsed = "? Seconds";
-            }
-        }
         double heartcounter = 0;
         public void AddDataHeartRate(JObject data)
         {
@@ -355,6 +309,7 @@ namespace DoctorApplication.MVVM.Model
             CurrentRate = this.heartRate.LastOrDefault();
             UpdateHeartValues(this.heartRate);
         }
+
         private object speedDataMapper;
         public object SpeedDataMapper
         {
@@ -375,6 +330,7 @@ namespace DoctorApplication.MVVM.Model
                 OnPropertyChanged(nameof(HeartDataMapper));
             }
         }
+
         public ChartValues<ObservablePoint> SpeedGraphValues { get; }
         public ChartValues<ObservablePoint> HeartGraphValues { get; }
 
@@ -397,14 +353,7 @@ namespace DoctorApplication.MVVM.Model
             this.SpeedGraphValues = new ChartValues<ObservablePoint>();
             this.HeartGraphValues = new ChartValues<ObservablePoint>();
 
-            // Plot a sine graph
 
-            // Setup the data mapper
-            //this.SpeedDataMapper = new CartesianMapper<ObservablePoint>()
-            //  .X(point => point.X)
-            //  .Y(point => point.Y)
-            //  .Stroke(point => point.Y > 0.3 ? Brushes.Red : Brushes.LightGreen)
-            //  .Fill(point => point.Y > 0.3 ? Brushes.Red : Brushes.LightGreen);
             this.SpeedDataMapper = new CartesianMapper<ObservablePoint>().X(point => point.X).Y(point => point.Y);
             this.HeartDataMapper = new CartesianMapper<ObservablePoint>().X(point => point.X).Y(point => point.Y);
 
@@ -422,14 +371,7 @@ namespace DoctorApplication.MVVM.Model
             this.SpeedGraphValues = new ChartValues<ObservablePoint>();
             this.HeartGraphValues = new ChartValues<ObservablePoint>();
 
-            // Plot a sine graph
 
-            // Setup the data mapper
-            //this.SpeedDataMapper = new CartesianMapper<ObservablePoint>()
-            //  .X(point => point.X)
-            //  .Y(point => point.Y)
-            //  .Stroke(point => point.Y > 0.3 ? Brushes.Red : Brushes.LightGreen)
-            //  .Fill(point => point.Y > 0.3 ? Brushes.Red : Brushes.LightGreen);
             this.SpeedDataMapper = new CartesianMapper<ObservablePoint>().X(point => point.X).Y(point => point.Y);
             this.HeartDataMapper = new CartesianMapper<ObservablePoint>().X(point => point.X).Y(point => point.Y);
 
@@ -450,14 +392,7 @@ namespace DoctorApplication.MVVM.Model
             this.SpeedGraphValues = new ChartValues<ObservablePoint>();
             this.HeartGraphValues = new ChartValues<ObservablePoint>();
 
-            // Plot a sine graph
 
-            // Setup the data mapper
-            //this.SpeedDataMapper = new CartesianMapper<ObservablePoint>()
-            //  .X(point => point.X)
-            //  .Y(point => point.Y)
-            //  .Stroke(point => point.Y > 0.3 ? Brushes.Red : Brushes.LightGreen)
-            //  .Fill(point => point.Y > 0.3 ? Brushes.Red : Brushes.LightGreen);
             this.SpeedDataMapper = new CartesianMapper<ObservablePoint>().X(point => point.X).Y(point => point.Y);
             this.HeartDataMapper = new CartesianMapper<ObservablePoint>().X(point => point.X).Y(point => point.Y);
 
@@ -508,6 +443,24 @@ namespace DoctorApplication.MVVM.Model
         {
             return DateTime.ParseExact(time, "yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
         }
+        public void Init()
+        {
+            AverageSpeed = 0;
+            TopSpeed = 0;
+            AverageRate = 0;
+            HighestRate = 0;
+            LowestRate = 0;
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+        private void OnPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
     }
 
 

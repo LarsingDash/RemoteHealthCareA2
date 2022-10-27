@@ -25,7 +25,6 @@ namespace DoctorApplication.MVVM.ViewModel
 {
     internal class DataViewModel : ObservableObject
     {
-        private ConnectionHandler dataHandler;
 
         //WPF Text change strings
         private string message;
@@ -95,9 +94,7 @@ namespace DoctorApplication.MVVM.ViewModel
             }
         }
         public ObservableCollection<MessageModel> Messages { get; set; }
-        public SeriesCollection SeriesCollection { get; set; }
-        public string[] Labels { get; set; }
-        public Func<double, string> YFormatter { get; set; }
+  
 
         //currently selected user in combobox
 
@@ -136,8 +133,6 @@ namespace DoctorApplication.MVVM.ViewModel
             }
         }
 
-        //data for graph
-        public LineSeries LineSeries;
 
 
 
@@ -159,7 +154,6 @@ namespace DoctorApplication.MVVM.ViewModel
             buttonText2 = "Single User";
             RecordingText = "Start Recording";
 
-            dataHandler = new ConnectionHandler();
         }
 
         private bool isRecordingActive = false;
@@ -228,8 +222,7 @@ namespace DoctorApplication.MVVM.ViewModel
           }, 1000);
             LastSession.Init();
         }
-               public void StopBikeRecording(string type)
-        {
+               public void StopBikeRecording(string type){
             if (SelectedUser == null)
             {
                 return;

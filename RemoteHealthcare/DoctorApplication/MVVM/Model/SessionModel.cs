@@ -319,7 +319,7 @@ namespace DoctorApplication.MVVM.Model
                 speedcounter++;
                 double speedValue = double.Parse(key["value"]!.ToObject<string>()!, CultureInfo.InvariantCulture);
                 this.speed.Add(speedValue);
-                AddSpeedPoint(speedValue, speedcounter);
+                AddSpeedPoint(speedValue*3.6, speedcounter);
                 CalculateTimeElapsed(key["time"].ToObject<string>()!);
             }
             CurrentSpeed = this.speed.LastOrDefault();
@@ -350,7 +350,7 @@ namespace DoctorApplication.MVVM.Model
                 heartcounter++;
                 double heartRateValue = double.Parse(key["value"]!.ToObject<string>()!, CultureInfo.InvariantCulture);
                 this.heartRate.Add(heartRateValue);
-                AddHeartPoint(heartRateValue, heartcounter);
+                AddHeartPoint((heartRateValue), heartcounter);
             }
             CurrentRate = this.heartRate.LastOrDefault();
             UpdateHeartValues(this.heartRate);

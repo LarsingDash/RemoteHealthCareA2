@@ -18,4 +18,15 @@
       <ProjectReference Include="..\Shared\Shared.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="Assets\BikeWallpaper.jpg" />
+      <Resource Include="Assets\BikeWallpaper.jpg">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Resource>
+      <None Remove="Assets\DoctorWallpaper.png" />
+      <Resource Include="Assets\DoctorWallpaper.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Resource>
+    </ItemGroup>
+
 </Project>

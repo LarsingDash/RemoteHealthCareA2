@@ -8,6 +8,14 @@ namespace DoctorApplication.Communication.CommandHandlers;
 
 public class UpdateValues : ICommandHandler
 {
+    /// <summary>
+    /// It takes the data from the websocket and adds it to the session
+    /// </summary>
+    /// <param name="Client">The client that sent the message</param>
+    /// <param name="JObject">The data received from the server.</param>
+    /// <returns>
+    /// The data is being returned in a JObject.
+    /// </returns>
     public void HandleCommand(Client client, JObject ob)
     {
         string? uuid = ob["data"]?["uuid"]?.ToObject<string>();

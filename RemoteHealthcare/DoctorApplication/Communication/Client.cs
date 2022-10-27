@@ -8,6 +8,7 @@ using ClientApplication.ServerConnection;
 using ClientApplication.ServerConnection.Communication;
 using ClientApplication.ServerConnection.Communication.CommandHandlers;
 using DoctorApplication.Communication.CommandHandlers;
+using DoctorApplication.ViewModel;
 using Shared;
 using Shared.Log;
 using Formatting = Newtonsoft.Json.Formatting;
@@ -50,6 +51,9 @@ public class Client : DefaultClientConnection
         Thread.Sleep(500);
     }
     
+    /// <summary>
+    /// > If the connection with the server is closed, then shut down the application
+    /// </summary>
     public override void OnDisconnect()
     {
         Logger.LogMessage(LogImportance.Fatal, "Connection with server Closed. Shutting down.");
@@ -67,6 +71,15 @@ public class Client : DefaultClientConnection
             System.Environment.Exit(500);
             Environment.Exit(0);
             App.CurrentDispatcher.BeginInvokeShutdown(DispatcherPriority.Invalid);
+        });
+    }
+
+    public override void OnNotConnected()
+    {
+        App.CurrentDispatcher.Invoke(() =>
+        {
+            Logger.LogMessage(LogImportance.Debug, "Not connected");
+            LoginViewModel.Model.ErrorMessage = "Could not connect with server.";
         });
     }
 }

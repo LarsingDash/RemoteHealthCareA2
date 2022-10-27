@@ -58,10 +58,3 @@ public class BikeHandler
         observers[type].ForEach(ob => ob.Invoke(val));
     }
 }
-
-/* An enum that is used to determine which bike to use. */
-internal enum BikePicker
-{
-    Virtual = 1,
-    Physical = 2,
-}

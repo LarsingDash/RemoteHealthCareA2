@@ -14,6 +14,11 @@ namespace DoctorApplication.Core
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
+        /// <summary>
+        /// If the PropertyChanged event is not null, invoke it with the current object and a new PropertyChangedEventArgs
+        /// object with the name of the property that changed
+        /// </summary>
+        /// <param name="name">The name of the property that changed.</param>
         protected void OnPropertyChanged([CallerMemberName] string name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));

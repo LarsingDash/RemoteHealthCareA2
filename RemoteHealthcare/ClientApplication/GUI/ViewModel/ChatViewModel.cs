@@ -25,7 +25,11 @@ public class ChatViewModel: ViewModelBase
 
 		return messages;
 	}
-private static void startChatExecute(object obj)
+	/// <summary>
+	/// > This function is called when the user clicks the "Start Chat" button
+	/// </summary>
+	/// <param name="obj">The object that was passed to the thread.</param>
+	private static void startChatExecute(object obj)
 	{
 		
 	}

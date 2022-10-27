@@ -29,11 +29,22 @@ public class ViewModelCommand: ICommand
 	}
 
 	//Methods
+	/// <summary>
+	/// If the _canExecuteAction is null, then return true, otherwise return the result of the _canExecuteAction
+	/// </summary>
+	/// <param name="parameter">The parameter passed to the command.</param>
+	/// <returns>
+	/// The return value is a boolean.
+	/// </returns>
 	public bool CanExecute(object? parameter)
 	{
 		return _canExecuteAction == null ? true : _canExecuteAction(parameter);
 	}
 
+	/// <summary>
+	/// If the command can execute, then execute it
+	/// </summary>
+	/// <param name="parameter">The parameter passed to the command.</param>
 	public void Execute(object? parameter)
 	{
 		_executeAction(parameter);

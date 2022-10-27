@@ -25,7 +25,7 @@ public class Tunnel : ICommandHandlerVR
     //Helper method to send tunnelMessages without having to add the tunnelID
     public void SendTunnelMessage(Dictionary<string, string> values, bool hide = false, bool prio = false)
     {
-        values.Add("_tunnelID_", vrClient.TunnelID);
+        values.Add("_tunnelID_", vrClient.TunnelId);
         vrClient.SendData(JsonFileReader.GetObjectAsString("SendTunnel", values, JsonFolder.Vr.Path), hide, prio);
     }
     
@@ -38,7 +38,7 @@ public class Tunnel : ICommandHandlerVR
             var serial = ob["serial"]!.ToObject<string>();
             if (client.SerialCallbacks.ContainsKey(serial!))
             {
-                if (!vrClient.hideMessages.Contains(ob["id"]!.ToObject<string>()!))
+                if (!vrClient.HideMessages.Contains(ob["id"]!.ToObject<string>()!))
                 {
                     Logger.LogMessage(LogImportance.Information, $"Got message from Tunnel (returning to serial): {LogColor.Gray}\n{ob.ToString(Formatting.None)}");
                 }
@@ -57,7 +57,7 @@ public class Tunnel : ICommandHandlerVR
         }
         else
         {
-            if (!vrClient.hideMessages.Contains(ob["id"]!.ToObject<string>()!))
+            if (!vrClient.HideMessages.Contains(ob["id"]!.ToObject<string>()!))
             {
                 Logger.LogMessage(LogImportance.Debug,
                     $"Got message from Tunnel but no commandHandler found: {LogColor.Gray}\n{ob.ToString(Formatting.None)}");

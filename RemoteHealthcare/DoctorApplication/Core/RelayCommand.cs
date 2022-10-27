@@ -32,6 +32,7 @@ namespace DoctorApplication.Core
         }
 
 
+        /* The above code is a simple implementation of the ICommand interface. */
         public event EventHandler CanExecuteChanged
         {
             add { CommandManager.RequerySuggested += value; }

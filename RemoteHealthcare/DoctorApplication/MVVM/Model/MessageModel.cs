@@ -10,6 +10,7 @@ public class MessageModel
     public bool isNativeOrigin { get; set; }
     public bool? firstMessage { get; set; }
 
+    /* This is a constructor. It is a special method that is called when an object is created. */
     public MessageModel(string userName, string message)
     {
         this.userName = userName;

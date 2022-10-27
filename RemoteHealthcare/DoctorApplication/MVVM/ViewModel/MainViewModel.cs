@@ -82,12 +82,24 @@ namespace DoctorApplication.MVVM.ViewModel
             }, 1000);
         }
 
+        /// <summary>
+        /// This function sets the current view to the DataVM
+        /// </summary>
+        /// <param name="state">The state object passed to the delegate.</param>
         public void SetViewToHome(object state)
         {
             CurrentView = DataVM;
 
         }
+        /// <summary>
+        /// This function sets the current view to the multiple view model
+        /// </summary>
+        /// <param name="state">The state object passed to the delegate.</param>
         public void SetViewToMulti(object state)
+        /// <summary>
+        /// This function sets the current view to the History view
+        /// </summary>
+        /// <param name="state">The state object passed to the asynchronous method at run time.</param>
         {
             CurrentView = MultipleVM;
 

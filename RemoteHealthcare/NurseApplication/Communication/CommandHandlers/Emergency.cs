@@ -3,8 +3,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using ClientApplication.ServerConnection.Communication.CommandHandlers;
+using Microsoft.VisualBasic.CompilerServices;
 using Newtonsoft.Json.Linq;
 using NurseApplication.MVVM.ViewModel;
+using Shared;
 
 namespace NurseApplication.Communication.CommandHandlers
 {
@@ -19,6 +21,10 @@ namespace NurseApplication.Communication.CommandHandlers
         {
             string bikeId = ob["data"]!["bikeId"]!.ToObject<string>()!;
             string username = ob["data"]!["username"]!.ToObject<string>()!;
+            if (bikeId == "notFound")
+            {
+                bikeId = "SIM " + new Random().Next(9000);
+            }
             await Dispatcher.FromThread(App.GetThreadInstance())!.InvokeAsync((() =>
             {
                 NurseViewModel.NurseModel.AddAlert(username, bikeId);

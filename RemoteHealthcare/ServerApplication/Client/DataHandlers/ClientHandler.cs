@@ -12,7 +12,8 @@ namespace ServerApplication.Client.DataHandlers
                 {"public-rsa-key", new RsaKey()},
                 {"encryptedMessage", new EncryptedMessage(clientData.Server.Rsa)},
                 {"change-data", new ChangeData()},
-                {"stop-bike-recording", new StopBikeRecording()}
+                {"stop-bike-recording", new StopBikeRecording()},
+                {"login", new AlreadyLoggedIn()}
             };
             
         }

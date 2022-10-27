@@ -11,6 +11,7 @@ namespace ClientApplication.ViewModel;
 public class LoginViewModel: ViewModelBase
 {
 	//Fields
+	public static LoginViewModel Model;
 	private string phoneNumber;
 	private SecureString password;
 	private string errorMessage;
@@ -49,6 +50,7 @@ public class LoginViewModel: ViewModelBase
 	//Constructor
 	public LoginViewModel()
 	{
+		Model = this;
 		LoginCommand = new ViewModelCommand(ExecuteLoginCommand, CanExecuteLoginCommand);
 		RecoverPasswordCommand = new ViewModelCommand(p =>ExecuteRecoveryPasswordCommand("",""));
 	}
@@ -59,6 +61,14 @@ public class LoginViewModel: ViewModelBase
 		throw new NotImplementedException();
 	}
 
+	/// <summary>
+	/// If the phone number is not null or white space, and the phone number is 10 characters long, and the password is not
+	/// null, and the password is at least 3 characters long, then the data is valid
+	/// </summary>
+	/// <param name="obj">The parameter is used to pass the data from the view to the view model.</param>
+	/// <returns>
+	/// The return value is a boolean.
+	/// </returns>
 	private bool CanExecuteLoginCommand(object obj)
 	{
 		bool validData;
@@ -72,8 +82,14 @@ public class LoginViewModel: ViewModelBase
 		return validData;
 	}
 
+	/// <summary>
+	/// It sends a login request to the server, and if the server responds with a status of "ok", then the login view is hidden
+	/// </summary>
+	/// <param name="obj">The object that was passed to the command.</param>
 	private void ExecuteLoginCommand(object obj)
 	{
+		if (ErrorMessage == "Could not connect with server.")
+			return;
 		Client client = App.GetClientConnectedToServerInstance();
 		var serial = Shared.Util.RandomString();
 		var pass = new System.Net.NetworkCredential(string.Empty, password).Password;

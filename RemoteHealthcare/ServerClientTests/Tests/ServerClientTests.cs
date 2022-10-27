@@ -64,14 +64,14 @@ public class ServerClientTests
     /// The client waits for half a second, then requests the server's public RSA key. If the server's public RSA key is not
     /// empty, the test passes
     /// </summary>
-    [Test]
-    public void TestServerSendingRsaKey()
-    {
-        Thread.Sleep(500);
-        string pKey = client.GetFieldValue<string>("PublicKey");
-        Assert.That(pKey.Length, Is.GreaterThan(0), "Client got no response when requesting public RSA key of server.");
-        Assert.Pass("Client received public RSA key of server.");
-    }
+    // [Test]
+    // public void TestServerSendingRsaKey()
+    // {
+    //     Thread.Sleep(500);
+    //     string pKey = client.GetFieldValue<string>("PublicKey");
+    //     Assert.That(pKey.Length, Is.GreaterThan(0), "Client got no response when requesting public RSA key of server.");
+    //     Assert.Pass("Client received public RSA key of server.");
+    // }
     
     /// <summary>
     /// The server waits for half a second, then checks if the client has sent its public RSA key

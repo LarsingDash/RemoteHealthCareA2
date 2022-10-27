@@ -1,8 +1,14 @@
+using System;
 using System.Collections.Generic;
+using System.Net.Mime;
 using System.Threading;
+using System.Windows;
+using System.Windows.Threading;
+using ClientApplication.ServerConnection;
 using ClientApplication.ServerConnection.Communication;
 using ClientApplication.ServerConnection.Communication.CommandHandlers;
 using DoctorApplication.Communication.CommandHandlers;
+using DoctorApplication.ViewModel;
 using Shared;
 using Shared.Log;
 using Formatting = Newtonsoft.Json.Formatting;
@@ -40,7 +46,40 @@ public class Client : DefaultClientConnection
         
         commandHandler.Add("encryptedMessage", new EncryptedMessage(Rsa));
         commandHandler.Add("user-state-changed", new UserStateChange());
+        commandHandler.Add("update-values", new UpdateValues());
 
         Thread.Sleep(500);
+    }
+    
+    /// <summary>
+    /// > If the connection with the server is closed, then shut down the application
+    /// </summary>
+    public override void OnDisconnect()
+    {
+        Logger.LogMessage(LogImportance.Fatal, "Connection with server Closed. Shutting down.");
+        Dispatcher.CurrentDispatcher.BeginInvoke((Action)delegate()
+        {
+            // Application.Current.Shutdown(500);
+            // System.Environment.Exit(500);
+            Environment.Exit(0);
+            Dispatcher.CurrentDispatcher.BeginInvokeShutdown(DispatcherPriority.Invalid);
+        });
+        
+        App.CurrentDispatcher.BeginInvoke((Action)delegate()
+        {
+            Application.Current.Shutdown(500);
+            System.Environment.Exit(500);
+            Environment.Exit(0);
+            App.CurrentDispatcher.BeginInvokeShutdown(DispatcherPriority.Invalid);
+        });
+    }
+
+    public override void OnNotConnected()
+    {
+        App.CurrentDispatcher.Invoke(() =>
+        {
+            Logger.LogMessage(LogImportance.Debug, "Not connected");
+            LoginViewModel.Model.ErrorMessage = "Could not connect with server.";
+        });
     }
 }

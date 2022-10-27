@@ -2,6 +2,7 @@ namespace Shared;
 
 public class ServerConnection
 {
-    public static string Hostname = "127.0.0.1";
+    public static string Hostname = "192.168.178.25";
     public static int Port = 2460;
+    
 }

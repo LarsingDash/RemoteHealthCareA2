@@ -3,6 +3,7 @@ using System.Windows.Input;
 using Newtonsoft.Json.Linq;
 using ServerApplication.UtilData;
 using Shared;
+using Shared.Log;
 
 namespace ServerApplication.Client.DataHandlers.CommandHandlers.Doctor;
 
@@ -73,6 +74,13 @@ public class ChatMessage : CommandHandler
         }
         else if (type.Equals("broadcast"))
         {
+            // string list = "";
+            // foreach (var receiver in server.users)
+            // {
+            //     list += "\n" + receiver.UserName;
+            // }
+            // Logger.LogMessage(LogImportance.DebugHighlight, "List: " + list);
+
             foreach (var receiver in server.users)
             {
                 if (receiver.DataHandler.GetType() != typeof(ClientHandler))

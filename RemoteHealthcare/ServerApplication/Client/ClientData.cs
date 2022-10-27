@@ -143,44 +143,102 @@ namespace ServerApplication.Client
                 return r;
             }
             
+            private Queue<Tuple<string, bool>> sendQueue = new();
+            private Queue<Tuple<string, bool>> sendQueuePrio = new();
+    
+
+            private bool sending = false;
+            private void Send()
+            {
+                var t = new Thread(start =>
+                {
+                    if (sending)
+                        return;
+                    sending = true;
+                    while (sendQueue.Count > 0 || sendQueuePrio.Count > 0)
+                    {
+                        //new Thread(start => Logger.LogMessage(LogImportance.Error, sendQueue.Count.ToString())).Start();
+                        try
+                        {
+                            if (sendQueuePrio.Count > 0)
+                            {
+                                Tuple<string, bool> val = sendQueuePrio.Dequeue();
+                                SendMessage(val.Item1, val.Item2);
+                            }
+                            else
+                            {
+                                Tuple<string, bool> val = sendQueue.Dequeue();
+                                SendMessage(val.Item1, val.Item2);
+                            }
+                            Thread.Sleep(2);
+                        }
+                        catch (Exception e)
+                        {
+                            Logger.LogMessage(LogImportance.Error, "Could not send message", e);
+                        }
+                    }
+                    sending = false;
+                });
+                t.IsBackground = true;
+                t.Start();
+            }
+            
             /// <summary>
             /// It takes a string, converts it to a byte array, and sends it to the server
             /// </summary>
             /// <param name="message">The string to send to the server, needs to be a json</param>
-            public void SendData(string message)
+            public void SendData(string message, bool hide = false, bool priority = false)
             {
-                try
+                if (priority)
                 {
-                    var ob = JObject.Parse(message);
-                    if (ob.ContainsKey("serial"))
+                    sendQueuePrio.Enqueue(Tuple.Create(message, hide));
+                }
+                else
+                {
+                    sendQueue.Enqueue(Tuple.Create(message, hide));
+                }
+                Send();
+        
+            }
+            
+            private void SendMessage(string message, bool hide)
+            {
+                var t = new Thread(start =>
+                {
+                    try
                     {
-                        if (ob["serial"]!.ToObject<string>()!.Equals("_serial_"))
+                        var ob = JObject.Parse(message);
+                        if (ob.ContainsKey("serial"))
                         {
-                            ob.Remove("serial");
-                            message = ob.ToString();
+                            if (ob["serial"]!.ToObject<string>()!.Equals("_serial_"))
+                            {
+                                ob.Remove("serial");
+                                message = ob.ToString();
+                            }
                         }
-                    }
 
-                    if (ob["data"]?["error"]?.ToObject<string>() != null)
-                    {
-                        if (ob["data"]!["error"]!.ToObject<string>()!.Equals("_error_"))
+                        if (ob["data"]?["error"]?.ToObject<string>() != null)
                         {
-                            ob["data"]!["error"]!.Remove();
-                            message = ob.ToString();
+                            if (ob["data"]!["error"]!.ToObject<string>()!.Equals("_error_"))
+                            {
+                                ob["data"]!["error"]!.Remove();
+                                message = ob.ToString();
+                            }
+                        }
+
+                        if (!ob["id"]!.ToObject<string>()!.Equals("encryptedMessage") && !hide)
+                        {
+                            Logger.LogMessage(LogImportance.Information, 
+                                $"Sending message: {LogColor.Gray}\n{ob.ToString(Formatting.None)}");
                         }
                     }
-                    if (!ob["id"]!.ToObject<string>()!.Equals("encryptedMessage"))
+                    catch(JsonReaderException)
                     {
                         Logger.LogMessage(LogImportance.Information, 
-                            $"Sending message: {LogColor.Gray}\n{ob.ToString(Formatting.None)}");
+                            $"Sending message: {LogColor.Gray}\n(_NonJsonObject_)");
                     }
-                }
-                catch(JsonReaderException)
-                {
-                    Logger.LogMessage(LogImportance.Information, 
-                        $"Sending message: {LogColor.Gray}\n(_NonJsonObject_)");
-                }
-                
+                });
+                t.Start();
                 Byte[] data = BitConverter.GetBytes(message.Length);
                 Byte[] comman = System.Text.Encoding.ASCII.GetBytes(message);
                 Stream.Write(data, 0, data.Length);

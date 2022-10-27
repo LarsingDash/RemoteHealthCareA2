@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using Shared.Log;
 
 namespace ClientApplication.Bike;
 //The BikeSimulator class has the purpose to simulate the bike.
@@ -10,16 +11,24 @@ public class BikeSimulator : Bike
     private int startedTime;
 
     private readonly BikeHandler handler;
-    public BikeSimulator(BikeHandler handler)
+    
+    public readonly bool Bike;
+    public readonly bool Heart;
+    public BikeSimulator(BikeHandler handler, bool bike = true, bool heart = true, bool state = false)
     {
+        this.State = state;
+        this.Bike = bike;
+        this.Heart = heart;
         lastTicks = Environment.TickCount;
         BikeId = $"SIM {new Random().Next(5000)}";
         ticker = 0;
-        var thread = new Thread(Run);
-        thread.Start();
         this.handler = handler;
+        var thread = new Thread(Run);
+        thread.IsBackground = true;
+        thread.Start();
     }
 
+    private bool running = false;
     /// <summary>
     /// The Run function is a while loop that runs forever. Every time it updates the values:
     /// - HeartRate
@@ -30,21 +39,29 @@ public class BikeSimulator : Bike
     private void Run()
     {
         startedTime = Environment.TickCount;
-        while (true)
+        running = true;
+        while (running)
         {
+            Thread.Sleep(500);
+            if(!State)
+                continue;
             var currentTicks = Environment.TickCount;
             ticker++;
 
             bikeData[DataType.ElapsedTime] = currentTicks - startedTime;
-            
-            UpdateHeartRate();
-            UpdateSpeed();
-            UpdateDistance(currentTicks - lastTicks);
-            UpdateElapsedTime(currentTicks - startedTime);
+            if (Heart)
+            {
+                UpdateHeartRate();
+            }
+            if (Bike)
+            {
+                UpdateSpeed();
+                UpdateDistance(currentTicks - lastTicks);
+                UpdateElapsedTime(currentTicks - startedTime);
+            }
 
             lastTicks = currentTicks;
             
-            Thread.Sleep(500);
         }
     }
 
@@ -76,7 +93,6 @@ public class BikeSimulator : Bike
     {
         bikeData.TryGetValue(DataType.Distance, out var distance);
         bikeData.TryGetValue(DataType.Speed, out var speed);
-        
         handler.ChangeData(DataType.Distance, distance + speed * deltaTime / 1000);
     }
 
@@ -92,5 +108,22 @@ public class BikeSimulator : Bike
     public override void SetResistanceAsync(int ressistance)
     {
         // Do nothing, is simulator
+    }
+
+    /// <summary>
+    /// Reset() is called when the user clicks the reset button. It sets the running variable to false and creates a new
+    /// BikeSimulator object
+    /// </summary>
+    public override void Reset()
+    {
+        Logger.LogMessage(LogImportance.Fatal, "Resetting");
+        running = false;
+        App.GetBikeHandlerInstance().Bike = new BikeSimulator(handler, Bike, Heart, State);
+    }
+
+    public override void OnStateChange(bool state)
+    {
+        this.State = state;
+        Reset();
     }
 }

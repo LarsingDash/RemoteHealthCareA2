@@ -1,0 +1,16 @@
+{
+  "id" : "scene/skybox/update",
+  "data" :
+  {
+    "type" : "static",
+    "files" :
+    {
+      "xpos" : "_xpos_.jpg",
+      "xneg" : "_xneg_.jpg",
+      "ypos" : "_ypos_.jpg",
+      "yneg" : "_yneg_.jpg",
+      "zpos" : "_zpos_.jpg",
+      "zneg" : "_zneg_.jpg"
+    }
+  }
+}

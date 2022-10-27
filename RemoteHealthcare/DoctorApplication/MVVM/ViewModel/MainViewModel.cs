@@ -48,7 +48,7 @@ namespace DoctorApplication.MVVM.ViewModel
             MainViewM = this;
             users = new BindableCollection<UserDataModel>();
             ChangeViewHomeCommand = new RelayCommand(SetViewToHome);
-            ChangeViewMultiCommand = new RelayCommand(setViewToMulti);
+            ChangeViewMultiCommand = new RelayCommand(SetViewToMulti);
             ChangeViewHistoryCommand = new RelayCommand(SetViewToHistory);
             DataVM = new DataViewModel(users);
             HistoryVM = new HistoryViewModel(users);
@@ -82,12 +82,24 @@ namespace DoctorApplication.MVVM.ViewModel
             }, 1000);
         }
 
+        /// <summary>
+        /// This function sets the current view to the DataVM
+        /// </summary>
+        /// <param name="state">The state object passed to the delegate.</param>
         public void SetViewToHome(object state)
         {
             CurrentView = DataVM;
 
         }
-        public void setViewToMulti(object state)
+        /// <summary>
+        /// This function sets the current view to the multiple view model
+        /// </summary>
+        /// <param name="state">The state object passed to the delegate.</param>
+        public void SetViewToMulti(object state)
+        /// <summary>
+        /// This function sets the current view to the History view
+        /// </summary>
+        /// <param name="state">The state object passed to the asynchronous method at run time.</param>
         {
             CurrentView = MultipleVM;
 

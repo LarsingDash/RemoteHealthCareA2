@@ -11,6 +11,7 @@ public class NurseHandler : DataHandler
         {
             {"public-rsa-key", new RsaKey()},
             {"encryptedMessage", new EncryptedMessage(clientData.Server.Rsa)},
+            {"login", new AlreadyLoggedIn()}
         };
     }
 }

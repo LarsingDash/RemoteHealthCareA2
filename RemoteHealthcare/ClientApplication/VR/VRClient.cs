@@ -16,41 +16,66 @@ namespace ClientSide.VR2;
 public class VRClient : DefaultClientConnection
 {
     private Dictionary<string, ICommandHandlerVR> commandHandler = new();
-    public String TunnelID;
-    public Tunnel tunnel;
-    public WorldGen worldGen;
-    public BikeController BikeController;
-    public PanelController PanelController;
+    public String? TunnelId;
+    public Tunnel? VrTunnel;
+    public WorldGen? WorldGen;
+    public BikeController? BikeController;
+    public PanelController? PanelController;
+    private bool hasStarted;
 
-    public List<string> hideMessages = new List<string>();
+    public List<string> HideMessages = new List<string>();
+    private static readonly string assetPath = "data/NetworkEngine/";
+    
+    //Vr settings
+    public static int SelectedRoute = 6;
+    public static int SelectedScenery = 1;
 
-    private bool started = false;
-    public VRClient()
-    {
-    }
+    private string skyboxFolder = "";
+    public string TerrainD = "";
+    public string TerrainN = "";
+    public string Path = "";
+    public string Decoration = "";
+    public readonly string time = "12";
+    public string Scale = "1";
+    public int DecoAmount = 1000;
 
+    /// <summary>
+    /// It sets up the connection to the VR server and loads the scenery options
+    /// </summary>
+    /// <returns>
+    /// A JSON object
+    /// </returns>
     public void Setup()
     {
-        if (started)
-            return;
-        hideMessages = new List<string>()
+        if (hasStarted) return;
+        hasStarted = true;
+
+        var random = new Random();
+        if (SelectedRoute == 6) SelectedRoute = random.Next(0, 5);
+        if (SelectedScenery == 6) SelectedScenery = random.Next(0, 5);
+
+        LoadSceneryOptions();
+        
+        HideMessages = new List<string>()
         {
             "session/list",
             "scene/node/update",
-            "route/follow/speed",
+            //"route/follow/speed",
             "callback",
             "scene/panel/drawtext",
             "scene/panel/swap",
             "scene/panel/image",
             "scene/panel/clear",
-            "scene/panel/drawlines"
+            "scene/panel/drawlines",
+            "scene/node/find",
+            "scene/node/add"
             
         };
         Init("145.48.6.10", 6666, (json, encrypted) =>
         {
             if (commandHandler.ContainsKey(json["id"]!.ToObject<string>()!))
             {
-                if (!json["id"]!.ToObject<string>()!.Equals("tunnel/send") && !hideMessages.Contains(json["id"]!.ToObject<string>()!))
+                if (!json["id"]!.ToObject<string>()!.Equals("tunnel/send") && !HideMessages.Contains(json["id"]!.ToObject<string>()!))
                 {
                     Logger.LogMessage(LogImportance.Information, $"Got message from vr-server: {LogColor.Gray}\n{json.ToString(Formatting.None)}");
                 }
@@ -63,14 +88,18 @@ public class VRClient : DefaultClientConnection
         }, false);
         commandHandler.Add("session/list", new SessionList());
         commandHandler.Add("tunnel/create", new CreateTunnel());
-        tunnel = new Tunnel(this);
-        commandHandler.Add("tunnel/send", tunnel);
+        VrTunnel = new Tunnel(this);
+        commandHandler.Add("tunnel/send", VrTunnel);
         Thread.Sleep(500);
         SendData(JsonFileReader.GetObjectAsString("SessionList", new Dictionary<string, string>()
         {
         }, JsonFolder.Vr.Path));
     }
 
+    /// <summary>
+    /// It creates a tunnel
+    /// </summary>
+    /// <param name="sessionId">The session ID of the VRChat client.</param>
     public void CreateTunnel(string sessionId)
     {
         var serial = Util.RandomString();
@@ -83,20 +112,18 @@ public class VRClient : DefaultClientConnection
         //Code
     }
     
+    /// <summary>
+    /// It sets up the scene, removes the ground plane, hands, and sets the time and skybox
+    /// </summary>
+    /// <param name="id">The id of the tunnel.</param>
     public async Task TunnelStartup(string id)
     {
-        TunnelID = id;
+        TunnelId = id;
         var serial = Util.RandomString();
-        tunnel.SendTunnelMessage(new Dictionary<string, string>()
+
+        VrTunnel.SendTunnelMessage(new Dictionary<string, string>
         {
-            {"\"_data_\"", JsonFileReader.GetObjectAsString("Pause", new Dictionary<string, string>()
-            {
-            }, JsonFolder.TunnelMessages.Path)},
-        });
-        
-        tunnel.SendTunnelMessage(new Dictionary<string, string>
-        {
-            {"\"_data_\"", JsonFileReader.GetObjectAsString("ResetScene", new Dictionary<string, string>()
+            {"\"_data_\"", JsonFileReader.GetObjectAsString("ResetScene", new Dictionary<string, string>
             {
                 {"_serial_", serial}
             }, JsonFolder.TunnelMessages.Path)},
@@ -112,30 +139,53 @@ public class VRClient : DefaultClientConnection
         await RemoveObject("GroundPlane");
         await RemoveObject("LeftHand");
         await RemoveObject("RightHand");
+
+        VrTunnel.SendTunnelMessage(new Dictionary<string, string>
+        {
+            {"\"_data_\"", JsonFileReader.GetObjectAsString("SetTimeScene", new Dictionary<string, string>
+            {
+                {"\"_time_\"", time}
+            }, JsonFolder.TunnelMessages.Path)},
+        });
         
-         //Start WorldGen
-         worldGen = new WorldGen(this, tunnel);
-         BikeController = new BikeController(this, tunnel);
-         PanelController = new PanelController(this, tunnel);
-         
-         //
-         // //Start HUDController
-         // panelController = new PanelController(this, tunnel);
-         // var HUDThread = new Thread(panelController.RunController);
-         //
-         // bikeController = new BikeController(this, tunnel);
-         // var bikeAnimationThread = new Thread(bikeController.RunController);
-         //
-         // HUDThread.Start();
-         // bikeAnimationThread.Start();
+        VrTunnel.SendTunnelMessage(new Dictionary<string, string>
+        {
+            {"\"_data_\"", JsonFileReader.GetObjectAsString("SetSkybox", new Dictionary<string, string>
+            {
+                {"_xpos_", $"{assetPath}{skyboxFolder}/right"},
+                {"_xneg_", $"{assetPath}{skyboxFolder}/left"},
+                {"_ypos_", $"{assetPath}{skyboxFolder}/up"},
+                {"_yneg_", $"{assetPath}{skyboxFolder}/down"},
+                {"_zpos_", $"{assetPath}{skyboxFolder}/back"},
+                {"_zneg_", $"{assetPath}{skyboxFolder}/front"},
+            }, JsonFolder.TunnelMessages.Path)},
+        });
+
+        VrTunnel.SendTunnelMessage(new Dictionary<string, string>
+        {
+            {"\"_data_\"", JsonFileReader.GetObjectAsString("Show", new Dictionary<string, string>()
+                , JsonFolder.Route.Path)},
+        });
+        
+        //Start WorldGen
+         WorldGen = new WorldGen(this, VrTunnel);
+         BikeController = new BikeController(this, VrTunnel, WorldGen);
+         PanelController = new PanelController(this, VrTunnel);
     }
 
+    /// <summary>
+    /// It sends a message to the VR server asking for the UUID of an object with a given name
+    /// </summary>
+    /// <param name="name">The name of the object you want to find.</param>
+    /// <returns>
+    /// The UUID of the object.
+    /// </returns>
     public async Task<string> FindObjectUuid(string name)
     {
         try
         {
             var serial = Util.RandomString();
-            tunnel.SendTunnelMessage(new Dictionary<string, string>()
+            VrTunnel.SendTunnelMessage(new Dictionary<string, string>()
             {
                 {
                     "\"_data_\"", JsonFileReader.GetObjectAsString("Find", new Dictionary<string, string>()
@@ -168,6 +218,10 @@ public class VRClient : DefaultClientConnection
         return "";
     }
 
+    /// <summary>
+    /// This function removes an object from the scene
+    /// </summary>
+    /// <param name="name">The name of the object to remove.</param>
     public async Task RemoveObject(string name)
     {
         try
@@ -178,7 +232,7 @@ public class VRClient : DefaultClientConnection
                 Logger.LogMessage(LogImportance.Warn, $"RemoveObject: No object found with name: {name},");
             }
 
-            tunnel.SendTunnelMessage(new Dictionary<string, string>()
+            VrTunnel.SendTunnelMessage(new Dictionary<string, string>()
             {
                 {
                     "\"_data_\"", JsonFileReader.GetObjectAsString("DeleteNodeScene", new Dictionary<string, string>()
@@ -193,5 +247,71 @@ public class VRClient : DefaultClientConnection
             Logger.LogMessage(LogImportance.Error, "Error (Unknown Reason) ", e);
         }
     }
-    
+
+    /// <summary>
+    /// It loads the selected scenery options into the variables
+    /// </summary>
+    private void LoadSceneryOptions()
+    {
+        switch (SelectedScenery)
+        {
+            default:
+                skyboxFolder = "skyboxes/yellow";
+                TerrainD = "grass_autumn_orn_d";
+                TerrainN = "grass_autumn_n";
+                Path = "grass_ground_d";
+                Decoration = "pine";
+                DecoAmount = 5000;
+                Scale = "4";
+                break;
+            
+            case 1:
+                skyboxFolder = "skyboxes/gray";
+                TerrainD = "lava_d";
+                TerrainN = "lava_n";
+                Path = "lava_black_d";
+                Decoration = "lava_rock";
+                Scale = "1";
+                DecoAmount = 750;
+                break;
+            
+            case 2:
+                skyboxFolder = "skyboxes/blue";
+                TerrainD = "moss_plants_d";
+                TerrainN = "moss_plants_n";
+                Path = "jungle_stone_d";
+                Decoration = "tropical_plant";
+                Scale = "2";
+                DecoAmount = 2500;
+                break;
+            
+            case 3:
+                skyboxFolder = "skyboxes/stormy";
+                TerrainD = "jungle_mntn2_s";
+                TerrainN = "jungle_mntn2_n";
+                Path = "mntn_black_d";
+                Decoration = "rock";
+                DecoAmount = 2000;
+                Scale = "0.01";
+                break;
+            
+            case 4:
+                skyboxFolder = "skyboxes/brown";
+                TerrainD = "desert_sand_d";
+                TerrainN = "desert_sand_n";
+                Path = "ground_dry_d";
+                Decoration = "cactus";
+                DecoAmount = 200;
+                break;
+            
+            case 5:
+                skyboxFolder = "skyboxes/interstellar";
+                TerrainD = "snow1_d";
+                TerrainN = "snow1_d";
+                Path = "snow_bumpy_d";
+                Decoration = "snowman";
+                Scale = "4";
+                break;
+        }
+    }
 }

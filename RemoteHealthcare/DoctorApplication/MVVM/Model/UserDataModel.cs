@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using ClientApplication.ServerConnection;
 using ClientApplication.ServerConnection.Communication;
@@ -17,21 +18,40 @@ using Newtonsoft.Json.Linq;
 using Shared;
 using Shared.Log;
 using System.Windows.Controls.Primitives;
+using Newtonsoft.Json;
 
 namespace DoctorApplication.MVVM.Model
 {
     public class UserDataModel : INotifyPropertyChanged
     {
+        public bool isRecordingActive = false;
 
+        private string recordingText;
 
+        public string RecordingText
+        {
+            get { return recordingText; }
+            set
+            {
+                recordingText = value;
+                OnPropertyChanged(nameof(RecordingText));
+            }
+        }
+        private int sliderValue;
+
+        public int SliderValue
+        {
+            get { return sliderValue; }
+            set
+            {
+                sliderValue = value;
+                OnPropertyChanged(nameof(SliderValue));
+                ApplySliderValue();
+            }
+        }
         //userdata
         private string userName;
-
-        //statistic data bike
-       
-
         private ObservableCollection<SessionModel> sessions;
-
         public ObservableCollection<SessionModel> Sessions
         {
             get { return sessions; }
@@ -50,129 +70,8 @@ namespace DoctorApplication.MVVM.Model
         }
 
 
-        private double topSpeed;
-        public double TopSpeed
-        {
-            get
-            {
-                if (lastSession != null)
-                {
-                    double highest = 0;
-                    foreach (double value in LastSession.Speed)
-                    {
-                        if (value > highest)
-                        {
-                            highest = value;
-                        }
-                    }
-                    return highest;
-                }
-                return 0;
-            }
-            set
-            {
-                topSpeed = value;
-                OnPropertyChanged(nameof(topSpeed));
-            }
-        }
-
-        private double averageSpeed;
-        public double AverageSpeed
-        {
-            get{
-                if (lastSession != null)
-                {
-                    double total = 0;
-                    foreach (double value in LastSession.Speed)
-                    {
-                        total += value;
-                    }
-                    return Math.Round((total / LastSession.Speed.Count), 1);
-                }
-                return 0;
-            }
-            set{
-                averageSpeed = value;
-                OnPropertyChanged(nameof(averageSpeed));
-            }
-        }
-        //statistic data heartmonitor
-
-        private double lowestRate;
-        public double LowestRate
-        {
-            get
-            {
-                if (lastSession != null)
-                {
-                    double lowest = 9999;
-                    foreach (double value in LastSession.HeartRate)
-                    {
-                        if (value < lowest)
-                        {
-                            lowest = value;
-                        }
-                    }
-                    return lowest;
-                }
-                return 0;
-            }
-            set
-            {
-                lowestRate = value;
-                OnPropertyChanged(nameof(lowestRate));
-            }
-        }
- 
-
-        private double averageRate;
-        public double AverageRate
-        {
-            get
-            {
-                if (lastSession != null)
-                {
-                    double total = 0;
-                    foreach (double value in LastSession.HeartRate)
-                    {
-                        total += value;
-                    }
-                    return Math.Round((total / LastSession.HeartRate.Count), 1);
-                }
-                return 0;
-            }
-            set
-            {
-                averageRate = value;
-                OnPropertyChanged(nameof(averageRate));
-            }
-        }
-        private double highestRate;
-        public double HighestRate
-        {
-            get
-            {
-                if (lastSession != null)
-                {
-                    double highest = 0;
-                    foreach (double value in LastSession.HeartRate)
-                    {
-                        if (value > highest)
-                        {
-                            highest = value;
-                        }
-                    }
-                    return highest;
-                }
-                return 0;
-            }
-            set
-            {
-                highestRate = value;
-                OnPropertyChanged(nameof(highestRate));
-            }
-        }
-
+        
+      
         public SessionModel lastSession;
         public SessionModel LastSession
         {
@@ -183,47 +82,52 @@ namespace DoctorApplication.MVVM.Model
                 OnPropertyChanged(nameof(lastSession));
             }
         }
-        private double lastSpeed;
-        public double LastSpeed
-        {
-            get { return LastSession.lastSpeed; }
-            set
-            {
-                lastSpeed = value;
-                OnPropertyChanged(nameof(lastSpeed));
-            }
-        }
-        private double lastDistance;
-
-        public double LastDistance
-        {
-            get { return LastSession.lastDistance; }
-            set
-            {
-                lastDistance = value;
-                OnPropertyChanged(nameof(lastDistance));
-            }
-        }
-        private double lastHeartRate;
-        public double LastHeartRate
-        {
-            get { return LastSession.lastHeartRate; }
-            set
-            {
-                lastHeartRate = value;
-                OnPropertyChanged(nameof(lastHeartRate));
-            }
-        }
-
-
-
 
         //chatdata
         public ObservableCollection<MessageModel> messages { get; set; }
 
+        private int currentValue = 0;
+        private int waitTimer = 0;
+        private bool waiting = false;
+        /// <summary>
+        /// It sends a message to the server with the slider value, and waits for a response
+        /// </summary>
+        /// <returns>
+        /// The slider value is being returned.
+        /// </returns>
+        private void ApplySliderValue()
+        {
+            waitTimer = 1000;
+            currentValue = sliderValue;
+            if (waiting)
+            {
+                return;
+            }
+            new Thread(start =>
+            {
+                waiting = true;
+                while (waitTimer > 0)
+                {
+                    Thread.Sleep(1);
+                    waitTimer--;
+                }
+                Logger.LogMessage(LogImportance.Information, sliderValue.ToString());
+                Client client = App.GetClientInstance();
+                var serial = Util.RandomString();
+                client.SendEncryptedData(JsonFileReader.GetObjectAsString("SetResistance", new Dictionary<string, string>()
+                {
+                    {"_serial_" , serial},
+                    {"_resistance_" , SliderValue.ToString()},
+                    {"_user_", UserName }
+                }, JsonFolder.Json.Path));
+                waiting = false;
+            }).Start();
+        }
+
         //constructor currently with test values
         public UserDataModel()
         {
+            RecordingText = "Start";
             this.UserName = "TestName";
             this.messages = new ObservableCollection<MessageModel>();
             this.sessions = new BindableCollection<SessionModel>();
@@ -231,10 +135,12 @@ namespace DoctorApplication.MVVM.Model
 
         public UserDataModel(string userName)
         {
+            RecordingText = "Start";
             UserName = userName;
             this.messages = new ObservableCollection<MessageModel>();
             this.sessions = new BindableCollection<SessionModel>();
 
+            /* Getting the historic data from the server. */
             Client client = App.GetClientInstance();
             var serial = Util.RandomString();
             client.SendEncryptedData(JsonFileReader.GetObjectAsString("HistoricClientData", new Dictionary<string, string>()
@@ -245,40 +151,70 @@ namespace DoctorApplication.MVVM.Model
 
             client.AddSerialCallbackTimeout(serial, ob =>
             {
-                foreach (JObject session in ob["data"]!.Value<JArray>("bike-sessions")!.Values<JObject>())
+                foreach (string name in ob["data"]!.Value<JArray>("bike-sessions")!.Values<string>())
                 {
-                    if (session == null) return;
-                    SessionModel model = new SessionModel(session["session-name"]!.ToObject<string>()!);
-                    model.AddDataDistance(session);
-                    model.AddDataSpeed(session);
-                    model.AddDataHeartRate(session);
-                    try
+                    if(name == null)
+                        continue;
+                    serial = Util.RandomString();
+                    client.SendEncryptedData(JsonFileReader.GetObjectAsString("HistoricClientDataSession", new Dictionary<string, string>()
                     {
-                        model.startTime = CustomParseDate(session["start-time"]!.ToObject<string>()!);
-                        model.endTime = !session["end-time"]!.ToObject<string>()!.Equals("_endtime_") ? CustomParseDate(session["end-time"]!.ToObject<string>()!) : DateTime.MinValue;
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.LogMessage(LogImportance.Fatal, "Time could not be parsed", e);
-                    }
+                        {"_serial_", serial},
+                        {"_username_", userName},
+                        {"_session_", name}
+                    }, JsonFolder.Json.Path));
 
-                    sessions.Add(model);
+                    client.AddSerialCallback(serial, sessionOb =>
+                    {
+                        if (!sessionOb["data"]!["status"]!.ToObject<string>()!.Equals("ok"))
+                        {
+                            return;
+                        }
+                        JObject session = sessionOb["data"]!["session"]!.ToObject<JObject>()!;
+                        SessionModel model = new SessionModel(session["session-name"]!.ToObject<string>()!);
+                        model.AddDataDistance(session);
+                        model.AddDataSpeed(session);
+                        model.AddDataHeartRate(session);
+                        try
+                        {
+                            model.StartTime = CustomParseDate(session["start-time"]!.ToObject<string>()!);
+                            model.EndTime = !session["end-time"]!.ToObject<string>()!.Equals("_endtime_")
+                                ? CustomParseDate(session["end-time"]!.ToObject<string>()!)
+                                : DateTime.MinValue;
+                        }
+                        catch (Exception e)
+                        {
+                            Logger.LogMessage(LogImportance.Fatal, "Time could not be parsed", e);
+                        }
+
+                        sessions.Add(model);
+                    });
                 }
             }, () =>
             {
                 // No Response from server
             }, 1000);
         }
-
+       
+        
+        /// <summary>
+        /// This function adds a session to the list of sessions
+        /// </summary>
+        /// <param name="SessionModel">This is the model that contains the session information.</param>
         public void AddSession(SessionModel sessionModel)
         {
             sessions.Add(sessionModel);
         }
+
+        /// <summary>
+        /// It adds a new message to the list of messages
+        /// </summary>
+        /// <param name="message">The message to be added to the list of messages.</param>
         public void AddMessage(string message)
         {
             messages.Add(new MessageModel(UserName, message));
         }
 
+        /* This is a property that is used to get and set the username. */
         public string UserName
         {
             get { return userName; }
@@ -299,9 +235,16 @@ namespace DoctorApplication.MVVM.Model
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
+        /// <summary>
+        /// It takes a string in the format of "yyyy-MM-dd HH:mm:ss.fff" and returns a DateTime object
+        /// </summary>
+        /// <param name="time">The time string to parse.</param>
+        /// <returns>
+        /// The method is returning a DateTime object.
+        /// </returns>
         private DateTime CustomParseDate(string time)
         {
-            return DateTime.ParseExact(time, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+            return DateTime.ParseExact(time, "yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
         }
     }
 

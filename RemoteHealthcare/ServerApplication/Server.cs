@@ -39,6 +39,7 @@ namespace ServerApplication
                     users.Add(new ClientData(this, client));
                 }
             });
+            requestThread.IsBackground = true;
             requestThread.Start();
         }
 

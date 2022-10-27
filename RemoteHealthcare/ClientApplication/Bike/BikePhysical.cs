@@ -15,45 +15,63 @@ namespace ClientApplication.Bike
         
         private BikeHandler handler;
         private Dictionary<int, DataPage> pages;
-        private BluetoothDevice bikeDevice;
+        private BluetoothDevice? bikeDevice;
         private BluetoothDevice heartRateDevice;
+
+       
 
         public BikePhysical(BikeHandler handler)
         {
+
             this.handler = handler;
             pages = new Dictionary<int, DataPage>()
             {
                 {0x10, new DataPage10(handler)},
             };
-            //StartConnection();
-            // Test message
-            // NewMessage(DataMessageProtocol.BleBike, "A4 09 4E 05 10 19 6C EE 00 00 FF 24 B6");
         }
 
+        /// <summary>
+        /// It connects to the Tacx Flux and the Heart Rate Monitor. If it fails to connect to either, it switches to the
+        /// Bike Simulator
+        /// </summary>
         public async Task StartConnection()
         {
             bikeDevice = new BluetoothDevice($"Tacx Flux {id}", "6e40fec1-b5a3-f393-e0a9-e50e24dcca9e", "6e40fec2-b5a3-f393-e0a9-e50e24dcca9e", ValueChangedBike);
             await bikeDevice.StartConnection();
-            // heartRateDevice = new BluetoothDevice("Decathlon Dual HR","HeartRate", "HeartRateMeasurement", ValueChangedHeartRate);
-            // await heartRateDevice.StartConnection();
-
-            // if (!bikeDevice.Connected || heartRateDevice.Connected)
-            if (!bikeDevice.Connected)
+            await Task.Delay(5000);
+            heartRateDevice = new BluetoothDevice("Decathlon Dual HR","HeartRate", "HeartRateMeasurement", ValueChangedHeartRate);
+            await heartRateDevice.StartConnection();
+            if (!bikeDevice.Connected || !heartRateDevice.Connected)
             {
-                Logger.LogMessage(LogImportance.Information, "Switching to Bike Simulator");
-                handler.Bike = new BikeSimulator(handler);
+                if(!bikeDevice.Connected && !heartRateDevice.Connected)
+                {
+                   handler.Bike = new BikeSimulator(handler, !bikeDevice.Connected, !heartRateDevice.Connected);
+                } else
+                {
+                    new BikeSimulator(handler, !bikeDevice.Connected, !heartRateDevice.Connected);
+                }
+                Logger.LogMessage(LogImportance.Information, $"Switching to Bike Simulator for Bike: {!bikeDevice.Connected}, Heart: {!heartRateDevice.Connected} ");
             }
             else
             {
                 BikeId = $"Tacx Flux {id}";
                 SetResistanceAsync(1);
                 Thread.Sleep(10000);
-                SetResistanceAsync(1000);
+                SetResistanceAsync(0);
             }
         }
 
+        /// <summary>
+        /// It sets the resistance of the bike.
+        /// </summary>
+        /// <param name="resistance">0-255</param>
+        /// <returns>
+        /// The resistance is being returned.
+        /// </returns>
         public override void SetResistanceAsync(int resistance)
         {
+            if (bikeDevice == null)
+                return;
             byte[] output = new byte[13];
             output[0] = 0x4A; //sync byte
             output[1] = 0x09; //Message Lenght
@@ -69,7 +87,18 @@ namespace ClientApplication.Bike
             output[12] = checksum;
             bikeDevice.ble.WriteCharacteristic("6e40fec3-b5a3-f393-e0a9-e50e24dcca9e", output);
         }
-        
+
+        public override void Reset()
+        {
+            //Ignore
+        }
+
+        public override void OnStateChange(bool state)
+        {
+            this.State = state;
+            
+        }
+
 
         /// <summary>
         /// The function takes in a message and a protocol, and then parses the message based on the protocol

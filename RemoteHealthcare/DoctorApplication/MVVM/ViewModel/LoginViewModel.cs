@@ -14,6 +14,7 @@ namespace DoctorApplication.ViewModel;
 public class LoginViewModel: INotifyPropertyChanged
 {
 	//Fields
+	public static LoginViewModel Model;
 	private string userName;
 	private SecureString password;
 	private string errorMessage;
@@ -62,6 +63,7 @@ public class LoginViewModel: INotifyPropertyChanged
 	//Constructor
 	public LoginViewModel()
 	{
+		Model = this;
 		LoginCommand = new RelayCommand(ExecuteLoginCommand, CanExecuteLoginCommand);
 		RecoverPasswordCommand = new RelayCommand(p =>ExecuteRecoveryPasswordCommand("",""));
 	}
@@ -72,6 +74,14 @@ public class LoginViewModel: INotifyPropertyChanged
 		throw new NotImplementedException();
 	}
 
+	/// <summary>
+	/// If the username is null or whitespace, or if the username is less than 1 character, or if the password is null, or if
+	/// the password is less than 1 character, then the data is invalid. Otherwise, the data is valid
+	/// </summary>
+	/// <param name="obj">The parameter is used to pass a value to the command when it is executed.</param>
+	/// <returns>
+	/// A boolean value.
+	/// </returns>
 	private bool CanExecuteLoginCommand(object obj)
 	{
 		bool validData;
@@ -85,6 +95,10 @@ public class LoginViewModel: INotifyPropertyChanged
 		return validData;
 	}
 
+	/// <summary>
+	/// It sends a login request to the server, and if the server responds with a status of "ok", then the login view is hidden
+	/// </summary>
+	/// <param name="obj">The object that is passed to the command.</param>
 	private void ExecuteLoginCommand(object obj)
 	{
 		Client client = App.GetClientInstance();
@@ -107,7 +121,14 @@ public class LoginViewModel: INotifyPropertyChanged
 			}
 			else
 			{
-				ErrorMessage = ob["data"]!["error"]!.ToObject<string>()!;
+				if (ob["data"]!["error"]!.ToObject<string>()! == "Already Logged In")
+				{
+					IsViewVisible = false;
+				}
+				else
+				{
+					ErrorMessage = ob["data"]!["error"]!.ToObject<string>()!;
+				}
 			}
 		}, () =>
 		{

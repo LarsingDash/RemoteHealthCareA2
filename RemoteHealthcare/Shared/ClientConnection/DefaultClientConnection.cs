@@ -23,7 +23,7 @@ public class DefaultClientConnection
     public DefaultClientConnection(string hostname, int port, Action<JObject, bool> commandHandlerMethod)
     {
         Init(hostname, port, commandHandlerMethod);
-        
+
     }
     [Obsolete("Only use this when you call init manually")]
     public DefaultClientConnection()
@@ -49,14 +49,20 @@ public class DefaultClientConnection
         {
             client = new(hostname, port);
             stream = client.GetStream();
-            stream.BeginRead(_buffer, 0, 1024, OnRead, null);
+            stream.BeginRead(buffer, 0, 40960000, OnRead, null);
             SetupClient();
             Connected = true;
         }
         catch (SocketException e)
         {
+            OnNotConnected();
             Logger.LogMessage(LogImportance.Fatal, "Could not connect with server", e);
         }
+    }
+
+    public virtual void OnNotConnected()
+    {
+        Logger.LogMessage(LogImportance.Fatal, "Not connected with server");
     }
 
     /// <summary>
@@ -69,9 +75,9 @@ public class DefaultClientConnection
         var serial = Util.RandomString();
         AddSerialCallback(serial, ob =>
         {
-            PublicKey = ob["data"]!["key"]!.ToObject<string>()!;
+            publicKey = ob["data"]!["key"]!.ToObject<string>()!;
             Logger.LogMessage(LogImportance.Information, 
-                $"Received PublicKey from Server: {LogColor.Gray}\n{(PublicKey)}");
+                $"Received PublicKey from Server: {LogColor.Gray}\n{(publicKey)}");
         });
         
         SendData(JsonFileReader.GetObjectAsString("PublicRSAKey", new Dictionary<string, string>()
@@ -81,10 +87,10 @@ public class DefaultClientConnection
     }
 
     #region Sending and retrieving data
-    private byte[] _totalBuffer = Array.Empty<byte>();
-    private readonly byte[] _buffer = new byte[1024];
+    private byte[] totalBuffer = Array.Empty<byte>();
+    private readonly byte[] buffer = new byte[40960000];
     public event EventHandler<JObject> OnMessage; 
-    private string PublicKey;
+    private string publicKey;
 
     /// <summary>
     /// It checks if the message has a serial, if it does it checks if the client has a callback for that serial, if it does
@@ -100,6 +106,8 @@ public class DefaultClientConnection
     public void HandleMessage(JObject json, bool encrypted = false)
     {
         string extraText = encrypted ? "Encrypted " : "";
+        // Logger.LogMessage(LogImportance.Debug, "Received " + json["id"].ToObject<string>());
+        // Logger.LogMessage(LogImportance.DebugHighlight, json.ToString(Formatting.None));
         if (!json.ContainsKey("id"))
         {
             Logger.LogMessage(LogImportance.Warn, $"Got {extraText}message with no id from server: {LogColor.Gray}\n{json.ToString(Formatting.None)}");
@@ -132,75 +140,142 @@ public class DefaultClientConnection
         try
         {
             var numberOfBytes = stream.EndRead(readResult);
-            _totalBuffer = Concat(_totalBuffer, _buffer, numberOfBytes);
+            totalBuffer = Concat(totalBuffer, buffer, numberOfBytes);
         }
         catch(Exception e)
         {
             Logger.LogMessage(LogImportance.Error, "Error (Unknown Reason) ", e);
+            OnDisconnect();
             return;
         }
 
-        while (_totalBuffer.Length >= 4)
+        while (totalBuffer.Length >= 4)
         {
-            var packetSize = BitConverter.ToInt32(_totalBuffer, 0);
+            var packetSize = BitConverter.ToInt32(totalBuffer, 0);
 
-            if (_totalBuffer.Length >= packetSize + 4) 
+            if (totalBuffer.Length >= packetSize + 4) 
             {
-                var json = Encoding.UTF8.GetString(_totalBuffer, 4, packetSize);
-
+                var json = Encoding.UTF8.GetString(totalBuffer, 4, packetSize);
+                // Logger.LogMessage(LogImportance.DebugHighlight, "Received: '" + json.ToString() + "'");
+                if (json.Length == 0)
+                {
+                    Logger.LogMessage(LogImportance.Error, "Incoming message length was 0");
+                    return;
+                }
                 OnMessage?.Invoke(this, JObject.Parse(json));
 
-                var newBuffer = new byte[_totalBuffer.Length - packetSize - 4];
-                Array.Copy(_totalBuffer, packetSize + 4, newBuffer, 0, newBuffer.Length);
-                _totalBuffer = newBuffer;
+                var newBuffer = new byte[totalBuffer.Length - packetSize - 4];
+                Array.Copy(totalBuffer, packetSize + 4, newBuffer, 0, newBuffer.Length);
+                totalBuffer = newBuffer;
             }
 
             else
                 break;
         }
 
-        stream.BeginRead(_buffer, 0, 1024, OnRead, null);
+        stream.BeginRead(buffer, 0, 40960000, OnRead, null);
     }
+
+    public virtual void OnDisconnect()
+    {
+        Logger.LogMessage(LogImportance.Fatal, "Disconnected with Server.");
+    }
+
+    private Queue<Tuple<string, bool>> sendQueue = new();
+    private Queue<Tuple<string, bool>> sendQueuePrio = new();
     
+
+    private bool sending = false;
+    private void Send()
+    {
+        var t = new Thread(start =>
+        {
+            if (sending)
+                return;
+            sending = true;
+            while (sendQueue.Count > 0 || sendQueuePrio.Count > 0)
+            {
+                //new Thread(start => Logger.LogMessage(LogImportance.Error, sendQueue.Count.ToString())).Start();
+                try
+                {
+                    if (sendQueuePrio.Count > 0)
+                    {
+                        Tuple<string, bool> val = sendQueuePrio.Dequeue();
+                        SendMessage(val.Item1, val.Item2);
+                    }
+                    else
+                    {
+                        Tuple<string, bool> val = sendQueue.Dequeue();
+                        SendMessage(val.Item1, val.Item2);
+                    }
+                    Thread.Sleep(2);
+                }
+                catch (Exception e)
+                {
+                    Logger.LogMessage(LogImportance.Error, "Could not send message", e);
+                }
+            }
+            sending = false;
+        });
+        t.IsBackground = true;
+        t.Start();
+    }
     /// <summary>
     /// It sends a message to the server
     /// </summary>
     /// <param name="message">The message to send to the server.</param>
-    public void SendData(string message, bool hide = false)
+    public void SendData(string message, bool hide = false, bool priority = false)
     {
-        try
+        if (priority)
         {
-            var ob = JObject.Parse(message);
-            if (ob.ContainsKey("serial"))
+            sendQueuePrio.Enqueue(Tuple.Create(message, hide));
+        }
+        else
+        {
+            sendQueue.Enqueue(Tuple.Create(message, hide));
+        }
+        Send();
+        
+    }
+
+    private void SendMessage(string message, bool hide)
+    {
+        var t = new Thread(start =>
+        {
+            try
             {
-                if (ob["serial"]!.ToObject<string>()!.Equals("_serial_"))
+                var ob = JObject.Parse(message);
+                if (ob.ContainsKey("serial"))
                 {
-                    ob.Remove("serial");
-                    message = ob.ToString();
+                    if (ob["serial"]!.ToObject<string>()!.Equals("_serial_"))
+                    {
+                        ob.Remove("serial");
+                        message = ob.ToString();
+                    }
+                }
+
+                if (ob["data"]?["error"]?.ToObject<string>() != null)
+                {
+                    if (ob["data"]!["error"]!.ToObject<string>()!.Equals("_error_"))
+                    {
+                        ob["data"]!["error"]!.Remove();
+                        message = ob.ToString();
+                    }
+                }
+
+                if (!ob["id"]!.ToObject<string>()!.Equals("encryptedMessage") && !hide)
+                {
+                    Logger.LogMessage(LogImportance.Information, 
+                        $"Sending message: {LogColor.Gray}\n{ob.ToString(Formatting.None)}");
                 }
             }
-
-            if (ob["data"]?["error"]?.ToObject<string>() != null)
-            {
-                if (ob["data"]!["error"]!.ToObject<string>()!.Equals("_error_"))
-                {
-                    ob["data"]!["error"]!.Remove();
-                    message = ob.ToString();
-                }
-            }
-
-            if (!ob["id"]!.ToObject<string>()!.Equals("encryptedMessage") && !hide)
+            catch(JsonReaderException)
             {
                 Logger.LogMessage(LogImportance.Information, 
-                    $"Sending message: {LogColor.Gray}\n{ob.ToString(Formatting.None)}");
+                    $"Sending message: {LogColor.Gray}\n(_NonJsonObject_)");
             }
-        }
-        catch(JsonReaderException)
-        {
-            Logger.LogMessage(LogImportance.Information, 
-                $"Sending message: {LogColor.Gray}\n(_NonJsonObject_)");
-        }
-                
+        });
+        t.Start();
         Byte[] data = BitConverter.GetBytes(message.Length);
         Byte[] comman = System.Text.Encoding.ASCII.GetBytes(message);
         stream.Write(data, 0, data.Length);
@@ -301,7 +376,7 @@ public class DefaultClientConnection
         }
         Aes aes = Aes.Create("AesManaged")!;
         RSA newRsa = new RSACryptoServiceProvider();
-        newRsa.FromXmlString(PublicKey);
+        newRsa.FromXmlString(publicKey);
 
         var keyCrypt = RsaHelper.EncryptMessage(aes.Key, newRsa.ExportParameters(false), false);
         var iVCrypt = RsaHelper.EncryptMessage(aes.IV, newRsa.ExportParameters(false), false);

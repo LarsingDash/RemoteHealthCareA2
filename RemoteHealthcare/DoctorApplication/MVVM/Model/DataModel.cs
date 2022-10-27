@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace DoctorApplication.MVVM.Model
 {
+    //Old Data model now replaced by session model.
     public class DataModel : INotifyPropertyChanged
     {
 

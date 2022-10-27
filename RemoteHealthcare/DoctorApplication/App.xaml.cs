@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 using DoctorApplication.View;
 using ClientApplication.ServerConnection.Communication;
 using DoctorApplication.Communication;
@@ -18,6 +19,8 @@ namespace ClientApplication.ServerConnection
     /// </summary>
     public partial class App : Application
     {
+        public static Dispatcher CurrentDispatcher;
+        
         private static Client client;
         private static Thread mainThread;
         public static Client GetClientInstance()
@@ -30,6 +33,7 @@ namespace ClientApplication.ServerConnection
         }
         public App()
         {
+            CurrentDispatcher = this.Dispatcher;
             mainThread = Thread.CurrentThread;
             Logger.PrintLevel = LogLevel.All;
              client = new Client();

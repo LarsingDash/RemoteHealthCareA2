@@ -37,4 +37,7 @@
     <SolidColorBrush x:Key="closeButtonColor" Color="#FF3F36"/>
     <SolidColorBrush x:Key="minimizeButtonColor" Color="#ED8341"/>
     <SolidColorBrush x:Key="maximizeButtonColor" Color="#4AF266"/>
+    
+    
+    
 </ResourceDictionary>

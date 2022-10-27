@@ -1,18 +1,17 @@
 ﻿<UserControl
     d:DataContext="{d:DesignInstance Type={x:Type m:DataViewModel}}"
-    xmlns:m="clr-namespace:DoctorApplication.MVVM.ViewModel"
-    
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d"
     x:Class="DoctorApplication.MVVM.View.DataView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Model="clr-namespace:DoctorApplication.MVVM.Model"
-    xmlns:local="clr-namespace:DoctorApplication.MVVM.View">
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:DoctorApplication.MVVM.View"
+    xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+    xmlns:m="clr-namespace:DoctorApplication.MVVM.ViewModel"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
 
     <Grid Margin="20">
@@ -31,10 +30,10 @@
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0" Orientation="Vertical">
                 <Label
-                    Style="{DynamicResource HeaderStyle1}"
                     Content="Selected User:"
                     FontWeight="Bold"
                     HorizontalAlignment="Center"
+                    Style="{DynamicResource HeaderStyle1}"
                     x:Name="SelectedUserLabel" />
                 <ComboBox
                     ItemsSource="{Binding Users}"
@@ -49,21 +48,24 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <StackPanel Orientation="Horizontal"/>
-                
+                <StackPanel Orientation="Horizontal" />
+
                 <Button
-                        Command="{Binding StartSTopRecordingCommand, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        FontSize="15"
+                    BorderBrush="{x:Null}"
+                    Command="{Binding StartSTopRecordingCommand, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     Content="{Binding SelectedUser.RecordingText}"
+                    FontSize="15"
+                    Height="33"
                     Margin="5"
-                        Visibility="Visible" BorderBrush="{x:Null}" Height="33" Width="124" >
+                    Visibility="Visible"
+                    Width="124">
                     <Button.Resources>
                         <Style TargetType="{x:Type Border}">
                             <Setter Property="CornerRadius" Value="5" />
                         </Style>
                     </Button.Resources>
                     <Button.Style>
-                        <StaticResource ResourceKey="ButtonGradientStyle"/>
+                        <StaticResource ResourceKey="ButtonGradientStyle" />
                     </Button.Style>
                 </Button>
 
@@ -77,31 +79,34 @@
                     FontWeight="Bold"
                     HorizontalAlignment="Center"
                     Padding="5,5,5,0"
-                    x:Name="AboutLabel" 
-                    Style="{DynamicResource LabelStyleMain}" 
-                    />
+                    Style="{DynamicResource LabelStyleMain}"
+                    x:Name="AboutLabel" />
                 <Label
-                    Style="{DynamicResource LabelStyleMain}" 
                     Content="Username:"
                     HorizontalAlignment="Left"
                     Padding="5,5,5,0"
+                    Style="{DynamicResource LabelStyleMain}"
                     x:Name="UsernameHeader" />
                 <Label
-                    Style="{DynamicResource LabelStyleMain}" 
+                    Content="{Binding SelectedUser.UserName}"
                     HorizontalAlignment="Left"
                     Padding="5,0,5,5"
-                    Content="{Binding SelectedUser.UserName}" />
+                    Style="{DynamicResource LabelStyleMain}" />
 
             </StackPanel>
             <StackPanel Grid.Row="2" Orientation="Horizontal">
-                <Label HorizontalAlignment="Center" Style="{StaticResource HeaderStyle1}" FontWeight="Bold"  Content="Chat:"/>
+                <Label
+                    Content="Chat:"
+                    FontWeight="Bold"
+                    HorizontalAlignment="Center"
+                    Style="{StaticResource HeaderStyle1}" />
                 <ToggleButton
-                        Width="Auto"
-                        Command="{Binding ChatTypeCommand}"
-                        CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}"
-                        Content="{Binding ButtonText2}"
-                        Foreground="White"
-                        Style="{StaticResource ToggleStyle2}" />
+                    Command="{Binding ChatTypeCommand}"
+                    CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}"
+                    Content="{Binding ButtonText2}"
+                    Foreground="White"
+                    Style="{StaticResource ToggleStyle2}"
+                    Width="Auto" />
             </StackPanel>
             <Grid Grid.Row="3">
                 <Grid.RowDefinitions>
@@ -120,19 +125,23 @@
                                 Padding="5,2">
                                 <Border.Background>
                                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                        <GradientStop Color="#FFB238D8"/>
-                                        <GradientStop Color="#FF8912D0" Offset="1"/>
+                                        <GradientStop Color="#FFB238D8" />
+                                        <GradientStop Color="#FF8912D0" Offset="1" />
                                     </LinearGradientBrush>
                                 </Border.Background>
 
                                 <StackPanel Orientation="Vertical">
-                                    <Label Content="{Binding message}" Padding="3,3,3,3" Foreground="White" />
+                                    <Label
+                                        Content="{Binding message}"
+                                        Foreground="White"
+                                        Padding="3,3,3,3" />
                                     <Label
                                         Content="{Binding time}"
                                         FontSize="11"
                                         FontStyle="Italic"
+                                        Foreground="#FFF9F9F9"
                                         HorizontalAlignment="Right"
-                                        Padding="10,0" Foreground="#FFF9F9F9" />
+                                        Padding="10,0" />
                                 </StackPanel>
                             </Border>
                         </DataTemplate>
@@ -165,12 +174,13 @@
                         </TextBox.Resources>
                     </TextBox>
                     <Button
-                        Style="{StaticResource ButtonGradientStyle}"
+                        BorderBrush="{x:Null}"
                         Command="{Binding SendCommand}"
                         CommandParameter="{Binding Text, ElementName=ChatTextBox}"
                         Content="➤"
                         FontSize="8"
-                        Grid.Column="1" BorderBrush="{x:Null}" >
+                        Grid.Column="1"
+                        Style="{StaticResource ButtonGradientStyle}">
                         <Button.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="5" />
@@ -193,33 +203,34 @@
                 </Grid.RowDefinitions>
                 <StackPanel Orientation="Vertical">
                     <Label
-                        Style="{DynamicResource HeaderStyle1}"
                         Content="Bike information:"
                         FontWeight="Bold"
                         HorizontalAlignment="Center"
                         Padding="5,5,5,0"
+                        Style="{DynamicResource HeaderStyle1}"
                         x:Name="BikeInformationLabel" />
                     <Label
                         Content="Graph(Kilometer / Hour):"
                         HorizontalAlignment="Left"
                         Padding="5,5,5,0"
-                        x:Name="BikeGraphHeaderLabel" Style="{DynamicResource LabelStyleMain}" />
+                        Style="{DynamicResource LabelStyleMain}"
+                        x:Name="BikeGraphHeaderLabel" />
                 </StackPanel>
                 <Grid Grid.Row="1">
-                    <lvc:CartesianChart Grid.Row="1" Grid.Column="1"  >
-
+                    <lvc:CartesianChart Grid.Column="1" Grid.Row="1">
 
 
                         <lvc:CartesianChart.Series>
-                            <lvc:LineSeries Title="speed values"
-                    Values="{Binding LastSession.SpeedGraphValues}"
-                    Configuration="{Binding LastSession.SpeedDataMapper}"/>
+                            <lvc:LineSeries
+                                Configuration="{Binding LastSession.SpeedDataMapper}"
+                                Title="speed values"
+                                Values="{Binding LastSession.SpeedGraphValues}" />
                         </lvc:CartesianChart.Series>
                     </lvc:CartesianChart>
 
                 </Grid>
             </Grid>
-            <Grid  Grid.Row="1">
+            <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*" />
                     <ColumnDefinition Width="1*" />
@@ -235,91 +246,89 @@
                     <RowDefinition Height="1*" />
                 </Grid.RowDefinitions>
                 <Label
-                    Style="{DynamicResource HeaderStyle1}"
                     Content="Current Bike Reading:"
                     FontWeight="Bold"
                     Grid.Column="0"
-                    Grid.Row="0"
                     Grid.ColumnSpan="2"
+                    Grid.Row="0"
                     HorizontalAlignment="center"
+                    Style="{DynamicResource HeaderStyle1}"
                     VerticalAlignment="Bottom"
                     x:Name="BikeValueHeader" />
 
 
                 <Label
-                    Style="{DynamicResource LabelStyleMain}" 
                     Content="Current Speed:"
                     Grid.Column="0"
                     Grid.Row="1"
                     HorizontalAlignment="Left"
+                    Style="{DynamicResource LabelStyleMain}"
                     x:Name="CurrentSpeedHeader" />
                 <Label
-                    Style="{DynamicResource LabelStyleMain}" 
                     Content="Top Speed:"
                     Grid.Column="0"
                     Grid.Row="2"
                     HorizontalAlignment="Left"
+                    Style="{DynamicResource LabelStyleMain}"
                     x:Name="TopSpeedHeader" />
                 <Label
-                    Style="{DynamicResource LabelStyleMain}" 
                     Content="Average speed:"
                     Grid.Column="0"
                     Grid.Row="3"
                     HorizontalAlignment="Left"
+                    Style="{DynamicResource LabelStyleMain}"
                     x:Name="AverageSpeedheader" />
                 <Label
-                    Style="{DynamicResource LabelStyleMain}" 
                     Content="Time Elapsed:"
                     Grid.Column="0"
                     Grid.Row="4"
                     HorizontalAlignment="Left"
+                    Style="{DynamicResource LabelStyleMain}"
                     x:Name="TimeElapsedHeader" />
                 <Label
-                    Style="{DynamicResource LabelStyleMain}" 
                     Content="Distance Travelled:"
                     Grid.Column="0"
                     Grid.Row="5"
                     HorizontalAlignment="Left"
-                    />
+                    Style="{DynamicResource LabelStyleMain}" />
                 <Label
-                    Style="{DynamicResource LabelStyleMain}" 
-                    Content="{Binding LastSession.CurrentSpeed, FallbackValue='0' }"
+                    Content="{Binding LastSession.CurrentSpeed, FallbackValue='0'}"
                     ContentStringFormat=" {0} km/h"
                     Grid.Column="1"
                     Grid.Row="1"
                     HorizontalAlignment="Left"
+                    Style="{DynamicResource LabelStyleMain}"
                     x:Name="CurrentSpeedText" />
                 <Label
-                    Style="{DynamicResource LabelStyleMain}" 
-                    ContentStringFormat=" {0} km/h"
                     Content="{Binding LastSession.TopSpeed, FallbackValue='0'}"
+                    ContentStringFormat=" {0} km/h"
                     Grid.Column="1"
                     Grid.Row="2"
                     HorizontalAlignment="Left"
+                    Style="{DynamicResource LabelStyleMain}"
                     x:Name="TopSpeedText" />
                 <Label
-                    Style="{DynamicResource LabelStyleMain}" 
-                    ContentStringFormat=" {0} km/h"
                     Content="{Binding LastSession.AverageSpeed, FallbackValue='0'}"
+                    ContentStringFormat=" {0} km/h"
                     Grid.Column="1"
                     Grid.Row="3"
                     HorizontalAlignment="Left"
+                    Style="{DynamicResource LabelStyleMain}"
                     x:Name="AverageSpeedText" />
                 <Label
-                    Style="{DynamicResource LabelStyleMain}" 
-                    ContentStringFormat=" {0} "
                     Content="{Binding LastSession.TimeElapsed, FallbackValue='0'}"
                     Grid.Column="1"
                     Grid.Row="4"
                     HorizontalAlignment="Left"
+                    Style="{DynamicResource LabelStyleMain}"
                     x:Name="TimeElapsedText" />
                 <Label
-                    Style="{DynamicResource LabelStyleMain}" 
-                    ContentStringFormat=" {0} m"
                     Content="{Binding LastSession.CurrentDistance, FallbackValue='0'}"
+                    ContentStringFormat=" {0} m"
                     Grid.Column="1"
                     Grid.Row="5"
                     HorizontalAlignment="Left"
+                    Style="{DynamicResource LabelStyleMain}"
                     x:Name="DistanceTravelledText" />
 
             </Grid>
@@ -333,25 +342,25 @@
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
                 <Label
-                    Style="{DynamicResource HeaderStyle1}"
                     Content="Heart Information:"
                     DockPanel.Dock="Top"
                     FontWeight="Bold"
                     HorizontalAlignment="Center"
+                    Style="{DynamicResource HeaderStyle1}"
                     x:Name="HeartInformationHeader" />
                 <Label
-                    Style="{DynamicResource LabelStyleMain}" 
                     Content="{Binding LastSession.CurrentRate, FallbackValue='0'}"
                     FontSize="48"
                     HorizontalAlignment="Center"
+                    Style="{DynamicResource LabelStyleMain}"
                     VerticalAlignment="Center"
                     x:Name="HeartInformationValue" />
                 <Label
-                    Style="{DynamicResource LabelStyleMain}" 
                     Background="{x:Null}"
                     Content="BPM"
                     FontSize="36"
                     HorizontalAlignment="Center"
+                    Style="{DynamicResource LabelStyleMain}"
                     VerticalAlignment="Bottom"
                     x:Name="HeartInformationBPM" />
 
@@ -370,92 +379,98 @@
                     <RowDefinition Height="1*" />
                 </Grid.RowDefinitions>
                 <Label
-                    Style="{DynamicResource LabelStyleMain}" 
                     Content="Lowest"
                     FontSize="16"
                     Grid.Column="0"
                     Grid.Row="0"
                     HorizontalContentAlignment="Center"
+                    Style="{DynamicResource LabelStyleMain}"
                     VerticalAlignment="Bottom"
                     VerticalContentAlignment="Center"
                     x:Name="HeartLowestHeader" />
                 <Label
-                    Style="{DynamicResource LabelStyleMain}" 
                     Content="Average"
                     FontSize="16"
                     Grid.Column="1"
                     Grid.Row="0"
                     HorizontalContentAlignment="Center"
+                    Style="{DynamicResource LabelStyleMain}"
                     VerticalAlignment="Bottom"
                     VerticalContentAlignment="Center"
                     x:Name="HeartAverageHeader" />
                 <Label
-                    Style="{DynamicResource LabelStyleMain}" 
                     Content="Peak"
                     FontSize="16"
                     Grid.Column="2"
                     Grid.Row="0"
                     HorizontalContentAlignment="Center"
+                    Style="{DynamicResource LabelStyleMain}"
                     VerticalAlignment="Bottom"
                     VerticalContentAlignment="Center"
                     x:Name="HeartPeakHeader" />
                 <Label
-                    Style="{DynamicResource LabelStyleMain}" 
                     Content="{Binding LastSession.LowestRate, FallbackValue='0'}"
                     FontSize="16"
                     Grid.Column="0"
                     Grid.Row="1"
                     HorizontalContentAlignment="Center"
+                    Style="{DynamicResource LabelStyleMain}"
                     VerticalContentAlignment="Top"
                     x:Name="HeartLowestText" />
                 <Label
-                    Style="{DynamicResource LabelStyleMain}" 
                     Content="{Binding LastSession.AverageRate, FallbackValue='0'}"
                     FontSize="16"
                     Grid.Column="1"
                     Grid.Row="1"
                     HorizontalContentAlignment="Center"
+                    Style="{DynamicResource LabelStyleMain}"
                     VerticalContentAlignment="Top"
                     x:Name="HeartAverageText" />
                 <Label
-                    Style="{DynamicResource LabelStyleMain}" 
                     Content="{Binding LastSession.HighestRate, FallbackValue='0'}"
                     FontSize="16"
                     Grid.Column="2"
                     Grid.Row="1"
                     HorizontalContentAlignment="Center"
+                    Style="{DynamicResource LabelStyleMain}"
                     VerticalContentAlignment="Top"
                     x:Name="HeartPeakText" />
             </Grid>
             <Grid Grid.Row="2">
                 <StackPanel Orientation="Vertical" x:Name="BikeValuePanel">
                     <Label
-                        Style="{DynamicResource HeaderStyle1}"
                         Content="Adjust Bike Values"
                         FontWeight="Bold"
                         HorizontalAlignment="Center"
+                        Style="{DynamicResource HeaderStyle1}"
                         x:Name="AdjustBikeValuesHeader" />
-                    <Label 
-                    Style="{DynamicResource LabelStyleMain}" 
-                        Content="Bike Resistance:" x:Name="BikeResistanceHeader" />
-                    <Slider Value="{Binding SliderValue}" Maximum="1000" Margin="30,0,30,0" x:Name="ResistanceSlider" IsSnapToTickEnabled="True" TickFrequency="50" >
-
-                    </Slider>
+                    <Label
+                        Content="Bike Resistance:"
+                        Style="{DynamicResource LabelStyleMain}"
+                        x:Name="BikeResistanceHeader" />
+                    <Slider
+                        IsSnapToTickEnabled="True"
+                        Margin="30,0,30,0"
+                        Maximum="200"
+                        TickFrequency="20"
+                        Value="{Binding SelectedUser.SliderValue, Mode=TwoWay}"
+                        x:Name="ResistanceSlider" />
                     <StackPanel Orientation="Horizontal">
-                        <Label Content="Current Bike Resistance Value:" Style="{StaticResource LabelStyleMain}"/>
+                        <Label Content="Current Bike Resistance Value:" Style="{StaticResource LabelStyleMain}" />
                         <Label
-                    Style="{DynamicResource LabelStyleMain}" 
-                        Content="{Binding SliderValue}"
-                        HorizontalAlignment="Center"
-                        x:Name="ResistanceValue" />
+                            Content="{Binding SelectedUser.SliderValue, FallbackValue='0'}"
+                            HorizontalAlignment="Center"
+                            Style="{DynamicResource LabelStyleMain}"
+                            x:Name="ResistanceValue" />
                     </StackPanel>
                     <Button
-                        Command="{Binding EmergencyPressedCommand}"
                         Background="#0AFB0404"
+                        BorderThickness="2,2,2,2"
+                        Command="{Binding EmergencyPressedCommand}"
                         Content="Emergency"
+                        Height="73"
                         HorizontalAlignment="Center"
-                        Width="75" Height="73" BorderThickness="2,2,2,2"
-                         >
+                        Width="75">
                         <Button.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="100" />
@@ -463,15 +478,15 @@
                         </Button.Resources>
                         <Button.BorderBrush>
                             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                <GradientStop Color="#FFEC2D1A"/>
-                                <GradientStop Color="#FFC54538" Offset="1"/>
+                                <GradientStop Color="#FFEC2D1A" />
+                                <GradientStop Color="#FFC54538" Offset="1" />
                             </LinearGradientBrush>
                         </Button.BorderBrush>
                         <Button.Foreground>
                             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                <GradientStop Color="#FF901414"/>
-                                <GradientStop Color="#FFD21717" Offset="1"/>
-                                <GradientStop Color="#FF9E1919" Offset="0.614"/>
+                                <GradientStop Color="#FF901414" />
+                                <GradientStop Color="#FFD21717" Offset="1" />
+                                <GradientStop Color="#FF9E1919" Offset="0.614" />
                             </LinearGradientBrush>
                         </Button.Foreground>
                     </Button>

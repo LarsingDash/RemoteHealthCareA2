@@ -23,6 +23,22 @@ namespace DoctorApplication.MVVM.Model
 {
     public class UserDataModel : INotifyPropertyChanged
     {
+        public bool isRecordingActive = false;
+
+
+        private string recordingText;
+
+        public string RecordingText
+        {
+            get { return recordingText; }
+            set
+            {
+                recordingText = value;
+                OnPropertyChanged(nameof(RecordingText));
+            }
+        }
+
+
 
 
         //userdata

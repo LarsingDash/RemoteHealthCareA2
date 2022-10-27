@@ -212,6 +212,7 @@ public class DefaultClientConnection
             sending = false;
         });
         t.IsBackground = true;
+        t.Start();
     }
     /// <summary>
     /// It sends a message to the server

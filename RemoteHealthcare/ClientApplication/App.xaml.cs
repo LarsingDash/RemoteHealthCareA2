@@ -26,8 +26,6 @@ namespace ClientApplication
 		private static VRClient vrClient;
 		public static Dispatcher CurrentDispatcher;
 
-		public static Dispatcher CurrentDispatcher;
-
 		private void ApplicationStart(object sender, StartupEventArgs e)
 		{
 			CurrentDispatcher = this.Dispatcher;

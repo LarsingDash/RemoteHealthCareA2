@@ -139,6 +139,7 @@ public class DefaultClientConnection
         catch(Exception e)
         {
             Logger.LogMessage(LogImportance.Error, "Error (Unknown Reason) ", e);
+            OnDisconnect();
             return;
         }
 
@@ -169,6 +170,11 @@ public class DefaultClientConnection
         stream.BeginRead(buffer, 0, 40960000, OnRead, null);
     }
 
+    public virtual void OnDisconnect()
+    {
+        Logger.LogMessage(LogImportance.Fatal, "Disconnected with Server.");
+    }
+
     private Queue<Tuple<string, bool>> sendQueue = new();
     private Queue<Tuple<string, bool>> sendQueuePrio = new();
     
@@ -176,7 +182,7 @@ public class DefaultClientConnection
     private bool sending = false;
     private void Send()
     {
-        new Thread(start =>
+        var t = new Thread(start =>
         {
             if (sending)
                 return;
@@ -204,7 +210,8 @@ public class DefaultClientConnection
                 }
             }
             sending = false;
-        }).Start();
+        });
+        t.IsBackground = true;
     }
     /// <summary>
     /// It sends a message to the server
@@ -226,7 +233,7 @@ public class DefaultClientConnection
 
     private void SendMessage(string message, bool hide)
     {
-        new Thread(start =>
+        var t = new Thread(start =>
         {
             try
             {
@@ -260,7 +267,8 @@ public class DefaultClientConnection
                 Logger.LogMessage(LogImportance.Information, 
                     $"Sending message: {LogColor.Gray}\n(_NonJsonObject_)");
             }
-        }).Start();
+        });
+        t.Start();
         Byte[] data = BitConverter.GetBytes(message.Length);
         Byte[] comman = System.Text.Encoding.ASCII.GetBytes(message);
         stream.Write(data, 0, data.Length);

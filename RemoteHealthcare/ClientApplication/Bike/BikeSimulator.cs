@@ -22,6 +22,7 @@ public class BikeSimulator : Bike
         BikeId = $"SIM {new Random().Next(5000)}";
         ticker = 0;
         var thread = new Thread(Run);
+        thread.IsBackground = true;
         thread.Start();
         this.handler = handler;
     }

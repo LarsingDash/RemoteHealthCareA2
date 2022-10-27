@@ -1,5 +1,10 @@
+using System;
 using System.Collections.Generic;
+using System.Net.Mime;
 using System.Threading;
+using System.Windows;
+using System.Windows.Threading;
+using ClientApplication.ServerConnection;
 using ClientApplication.ServerConnection.Communication;
 using ClientApplication.ServerConnection.Communication.CommandHandlers;
 using DoctorApplication.Communication.CommandHandlers;
@@ -43,5 +48,25 @@ public class Client : DefaultClientConnection
         commandHandler.Add("update-values", new UpdateValues());
 
         Thread.Sleep(500);
+    }
+    
+    public override void OnDisconnect()
+    {
+        Logger.LogMessage(LogImportance.Fatal, "Connection with server Closed. Shutting down.");
+        Dispatcher.CurrentDispatcher.BeginInvoke((Action)delegate()
+        {
+            // Application.Current.Shutdown(500);
+            // System.Environment.Exit(500);
+            Environment.Exit(0);
+            Dispatcher.CurrentDispatcher.BeginInvokeShutdown(DispatcherPriority.Invalid);
+        });
+        
+        App.CurrentDispatcher.BeginInvoke((Action)delegate()
+        {
+            Application.Current.Shutdown(500);
+            System.Environment.Exit(500);
+            Environment.Exit(0);
+            App.CurrentDispatcher.BeginInvokeShutdown(DispatcherPriority.Invalid);
+        });
     }
 }

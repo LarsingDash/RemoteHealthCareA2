@@ -192,7 +192,9 @@ namespace ClientSide.VR
                 });
 
 
-                new Thread((o) => { GenerateDecoration(); }).Start();
+                var t = new Thread((o) => { GenerateDecoration(); });
+                t.IsBackground = true;
+                t.Start();
             }
             catch (Exception e)
             {

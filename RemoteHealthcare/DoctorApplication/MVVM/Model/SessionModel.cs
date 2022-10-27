@@ -15,6 +15,7 @@ using System.Text.Json.Serialization.Metadata;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using Shared.Log;
 
 namespace DoctorApplication.MVVM.Model
 {
@@ -177,10 +178,13 @@ namespace DoctorApplication.MVVM.Model
         }
         public void UpdateSpeedValues(List<double> speedValues)
         {
-            AverageSpeed = Math.Round(speedValues.Average() * 3.6, 2);
-            TopSpeed = Math.Round(speedValues.Max() * 3.6, 2);
-            CurrentSpeed = Math.Round(CurrentSpeed * 3.6, 2);
-            CurrentDistance = this.distance.LastOrDefault();
+            if (speedValues.Count > 0)
+            {
+                AverageSpeed = Math.Round(speedValues.Average() * 3.6, 2);
+                TopSpeed = Math.Round(speedValues.Max() * 3.6, 2);
+                CurrentSpeed = Math.Round(CurrentSpeed * 3.6, 2);
+                CurrentDistance = this.distance.LastOrDefault();
+            }
         }
         public void UpdateHeartValues(List<double> heartValues)
         {
@@ -302,7 +306,7 @@ namespace DoctorApplication.MVVM.Model
 
             foreach (JObject key in distance)
             {
-                this.distance.Add(double.Parse(key["value"]!.ToObject<string>()!));
+                this.distance.Add(double.Parse(key["value"]!.ToObject<string>()!, CultureInfo.InvariantCulture));
             }
         }
         double speedcounter = 0;
@@ -313,7 +317,7 @@ namespace DoctorApplication.MVVM.Model
             foreach (JObject key in val)
             {
                 speedcounter++;
-                double speedValue = double.Parse(key["value"]!.ToObject<string>()!);
+                double speedValue = double.Parse(key["value"]!.ToObject<string>()!, CultureInfo.InvariantCulture);
                 this.speed.Add(speedValue);
                 AddSpeedPoint(speedValue, speedcounter);
                 CalculateTimeElapsed(key["time"].ToObject<string>()!);
@@ -344,7 +348,7 @@ namespace DoctorApplication.MVVM.Model
             foreach (JObject key in val)
             {
                 heartcounter++;
-                double heartRateValue = double.Parse(key["value"]!.ToObject<string>()!);
+                double heartRateValue = double.Parse(key["value"]!.ToObject<string>()!, CultureInfo.InvariantCulture);
                 this.heartRate.Add(heartRateValue);
                 AddHeartPoint(heartRateValue, heartcounter);
             }

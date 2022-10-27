@@ -93,7 +93,7 @@ public class ChangeData : CommandHandler
             {
                 DateTime time = DateTime.ParseExact(dataSet["time"]!.ToObject<string>()!, "yyyy-MM-dd HH:mm:ss.fff",
                     CultureInfo.InvariantCulture);
-                string milis = (time - startTime).TotalMilliseconds.ToString();
+                string milis = (time - startTime).TotalMilliseconds.ToString(CultureInfo.InvariantCulture);
                 JObject newOb = new JObject();
                 newOb.Add("time", milis);
                 newOb.Add("value", dataSet["value"].ToObject<string>());
@@ -121,7 +121,7 @@ public class ChangeData : CommandHandler
             {
                 DateTime time = DateTime.ParseExact(dataSet["time"]!.ToObject<string>()!, "yyyy-MM-dd HH:mm:ss.fff",
                     CultureInfo.InvariantCulture);
-                string milis = (time - startTime).TotalMilliseconds.ToString();
+                string milis = (time - startTime).TotalMilliseconds.ToString(CultureInfo.InvariantCulture);
                 JObject newOb = new JObject();
                 newOb.Add("time", milis);
                 newOb.Add("value", dataSet["value"].ToObject<string>());

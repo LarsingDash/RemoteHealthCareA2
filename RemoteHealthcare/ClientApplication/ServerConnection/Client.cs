@@ -81,7 +81,7 @@ public class Client : DefaultClientConnection
         }, JsonFolder.ServerConnection.Path);
         JObject newData = new JObject();
         newData.Add("time", DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture));
-        newData.Add("value", val.ToString());
+        newData.Add("value", val.ToString(CultureInfo.InvariantCulture));
         JArray value = (JArray) ob["data"]![type]!;
         value.Add(newData);
         ob["data"]![type] = value;

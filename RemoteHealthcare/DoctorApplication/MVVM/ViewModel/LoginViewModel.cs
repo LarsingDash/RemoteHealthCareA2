@@ -107,7 +107,14 @@ public class LoginViewModel: INotifyPropertyChanged
 			}
 			else
 			{
-				ErrorMessage = ob["data"]!["error"]!.ToObject<string>()!;
+				if (ob["data"]!["error"]!.ToObject<string>()! == "Already Logged In")
+				{
+					IsViewVisible = false;
+				}
+				else
+				{
+					ErrorMessage = ob["data"]!["error"]!.ToObject<string>()!;
+				}
 			}
 		}, () =>
 		{

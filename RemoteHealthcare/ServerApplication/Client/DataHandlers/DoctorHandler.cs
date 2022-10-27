@@ -20,7 +20,8 @@ namespace ServerApplication.Client.DataHandlers
                 {"subscribe-to-session", new SubscribeToSession()}, 
                 {"unsubscribe-to-session", new UnSubscribeToSession()},  
                 {"set-resistance", new SetResistance()},
-                {"historic-client-data-session", new HistoricClientDataSession()}
+                {"historic-client-data-session", new HistoricClientDataSession()},
+                {"login", new AlreadyLoggedIn()}
             };
         }
     }

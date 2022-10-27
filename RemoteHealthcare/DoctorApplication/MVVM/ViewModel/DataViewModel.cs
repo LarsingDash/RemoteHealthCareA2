@@ -232,27 +232,25 @@ namespace DoctorApplication.MVVM.ViewModel
             if (selectedUser != null && Message!="")
             {
                 if (chatTypeState && Users != null) {
-                    foreach (UserDataModel user in Users)
+                    Client client = App.GetClientInstance();
+                    var serial = Util.RandomString();
+                    Logger.LogMessage(LogImportance.DebugHighlight, "Sending broadcast");
+                    client.SendEncryptedData(JsonFileReader.GetObjectAsString("ChatMessage", new Dictionary<string, string>()
                     {
-                Client client = App.GetClientInstance();
-                var serial = Util.RandomString();
-                client.SendEncryptedData(JsonFileReader.GetObjectAsString("ChatMessage", new Dictionary<string, string>()
-                {
-                    {"_serial_", serial},
-                    {"_type_", "personal"},
-                    {"_message_", Message.ToString()!},
-                    {"_receiver_", user.UserName}
-                }, JsonFolder.Json.Path));
-                this.Message = string.Empty;
-                client.AddSerialCallbackTimeout(serial, ob =>
-                {
-                    selectedUser.AddMessage(Message.ToString());
-                }, () =>
-                {
-                    //No Response from server
-                }, 1000);
+                        {"_serial_", serial},
+                        {"_type_", "broadcast"},
+                        {"_message_", Message.ToString()!},
+                        {"_receiver_", ""}
+                    }, JsonFolder.Json.Path));
+                    this.Message = string.Empty;
+                    client.AddSerialCallbackTimeout(serial, ob =>
+                    {
+                        selectedUser.AddMessage(Message.ToString());
+                    }, () =>
+                    {
+                        //No Response from server
+                    }, 1000);
 
-                    }
                 } else
                 {
                     Client client = App.GetClientInstance();
@@ -303,12 +301,15 @@ namespace DoctorApplication.MVVM.ViewModel
             {
                 //checked
                 Console.WriteLine("Type Checked");
+                chatTypeState = true;
                 ButtonText2 = "Broadcast";
             }
             else
             {
                 //unchecked
                 Console.WriteLine("Type Unchecked");
+                chatTypeState = false;
+
                 ButtonText2 = "Single User";
 
             }

@@ -6,8 +6,10 @@ namespace ClientApplication.Model;
 
 public class DataViewModel : ObservableObject
 {
+	public static DataViewModel model;
 	public DataViewModel(ObservableCollection<MessageModel> messages)
 	{
+		model = this;
 
 		//creating users (test data)
 		this.messages = messages;
@@ -23,7 +25,10 @@ public class DataViewModel : ObservableObject
 	}
 	public void AddMessage(string message)
 	{
-		messages.Add(new MessageModel("Doktor", message));
+		Messages.Add(new MessageModel("", message));
+		Messages = Messages;
+		OnPropertyChanged(nameof(Messages));
+		OnPropertyChanged(nameof(messages));
 	}
 	
 	private BindableCollection<UserModel> users;

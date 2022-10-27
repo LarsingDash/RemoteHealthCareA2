@@ -11,7 +11,7 @@ public class ChatViewModel: ViewModelBase
 {
 	public string TestText { get; set; }
 	DataViewModel DataViewModel { get; set; }
-	public ObservableCollection<MessageModel> Messages { get; set; }
+	public static ObservableCollection<MessageModel>? Messages { get; set; }
     public ChatViewModel()
 	{
 		Messages = new ObservableCollection<MessageModel>();

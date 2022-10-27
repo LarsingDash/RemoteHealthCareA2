@@ -60,7 +60,7 @@
                              Checked="radioButton_Checked">
                     <StackPanel Orientation="Horizontal">
                         <fa:IconImage Icon="Hippo" Style="{StaticResource menuButtonIcon}" />
-                        <TextBlock Text="Madagaskar" Style="{StaticResource menuButtonText}" />
+                        <TextBlock Text="Jungle" Style="{StaticResource menuButtonText}" />
                     </StackPanel>
                 </RadioButton>
 

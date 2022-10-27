@@ -15,7 +15,6 @@ public class ChatViewModel: ViewModelBase
     public ChatViewModel()
 	{
 		Messages = new ObservableCollection<MessageModel>();
-		Messages.Add(new MessageModel("Doctor", "Hello"));
 		DataViewModel = new DataViewModel(Messages);
 		startChat = new ViewModelCommand(startChatExecute);
 	}

@@ -50,6 +50,9 @@ public class Client : DefaultClientConnection
         Thread.Sleep(500);
     }
     
+    /// <summary>
+    /// > If the connection with the server is closed, then shut down the application
+    /// </summary>
     public override void OnDisconnect()
     {
         Logger.LogMessage(LogImportance.Fatal, "Connection with server Closed. Shutting down.");

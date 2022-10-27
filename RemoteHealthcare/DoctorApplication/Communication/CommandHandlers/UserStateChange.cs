@@ -10,6 +10,14 @@ namespace DoctorApplication.Communication.CommandHandlers;
 
 public class UserStateChange : ICommandHandler
 {
+    /// <summary>
+    /// It handles the login and logout events of the users
+    /// </summary>
+    /// <param name="Client">The client that sent the command</param>
+    /// <param name="JObject">The data that was sent from the server.</param>
+    /// <returns>
+    /// A list of all the users currently logged in.
+    /// </returns>
     public async void HandleCommand(Client client, JObject ob)
     {
         string? username = ob["data"]?["username"]?.ToObject<string>();

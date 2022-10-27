@@ -23,6 +23,11 @@ public class DataViewModel : ObservableObject
 			OnPropertyChanged();
 		}
 	}
+	/// <summary>
+	/// It adds a message to the list of messages, then sets the list of messages to itself, then raises the property changed
+	/// event for the messages property
+	/// </summary>
+	/// <param name="message">The message to be added to the list of messages.</param>
 	public void AddMessage(string message)
 	{
 		Messages.Add(new MessageModel("", message));

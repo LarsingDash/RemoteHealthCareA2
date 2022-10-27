@@ -28,11 +28,12 @@ namespace ClientApplication.Bike
             {
                 {0x10, new DataPage10(handler)},
             };
-            //StartConnection();
-            // Test message
-            // NewMessage(DataMessageProtocol.BleBike, "A4 09 4E 05 10 19 6C EE 00 00 FF 24 B6");
         }
 
+        /// <summary>
+        /// It connects to the Tacx Flux and the Heart Rate Monitor. If it fails to connect to either, it switches to the
+        /// Bike Simulator
+        /// </summary>
         public async Task StartConnection()
         {
             bikeDevice = new BluetoothDevice($"Tacx Flux {id}", "6e40fec1-b5a3-f393-e0a9-e50e24dcca9e", "6e40fec2-b5a3-f393-e0a9-e50e24dcca9e", ValueChangedBike);
@@ -60,6 +61,13 @@ namespace ClientApplication.Bike
             }
         }
 
+        /// <summary>
+        /// It sets the resistance of the bike.
+        /// </summary>
+        /// <param name="resistance">0-255</param>
+        /// <returns>
+        /// The resistance is being returned.
+        /// </returns>
         public override void SetResistanceAsync(int resistance)
         {
             if (bikeDevice == null)
@@ -82,7 +90,7 @@ namespace ClientApplication.Bike
 
         public override void Reset()
         {
-            
+            //Ignore
         }
 
 

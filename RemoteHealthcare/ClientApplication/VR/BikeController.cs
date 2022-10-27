@@ -35,6 +35,12 @@ public class BikeController
         this.worldGen = worldGen;
     }
 
+    /// <summary>
+    /// The function sets up the bike and camera in the VR engine, and subscribes to the bike speed data
+    /// </summary>
+    /// <returns>
+    /// A Task<List<SubPoint>>
+    /// </returns>
     public async void Setup()
     {
         var serial = Util.RandomString();
@@ -111,6 +117,14 @@ public class BikeController
         await worldGen.GenerateDecoration();
     }
 
+    /// <summary>
+    /// It sends a request to the server to start following a route, then it sends a request to the server to find the bike,
+    /// and then it reads the response and adds the bike's position to a list. It does this 250 times, and then it returns
+    /// the list
+    /// </summary>
+    /// <returns>
+    /// A list of points that make up the route.
+    /// </returns>
     private async Task<List<Vector2>> FetchRouteSubPoints()
     {
         var fullRoute = new List<Vector2>();

@@ -37,6 +37,9 @@ namespace ClientSide.VR
             GenerateTerrain();
         }
 
+        /// <summary>
+        /// It generates a heightmap, sends it to the VR server, and then adds a terrain layer to the terrain
+        /// </summary>
         private async void GenerateTerrain()
         {
             try
@@ -124,8 +127,8 @@ namespace ClientSide.VR
                         "\"_data_\"", JsonFileReader.GetObjectAsString("AddLayer", new Dictionary<string, string>
                         {
                             { "_uuid_", terrainId },
-                            { "_diffuse_", $"data/NetworkEngine/terrain/{vrClient.terrainD}.jpg" },
-                            { "_normal_", $"data/NetworkEngine/terrain/{vrClient.terrainN}.jpg" }
+                            { "_diffuse_", $"data/NetworkEngine/terrain/{vrClient.TerrainD}.jpg" },
+                            { "_normal_", $"data/NetworkEngine/terrain/{vrClient.TerrainN}.jpg" }
                         }, JsonFolder.Terrain.Path)
                     },
                 });
@@ -139,6 +142,10 @@ namespace ClientSide.VR
         }
 
         //Prepare road and send route
+        /// <summary>
+        /// It takes a list of points, converts them to a string, sends them to the server, and then sends a request to the
+        /// server to create a road with the given points
+        /// </summary>
         private async Task PathGen()
         {
             try
@@ -189,7 +196,7 @@ namespace ClientSide.VR
                             new Dictionary<string, string>()
                             {
                                 { "_uuid_", routeId },
-                                {"_diffuse_", $"data/NetworkEngine/path/{vrClient.path}.jpg"}
+                                {"_diffuse_", $"data/NetworkEngine/path/{vrClient.Path}.jpg"}
                     }, JsonFolder.Route.Path)
                     },
                 });
@@ -200,6 +207,9 @@ namespace ClientSide.VR
             }
         }
 
+        /// <summary>
+        /// It generates a random amount of trees on the map
+        /// </summary>
         public async Task GenerateDecoration()
         {
             try
@@ -251,7 +261,7 @@ namespace ClientSide.VR
                 }
 
                 //Start decorationGen
-                var maxAmountOfObjects = vrClient.decoAmount;
+                var maxAmountOfObjects = vrClient.DecoAmount;
                 const int maxFailedAttempts = 250;
                 var amountOfObjects = 0;
                 var failedAttempts = 0;
@@ -310,8 +320,8 @@ namespace ClientSide.VR
                                         $"{currentPoint.X + mapSize / 2 + ".0"} , {currentHeight.ToString(CultureInfo.InvariantCulture)}, {currentPoint.Y + mapSize / 2 + ".0"}"
                                     },
                                     {"\"_rotation_\"", random.Next(0, 360).ToString(CultureInfo.InvariantCulture)},
-                                    { "\"_scale_\"", vrClient.scale },
-                                    { "_filename_", $"data/NetworkEngine/decoration/{vrClient.decoration}/object.obj" }
+                                    { "\"_scale_\"", vrClient.Scale },
+                                    { "_filename_", $"data/NetworkEngine/decoration/{vrClient.Decoration}/object.obj" }
                                 }, JsonFolder.TunnelMessages.Path)
                         },
                     }, true);
@@ -329,18 +339,24 @@ namespace ClientSide.VR
             App.GetBikeHandlerInstance().ChangeData(DataType.Distance, 0);
         }
 
+        /// <summary>
+        /// It chooses a random path from a list of paths, and then scales it to fit the map
+        /// </summary>
+        /// <returns>
+        /// A list of Vector4s.
+        /// </returns>
         private List<Vector4> ChoosePath()
         {
-            if (VRClient.selectedRoute == 6)
+            if (VRClient.SelectedRoute == 6)
             {
                 var random = new Random();
-                VRClient.selectedRoute = random.Next(0, 5);
+                VRClient.SelectedRoute = random.Next(0, 5);
             }
 
             List<Vector4> chosenPath;
             float scale;
 
-            switch (VRClient.selectedRoute)
+            switch (VRClient.SelectedRoute)
             {
                 default:
                     scale = 4;
@@ -429,6 +445,13 @@ namespace ClientSide.VR
             return finalPath;
         }
 
+        /// <summary>
+        /// It takes a Vector4, which is a 4-dimensional vector, and converts it into a JSON string
+        /// </summary>
+        /// <param name="point">X, Y, Z, W</param>
+        /// <returns>
+        /// A string that is a JSON object.
+        /// </returns>
         private string PointConverter(Vector4 point)
         {
             var builder = new StringBuilder();

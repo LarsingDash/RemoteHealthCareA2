@@ -22,6 +22,11 @@ public partial class BindablePasswordBox : UserControl
 		txtPasswordBox.PasswordChanged += OnPasswordChanged;
 	}
 
+	/// <summary>
+	/// > When the password changes, update the Password property
+	/// </summary>
+	/// <param name="sender">The object that raised the event.</param>
+	/// <param name="RoutedEventArgs">This is the event that is being handled.</param>
 	private void OnPasswordChanged(object sender, RoutedEventArgs e)
 	{
 		Password = txtPasswordBox.SecurePassword;

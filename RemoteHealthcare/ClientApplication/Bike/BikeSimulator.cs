@@ -107,6 +107,10 @@ public class BikeSimulator : Bike
         // Do nothing, is simulator
     }
 
+    /// <summary>
+    /// Reset() is called when the user clicks the reset button. It sets the running variable to false and creates a new
+    /// BikeSimulator object
+    /// </summary>
     public override void Reset()
     {
         running = false;

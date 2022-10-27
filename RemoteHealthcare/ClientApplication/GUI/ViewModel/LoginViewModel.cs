@@ -59,6 +59,14 @@ public class LoginViewModel: ViewModelBase
 		throw new NotImplementedException();
 	}
 
+	/// <summary>
+	/// If the phone number is not null or white space, and the phone number is 10 characters long, and the password is not
+	/// null, and the password is at least 3 characters long, then the data is valid
+	/// </summary>
+	/// <param name="obj">The parameter is used to pass the data from the view to the view model.</param>
+	/// <returns>
+	/// The return value is a boolean.
+	/// </returns>
 	private bool CanExecuteLoginCommand(object obj)
 	{
 		bool validData;
@@ -72,6 +80,10 @@ public class LoginViewModel: ViewModelBase
 		return validData;
 	}
 
+	/// <summary>
+	/// It sends a login request to the server, and if the server responds with a status of "ok", then the login view is hidden
+	/// </summary>
+	/// <param name="obj">The object that was passed to the command.</param>
 	private void ExecuteLoginCommand(object obj)
 	{
 		Client client = App.GetClientConnectedToServerInstance();

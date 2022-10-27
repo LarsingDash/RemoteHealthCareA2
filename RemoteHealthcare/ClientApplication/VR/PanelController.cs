@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -117,7 +118,7 @@ public class PanelController
         DrawPanelText(timeDisplayed, 64, 140, 125, hudPanelId);
         DrawPanelText(distanceDisplayed, 60, 140, 195, hudPanelId);
 
-        DrawPanelImage("data/NetworkEngine/custom/images/Icons.png", 30, 102, 64, -192, hudPanelId);
+        DrawPanelImage("data/NetworkEngine/images/Icons.png", 30, 102, 64, -192, hudPanelId);
         SwapPanel(hudPanelId);
     }
 
@@ -134,7 +135,7 @@ public class PanelController
         if (!vrStarted) return;
         
         ClearPanel(chatPanelId);
-        DrawPanelImage("data/NetworkEngine/custom/images/ChatBox.png", 0, 100, 481, -194, chatPanelId);
+        DrawPanelImage("data/NetworkEngine/images/ChatBox.png", 0, 100, 481, -194, chatPanelId);
 
         if (!String.IsNullOrEmpty(message))
         {
@@ -178,10 +179,10 @@ public class PanelController
                 {
                     { "_name_", panelName },
                     { "_parent_", headId },
-                    { "\"_position_\"", $"{x}, {y}, {z}" },
-                    { "\"_scale_\"", $"{scale}"},
-                    {"\"_height_\"", $"{height}"},
-                    {"\"_width_\"", $"{width}"},
+                    { "\"_position_\"", $"{x.ToString(CultureInfo.InvariantCulture)}, {y.ToString(CultureInfo.InvariantCulture)}, {z.ToString(CultureInfo.InvariantCulture)}" },
+                    { "\"_scale_\"", $"{scale.ToString(CultureInfo.InvariantCulture)}"},
+                    {"\"_height_\"", $"{height.ToString(CultureInfo.InvariantCulture)}"},
+                    {"\"_width_\"", $"{width.ToString(CultureInfo.InvariantCulture)}"},
                     { "_serial_", serial }
                 }, JsonFolder.Panel.Path)
             }

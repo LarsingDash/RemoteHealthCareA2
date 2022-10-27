@@ -231,6 +231,8 @@ public class VRClient : DefaultClientConnection
                 terrainN = "grass_autumn_n";
                 path = "grass_ground_d";
                 decoration = "pine";
+                decoAmount = 5000;
+                scale = "4";
                 break;
             
             case 1:
@@ -238,9 +240,9 @@ public class VRClient : DefaultClientConnection
                 terrainD = "lava_d";
                 terrainN = "lava_n";
                 path = "lava_black_d";
-                decoration = "roncky";
-                scale = "0.1";
-                decoAmount = 250;
+                decoration = "lava_rock";
+                scale = "1";
+                decoAmount = 750;
                 break;
             
             case 2:
@@ -248,7 +250,7 @@ public class VRClient : DefaultClientConnection
                 terrainD = "moss_plants_d";
                 terrainN = "moss_plants_n";
                 path = "jungle_stone_d";
-                decoration = decoration;
+                decoration = "tropical_plant";
                 break;
             
             case 3:
@@ -264,7 +266,8 @@ public class VRClient : DefaultClientConnection
                 terrainD = "desert_sand_d";
                 terrainN = "desert_sand_n";
                 path = "ground_dry_d";
-                decoration = decoration;
+                decoration = "cactus";
+                decoAmount = 200;
                 break;
             
             case 5:

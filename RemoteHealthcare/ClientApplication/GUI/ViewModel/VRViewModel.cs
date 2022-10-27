@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using ClientApplication.Bike;
 using ClientSide.VR;
 using ClientSide.VR2;
 
@@ -20,6 +21,7 @@ public class VRViewModel:ViewModelBase
 	private static void startVRSessionExecute(object obj)
 	{
 		App.GetVrClientInstance().Setup();
+		App.GetBikeHandlerInstance().ChangeData(DataType.ElapsedTime, 0);
 	}
 
 	public ICommand startVRSession

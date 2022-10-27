@@ -302,6 +302,7 @@ public class PanelController
     private async void DrawPanelText(string text, double size, double x, double y, string panelId)
     {
         var serial = Util.RandomString();
+        Logger.LogMessage(LogImportance.Fatal, "test" + text);
         tunnel.SendTunnelMessage(new Dictionary<string, string>
         {
             {

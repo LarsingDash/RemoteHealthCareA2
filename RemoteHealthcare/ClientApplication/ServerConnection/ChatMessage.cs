@@ -12,11 +12,16 @@ public class ChatMessage : ICommandHandler
         App.CurrentDispatcher.Invoke(() =>
         {
             string? message = ob["data"]?["message"]?.ToObject<string>();
+            string? sender = ob["data"]?["sender"]?.ToObject<string>();
             if (message != null)
             {
                 DataViewModel.model.AddMessage(message);
-                //data.AddMessage(message);
+                if (sender != null)
+                {
+                    App.GetVrClientInstance().PanelController?.UpdateChat(sender, message);
+                }
             }
+            
         });
         
     }

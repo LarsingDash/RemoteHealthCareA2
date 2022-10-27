@@ -1,21 +1,34 @@
 using System.Collections.ObjectModel;
 using Caliburn.Micro;
+using DoctorApplication.Core;
 
 namespace ClientApplication.Model;
 
-public class DataViewModel
+public class DataViewModel : ObservableObject
 {
-	public DataViewModel()
+	public static DataViewModel model;
+	public DataViewModel(ObservableCollection<MessageModel> messages)
 	{
+		model = this;
 
 		//creating users (test data)
-		this.messages = new ObservableCollection<MessageModel>();
+		this.messages = messages;
+		
 	}
-	
-	public ObservableCollection<MessageModel> messages { get; set; }
+	private ObservableCollection<MessageModel> messages;
+	public ObservableCollection<MessageModel> Messages {
+		get { return messages; } set
+		{
+			messages = value;
+			OnPropertyChanged();
+		}
+	}
 	public void AddMessage(string message)
 	{
-		messages.Add(new MessageModel("Doktor", message));
+		Messages.Add(new MessageModel("", message));
+		Messages = Messages;
+		OnPropertyChanged(nameof(Messages));
+		OnPropertyChanged(nameof(messages));
 	}
 	
 	private BindableCollection<UserModel> users;

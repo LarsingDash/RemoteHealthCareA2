@@ -20,16 +20,36 @@ public class VRClient : DefaultClientConnection
     public Tunnel tunnel;
     public WorldGen worldGen;
     public BikeController BikeController;
-    public PanelController PanelController;
+    public PanelController? PanelController;
+    private bool hasStarted;
 
     public List<string> hideMessages = new List<string>();
-
-    private bool started = false;
+    private static readonly string assetPath = "data/NetworkEngine/";
     
+    //Vr settings
+    public static int selectedRoute = 6;
+    public static int selectedScenery = 1;
+    
+    public string skyboxFolder = "";
+    public string terrainD = "";
+    public string terrainN = "";
+    public string path = "";
+    public string decoration = "";
+    public string time = "12";
+    public string scale = "1";
+    public int decoAmount = 1000;
+
     public void Setup()
     {
-        if (started)
-            return;
+        if (hasStarted) return;
+        hasStarted = true;
+
+        var random = new Random();
+        if (selectedRoute == 6) selectedRoute = random.Next(0, 5);
+        if (selectedScenery == 6) selectedScenery = random.Next(0, 5);
+
+        LoadSceneryOptions();
+        
         hideMessages = new List<string>()
         {
             "session/list",
@@ -108,13 +128,21 @@ public class VRClient : DefaultClientConnection
         {
             {"\"_data_\"", JsonFileReader.GetObjectAsString("SetTimeScene", new Dictionary<string, string>
             {
-                {"\"_time_\"", "8"}
+                {"\"_time_\"", time}
             }, JsonFolder.TunnelMessages.Path)},
         });
         
         tunnel.SendTunnelMessage(new Dictionary<string, string>
         {
-            {"\"_data_\"", JsonFileReader.GetObjectAsString("SetSkybox", new Dictionary<string, string>(), JsonFolder.TunnelMessages.Path)},
+            {"\"_data_\"", JsonFileReader.GetObjectAsString("SetSkybox", new Dictionary<string, string>
+            {
+                {"_xpos_", $"{assetPath}{skyboxFolder}/right"},
+                {"_xneg_", $"{assetPath}{skyboxFolder}/left"},
+                {"_ypos_", $"{assetPath}{skyboxFolder}/up"},
+                {"_yneg_", $"{assetPath}{skyboxFolder}/down"},
+                {"_zpos_", $"{assetPath}{skyboxFolder}/back"},
+                {"_zneg_", $"{assetPath}{skyboxFolder}/front"},
+            }, JsonFolder.TunnelMessages.Path)},
         });
 
         tunnel.SendTunnelMessage(new Dictionary<string, string>
@@ -127,17 +155,6 @@ public class VRClient : DefaultClientConnection
          worldGen = new WorldGen(this, tunnel);
          BikeController = new BikeController(this, tunnel, worldGen);
          PanelController = new PanelController(this, tunnel);
-         
-         //
-         // //Start HUDController
-         // panelController = new PanelController(this, tunnel);
-         // var HUDThread = new Thread(panelController.RunController);
-         //
-         // bikeController = new BikeController(this, tunnel);
-         // var bikeAnimationThread = new Thread(bikeController.RunController);
-         //
-         // HUDThread.Start();
-         // bikeAnimationThread.Start();
     }
 
     public async Task<string> FindObjectUuid(string name)
@@ -201,6 +218,65 @@ public class VRClient : DefaultClientConnection
         catch (Exception e)
         {
             Logger.LogMessage(LogImportance.Error, "Error (Unknown Reason) ", e);
+        }
+    }
+
+    private void LoadSceneryOptions()
+    {
+        switch (selectedScenery)
+        {
+            default:
+                skyboxFolder = "skyboxes/yellow";
+                terrainD = "grass_autumn_orn_d";
+                terrainN = "grass_autumn_n";
+                path = "grass_ground_d";
+                decoration = "pine";
+                decoAmount = 5000;
+                scale = "4";
+                break;
+            
+            case 1:
+                skyboxFolder = "skyboxes/gray";
+                terrainD = "lava_d";
+                terrainN = "lava_n";
+                path = "lava_black_d";
+                decoration = "lava_rock";
+                scale = "1";
+                decoAmount = 750;
+                break;
+            
+            case 2:
+                skyboxFolder = "skyboxes/blue";
+                terrainD = "moss_plants_d";
+                terrainN = "moss_plants_n";
+                path = "jungle_stone_d";
+                decoration = "tropical_plant";
+                break;
+            
+            case 3:
+                skyboxFolder = "skyboxes/stormy";
+                terrainD = "jungle_mntn2_s";
+                terrainN = "jungle_mntn2_n";
+                path = "mntn_black_d";
+                decoration = decoration;
+                break;
+            
+            case 4:
+                skyboxFolder = "skyboxes/brown";
+                terrainD = "desert_sand_d";
+                terrainN = "desert_sand_n";
+                path = "ground_dry_d";
+                decoration = "cactus";
+                decoAmount = 200;
+                break;
+            
+            case 5:
+                skyboxFolder = "skyboxes/interstellar";
+                terrainD = "snow1_d";
+                terrainN = "snow1_d";
+                path = "snow_bumpy_d";
+                decoration = decoration;
+                break;
         }
     }
 }

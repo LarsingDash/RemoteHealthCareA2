@@ -174,7 +174,6 @@ public class BikeController
 
             if (hasCompletedLap)
             {
-                Console.WriteLine(i);
                 break;
             }
         }

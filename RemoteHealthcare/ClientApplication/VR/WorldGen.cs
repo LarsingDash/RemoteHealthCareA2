@@ -25,7 +25,6 @@ namespace ClientSide.VR
         private readonly float[,] heights = new float[mapSize, mapSize];
         public string routeId;
 
-        private const string treePath = "data/NetworkEngine/models/trees/pine/Pine_Low-poly_1.obj";
         public List<Vector2> route = new List<Vector2>();
 
         public WorldGen(VRClient vrClient, Tunnel tunnel)
@@ -123,8 +122,8 @@ namespace ClientSide.VR
                         "\"_data_\"", JsonFileReader.GetObjectAsString("AddLayer", new Dictionary<string, string>
                         {
                             { "_uuid_", terrainId },
-                            { "_diffuse_", "data/NetworkEngine/textures/custom/Ground_d.jpg" },
-                            { "_normal_", "data/NetworkEngine/textures/custom/Ground_n.jpg" }
+                            { "_diffuse_", $"data/NetworkEngine/terrain/{vrClient.terrainD}.jpg" },
+                            { "_normal_", $"data/NetworkEngine/terrain/{vrClient.terrainN}.jpg" }
                         }, JsonFolder.Terrain.Path)
                     },
                 });
@@ -187,8 +186,9 @@ namespace ClientSide.VR
                         "\"_data_\"", JsonFileReader.GetObjectAsString("AddRoad",
                             new Dictionary<string, string>()
                             {
-                                { "_uuid_", routeId }
-                            }, JsonFolder.Route.Path)
+                                { "_uuid_", routeId },
+                                {"_diffuse_", $"data/NetworkEngine/path/{vrClient.path}.jpg"}
+                    }, JsonFolder.Route.Path)
                     },
                 });
             }
@@ -249,7 +249,7 @@ namespace ClientSide.VR
                 }
 
                 //Start decorationGen
-                const int maxAmountOfObjects = 5000;
+                var maxAmountOfObjects = vrClient.decoAmount;
                 const int maxFailedAttempts = 250;
                 var amountOfObjects = 0;
                 var failedAttempts = 0;
@@ -307,8 +307,9 @@ namespace ClientSide.VR
                                         "\"_position_\"",
                                         $"{currentPoint.X + mapSize / 2 + ".0"} , {currentHeight.ToString(CultureInfo.InvariantCulture)}, {currentPoint.Y + mapSize / 2 + ".0"}"
                                     },
-                                    { "\"_scale_\"", (random.NextDouble() + 4).ToString(CultureInfo.InvariantCulture) },
-                                    { "_filename_", treePath }
+                                    // { "\"_scale_\"", (random.NextDouble()).ToString(CultureInfo.InvariantCulture) },
+                                    { "\"_scale_\"", vrClient.scale },
+                                    { "_filename_", $"data/NetworkEngine/decoration/{vrClient.decoration}/object.obj" }
                                 }, JsonFolder.TunnelMessages.Path)
                         },
                     }, true);
@@ -325,16 +326,18 @@ namespace ClientSide.VR
 
         private List<Vector4> ChoosePath()
         {
-            var random = new Random();
-            var chosenPathID = random.Next(0, 5);
+            if (VRClient.selectedRoute == 6)
+            {
+                var random = new Random();
+                VRClient.selectedRoute = random.Next(0, 5);
+            }
 
             List<Vector4> chosenPath;
             float scale;
 
-            switch (chosenPathID)
+            switch (VRClient.selectedRoute)
             {
                 default:
-                case 0:
                     scale = 4;
                     chosenPath = new List<Vector4>
                     {

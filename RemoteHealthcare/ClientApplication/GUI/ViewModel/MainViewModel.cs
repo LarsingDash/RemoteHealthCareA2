@@ -1,4 +1,5 @@
 using System.Windows.Input;
+using ClientApplication.Model;
 using FontAwesome.Sharp;
 
 namespace ClientApplication.ViewModel;
@@ -43,10 +44,13 @@ public class MainViewModel: ViewModelBase
     public ICommand ShowVRViewCommand { get; }
     
     public ICommand ShowChatViewCommand { get; }
-   
+
+    public ChatViewModel ChatViewModel { get; set; }
+
     public MainViewModel()
     {
-        
+        ChatViewModel = new ChatViewModel();
+
         //Initialize commands
         ShowHomeViewCommand = new ViewModelCommand(ExecuteShowHomeViewCommand);
         ShowVRViewCommand = new ViewModelCommand(ExecuteShowVRViewCommand);
@@ -57,7 +61,7 @@ public class MainViewModel: ViewModelBase
 
     private void ExecuteShowChatViewCommand(object obj)
     {
-        CurrentChildView = new ChatViewModel();
+        CurrentChildView = ChatViewModel;
         Caption = "Chat";
         Icon = IconChar.Message;
     }

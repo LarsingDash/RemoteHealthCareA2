@@ -6,6 +6,8 @@
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
+        <AssemblyName>HealthCare A2</AssemblyName>
+        <ApplicationIcon>Health_(356).ico</ApplicationIcon>
     </PropertyGroup>
 
     <ItemGroup>

@@ -8,7 +8,7 @@
         xmlns:view="clr-namespace:ClientApplication.View"
         xmlns:local="clr-namespace:ClientApplication"
         mc:Ignorable="d"
-        Title="MainWindow" Height="700" Width="1300"
+        Title="HealthCare A2" Height="700" Width="1300"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
         Background="Transparent"

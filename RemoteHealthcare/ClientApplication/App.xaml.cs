@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 using ClientApplication.Bike;
 using ClientApplication.ServerConnection;
 using ClientApplication.View;
@@ -23,20 +24,20 @@ namespace ClientApplication
 		private static BikeHandler handler;
 		private static Client client;
 		private static VRClient vrClient;
+		public static Dispatcher CurrentDispatcher;
 
 		private void ApplicationStart(object sender, StartupEventArgs e)
 		{
-			Logger.PrintLevel = LogLevel.Warning;
+			CurrentDispatcher = this.Dispatcher;
 			this.Dispatcher.UnhandledException += OnDispatcherUnhandledException;
 			Logger.LogMessage(LogImportance.Information, "ClientApplication Started");
 			new Thread(async start =>
 			{
 				handler = new BikeHandler();
-				BikePhysical bike = (BikePhysical) handler.Bike;
-				await bike.StartConnection();
+				// BikePhysical bike = (BikePhysical) handler.Bike;
+				// await bike.StartConnection();
 				client = new Client();
 				vrClient = new VRClient();
-				vrClient.Setup();
 			}).Start();
 			var loginView = new LoginView();
 			loginView.Show();

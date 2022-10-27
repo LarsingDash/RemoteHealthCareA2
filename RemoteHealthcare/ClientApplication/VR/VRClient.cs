@@ -20,7 +20,7 @@ public class VRClient : DefaultClientConnection
     public Tunnel tunnel;
     public WorldGen worldGen;
     public BikeController BikeController;
-    public PanelController PanelController;
+    public PanelController? PanelController;
     private bool hasStarted;
 
     public List<string> hideMessages = new List<string>();

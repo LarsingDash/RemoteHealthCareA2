@@ -8,7 +8,7 @@
       "transform" :
       {
         "position" : ["_position_"],
-        "scale" : 1,
+        "scale" : "_scale_",
         "rotation" : [0, 0 ,0]
       },
       "panel" : {

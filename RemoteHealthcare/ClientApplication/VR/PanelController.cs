@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 using ClientApplication;
 using ClientApplication.Bike;
 using ClientApplication.Util;
@@ -28,7 +26,8 @@ public class PanelController
 
     private bool update = false;
     private FixedSizedQueue<string> messageHistory;
-    
+    private bool vrStarted;
+
     public PanelController(VRClient client, Tunnel tunnel)
     {
         this.client = client;
@@ -42,6 +41,8 @@ public class PanelController
     /// </summary>
     public async void Setup()
     {
+        vrStarted = true;
+
         // finds Head Id 
         headId = await client.FindObjectUuid("Head");
         Logger.LogMessage(LogImportance.DebugHighlight, $"HeadId: {headId}");
@@ -49,7 +50,7 @@ public class PanelController
         // creates VR Panel
         var hudSerial = Util.RandomString();
         var hudPanelName = "hudPanel";
-        AddPanel(hudPanelName, -1, 0, -3, hudSerial, 512, 512);
+        AddPanel(hudPanelName, hudSerial, -1, 0, -3, 512, 512, 1);
 
         // waiting for VR response before searching for chatPanel id
         await client.AddSerialCallbackTimeout(hudSerial,
@@ -62,7 +63,7 @@ public class PanelController
         // creates Chat Panel
         var chatSerial = Util.RandomString();
         var chatPanelName = "chatPanel";
-        AddPanel(chatPanelName, -1, -0.65, -2.9, chatSerial, 512, 512);
+        AddPanel(chatPanelName, chatSerial, -0.8, -0.8, -2.9, 512, 512, 1.2);
 
         // waiting for VR response before searching for chatPanel id
         await client.AddSerialCallbackTimeout(chatSerial,
@@ -71,7 +72,7 @@ public class PanelController
         chatPanelId = await client.FindObjectUuid(chatPanelName);
         Logger.LogMessage(LogImportance.Information, $"ChatPanelId: {chatPanelId}");
 
-        UpdateChat("");
+        UpdateChat("", "");
 
         var handler = App.GetBikeHandlerInstance();
         handler.Subscribe(DataType.Speed, speedRaw =>
@@ -136,14 +137,16 @@ public class PanelController
     /// and draws them seperately in VR
     /// </summary>
     /// <param name="message">Message to be displayed in VR chat panel</param>
-    public void UpdateChat(string message)
+    public void UpdateChat(string sender, string message)
     {
+        if (!vrStarted) return;
+        
         ClearPanel(chatPanelId);
         DrawPanelImage("data/NetworkEngine/custom/images/ChatBox.png", 0, 100, 481, -194, chatPanelId);
 
         if (!String.IsNullOrEmpty(message))
         {
-            message = "Dokter: " + message;
+            message = $"{sender}: " + message;
             var output = Regex.Split(message, @"(.{1,32})(?:\s|$)|(.{32})")
                 .Where(x => x.Length > 0)
                 .ToList();
@@ -161,18 +164,19 @@ public class PanelController
         
         SwapPanel(chatPanelId);
     }
-    
+
     /// <summary>
     /// Adds a new panel in VR
     /// </summary>
     /// <param name="panelName">panel name used as identifier</param>
+    /// <param name="z">z-position</param>
     /// <param name="x">x-position of the panel</param>
     /// <param name="y">y-position</param>
-    /// <param name="z">z-position</param>
     /// <param name="serial">serial used as callback identifier</param>
     /// <param name="height">height in pixels</param>
     /// <param name="width">width in pixels</param>
-    private void AddPanel(string panelName, double x, double y, double z, string serial, int height, int width)
+    /// <param name="scale">scales the panel</param>
+    private void AddPanel(string panelName,  string serial, double x, double y, double z, int height, int width, double scale)
     {
         tunnel.SendTunnelMessage(new Dictionary<string, string>()
         {
@@ -182,6 +186,7 @@ public class PanelController
                     { "_name_", panelName },
                     { "_parent_", headId },
                     { "\"_position_\"", $"{x}, {y}, {z}" },
+                    { "\"_scale_\"", $"{scale}"},
                     {"\"_height_\"", $"{height}"},
                     {"\"_width_\"", $"{width}"},
                     { "_serial_", serial }
@@ -256,7 +261,7 @@ public class PanelController
     /// <summary>
     /// Draws an image on the panel with the given id
     /// </summary>
-    /// <param name="imagePath">path of the image in the networkengine</param>
+    /// <param name="imagePath">path of the image in the network engine</param>
     /// <param name="posX">x-position of the image</param>
     /// <param name="posY">y-position of the image</param>
     /// <param name="sizeX">width in pixels</param>

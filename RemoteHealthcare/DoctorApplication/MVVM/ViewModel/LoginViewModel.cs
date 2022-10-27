@@ -14,6 +14,7 @@ namespace DoctorApplication.ViewModel;
 public class LoginViewModel: INotifyPropertyChanged
 {
 	//Fields
+	public static LoginViewModel Model;
 	private string userName;
 	private SecureString password;
 	private string errorMessage;
@@ -62,6 +63,7 @@ public class LoginViewModel: INotifyPropertyChanged
 	//Constructor
 	public LoginViewModel()
 	{
+		Model = this;
 		LoginCommand = new RelayCommand(ExecuteLoginCommand, CanExecuteLoginCommand);
 		RecoverPasswordCommand = new RelayCommand(p =>ExecuteRecoveryPasswordCommand("",""));
 	}

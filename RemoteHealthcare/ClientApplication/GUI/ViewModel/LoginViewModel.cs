@@ -11,6 +11,7 @@ namespace ClientApplication.ViewModel;
 public class LoginViewModel: ViewModelBase
 {
 	//Fields
+	public static LoginViewModel Model;
 	private string phoneNumber;
 	private SecureString password;
 	private string errorMessage;
@@ -49,6 +50,7 @@ public class LoginViewModel: ViewModelBase
 	//Constructor
 	public LoginViewModel()
 	{
+		Model = this;
 		LoginCommand = new ViewModelCommand(ExecuteLoginCommand, CanExecuteLoginCommand);
 		RecoverPasswordCommand = new ViewModelCommand(p =>ExecuteRecoveryPasswordCommand("",""));
 	}
@@ -74,6 +76,8 @@ public class LoginViewModel: ViewModelBase
 
 	private void ExecuteLoginCommand(object obj)
 	{
+		if (ErrorMessage == "Could not connect with server.")
+			return;
 		Client client = App.GetClientConnectedToServerInstance();
 		var serial = Shared.Util.RandomString();
 		var pass = new System.Net.NetworkCredential(string.Empty, password).Password;

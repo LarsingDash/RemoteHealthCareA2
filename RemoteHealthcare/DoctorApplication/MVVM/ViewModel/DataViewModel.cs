@@ -183,10 +183,10 @@ namespace DoctorApplication.MVVM.ViewModel
             {
                 return;
             }
-            if (!isRecordingActive)
+            if (!SelectedUser.isRecordingActive)
             {
-                isRecordingActive = true;
-                RecordingText = "Stop Recording";
+                SelectedUser.isRecordingActive = true;
+                SelectedUser.RecordingText = "Stop Recording";
                 StartBikeRecording();
                 Thread.Sleep(1000);
                 OnPropertyChanged("LastSession");
@@ -196,8 +196,8 @@ namespace DoctorApplication.MVVM.ViewModel
             }
             else
             {
-                isRecordingActive = false;
-                RecordingText = "Start Recording";
+                SelectedUser.isRecordingActive = false;
+                SelectedUser.RecordingText = "Start Recording";
                 StopBikeRecording("normal");
             }
         }
@@ -208,8 +208,8 @@ namespace DoctorApplication.MVVM.ViewModel
                 return;
             }
             StopBikeRecording("emergencyStop");
-            isRecordingActive=false;
-            RecordingText = "Start Recording";
+            SelectedUser.isRecordingActive =false;
+            SelectedUser.RecordingText = "Start Recording";
             Console.WriteLine("Emergency Pressed!");
         }
 
@@ -224,7 +224,7 @@ namespace DoctorApplication.MVVM.ViewModel
             client.SendEncryptedData(JsonFileReader.GetObjectAsString("StartBikeRecording", new Dictionary<string, string>()
             {
                 {"_serial_", serial},
-                {"_name_", selectedUser.UserName},
+                {"_name_", SelectedUser.UserName},
                 {"_session_", DateTime.Now.ToString(CultureInfo.InvariantCulture)}
             }, JsonFolder.Json.Path));
             await client.AddSerialCallbackTimeout(serial, ob =>
@@ -235,12 +235,28 @@ namespace DoctorApplication.MVVM.ViewModel
                     {"_serial_", serial},
                     {"_uuid_", currentSessionUuid},
                 }, JsonFolder.Json.Path));
-                selectedUser.AddSession(new SessionModel(DateTime.Now.ToString(CultureInfo.InvariantCulture), currentSessionUuid));
+                SelectedUser.AddSession(new SessionModel(DateTime.Now.ToString(CultureInfo.InvariantCulture), currentSessionUuid));
                 OnPropertyChanged("LastSession");
             }, () =>
             {
           }, 1000);
             LastSession.Init();
+        }
+               public void StopBikeRecording(string type)
+        {
+            if (SelectedUser == null)
+            {
+                return;
+            }
+            Client client = App.GetClientInstance();
+            var serial = Util.RandomString();
+            client.SendEncryptedData(JsonFileReader.GetObjectAsString("StopBikeRecording", new Dictionary<string, string>()
+            {
+                {"_serial_", serial},
+                {"_uuid_", currentSessionUuid},
+                {"_name_", SelectedUser.UserName},
+                {"_stopType_", type}
+            }, JsonFolder.Json.Path));
         }
 
         private int currentValue = 0;
@@ -279,22 +295,7 @@ namespace DoctorApplication.MVVM.ViewModel
                 waiting = false;
             }).Start();
         }
-        public void StopBikeRecording(string type)
-        {
-            if (selectedUser == null)
-            {
-                return;
-            }
-            Client client = App.GetClientInstance();
-            var serial = Util.RandomString();
-            client.SendEncryptedData(JsonFileReader.GetObjectAsString("StopBikeRecording", new Dictionary<string, string>()
-            {
-                {"_serial_", serial},
-                {"_uuid_", currentSessionUuid},
-                {"_name_", selectedUser.UserName},
-                {"_stopType_", type}
-            }, JsonFolder.Json.Path));
-        }
+ 
 
         public void SendMessage(object Message)
         {

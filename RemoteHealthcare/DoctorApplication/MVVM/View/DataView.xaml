@@ -52,9 +52,8 @@
                 
                 <Button
                         Command="{Binding StartSTopRecordingCommand, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        CommandParameter="{Binding Text, ElementName=ChatTextBox}"
                         FontSize="15"
-                    Content="{Binding RecordingText}"
+                    Content="{Binding SelectedUser.RecordingText}"
                     Margin="5"
                         Visibility="Visible" BorderBrush="{x:Null}" Height="33" Width="124" >
                     <Button.Resources>

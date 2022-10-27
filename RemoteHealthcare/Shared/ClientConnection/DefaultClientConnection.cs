@@ -55,8 +55,14 @@ public class DefaultClientConnection
         }
         catch (SocketException e)
         {
+            OnNotConnected();
             Logger.LogMessage(LogImportance.Fatal, "Could not connect with server", e);
         }
+    }
+
+    public virtual void OnNotConnected()
+    {
+        Logger.LogMessage(LogImportance.Fatal, "Not connected with server");
     }
 
     /// <summary>

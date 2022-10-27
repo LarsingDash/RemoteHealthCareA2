@@ -93,6 +93,12 @@ namespace ClientApplication.Bike
             //Ignore
         }
 
+        public override void OnStateChange(bool state)
+        {
+            this.State = state;
+            
+        }
+
 
         /// <summary>
         /// The function takes in a message and a protocol, and then parses the message based on the protocol

@@ -42,12 +42,13 @@ public class Client : DefaultClientConnection
                    Logger.LogMessage(LogImportance.Warn, $"Got {extraText}message from server but no commandHandler found: {LogColor.Gray}\n{json.ToString(Formatting.None)}");
                }
             });
-        
+        SetupClient();
         commandHandler.Add("encryptedMessage", new EncryptedMessage(Rsa));
         commandHandler.Add("user-state-changed", new UserStateChange());
         commandHandler.Add("update-values", new UpdateValues());
 
         Thread.Sleep(500);
+       
     }
     
     public override void OnDisconnect()

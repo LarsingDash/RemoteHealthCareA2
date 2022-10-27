@@ -65,19 +65,23 @@ public class DefaultClientConnection
     /// </summary>
     public void SetupClient()
     {
+        Logger.LogMessage(LogImportance.Debug, "SetupClient");
         Thread.Sleep(100);
         var serial = Util.RandomString();
-        AddSerialCallback(serial, ob =>
-        {
-            publicKey = ob["data"]!["key"]!.ToObject<string>()!;
-            Logger.LogMessage(LogImportance.Information, 
-                $"Received PublicKey from Server: {LogColor.Gray}\n{(publicKey)}");
-        });
         
         SendData(JsonFileReader.GetObjectAsString("PublicRSAKey", new Dictionary<string, string>()
         {
             {"_serial_", serial}
         }, JsonFolderShared.Json.Path));
+        AddSerialCallbackTimeout(serial, ob =>
+        {
+            publicKey = ob["data"]!["key"]!.ToObject<string>()!;
+            Logger.LogMessage(LogImportance.Information,
+                $"Received PublicKey from Server: {LogColor.Gray}\n{(publicKey)}");
+        }, () =>
+        {
+            Logger.LogMessage(LogImportance.Fatal, "Did not get RSA Key");
+        }, 1000);
     }
 
     #region Sending and retrieving data

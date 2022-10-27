@@ -66,6 +66,13 @@ public partial class VRView : UserControl
 				break;
 			case "scene_3":
 				// do something
+				BitmapImage bitmapScene3 = new BitmapImage();
+				bitmapScene3.BeginInit();
+				Console.WriteLine(assetPath);
+				bitmapScene3.UriSource = new Uri($"{assetPath}scene4.jpg");
+				bitmapScene3.EndInit();
+				sceneImage.Source = bitmapScene3;
+				
 				VRClient.selectedScenery = 3;
 				break;
 			case "scene_4":
@@ -81,6 +88,13 @@ public partial class VRView : UserControl
 				break;
 			case "scene_5":
 				// do something
+				BitmapImage bitmapScene5 = new BitmapImage();
+				bitmapScene5.BeginInit();
+				Console.WriteLine(assetPath);
+				bitmapScene5.UriSource = new Uri($"{assetPath}scene6.jpg");
+				bitmapScene5.EndInit();
+				sceneImage.Source = bitmapScene5;
+				
 				VRClient.selectedScenery = 5;
 				break;
 			case "scene_random":

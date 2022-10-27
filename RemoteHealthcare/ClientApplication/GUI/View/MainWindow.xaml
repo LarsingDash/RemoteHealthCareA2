@@ -98,14 +98,14 @@
                     </StackPanel>
                 </RadioButton>
                 
-                <RadioButton Style="{StaticResource menuButton}"
-                             Tag="{StaticResource color2}">
-                    <StackPanel Orientation="Horizontal">
-                        <fa:IconImage Icon="Database" Style="{StaticResource menuButtonIcon}" />
-                        <TextBlock Text="Client Data" Style="{StaticResource menuButtonText}" />
-                    </StackPanel>
-                </RadioButton>
-
+                <!-- <RadioButton Style="{StaticResource menuButton}" -->
+                <!--              Tag="{StaticResource color2}"> -->
+                <!--     <StackPanel Orientation="Horizontal"> -->
+                <!--         <fa:IconImage Icon="Database" Style="{StaticResource menuButtonIcon}" /> -->
+                <!--         <TextBlock Text="Client Data" Style="{StaticResource menuButtonText}" /> -->
+                <!--     </StackPanel> -->
+                <!-- </RadioButton> -->
+                
                 <RadioButton Style="{StaticResource menuButton}"
                              Tag="{StaticResource color3}"
                              Command="{Binding ShowVRViewCommand}">

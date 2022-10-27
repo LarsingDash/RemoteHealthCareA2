@@ -36,7 +36,7 @@ public partial class VRView : UserControl
 				BitmapImage bitmapScene0 = new BitmapImage();  
 				bitmapScene0.BeginInit();
 				Console.WriteLine(assetPath);
-				bitmapScene0.UriSource = new Uri($"{assetPath}scene0.jpg"); 
+				bitmapScene0.UriSource = new Uri($"{assetPath}scene1.jpg"); 
 				bitmapScene0.EndInit();  
 				sceneImage.Source = bitmapScene0;
 
@@ -48,7 +48,7 @@ public partial class VRView : UserControl
 				BitmapImage bitmapScene1 = new BitmapImage();
 				bitmapScene1.BeginInit();
 				Console.WriteLine(assetPath);
-				bitmapScene1.UriSource = new Uri($"{assetPath}BikeWallpaper.jpg");
+				bitmapScene1.UriSource = new Uri($"{assetPath}scene2.jpg");
 				bitmapScene1.EndInit();
 				sceneImage.Source = bitmapScene1;
 				
@@ -56,6 +56,12 @@ public partial class VRView : UserControl
 				break;
 			case "scene_2":
 				// do something
+				BitmapImage bitmapScene2 = new BitmapImage();
+				bitmapScene2.BeginInit();
+				Console.WriteLine(assetPath);
+				bitmapScene2.UriSource = new Uri($"{assetPath}scene3.jpg");
+				bitmapScene2.EndInit();
+				sceneImage.Source = bitmapScene2;
 				VRClient.selectedScenery = 2;
 				break;
 			case "scene_3":
@@ -64,6 +70,13 @@ public partial class VRView : UserControl
 				break;
 			case "scene_4":
 				// do something
+				BitmapImage bitmapScene4 = new BitmapImage();
+				bitmapScene4.BeginInit();
+				Console.WriteLine(assetPath);
+				bitmapScene4.UriSource = new Uri($"{assetPath}scene5.jpg");
+				bitmapScene4.EndInit();
+				sceneImage.Source = bitmapScene4;
+				
 				VRClient.selectedScenery = 4;
 				break;
 			case "scene_5":

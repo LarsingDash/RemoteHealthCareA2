@@ -101,6 +101,7 @@ public class PanelController
                 update = !update;
             }
         });
+        thread.IsBackground = true;
         thread.Start();
         UpdateHudPanel();
     }

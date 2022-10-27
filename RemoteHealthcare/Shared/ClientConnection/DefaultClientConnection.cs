@@ -49,7 +49,7 @@ public class DefaultClientConnection
         {
             client = new(hostname, port);
             stream = client.GetStream();
-            stream.BeginRead(_buffer, 0, 1024, OnRead, null);
+            stream.BeginRead(buffer, 0, 40960000, OnRead, null);
             SetupClient();
             Connected = true;
         }
@@ -69,9 +69,9 @@ public class DefaultClientConnection
         var serial = Util.RandomString();
         AddSerialCallback(serial, ob =>
         {
-            PublicKey = ob["data"]!["key"]!.ToObject<string>()!;
+            publicKey = ob["data"]!["key"]!.ToObject<string>()!;
             Logger.LogMessage(LogImportance.Information, 
-                $"Received PublicKey from Server: {LogColor.Gray}\n{(PublicKey)}");
+                $"Received PublicKey from Server: {LogColor.Gray}\n{(publicKey)}");
         });
         
         SendData(JsonFileReader.GetObjectAsString("PublicRSAKey", new Dictionary<string, string>()
@@ -81,10 +81,10 @@ public class DefaultClientConnection
     }
 
     #region Sending and retrieving data
-    private byte[] _totalBuffer = Array.Empty<byte>();
-    private readonly byte[] _buffer = new byte[1024000000];
+    private byte[] totalBuffer = Array.Empty<byte>();
+    private readonly byte[] buffer = new byte[40960000];
     public event EventHandler<JObject> OnMessage; 
-    private string PublicKey;
+    private string publicKey;
 
     /// <summary>
     /// It checks if the message has a serial, if it does it checks if the client has a callback for that serial, if it does
@@ -134,44 +134,55 @@ public class DefaultClientConnection
         try
         {
             var numberOfBytes = stream.EndRead(readResult);
-            _totalBuffer = Concat(_totalBuffer, _buffer, numberOfBytes);
+            totalBuffer = Concat(totalBuffer, buffer, numberOfBytes);
         }
         catch(Exception e)
         {
             Logger.LogMessage(LogImportance.Error, "Error (Unknown Reason) ", e);
+            OnDisconnect();
             return;
         }
 
-        while (_totalBuffer.Length >= 4)
+        while (totalBuffer.Length >= 4)
         {
-            var packetSize = BitConverter.ToInt32(_totalBuffer, 0);
+            var packetSize = BitConverter.ToInt32(totalBuffer, 0);
 
-            if (_totalBuffer.Length >= packetSize + 4) 
+            if (totalBuffer.Length >= packetSize + 4) 
             {
-                var json = Encoding.UTF8.GetString(_totalBuffer, 4, packetSize);
-
+                var json = Encoding.UTF8.GetString(totalBuffer, 4, packetSize);
+                // Logger.LogMessage(LogImportance.DebugHighlight, "Received: '" + json.ToString() + "'");
+                if (json.Length == 0)
+                {
+                    Logger.LogMessage(LogImportance.Error, "Incoming message length was 0");
+                    return;
+                }
                 OnMessage?.Invoke(this, JObject.Parse(json));
 
-                var newBuffer = new byte[_totalBuffer.Length - packetSize - 4];
-                Array.Copy(_totalBuffer, packetSize + 4, newBuffer, 0, newBuffer.Length);
-                _totalBuffer = newBuffer;
+                var newBuffer = new byte[totalBuffer.Length - packetSize - 4];
+                Array.Copy(totalBuffer, packetSize + 4, newBuffer, 0, newBuffer.Length);
+                totalBuffer = newBuffer;
             }
 
             else
                 break;
         }
 
-        stream.BeginRead(_buffer, 0, 1024000000, OnRead, null);
+        stream.BeginRead(buffer, 0, 40960000, OnRead, null);
     }
 
-    private Queue<Tuple<string, bool>> sendQueue = new Queue<Tuple<string, bool>>();
-    private Queue<Tuple<string, bool>> sendQueuePrio = new Queue<Tuple<string, bool>>();
+    public virtual void OnDisconnect()
+    {
+        Logger.LogMessage(LogImportance.Fatal, "Disconnected with Server.");
+    }
+
+    private Queue<Tuple<string, bool>> sendQueue = new();
+    private Queue<Tuple<string, bool>> sendQueuePrio = new();
     
 
     private bool sending = false;
     private void Send()
     {
-        new Thread(start =>
+        var t = new Thread(start =>
         {
             if (sending)
                 return;
@@ -199,7 +210,8 @@ public class DefaultClientConnection
                 }
             }
             sending = false;
-        }).Start();
+        });
+        t.IsBackground = true;
     }
     /// <summary>
     /// It sends a message to the server
@@ -221,7 +233,7 @@ public class DefaultClientConnection
 
     private void SendMessage(string message, bool hide)
     {
-        new Thread(start =>
+        var t = new Thread(start =>
         {
             try
             {
@@ -255,7 +267,8 @@ public class DefaultClientConnection
                 Logger.LogMessage(LogImportance.Information, 
                     $"Sending message: {LogColor.Gray}\n(_NonJsonObject_)");
             }
-        }).Start();
+        });
+        t.Start();
         Byte[] data = BitConverter.GetBytes(message.Length);
         Byte[] comman = System.Text.Encoding.ASCII.GetBytes(message);
         stream.Write(data, 0, data.Length);
@@ -356,7 +369,7 @@ public class DefaultClientConnection
         }
         Aes aes = Aes.Create("AesManaged")!;
         RSA newRsa = new RSACryptoServiceProvider();
-        newRsa.FromXmlString(PublicKey);
+        newRsa.FromXmlString(publicKey);
 
         var keyCrypt = RsaHelper.EncryptMessage(aes.Key, newRsa.ExportParameters(false), false);
         var iVCrypt = RsaHelper.EncryptMessage(aes.IV, newRsa.ExportParameters(false), false);

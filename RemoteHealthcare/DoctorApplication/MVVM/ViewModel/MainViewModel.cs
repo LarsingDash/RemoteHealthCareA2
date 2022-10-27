@@ -48,7 +48,7 @@ namespace DoctorApplication.MVVM.ViewModel
             MainViewM = this;
             users = new BindableCollection<UserDataModel>();
             ChangeViewHomeCommand = new RelayCommand(SetViewToHome);
-            ChangeViewMultiCommand = new RelayCommand(setViewToMulti);
+            ChangeViewMultiCommand = new RelayCommand(SetViewToMulti);
             ChangeViewHistoryCommand = new RelayCommand(SetViewToHistory);
             DataVM = new DataViewModel(users);
             HistoryVM = new HistoryViewModel(users);
@@ -87,7 +87,7 @@ namespace DoctorApplication.MVVM.ViewModel
             CurrentView = DataVM;
 
         }
-        public void setViewToMulti(object state)
+        public void SetViewToMulti(object state)
         {
             CurrentView = MultipleVM;
 

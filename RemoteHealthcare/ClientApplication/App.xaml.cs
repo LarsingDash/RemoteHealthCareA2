@@ -26,6 +26,8 @@ namespace ClientApplication
 		private static VRClient vrClient;
 		public static Dispatcher CurrentDispatcher;
 
+		public static Dispatcher CurrentDispatcher;
+
 		private void ApplicationStart(object sender, StartupEventArgs e)
 		{
 			CurrentDispatcher = this.Dispatcher;
@@ -34,8 +36,8 @@ namespace ClientApplication
 			new Thread(async start =>
 			{
 				handler = new BikeHandler();
-				// BikePhysical bike = (BikePhysical) handler.Bike;
-				// await bike.StartConnection();
+				BikePhysical bike = (BikePhysical) handler.Bike;
+				bike.StartConnection();
 				client = new Client();
 				vrClient = new VRClient();
 			}).Start();

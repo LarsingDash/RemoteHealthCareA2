@@ -23,6 +23,22 @@ namespace DoctorApplication.MVVM.Model
 {
     public class UserDataModel : INotifyPropertyChanged
     {
+        public bool isRecordingActive = false;
+
+
+        private string recordingText;
+
+        public string RecordingText
+        {
+            get { return recordingText; }
+            set
+            {
+                recordingText = value;
+                OnPropertyChanged(nameof(RecordingText));
+            }
+        }
+
+
 
 
         //userdata
@@ -225,6 +241,7 @@ namespace DoctorApplication.MVVM.Model
         //constructor currently with test values
         public UserDataModel()
         {
+            RecordingText = "Start";
             this.UserName = "TestName";
             this.messages = new ObservableCollection<MessageModel>();
             this.sessions = new BindableCollection<SessionModel>();
@@ -232,6 +249,7 @@ namespace DoctorApplication.MVVM.Model
 
         public UserDataModel(string userName)
         {
+            RecordingText = "Start";
             UserName = userName;
             this.messages = new ObservableCollection<MessageModel>();
             this.sessions = new BindableCollection<SessionModel>();
@@ -271,8 +289,8 @@ namespace DoctorApplication.MVVM.Model
                         model.AddDataHeartRate(session);
                         try
                         {
-                            model.startTime = CustomParseDate(session["start-time"]!.ToObject<string>()!);
-                            model.endTime = !session["end-time"]!.ToObject<string>()!.Equals("_endtime_")
+                            model.StartTime = CustomParseDate(session["start-time"]!.ToObject<string>()!);
+                            model.EndTime = !session["end-time"]!.ToObject<string>()!.Equals("_endtime_")
                                 ? CustomParseDate(session["end-time"]!.ToObject<string>()!)
                                 : DateTime.MinValue;
                         }
@@ -289,7 +307,8 @@ namespace DoctorApplication.MVVM.Model
                 // No Response from server
             }, 1000);
         }
-
+       
+        
         public void AddSession(SessionModel sessionModel)
         {
             sessions.Add(sessionModel);
@@ -321,7 +340,7 @@ namespace DoctorApplication.MVVM.Model
         }
         private DateTime CustomParseDate(string time)
         {
-            return DateTime.ParseExact(time, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+            return DateTime.ParseExact(time, "yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
         }
     }
 

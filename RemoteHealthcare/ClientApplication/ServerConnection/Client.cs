@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
+using System.Windows;
+using System.Windows.Threading;
 using ClientApplication.Bike;
 using ClientApplication.Util;
 using Newtonsoft.Json;
@@ -64,6 +66,7 @@ public class Client : DefaultClientConnection
     public void SetCurrentBikeRecording(string uuid)
     {
         currentBikeRecording = uuid;
+        App.GetBikeHandlerInstance().Bike.Reset();
     }
 
     public void SendValue(string type, double val)
@@ -89,6 +92,26 @@ public class Client : DefaultClientConnection
             {
                 currentBikeRecording = "";
             }
+        });
+    }
+
+    public override void OnDisconnect()
+    {
+        Logger.LogMessage(LogImportance.Fatal, "Connection with server Closed. Shutting down.");
+        Dispatcher.CurrentDispatcher.BeginInvoke((Action)delegate()
+        {
+            // Application.Current.Shutdown(500);
+            // System.Environment.Exit(500);
+            Environment.Exit(0);
+            Dispatcher.CurrentDispatcher.BeginInvokeShutdown(DispatcherPriority.Invalid);
+        });
+        
+        App.CurrentDispatcher.BeginInvoke((Action)delegate()
+        {
+            Application.Current.Shutdown(500);
+            System.Environment.Exit(500);
+            Environment.Exit(0);
+            App.CurrentDispatcher.BeginInvokeShutdown(DispatcherPriority.Invalid);
         });
     }
 }

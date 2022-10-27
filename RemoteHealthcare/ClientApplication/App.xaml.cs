@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 using ClientApplication.Bike;
 using ClientApplication.ServerConnection;
 using ClientApplication.View;
@@ -24,8 +25,11 @@ namespace ClientApplication
 		private static Client client;
 		private static VRClient vrClient;
 
+		public static Dispatcher CurrentDispatcher;
+
 		private void ApplicationStart(object sender, StartupEventArgs e)
 		{
+			CurrentDispatcher = this.Dispatcher; 
 			this.Dispatcher.UnhandledException += OnDispatcherUnhandledException;
 			Logger.LogMessage(LogImportance.Information, "ClientApplication Started");
 			new Thread(async start =>

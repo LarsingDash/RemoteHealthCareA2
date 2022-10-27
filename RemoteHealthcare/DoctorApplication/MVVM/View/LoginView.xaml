@@ -28,8 +28,15 @@
     </Window.Visibility>
     
     
+    <Border CornerRadius="25">
+        <Border.Background>
+            <ImageBrush ImageSource="/Assets/BikeWallpaper.jpg"
+                        Stretch="Fill"/>
+        </Border.Background>
+    
     <Border CornerRadius="25"
-            BorderThickness="5">
+            BorderThickness="5"
+            Opacity="0.95">
         
         <Border.BorderBrush>
             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
@@ -236,5 +243,6 @@
             </Grid>
             
     </Border>
+        </Border>
     
 </Window>

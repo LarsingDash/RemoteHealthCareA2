@@ -71,6 +71,8 @@ public class Client : DefaultClientConnection
 
     public void SendValue(string type, double val)
     {
+        if (new Random().Next(50) != 2)
+            return;
         if (currentBikeRecording.Length <= 3)
             return;
         var serial = Shared.Util.RandomString();

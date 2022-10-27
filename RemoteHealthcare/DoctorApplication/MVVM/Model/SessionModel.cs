@@ -15,6 +15,7 @@ using System.Text.Json.Serialization.Metadata;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using Shared.Log;
 
 namespace DoctorApplication.MVVM.Model
 {
@@ -302,7 +303,7 @@ namespace DoctorApplication.MVVM.Model
 
             foreach (JObject key in distance)
             {
-                this.distance.Add(double.Parse(key["value"]!.ToObject<string>()!));
+                this.distance.Add(double.Parse(key["value"]!.ToObject<string>()!, CultureInfo.InvariantCulture));
             }
         }
         double speedcounter = 0;
@@ -313,7 +314,7 @@ namespace DoctorApplication.MVVM.Model
             foreach (JObject key in val)
             {
                 speedcounter++;
-                double speedValue = double.Parse(key["value"]!.ToObject<string>()!);
+                double speedValue = double.Parse(key["value"]!.ToObject<string>()!, CultureInfo.InvariantCulture);
                 this.speed.Add(speedValue);
                 AddSpeedPoint(speedValue, speedcounter);
                 CalculateTimeElapsed(key["time"].ToObject<string>()!);
@@ -344,7 +345,7 @@ namespace DoctorApplication.MVVM.Model
             foreach (JObject key in val)
             {
                 heartcounter++;
-                double heartRateValue = double.Parse(key["value"]!.ToObject<string>()!);
+                double heartRateValue = double.Parse(key["value"]!.ToObject<string>()!, CultureInfo.InvariantCulture);
                 this.heartRate.Add(heartRateValue);
                 AddHeartPoint(heartRateValue, heartcounter);
             }

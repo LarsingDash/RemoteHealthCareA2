@@ -1,8 +1,8 @@
 {
   "doctors": [
     {
-      "username": "Doctertje",
-      "password": "Patientje"
+      "username": "Docter",
+      "password": "Patient"
     },
     {
       "username": "Jasper",
@@ -19,10 +19,6 @@
     {
       "username": "Oliver",
       "password": "Moustapha"
-    },
-    {
-      "username": "t",
-      "password": "t"
     }
   ]
 }

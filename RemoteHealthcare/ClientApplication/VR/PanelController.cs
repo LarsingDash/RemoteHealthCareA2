@@ -198,8 +198,7 @@ public class PanelController
 
         return panelId;
     }
-
-
+    
     /// <summary>
     /// Clears the panel with the given id
     /// </summary>

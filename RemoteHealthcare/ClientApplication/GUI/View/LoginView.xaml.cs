@@ -8,6 +8,7 @@ public partial class LoginView : Window
 	public LoginView()
 	{
 		InitializeComponent();
+		txtPhoneNumber.Focus();
 	}
 
 	private void LoginView_OnMouseDown(object sender, MouseButtonEventArgs e)

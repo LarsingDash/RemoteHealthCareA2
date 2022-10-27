@@ -5,6 +5,8 @@ using System.Numerics;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ClientApplication;
+using ClientApplication.Bike;
 using ClientApplication.Util;
 using ClientSide.VR2;
 using ClientSide.VR2.CommandHandler;
@@ -307,7 +309,7 @@ namespace ClientSide.VR
                                         "\"_position_\"",
                                         $"{currentPoint.X + mapSize / 2 + ".0"} , {currentHeight.ToString(CultureInfo.InvariantCulture)}, {currentPoint.Y + mapSize / 2 + ".0"}"
                                     },
-                                    // { "\"_scale_\"", (random.NextDouble()).ToString(CultureInfo.InvariantCulture) },
+                                    {"\"_rotation_\"", random.Next(0, 360).ToString(CultureInfo.InvariantCulture)},
                                     { "\"_scale_\"", vrClient.scale },
                                     { "_filename_", $"data/NetworkEngine/decoration/{vrClient.decoration}/object.obj" }
                                 }, JsonFolder.TunnelMessages.Path)
@@ -322,6 +324,9 @@ namespace ClientSide.VR
             {
                 Logger.LogMessage(LogImportance.Error, "Error Unknown Reason", e);
             }
+            
+            App.GetBikeHandlerInstance().ChangeData(DataType.ElapsedTime, 0);
+            App.GetBikeHandlerInstance().ChangeData(DataType.Distance, 0);
         }
 
         private List<Vector4> ChoosePath()

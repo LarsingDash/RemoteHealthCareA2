@@ -11,7 +11,7 @@
         "position" : [ "_position_" ],
         "parent" : "_guid_",
         "scale" : "_scale_",
-        "rotation" : [ 0, 0, 0 ]
+        "rotation" : [ 0, "_rotation_", 0 ]
       },
       "model" :
       {

@@ -21,7 +21,6 @@ public class VRViewModel:ViewModelBase
 	private static void startVRSessionExecute(object obj)
 	{
 		App.GetVrClientInstance().Setup();
-		App.GetBikeHandlerInstance().ChangeData(DataType.ElapsedTime, 0);
 	}
 
 	public ICommand startVRSession

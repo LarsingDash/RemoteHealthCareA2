@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using ClientApplication;
 using ClientApplication.Bike;
 using ClientApplication.Util;
@@ -50,31 +51,16 @@ public class PanelController
         // creates VR Panel
         var hudSerial = Util.RandomString();
         var hudPanelName = "hudPanel";
-        AddPanel(hudPanelName, hudSerial, -1, 0, -3, 512, 512, 1);
-
-        // waiting for VR response before searching for chatPanel id
-        await client.AddSerialCallbackTimeout(hudSerial,
-            ob => { Logger.LogMessage(LogImportance.DebugHighlight, "HUD panel is added in VR scene"); }, () => { },
-            1000);
-        hudPanelId = await client.FindObjectUuid(hudPanelName);
-        Logger.LogMessage(LogImportance.Information, $"HudPanelId: {hudPanelId}");
-
+        hudPanelId = await AddPanel(hudPanelName, hudSerial, -1, 0, -3, 512, 512, 1);
 
         // creates Chat Panel
         var chatSerial = Util.RandomString();
         var chatPanelName = "chatPanel";
-        AddPanel(chatPanelName, chatSerial, -0.8, -0.8, -2.9, 512, 512, 1.2);
-
-        // waiting for VR response before searching for chatPanel id
-        await client.AddSerialCallbackTimeout(chatSerial,
-            ob => { Logger.LogMessage(LogImportance.DebugHighlight, "Chat panel is added in VR scene"); }, () => { },
-            1000);
-        chatPanelId = await client.FindObjectUuid(chatPanelName);
-        Logger.LogMessage(LogImportance.Information, $"ChatPanelId: {chatPanelId}");
-
+        chatPanelId = await AddPanel(chatPanelName, chatSerial, -0.8, -0.8, -2.9, 512, 512, 1.2);
         UpdateChat("", "");
 
         var handler = App.GetBikeHandlerInstance();
+            // speed
         handler.Subscribe(DataType.Speed, speedRaw =>
         {
             var speed = Math.Round(speedRaw * 3.6, 1);
@@ -82,6 +68,8 @@ public class PanelController
             update = true;
         });
 
+        // subscribes to the data from BikeHandler()
+            // elapsed time
         handler.Subscribe(DataType.ElapsedTime, timeRaw =>
         {
             timeDisplayed = "";
@@ -95,6 +83,7 @@ public class PanelController
             update = true;
         });
 
+            // distance
         handler.Subscribe(DataType.Distance, distRaw =>
         {
             distanceDisplayed = Math.Round(distRaw, 0) + " Meters";
@@ -115,6 +104,8 @@ public class PanelController
         UpdateHudPanel();
     }
 
+    
+    
     /// <summary>
     /// Update all elements of HUD panel in VR
     /// </summary>
@@ -129,13 +120,14 @@ public class PanelController
         DrawPanelImage("data/NetworkEngine/custom/images/Icons.png", 30, 102, 64, -192, hudPanelId);
         SwapPanel(hudPanelId);
     }
-    
+
     /// <summary>
     /// Updates the chat when adding a new message
     /// Message is added to a Queue with a fixed size of 5 messages. Older messages get dequeued.
     /// If the message is longer than 32 characters, splits the message in parts
     /// and draws them seperately in VR
     /// </summary>
+    /// <param name="sender">Sender of the message</param>
     /// <param name="message">Message to be displayed in VR chat panel</param>
     public void UpdateChat(string sender, string message)
     {
@@ -176,8 +168,9 @@ public class PanelController
     /// <param name="height">height in pixels</param>
     /// <param name="width">width in pixels</param>
     /// <param name="scale">scales the panel</param>
-    private void AddPanel(string panelName,  string serial, double x, double y, double z, int height, int width, double scale)
+    private async Task<string> AddPanel(string panelName,  string serial, double x, double y, double z, int height, int width, double scale)
     {
+
         tunnel.SendTunnelMessage(new Dictionary<string, string>()
         {
             {
@@ -193,7 +186,17 @@ public class PanelController
                 }, JsonFolder.Panel.Path)
             }
         });
+        
+        // waiting for VR response before searching for chatPanel id
+        await client.AddSerialCallbackTimeout(serial,
+            ob => { Logger.LogMessage(LogImportance.DebugHighlight, $"{panelName} is added in VR scene"); }, () => { },
+            1000);
+        var panelId = await client.FindObjectUuid(panelName);
+        Logger.LogMessage(LogImportance.Information, $"Id of {panelName} found: {panelId}");
+
+        return panelId;
     }
+
 
     /// <summary>
     /// Clears the panel with the given id

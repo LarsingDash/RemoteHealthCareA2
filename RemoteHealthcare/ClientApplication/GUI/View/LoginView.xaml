@@ -7,7 +7,7 @@
         xmlns:viewModel="clr-namespace:ClientApplication.ViewModel"
         xmlns:customControls="clr-namespace:ClientApplication.CustomControls"
         mc:Ignorable="d"
-        Title="LoginView" Height="500" Width="800"
+        Title="HealthCare A2" Height="500" Width="800"
         WindowStyle="None"
         Background="Transparent"
         AllowsTransparency="True"

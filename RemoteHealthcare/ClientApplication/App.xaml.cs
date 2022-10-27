@@ -26,7 +26,6 @@ namespace ClientApplication
 
 		private void ApplicationStart(object sender, StartupEventArgs e)
 		{
-			Logger.PrintLevel = LogLevel.Warning;
 			this.Dispatcher.UnhandledException += OnDispatcherUnhandledException;
 			Logger.LogMessage(LogImportance.Information, "ClientApplication Started");
 			new Thread(async start =>
@@ -36,7 +35,6 @@ namespace ClientApplication
 				await bike.StartConnection();
 				client = new Client();
 				vrClient = new VRClient();
-				vrClient.Setup();
 			}).Start();
 			var loginView = new LoginView();
 			loginView.Show();

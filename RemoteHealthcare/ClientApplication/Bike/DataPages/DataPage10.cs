@@ -52,7 +52,7 @@ public class DataPage10 : DataPage
             {
                 Handler.ChangeData(DataType.ElapsedTime, (double) Convert.ToInt32(data[3])  / 4 + timeMultiplier * 256);
             }
-            Handler.ChangeData(DataType.Speed, (double) Convert.ToInt32(data[5] + (data[6] << 8)) / 1000 * 3.6);
+            Handler.ChangeData(DataType.Speed, (double) Convert.ToInt32(data[5] + (data[6] << 8)) / 1000);
         }
         prevData = data;
     }

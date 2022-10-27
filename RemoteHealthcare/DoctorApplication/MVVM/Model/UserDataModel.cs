@@ -241,6 +241,7 @@ namespace DoctorApplication.MVVM.Model
         //constructor currently with test values
         public UserDataModel()
         {
+            RecordingText = "Start";
             this.UserName = "TestName";
             this.messages = new ObservableCollection<MessageModel>();
             this.sessions = new BindableCollection<SessionModel>();
@@ -248,6 +249,7 @@ namespace DoctorApplication.MVVM.Model
 
         public UserDataModel(string userName)
         {
+            RecordingText = "Start";
             UserName = userName;
             this.messages = new ObservableCollection<MessageModel>();
             this.sessions = new BindableCollection<SessionModel>();

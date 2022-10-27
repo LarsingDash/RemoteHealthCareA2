@@ -24,14 +24,31 @@ public class VRClient : DefaultClientConnection
     private bool hasStarted;
 
     public List<string> hideMessages = new List<string>();
+    private static readonly string assetPath = "data/NetworkEngine/";
     
     //Vr settings
-    public string skyboxFolder = "data/NetworkEngine/custom/skyboxes/yellow";
+    public static int selectedRoute = 6;
+    public static int selectedScenery = 1;
+    
+    public string skyboxFolder = "";
+    public string terrainD = "";
+    public string terrainN = "";
+    public string path = "";
+    public string decoration = "";
+    public string time = "12";
+    public string scale = "1";
+    public int decoAmount = 1000;
 
     public void Setup()
     {
         if (hasStarted) return;
         hasStarted = true;
+
+        var random = new Random();
+        if (selectedRoute == 6) selectedRoute = random.Next(0, 5);
+        if (selectedScenery == 6) selectedScenery = random.Next(0, 5);
+
+        LoadSceneryOptions();
         
         hideMessages = new List<string>()
         {
@@ -111,7 +128,7 @@ public class VRClient : DefaultClientConnection
         {
             {"\"_data_\"", JsonFileReader.GetObjectAsString("SetTimeScene", new Dictionary<string, string>
             {
-                {"\"_time_\"", "8"}
+                {"\"_time_\"", time}
             }, JsonFolder.TunnelMessages.Path)},
         });
         
@@ -119,12 +136,12 @@ public class VRClient : DefaultClientConnection
         {
             {"\"_data_\"", JsonFileReader.GetObjectAsString("SetSkybox", new Dictionary<string, string>
             {
-                {"_xpos_", $"{skyboxFolder}/right"},
-                {"_xneg_", $"{skyboxFolder}/left"},
-                {"_ypos_", $"{skyboxFolder}/up"},
-                {"_yneg_", $"{skyboxFolder}/down"},
-                {"_zpos_", $"{skyboxFolder}/back"},
-                {"_zneg_", $"{skyboxFolder}/front"},
+                {"_xpos_", $"{assetPath}{skyboxFolder}/right"},
+                {"_xneg_", $"{assetPath}{skyboxFolder}/left"},
+                {"_ypos_", $"{assetPath}{skyboxFolder}/up"},
+                {"_yneg_", $"{assetPath}{skyboxFolder}/down"},
+                {"_zpos_", $"{assetPath}{skyboxFolder}/back"},
+                {"_zneg_", $"{assetPath}{skyboxFolder}/front"},
             }, JsonFolder.TunnelMessages.Path)},
         });
 
@@ -201,6 +218,62 @@ public class VRClient : DefaultClientConnection
         catch (Exception e)
         {
             Logger.LogMessage(LogImportance.Error, "Error (Unknown Reason) ", e);
+        }
+    }
+
+    private void LoadSceneryOptions()
+    {
+        switch (selectedScenery)
+        {
+            default:
+                skyboxFolder = "skyboxes/yellow";
+                terrainD = "grass_autumn_orn_d";
+                terrainN = "grass_autumn_n";
+                path = "grass_ground_d";
+                decoration = "pine";
+                break;
+            
+            case 1:
+                skyboxFolder = "skyboxes/gray";
+                terrainD = "lava_d";
+                terrainN = "lava_n";
+                path = "lava_black_d";
+                decoration = "roncky";
+                scale = "0.1";
+                decoAmount = 250;
+                break;
+            
+            case 2:
+                skyboxFolder = "skyboxes/blue";
+                terrainD = "moss_plants_d";
+                terrainN = "moss_plants_n";
+                path = "jungle_stone_d";
+                decoration = decoration;
+                break;
+            
+            case 3:
+                skyboxFolder = "skyboxes/stormy";
+                terrainD = "jungle_mntn2_s";
+                terrainN = "jungle_mntn2_n";
+                path = "mntn_black_d";
+                decoration = decoration;
+                break;
+            
+            case 4:
+                skyboxFolder = "skyboxes/brown";
+                terrainD = "desert_sand_d";
+                terrainN = "desert_sand_n";
+                path = "ground_dry_d";
+                decoration = decoration;
+                break;
+            
+            case 5:
+                skyboxFolder = "skyboxes/interstellar";
+                terrainD = "snow1_d";
+                terrainN = "snow1_d";
+                path = "snow_bumpy_d";
+                decoration = decoration;
+                break;
         }
     }
 }

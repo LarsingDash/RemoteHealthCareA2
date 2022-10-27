@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Threading;
 using ClientApplication.Bike;
 using ClientApplication.Util;
+using ClientApplication.ViewModel;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Shared;
@@ -125,6 +126,15 @@ public class Client : DefaultClientConnection
             System.Environment.Exit(500);
             Environment.Exit(0);
             App.CurrentDispatcher.BeginInvokeShutdown(DispatcherPriority.Invalid);
+        });
+    }
+    
+    public override void OnNotConnected()
+    {
+        App.CurrentDispatcher.Invoke(() =>
+        {
+            Logger.LogMessage(LogImportance.Debug, "Not connected");
+            LoginViewModel.Model.ErrorMessage = "Could not connect with server.";
         });
     }
 }

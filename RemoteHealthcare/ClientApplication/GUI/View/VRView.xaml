@@ -25,8 +25,16 @@
         </Grid.ColumnDefinitions>
         
         <StackPanel>
+            
+            <TextBlock Text= "Scene" 
+                       Foreground="#ACACAC"
+                       FontSize="20"
+                       FontFamily="Montserrat"
+                       Margin="0,60,0,0"
+                       HorizontalAlignment="Center"/>
+            
             <RadioButton Style="{StaticResource menuButton}"
-                         Margin="0,60,0,0"
+                         Margin="0,10,0,0"
                          Tag="{StaticResource color9}"
                          Name="scene_0"
                          Checked="radioButton_Checked">
@@ -100,11 +108,19 @@
             </StackPanel>
         
         <StackPanel Grid.Column="2">
-         <RadioButton Style="{StaticResource menuButton}"
-                      Margin="0,60,0,0"
-                             Tag="{StaticResource color9}"
-                      Name="route_0"
-                      Checked="radioButton_Checked">
+            
+            <TextBlock Text= "Route" 
+                       Foreground="#ACACAC"
+                       FontSize="20"
+                       FontFamily="Montserrat"
+                       Margin="0,60,0,0"
+                       HorizontalAlignment="Center"/>
+            
+            <RadioButton Style="{StaticResource menuButton}"
+                         Margin="0,10,0,0"
+                         Tag="{StaticResource color9}"
+                         Name="route_0"
+                         Checked="radioButton_Checked">
                     <StackPanel Orientation="Horizontal">
                         <fa:IconImage Icon="Route" Style="{StaticResource menuButtonIcon}" />
                         <TextBlock Text="Route 1" Style="{StaticResource menuButtonText}" />

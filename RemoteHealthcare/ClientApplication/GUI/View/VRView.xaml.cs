@@ -36,7 +36,7 @@ public partial class VRView : UserControl
 				BitmapImage bitmapScene0 = new BitmapImage();  
 				bitmapScene0.BeginInit();
 				Console.WriteLine(assetPath);
-				bitmapScene0.UriSource = new Uri($"{assetPath}download.png"); 
+				bitmapScene0.UriSource = new Uri($"{assetPath}scene0.jpg"); 
 				bitmapScene0.EndInit();  
 				sceneImage.Source = bitmapScene0;
 

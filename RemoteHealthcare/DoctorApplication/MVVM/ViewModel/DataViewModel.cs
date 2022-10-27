@@ -49,20 +49,6 @@ namespace DoctorApplication.MVVM.ViewModel
                 OnPropertyChanged();
             }
         }
-
-        private int sliderValue;
-
-        public int SliderValue
-        {
-            get { return sliderValue; }
-            set
-            {
-                sliderValue = value;
-                OnPropertyChanged();
-                ApplySliderValue();
-            }
-        }
-
         
         private string currentSessionUuid;
 
@@ -259,42 +245,7 @@ namespace DoctorApplication.MVVM.ViewModel
             }, JsonFolder.Json.Path));
         }
 
-        private int currentValue = 0;
-        private int waitTimer = 0;
-        private bool waiting = false;
-        private void ApplySliderValue()
-        {
-            if (selectedUser == null)
-            {
-                return;
-            }
-
-            waitTimer = 1000;
-            currentValue = sliderValue;
-            if (waiting)
-            {
-                return;
-            }
-            new Thread(start =>
-            {
-                waiting = true;
-                while (waitTimer > 0)
-                {
-                    Thread.Sleep(1);
-                    waitTimer--;
-                }
-                Logger.LogMessage(LogImportance.Information, sliderValue.ToString());
-                Client client = App.GetClientInstance();
-                var serial = Util.RandomString();
-                client.SendEncryptedData(JsonFileReader.GetObjectAsString("SetResistance", new Dictionary<string, string>()
-                {
-                    {"_serial_" , serial},
-                    {"_resistance_" , SliderValue.ToString()},
-                    {"_user_", selectedUser.UserName }
-                }, JsonFolder.Json.Path));
-                waiting = false;
-            }).Start();
-        }
+        
  
 
         public void SendMessage(object Message)

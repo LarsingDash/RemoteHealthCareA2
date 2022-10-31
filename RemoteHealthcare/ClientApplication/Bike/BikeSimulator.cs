@@ -72,6 +72,7 @@ public class BikeSimulator : Bike
     /// </summary>
     private void UpdateHeartRate()
     {
+        Logger.LogMessage(LogImportance.DebugHighlight, "Updating HeartRate");
         handler.ChangeData(DataType.HeartRate, 2 * Math.Sin(0.1 * ticker) + 120);
     }
 

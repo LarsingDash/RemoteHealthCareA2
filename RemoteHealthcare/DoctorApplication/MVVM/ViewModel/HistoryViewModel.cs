@@ -36,7 +36,7 @@ namespace DoctorApplication.MVVM.ViewModel
 
 
         private UserDataModel selectedUser;
-        public UserDataModel SelectedUser
+        public UserDataModel? SelectedUser
         {
             get { return selectedUser; }
             set{selectedUser = value; OnPropertyChanged();}
@@ -51,10 +51,11 @@ namespace DoctorApplication.MVVM.ViewModel
         }
 
 
-
+        public static HistoryViewModel? Model;
 
         public HistoryViewModel(BindableCollection<UserDataModel> users)
         {
+            Model = this;
             BindableCollection<UserDataModel> list = new BindableCollection<UserDataModel>();
             Client client = App.GetClientInstance();
             var serial = Util.RandomString();

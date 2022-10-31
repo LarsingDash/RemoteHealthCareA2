@@ -45,6 +45,7 @@ public class Client : DefaultClientConnection
             commandHandler.Add("forward-set-resistance", new SetResistance());
             commandHandler.Add("forward-chat-message", new ChatMessage());
             commandHandler.Add("start-bike-recording", new StartBikeRecording());
+            commandHandler.Add("stop-bike-recording", new StopBikeRecording());
             Thread.Sleep(500);
         }
 

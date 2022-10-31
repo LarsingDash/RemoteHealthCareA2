@@ -17,12 +17,12 @@ namespace ClientApplication.Bike
         private Dictionary<int, DataPage> pages;
         private BluetoothDevice? bikeDevice;
         private BluetoothDevice heartRateDevice;
+        private BikeSimulator? sim;
 
        
 
         public BikePhysical(BikeHandler handler)
         {
-
             this.handler = handler;
             pages = new Dictionary<int, DataPage>()
             {
@@ -47,8 +47,9 @@ namespace ClientApplication.Bike
                 {
                    handler.Bike = new BikeSimulator(handler, !bikeDevice.Connected, !heartRateDevice.Connected);
                 } else
-                {
-                    new BikeSimulator(handler, !bikeDevice.Connected, !heartRateDevice.Connected);
+                { 
+                    sim = new BikeSimulator(handler, !bikeDevice.Connected, !heartRateDevice.Connected);
+                    sim.OnStateChange(true);
                 }
                 Logger.LogMessage(LogImportance.Information, $"Switching to Bike Simulator for Bike: {!bikeDevice.Connected}, Heart: {!heartRateDevice.Connected} ");
             }
@@ -91,6 +92,7 @@ namespace ClientApplication.Bike
         public override void Reset()
         {
             //Ignore
+            sim?.Reset();
         }
 
         public override void OnStateChange(bool state)
@@ -182,6 +184,7 @@ namespace ClientApplication.Bike
         {
             bikeDevice.ble.CloseDevice();
             heartRateDevice.ble.CloseDevice();
+            sim?.Reset();
         }
     }
 

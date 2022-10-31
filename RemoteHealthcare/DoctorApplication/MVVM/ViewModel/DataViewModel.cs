@@ -195,6 +195,20 @@ namespace DoctorApplication.MVVM.ViewModel
                 SelectedUser.isRecordingActive = false;
                 SelectedUser.RecordingText = "Start Recording";
                 StopBikeRecording("normal");
+                if(HistoryViewModel.Model != null && SelectedSession != null)
+                    foreach (var user in HistoryViewModel.Model.Users)
+                    {
+                        if (user.UserName == SelectedUser.UserName)
+                        {
+                            Logger.LogMessage(LogImportance.DebugHighlight, "Adding session");
+                            user.AddSession(SelectedUser.LastSession);
+                            // if(HistoryViewModel.Model.SelectedUser != null)
+                            // if (HistoryViewModel.Model.SelectedUser.UserName == SelectedUser.UserName)
+                            // {
+                            //     HistoryViewModel.Model.sessions.Add(SelectedUser.LastSession);
+                            // }
+                        }
+                    }
             }
         }
 

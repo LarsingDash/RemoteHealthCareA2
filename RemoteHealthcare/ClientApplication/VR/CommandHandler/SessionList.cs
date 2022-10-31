@@ -12,8 +12,8 @@ public class SessionList : ICommandHandlerVR
     private DateTime savedSessionDate;
     public void HandleCommand(VRClient client, JObject ob)
     {
-        CheckData(ob,  Environment.MachineName.ToLower(), Environment.UserName.ToLower());
-        // CheckData(ob, "VR3".ToLower(), "CavePC_1".ToLower());                                            
+        // CheckData(ob,  Environment.MachineName.ToLower(), Environment.UserName.ToLower());
+        CheckData(ob, "VR3".ToLower(), "CavePC_1".ToLower());                                            
         if (savedSession != null)
         {
             client.CreateTunnel(savedSession["id"]!.ToObject<string>()!);

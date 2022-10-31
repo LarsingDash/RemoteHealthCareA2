@@ -33,6 +33,7 @@ public class UserStateChange : ICommandHandler
             {
                 UserDataModel model = new UserDataModel(username);
                 MainViewModel.MainViewM.users.Add(model);
+                HistoryViewModel.Model?.Users.Add(model);
             });
         }
         else if(type.Equals("logout"))
